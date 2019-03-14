@@ -13,20 +13,23 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 Plugin 'othree/html5.vim'
 Plugin 'JulesWang/css.vim'
-Plugin 'genoma/vim-less'
 Plugin 'alvan/vim-closetag'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'joshdick/onedark.vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'kien/ctrlp.vim'
 Plugin 'tpope/vim-fugitive'
+Plugin 'ap/vim-css-color'
+Plugin 'tomtom/tcomment_vim'
+Plugin 'yggdroot/leaderf'
+Plugin 'tpope/vim-surround'
 " ADD YOUR PLUGIN
 call vundle#end()
 filetype plugin indent on
 "Vundle Section End
-
-" 开启实时搜索功能
+"
+set encoding=utf-8
+" Enable search in real time
 set incsearch
 " 搜索时大小写不敏感
 set ignorecase
@@ -34,11 +37,8 @@ set ignorecase
 set nocompatible
 " vim 自身命令行模式智能补全
 set wildmenu
-" 设置回车后自动缩进
+" Indent automatically when press enter
 set autoindent
-set smartindent
-set cindent
-set cinoptions={0,1s,t0,n-2,p2s,(03s,=.5s,>1s,=1s,:1s
 " 一个tab键所占的列数，linux 内核代码建议每个tab占用8列
 set tabstop=4
 " 敲入tab键时实际占有的列数。
@@ -51,7 +51,9 @@ set expandtab
 set backspace=2
 " Share the clipboard to the os
 set clipboard=unnamed
-
+" Enable cursor line
+set cursorline
+" Hightlight the search result
 set hlsearch
 
 " 显示tab空白符
@@ -65,11 +67,11 @@ set showcmd
 " Common Shortcut
 let mapleader="\<Space>"
 " Shortcut for YouCompleteMe
-nnoremap <Leader>gt :YcmCompleter GoTo<CR> 
+nnoremap <Leader>gt :YcmCompleter GoTo<CR>
 nnoremap <Leader>gr :YcmCompleter GoToReferences<CR>
 nnoremap <Leader>h :bp<CR>
 nnoremap <Leader>l :bn<CR>
-nnoremap <Leader>ww <C-W>w
+nnoremap <Leader>w <C-W>
 
 " Theme Configures
 let g:onedark_terminal_italics=1
@@ -80,7 +82,7 @@ set background=dark " for the dark version
 " set background=light " for the light version
 
 " Airline Configures
-let g:airline_theme='onedark'
+let g:airline_theme='luna'
 set laststatus=2
 set t_Co=256
 " enable powerline-fonts
@@ -88,9 +90,9 @@ let g:airline_powerline_fonts = 1
 " enable tabline
 let g:airline#extensions#tabline#enabled = 1
 " set left separator
-let g:airline#extensions#tabline#left_sep = ' '
+" let g:airline#extensions#tabline#left_sep = ''
 " set left separator which are not editting
-let g:airline#extensions#tabline#left_alt_sep = '|'
+" let g:airline#extensions#tabline#left_alt_sep = '|>'
 " show buffer number
 " let g:airline#extensions#tabline#buffer_nr_show = 1
 " set the shortcut to switch the buffer"
@@ -98,7 +100,7 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 " Start autocompletion after 2 chars
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_min_num_identifier_candidate_chars = 2
-let g:ycm_enable_diagnostic_highlighting = 0 
+let g:ycm_enable_diagnostic_highlighting = 0
 " Don't show YCM's preview window [ I find it really annoying ]
 set completeopt-=preview
 let g:ycm_add_preview_to_completeopt = 0
@@ -121,15 +123,57 @@ let NERDTreeIgnore=['\.pyc','\~$','\.swp']
 " 显示书签列表
 let NERDTreeShowBookmarks=1
 
+" NERDTree File highlighting
+function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
+exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+endfunction
+
+call NERDTreeHighlightFile('py', 'green', 'none', '#75A8D4', 'NONE')
+call NERDTreeHighlightFile('jade', 'green', 'none', 'green', 'NONE')
+call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', 'NONE')
+call NERDTreeHighlightFile('md', 'blue', 'none', '#3366FF', 'NONE')
+call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', 'NONE')
+call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', 'NONE')
+call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', 'NONE')
+call NERDTreeHighlightFile('json', 'yellow', 'none', 'yellow', 'NONE')
+call NERDTreeHighlightFile('html', 'yellow', 'none', 'yellow', 'NONE')
+call NERDTreeHighlightFile('styl', 'cyan', 'none', 'cyan', 'NONE')
+call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', 'NONE')
+call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', 'NONE')
+call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', 'NONE')
+call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', 'NONE')
+call NERDTreeHighlightFile('ds_store', 'Gray', 'none', '#686868', 'NONE')
+call NERDTreeHighlightFile('gitconfig', 'Gray', 'none', '#686868', 'NONE')
+call NERDTreeHighlightFile('gitignore', 'Gray', 'none', '#686868', 'NONE')
+call NERDTreeHighlightFile('bashrc', 'Gray', 'none', '#686868', 'NONE')
+call NERDTreeHighlightFile('bashprofile', 'Gray', 'none', '#686868', 'NONE')
+
+" --- tabs for different code
+autocmd FileType make setlocal noexpandtab
+autocmd Filetype html setlocal ts=2 sw=2 expandtab
+autocmd Filetype htmldjango setlocal ts=2 sw=2 expandtab
+autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
+autocmd Filetype eruby setlocal ts=2 sw=2 expandtab
+autocmd Filetype javascript setlocal ts=2 sw=2 expandtab
+autocmd Filetype javascript.jsx setlocal ts=2 sw=2 expandtab
+autocmd Filetype json setlocal ts=2 sw=2 expandtab
+autocmd Filetype python setlocal ts=4 sw=4 expandtab
+autocmd Filetype scss setlocal ts=2 sw=2 expandtab
+autocmd Filetype yaml setlocal ts=2 sw=2 expandtab
+
 " For plugin vim-jsx
 let g:jsx_ext_required=0
 
 " For plugin vim-closetag
-let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.erb,*.jsx"
-let g:closetag_xhtml_filenames = '*.xhtml,*.jsx,*.erb'
+let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.erb,*.jsx,*.js"
+let g:closetag_xhtml_filenames = '*.xhtml,*.jsx,*.erb,*.js'
 let g:closetag_emptyTags_caseSensitive = 1
 let g:closetag_shortcut = '>'
 " let g:closetag_close_shortcut = '<leader>>'
 
 " For vim-gitgutter
 set updatetime=100
+
+" Default Browser for Markdown Preview
+let g:mkdp_path_to_chrome = "open -a Safari"
