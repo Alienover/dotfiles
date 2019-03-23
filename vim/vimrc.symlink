@@ -23,6 +23,7 @@ Plugin 'ap/vim-css-color'
 Plugin 'tomtom/tcomment_vim'
 Plugin 'yggdroot/leaderf'
 Plugin 'tpope/vim-surround'
+Plugin 'fatih/vim-go'
 " ADD YOUR PLUGIN
 call vundle#end()
 filetype plugin indent on
@@ -177,3 +178,15 @@ set updatetime=100
 
 " Default Browser for Markdown Preview
 let g:mkdp_path_to_chrome = "open -a Safari"
+
+" For vim-go
+" syntax highlight
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+" disabled auto save on fmt
+let g:go_fmt_autosave = 0
+" disabled open browser when posting snippet online
+let g:go_play_open_browser = 0
