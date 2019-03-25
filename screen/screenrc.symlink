@@ -1,0 +1,25 @@
+startup_message off
+
+hardstatus on
+hardstatus alwayslastline
+hardstatus string "%{.kB}%-w%{..M}%n %t%{-}%+w %=%{..B} %H(%l) %{..B} %Y/%m/%d %c:%s "
+
+caption splitonly
+caption string "%?%F%{WB}%?%3n %t%?[%h]%?%=%l"
+
+vbell off
+defscrollback 100000
+
+shelltitle '$ |bash'
+
+bindkey -k F1 prev
+bindkey -k F2 next
+
+autodetach on
+
+termcapinfo xterm* ti@:te@
+
+altscreen on
+escape ^zZ
+
+shell -$SHELL
