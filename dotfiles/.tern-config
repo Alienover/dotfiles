@@ -1,0 +1,19 @@
+{
+  "libs": [
+    "browser",
+    "jquery",
+    "react",
+    "angular",
+    "lodash"
+  ],
+  "plugins": {
+    "angular": {},
+    "doc_comment": null,
+    "es_modules": {},
+    "node": {},
+    "jsx": {}
+  },
+  "dontLoad": [
+    "node_modules/**"
+  ]
+}

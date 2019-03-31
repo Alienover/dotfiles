@@ -70,7 +70,7 @@ POWERLEVEL9K_VCS_HIDE_TAGS=true
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  git,
+  git
   zsh-autosuggestions
 )
 
@@ -142,6 +142,9 @@ alias v2ray="~/v2ray/v2ray"
 # System SOCKS Proxy
 alias socksproxy="~/scripts/socksproxy.sh"
 
+# For neovim
+alias vim="nvim"
+
 # For zsh syntax-highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -149,7 +152,7 @@ export DYLD_LIBRARY_PATH=/usr/local/include
 export CPPFLAGS="-I/usr/local/include/snappy-c.h"
 export CFLAGS="-I/usr/local/include/snappy-c.h"
 
-export TERM=xterm-256color-italic
+TERM=xterm-256color-italic
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -161,3 +164,5 @@ fi
 export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
 eval "$(pyenv init -)"
 pyenv virtualenvwrapper_lazy
+
+export PATH="$HOME/go/bin:$PATH"
