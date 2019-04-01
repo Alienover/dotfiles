@@ -101,6 +101,7 @@ set relativenumber
 set linespace=3
 set cursorline
 set clipboard=unnamed
+set nofoldenable
 
 set history=1000
 set undolevels=1000
@@ -124,13 +125,18 @@ autocmd Filetype html setlocal ts=2 sw=2 expandtab
 autocmd Filetype htmldjango setlocal ts=2 sw=2 expandtab
 autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
 autocmd Filetype eruby setlocal ts=2 sw=2 expandtab
-autocmd Filetype javascript setlocal ts=2 sw=2 expandtab
-autocmd Filetype javascript.jsx setlocal ts=2 sw=2 expandtab
-autocmd Filetype json setlocal ts=2 sw=2 expandtab
-autocmd Filetype python setlocal ts=4 sw=4 softtabstop=4 expandtab
+autocmd Filetype javascript setlocal ts=2 sw=2 expandtab foldmethod=syntax
+autocmd Filetype javascript.jsx setlocal ts=2 sw=2 expandtab foldmethod=syntax
+autocmd Filetype json setlocal ts=2 sw=2 expandtab foldmethod=marker foldmarker={,}
+autocmd Filetype python setlocal ts=4 sw=4 softtabstop=4 expandtab foldmethod=indent
 autocmd Filetype scss setlocal ts=2 sw=2 expandtab
 autocmd Filetype yaml setlocal ts=2 sw=2 expandtab
 autocmd Filetype go setlocal ts=4 sw=4 noexpandtab
+
+" --- Shortcuts
+nnoremap <silent> <C-h> :bp<CR>
+nnoremap <silent> <C-l> :bn<CR>
+tnoremap <silent> <C-w> <C-\><C-n><C-w>
 
 " --- Plugins ---
 
@@ -147,9 +153,6 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 set laststatus=2
 set noshowmode
-
-nnoremap <silent> <C-h> :bp<CR>
-nnoremap <silent> <C-l> :bn<CR>
 
 " --- Gitgutter
 set updatetime=100
