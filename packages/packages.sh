@@ -7,7 +7,7 @@ brew install python@2 python
 # Install the linters for javascript
 yarn global add eslint prettier
 
-# Install the linters from python
+# Install the linters for python
 pip install pylint autopep8
 
 # Install tern for deoplete
