@@ -143,8 +143,13 @@ endif
 let g:airline_theme='onedark'
 " let g:airline_theme='luna'
 let g:airline_powerline_fonts = 1
+" enable tabline
+let g:airline#extensions#tabline#enabled = 1
 set laststatus=2
 set noshowmode
+
+nnoremap <silent> <C-h> :bp<CR>
+nnoremap <silent> <C-l> :bn<CR>
 
 " --- Gitgutter
 set updatetime=100
@@ -160,7 +165,7 @@ let g:nerdtree_tabs_open_on_console_startup = 0
 let NERDTreeShowLineNumbers=1
 let NERDTreeShowHidden=1
 let NERDTreeIgnore=['node_modules', '\.pyc$', '.DS_Store', '\.class$', '__pycache__']
-nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <silent> <C-n> :NERDTreeToggle<CR>
 
 " --- Deoplete.
 if has('python3')
@@ -173,13 +178,14 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
 " --- ALE
 let g:ale_linters = {
 \   'javascript': ['eslint'],
+\   'go': ['gofmt'],
 \}
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   'javascript': ['prettier'],
 \   'html': ['prettier'],
 \   'css': ['prettier'],
-\   'go': ['gofmt', 'goimports'],
+\   'go': ['goimports'],
 \}
 " Only run linters named in ale_linters settings.
 let g:ale_linters_explicit = 1
