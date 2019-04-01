@@ -136,6 +136,8 @@ autocmd Filetype go setlocal ts=4 sw=4 noexpandtab
 " --- Shortcuts
 nnoremap <silent> <C-h> :bp<CR>
 nnoremap <silent> <C-l> :bn<CR>
+nnoremap <silent> <C-t>s :split term://
+nnoremap <silent> <C-t>v :vsplit term://
 tnoremap <silent> <C-w> <C-\><C-n><C-w>
 
 " --- Plugins ---
