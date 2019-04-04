@@ -213,11 +213,6 @@ let g:jsdoc_enable_es6 = 1
 let g:jsdoc_underscore_private = 1
 let g:jsdoc_access_descriptions = 2
 
-" use tern_for_vim.
-let g:tern#command = ["tern"]
-let g:tern#arguments = ["--persistent"]
-
-
 " ---Python ---
 
 " --- Python Syntax
