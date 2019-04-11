@@ -134,11 +134,21 @@ autocmd Filetype yaml setlocal ts=2 sw=2 expandtab
 autocmd Filetype go setlocal ts=4 sw=4 noexpandtab
 
 " --- Shortcuts
+"  Switch buffer next or previous
 nnoremap <silent> <C-h> :bp<CR>
 nnoremap <silent> <C-l> :bn<CR>
+
+"  Open  nvim terminal in split or vertival split
 nnoremap <silent> <C-t>s :split term://
 nnoremap <silent> <C-t>v :vsplit term://
 tnoremap <silent> <C-w> <C-\><C-n><C-w>
+
+"  Move lines in <Normal> and <Visual>
+"  ∆ for <Option-j> up and ˚ for <Option-k> down
+nnoremap <silent> ∆ :m .+1<CR>==
+nnoremap <silent> ˚ :m .-2<CR>==
+vnoremap <silent> ∆ :m '>+1<CR>gv=gv
+vnoremap <silent> ˚ :m '<-2<CR>gv=gv
 
 " --- Plugins ---
 
@@ -177,12 +187,20 @@ if has('python3')
     let g:deoplete#enable_at_startup = 1
 endif
 
+" --- Neosnippet
+let g:neosnippet#enable_completed_snippet = 1
+" Plugin key-mappings.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
 " --- Supertabs
 let g:SuperTabDefaultCompletionType = "<c-n>"
 
 " --- ALE
 let g:ale_linters = {
-\   'javascript': ['eslint'],
+\   'javascript': ['eslint', 'flow'],
 \   'go': ['gofmt'],
 \}
 let g:ale_fixers = {
@@ -207,6 +225,8 @@ let g:Lf_WildIgnore = {
 
 
 " --- JavaScript ---
+let g:javascript_plugin_flow = 1
+let g:javascript_plugin_jsdoc = 1
 
 " --- JSDocs
 let g:jsdoc_enable_es6 = 1
