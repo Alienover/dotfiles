@@ -150,6 +150,9 @@ nnoremap <silent> ˚ :m .-2<CR>==
 vnoremap <silent> ∆ :m '>+1<CR>gv=gv
 vnoremap <silent> ˚ :m '<-2<CR>gv=gv
 
+"  Go To Definition
+noremap <silent> <Leader>gd :GoDef<CR>
+
 " --- Plugins ---
 
 " --- ack options
