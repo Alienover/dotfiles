@@ -8,16 +8,18 @@ export ZSH="/Users/jiarong/.oh-my-zsh"
 # ZSH_THEME="powerlevel9k/powerlevel9k"
 ZSH_THEME="astro"
 # ZSH_THEME="ys"
+# ZSH_THEME="materialshell"
 DEFAULT_USER=edison
 
 # command line 左邊想顯示的內容
 # <= left prompt 設了 "dir"
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(virtualenv dir vcs dir_writable newline status)
+# POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(virtualenv dir vcs dir_writable newline status)
 
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
+# POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
 
 
 POWERLEVEL9K_MODE='nerdfont-complete'
+# POWERLEVEL9K_MODE='Powerlevel9k'
 POWERLEVEL9K_VCS_HIDE_TAGS=true
 
 # Set list of themes to load
@@ -71,6 +73,7 @@ POWERLEVEL9K_VCS_HIDE_TAGS=true
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
+  tmux
   zsh-autosuggestions
 )
 
@@ -123,9 +126,6 @@ export PATH="/usr/local/opt/mysql@5.6/bin:/usr/local/bin:$PATH"
 
 # Brew Services
 alias brew-services="brew services list | grep"
-
-alias tmn='tmux new -s '
-alias tma='tmux attach -t '
 
 # EDO Servers Login
 alias edo_login="sh ~/Documents/work/Others/edo_login.sh"
