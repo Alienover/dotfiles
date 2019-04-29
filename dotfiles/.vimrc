@@ -27,6 +27,8 @@ Plugin 'Yggdroot/LeaderF', { 'do': './install.sh' }
 Plugin 'wincent/terminus'
 Plugin 'ervandew/supertab'
 Plugin 'anyakichi/vim-surround'
+Plugin 'janko-m/vim-test'
+Plugin 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install' }
 
 " --- Completion/Snippets ---
 Plugin 'Raimondi/delimitMate'
@@ -218,6 +220,7 @@ let g:ale_linters_explicit = 1
 let g:ale_fix_on_save = 1
 let g:ale_lint_on_text_changed = 0
 let g:ale_completion_enabled = 1
+let g:ale_echo_msg_format = '[%severity%] [%linter%] - %s'
 
 " --- LeaderF
 let g:Lf_ShortcutF = '<C-P>'
