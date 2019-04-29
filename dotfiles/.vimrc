@@ -153,7 +153,12 @@ vnoremap <silent> ∆ :m '>+1<CR>gv=gv
 vnoremap <silent> ˚ :m '<-2<CR>gv=gv
 
 "  Go To Definition
-noremap <silent> <Leader>gd :GoDef<CR>
+noremap <silent> <Leader>gds :sp <CR> :exe "GoDef" <CR> <C-w>w
+noremap <silent> <Leader>gdv :vsp <CR> :exe "GoDef" <CR> <C-w>w
+noremap <silent> <Leader>gds :sp <CR> :exe "ALEGoToDefinition" <CR> <C-w>w
+noremap <silent> <Leader>gdv :vsp <CR> :exe "ALEGoToDefinition" <CR> <C-w>w
+noremap <silent> <Leader>gdt :tab split <CR> :exe "GoDef" <CR>
+noremap <silent> <Leader>gdt :tab split <CR> :exe "ALEGoToDefinition" <CR>
 
 " --- Plugins ---
 
@@ -205,7 +210,7 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
 
 " --- ALE
 let g:ale_linters = {
-\   'javascript': ['eslint', 'flow'],
+\   'javascript': ['eslint', 'flow', 'tsserver'],
 \   'go': ['gofmt'],
 \}
 let g:ale_fixers = {
