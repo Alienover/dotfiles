@@ -153,7 +153,7 @@ export DYLD_LIBRARY_PATH=/usr/local/include
 export CPPFLAGS="-I/usr/local/include/snappy-c.h"
 export CFLAGS="-I/usr/local/include/snappy-c.h"
 
-TERM=xterm-256color-italic
+export TERM=xterm-256color-italic
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
