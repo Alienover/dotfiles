@@ -121,19 +121,19 @@ let g:delimitMate_expand_cr=1
 let g:onedark_terminal_italics=1
 let g:onedark_termcolors = 256
 
-" --- tabs for different code
+" --- Settings for different code
 autocmd FileType make setlocal noexpandtab
 autocmd Filetype html setlocal ts=2 sw=2 expandtab
 autocmd Filetype htmldjango setlocal ts=2 sw=2 expandtab
 autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
 autocmd Filetype eruby setlocal ts=2 sw=2 expandtab
-autocmd Filetype javascript setlocal ts=2 sw=2 expandtab foldmethod=syntax
-autocmd Filetype javascript.jsx setlocal ts=2 sw=2 expandtab foldmethod=syntax
 autocmd Filetype json setlocal ts=2 sw=2 expandtab foldmethod=marker foldmarker={,}
 autocmd Filetype python setlocal ts=4 sw=4 softtabstop=4 expandtab foldmethod=indent
 autocmd Filetype scss setlocal ts=2 sw=2 expandtab
 autocmd Filetype yaml setlocal ts=2 sw=2 expandtab
 autocmd Filetype go setlocal ts=4 sw=4 noexpandtab
+autocmd Filetype javascript setlocal ts=2 sw=2 expandtab foldmethod=syntax
+autocmd Filetype javascript.jsx setlocal ts=2 sw=2 expandtab foldmethod=syntax
 
 " --- Shortcuts
 "  Switch buffer next or previous
@@ -153,12 +153,17 @@ vnoremap <silent> ∆ :m '>+1<CR>gv=gv
 vnoremap <silent> ˚ :m '<-2<CR>gv=gv
 
 "  Go To Definition
-noremap <silent> <Leader>gds :sp <CR> :exe "GoDef" <CR> <C-w>w
-noremap <silent> <Leader>gdv :vsp <CR> :exe "GoDef" <CR> <C-w>w
-noremap <silent> <Leader>gds :sp <CR> :exe "ALEGoToDefinition" <CR> <C-w>w
-noremap <silent> <Leader>gdv :vsp <CR> :exe "ALEGoToDefinition" <CR> <C-w>w
-noremap <silent> <Leader>gdt :tab split <CR> :exe "GoDef" <CR>
-noremap <silent> <Leader>gdt :tab split <CR> :exe "ALEGoToDefinition" <CR>
+augroup filetype_go
+    autocmd FileType go noremap <silent> <Leader>gds :sp <CR> :exe 'GoDef' <CR> <C-w>w zz
+    autocmd FileType go noremap <silent> <Leader>gdv :vsp <CR> :exe 'GoDef' <CR> <C-w>w zz
+    autocmd FileType go noremap <silent> <Leader>gdt :tab split <CR> :exe 'GoDef' <CR> zz
+augroup END
+augroup filetype_javascript
+    autocmd FileType javascript,javascript.jsx noremap <silent> <Leader>gds :sp <CR> :exe 'TernDef' <CR> zz
+    autocmd FileType javascript,javascript.jsx noremap <silent> <Leader>gdv :vsp <CR> :exe 'TernDef' <CR> zz
+    autocmd FileType javascript,javascript.jsx noremap <silent> <Leader>gdt :tab split <CR> :exe 'TernDef' <CR> zz
+augroup END
+
 
 " --- Plugins ---
 
@@ -210,7 +215,7 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
 
 " --- ALE
 let g:ale_linters = {
-\   'javascript': ['eslint', 'flow', 'tsserver'],
+\   'javascript': ['eslint', 'flow'],
 \   'go': ['gofmt'],
 \}
 let g:ale_fixers = {
