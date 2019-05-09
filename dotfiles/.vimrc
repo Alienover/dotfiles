@@ -11,6 +11,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'marcweber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
+Plugin 'kwbdi.vim'
 
 " --- Making Vim look good ---
 Plugin 'joshdick/onedark.vim'
@@ -82,14 +83,19 @@ syntax on
 set background=dark
 colorscheme onedark
 
-set encoding=utf-8
 set nowrap
-set backspace=indent,eol,start
+set noea
+set nofoldenable
+set noerrorbells
+set nobackup
+set noswapfile
+
+set title
+set number
+set visualbell
 set autoindent
 set copyindent
-set number
 set expandtab
-set shiftwidth=4
 set shiftround
 set showmatch
 set showcmd
@@ -100,22 +106,18 @@ set hlsearch
 set incsearch
 set wrap
 set relativenumber
-set linespace=3
 set cursorline
-set clipboard=unnamed
-set nofoldenable
 
+set encoding=utf-8
+set linespace=3
+set backspace=indent,eol,start
+set shiftwidth=4
 set history=1000
 set undolevels=1000
+set clipboard=unnamed
 set wildignore=*.swp,*.bak,*.pyc,*.class
-set title
-set visualbell
-set noerrorbells
 set guioptions-=r
 set guioptions-=L
-
-set nobackup
-set noswapfile
 
 let g:delimitMate_expand_cr=1
 let g:onedark_terminal_italics=1
@@ -143,7 +145,7 @@ nnoremap <silent> <C-l> :bn<CR>
 "  Open  nvim terminal in split or vertival split
 nnoremap <silent> <C-t>s :split term://
 nnoremap <silent> <C-t>v :vsplit term://
-tnoremap <silent> <C-w> <C-\><C-n><C-w>
+tnoremap <silent> <ESC> <C-\><C-n>
 
 "  Move lines in <Normal> and <Visual>
 "  ∆ for <Option-j> up and ˚ for <Option-k> down
@@ -162,6 +164,12 @@ augroup filetype_javascript
     autocmd FileType javascript,javascript.jsx noremap <silent> <Leader>gds :sp <CR> :exe 'TernDef' <CR> zz
     autocmd FileType javascript,javascript.jsx noremap <silent> <Leader>gdv :vsp <CR> :exe 'TernDef' <CR> zz
     autocmd FileType javascript,javascript.jsx noremap <silent> <Leader>gdt :tab split <CR> :exe 'TernDef' <CR> zz
+augroup END
+
+"  Terminal Stuff
+augroup TerminalStuff
+    autocmd!
+    autocmd TermOpen * setlocal nonumber norelativenumber
 augroup END
 
 
