@@ -133,12 +133,6 @@ alias edo_login="sh ~/Documents/work/Others/edo_login.sh"
 # OpenVPN
 alias openvpn="sudo /usr/local/Cellar/openvpn/2.4.6/sbin/openvpn"
 
-# Auto Connect Edison VPN
-alias edo_vpn="sudo expect ~/Documents/work/Others/vpnlogin.sh"
-
-# V2ray proxy
-alias v2ray="~/v2ray/v2ray"
-
 # System SOCKS Proxy
 alias socksproxy="~/scripts/socksproxy.sh"
 
