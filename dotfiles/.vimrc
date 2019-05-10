@@ -83,6 +83,16 @@ syntax on
 set background=dark
 colorscheme onedark
 
+" ColorScheme for diff mode
+" New Line
+hi DiffAdd ctermbg=10 guibg=#e6ffed cterm=NONE gui=NONE
+" Changed Line
+hi DiffChange ctermbg=10 ctermfg=Black guibg=#e6ffed cterm=NONE gui=NONE
+" Changed Text
+hi DiffText ctermbg=34 guibg=#acf2bd cterm=bold gui=bold
+" Deleted Line
+hi DiffDelete ctermbg=9 guibg=#fdb8c0 cterm=NONE gui=NONE
+
 set nowrap
 set noea
 set nofoldenable
@@ -170,6 +180,11 @@ augroup END
 augroup TerminalStuff
     autocmd!
     autocmd TermOpen * setlocal nonumber norelativenumber
+augroup END
+
+augroup CursorLine
+    autocmd!
+    autocmd BufEnter * if !&diff | setlocal nocursorline | endif
 augroup END
 
 
