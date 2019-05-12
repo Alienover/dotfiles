@@ -36,7 +36,6 @@ Plugin 'Raimondi/delimitMate'
 Plugin 'shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plugin 'zchee/deoplete-go', { 'do': 'make'}
 Plugin 'Shougo/neosnippet.vim'
-Plugin 'Shougo/neosnippet-snippets'
 
 " --- Linters
 Plugin 'w0rp/ale'
@@ -134,6 +133,7 @@ let g:onedark_terminal_italics=1
 let g:onedark_termcolors = 256
 
 " --- Settings for different code
+autocmd FileType neosnippet setlocal ts=4 sw=4 expandtab
 autocmd FileType make setlocal noexpandtab
 autocmd Filetype html setlocal ts=2 sw=2 expandtab
 autocmd Filetype htmldjango setlocal ts=2 sw=2 expandtab
@@ -227,6 +227,11 @@ endif
 
 " --- Neosnippet
 let g:neosnippet#enable_completed_snippet = 1
+let g:neosnippet#snippets_directory='~/.vim/snippets'
+let g:neosnippet#disable_runtime_snippets = {
+\   '_' : 1,
+\ }
+
 " Plugin key-mappings.
 " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
