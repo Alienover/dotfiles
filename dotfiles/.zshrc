@@ -5,22 +5,9 @@ export ZSH="/Users/jiarong/.oh-my-zsh"
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-# ZSH_THEME="powerlevel9k/powerlevel9k"
 ZSH_THEME="astro"
 # ZSH_THEME="ys"
 # ZSH_THEME="materialshell"
-DEFAULT_USER=edison
-
-# command line 左邊想顯示的內容
-# <= left prompt 設了 "dir"
-# POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(virtualenv dir vcs dir_writable newline status)
-
-# POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
-
-
-POWERLEVEL9K_MODE='nerdfont-complete'
-# POWERLEVEL9K_MODE='Powerlevel9k'
-POWERLEVEL9K_VCS_HIDE_TAGS=true
 
 # Set list of themes to load
 # Setting this variable when ZSH_THEME=random
