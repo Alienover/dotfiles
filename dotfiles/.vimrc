@@ -179,7 +179,9 @@ augroup END
 "  Terminal Stuff
 augroup TerminalStuff
     autocmd!
-    autocmd TermOpen * setlocal nonumber norelativenumber
+    if v:progname == "nvim"
+        autocmd TermOpen * setlocal nonumber norelativenumber
+    endif
 augroup END
 
 augroup CursorLine
