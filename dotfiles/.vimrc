@@ -164,6 +164,12 @@ nnoremap <silent> ˚ :m .-2<CR>==
 vnoremap <silent> ∆ :m '>+1<CR>gv=gv
 vnoremap <silent> ˚ :m '<-2<CR>gv=gv
 
+"  Diff mode
+if &diff
+    nnoremap <silent> [c [c zz
+    nnoremap <silent> ]c ]c zz
+endif
+
 "  Go To Definition
 augroup filetype_go
     autocmd FileType go noremap <silent> <Leader>gds :sp <CR> :exe 'GoDef' <CR> <C-w>w zz
