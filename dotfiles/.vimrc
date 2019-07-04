@@ -42,6 +42,7 @@ Plugin 'w0rp/ale'
 
 " --- Frontend
 Plugin 'ap/vim-css-color'
+Plugin 'yardnsm/vim-import-cost', { 'do': 'npm install' }
 
 " --- JavaScript
 Plugin 'pangloss/vim-javascript'
@@ -183,16 +184,22 @@ augroup filetype_javascript
 augroup END
 
 "  Terminal Stuff
-augroup TerminalStuff
+augroup terminal_stuff
     autocmd!
     if v:progname == "nvim"
         autocmd TermOpen * setlocal nonumber norelativenumber
     endif
 augroup END
 
-augroup CursorLine
+augroup cursor_line
     autocmd!
     autocmd BufEnter * if !&diff | setlocal nocursorline | endif
+augroup END
+
+augroup import_cost
+    autocmd!
+    autocmd InsertLeave *.js,*.jsx,*.ts,*.tsx ImportCost
+    autocmd BufEnter *.js,*.jsx,*.ts,*.tsx ImportCost
 augroup END
 
 
