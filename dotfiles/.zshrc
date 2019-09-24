@@ -99,11 +99,11 @@ source $ZSH/oh-my-zsh.sh
 alias proxychains="/usr/local/bin/proxychains4"
 
 # Edison
-alias saturn="~/Documents/work/edison/Saturn"
-alias titan="~/Documents/work/edison/Titan"
-alias ops="~/Documents/work/edison/Ops"
-alias utils="~/Documents/work/edison/Utils"
-alias polaris="~/Documents/work/edison/Polaris"
+alias saturn="~/Documents/work/agent8/Saturn"
+alias titan="~/Documents/work/agent8/Titan"
+alias ops="~/Documents/work/agent8/Ops"
+alias utils="~/Documents/work/agent8/Utils"
+alias polaris="~/Documents/work/agent8/Polaris"
 
 # MySQL
 alias mysql-start="brew services start mysql@5.6"
@@ -113,12 +113,6 @@ export PATH="/usr/local/opt/mysql@5.6/bin:/usr/local/bin:$PATH"
 
 # Brew Services
 alias brew-services="brew services list | grep"
-
-# EDO Servers Login
-alias edo_login="sh ~/Documents/work/Others/edo_login.sh"
-
-# OpenVPN
-alias openvpn="sudo /usr/local/Cellar/openvpn/2.4.6/sbin/openvpn"
 
 # System SOCKS Proxy
 alias socksproxy="~/scripts/socksproxy.sh"
@@ -147,4 +141,6 @@ export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
 eval "$(pyenv init -)"
 pyenv virtualenvwrapper_lazy
 
+# Go Path
 export PATH="$HOME/go/bin:$PATH"
+export GOBIN="$HOME/go/bin"
