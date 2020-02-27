@@ -245,3 +245,19 @@ let python_highlight_all = 1
 
 " ---Go ---
 let g:go_def_mapping_enabled = 0
+
+"  Zoom / Restore window.
+function! s:ZoomToggle() abort
+    if exists('t:zoomed') && t:zoomed
+        execute t:zoom_winrestcmd
+        let t:zoomed = 0
+    else
+        let t:zoom_winrestcmd = winrestcmd()
+        resize
+        vertical resize
+        let t:zoomed = 1
+    endif
+endfunction
+command! ZoomToggle call s:ZoomToggle()
+" Z(z)oom O(o)pen := Zoom in/out the split window
+nnoremap <silent> zo :ZoomToggle<CR>
