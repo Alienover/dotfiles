@@ -63,6 +63,7 @@ plugins=(
   tmux
   zsh-autosuggestions
 )
+fpath=(/usr/local/share/zsh/site-functions $fpath)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -99,11 +100,14 @@ source $ZSH/oh-my-zsh.sh
 alias proxychains="/usr/local/bin/proxychains4"
 
 # Edison
+alias agent8="~/Documents/work/agent8"
 alias saturn="~/Documents/work/agent8/Saturn"
 alias titan="~/Documents/work/agent8/Titan"
 alias ops="~/Documents/work/agent8/Ops"
 alias utils="~/Documents/work/agent8/Utils"
 alias polaris="~/Documents/work/agent8/Polaris"
+
+alias edo_login="sh ~/Documents/work/others/edo_login.sh"
 
 # MySQL
 alias mysql-start="brew services start mysql@5.6"
@@ -144,3 +148,5 @@ pyenv virtualenvwrapper_lazy
 # Go Path
 export PATH="$HOME/go/bin:$PATH"
 export GOBIN="$HOME/go/bin"
+
+export LC_ALL=en_US.UTF-8
