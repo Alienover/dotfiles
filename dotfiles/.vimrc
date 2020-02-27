@@ -16,17 +16,16 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
-Plug 'editorconfig/editorconfig-vim'
+Plug 'janko-m/vim-test'
 Plug 'mileszs/ack.vim'
-Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 Plug 'wincent/terminus'
 Plug 'ervandew/supertab'
 Plug 'anyakichi/vim-surround'
-Plug 'janko-m/vim-test'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install' }
+Plug 'editorconfig/editorconfig-vim'
 
 " --- Completion/Snippets ---
-Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " --- Frontend
 Plug 'ap/vim-css-color'
@@ -110,6 +109,7 @@ let g:onedark_termcolors = 256
 " autocmd BufWritePre * call TrimWhiteSpace()
 
 autocmd FileType neosnippet setlocal ts=4 sw=4 expandtab
+autocmd FileType cpp setlocal ts=2 sw=2 expandtab
 autocmd FileType make setlocal noexpandtab
 autocmd Filetype html setlocal ts=2 sw=2 expandtab
 autocmd Filetype htmldjango setlocal ts=2 sw=2 expandtab
@@ -129,8 +129,7 @@ nnoremap <silent> <C-h> :bp<CR>
 nnoremap <silent> <C-l> :bn<CR>
 
 "  Open  nvim terminal in split or vertival split
-nnoremap <silent> <C-t>s :split term://
-nnoremap <silent> <C-t>v :vsplit term://
+nnoremap <C-t> :terminal<CR>i
 tnoremap <silent> <ESC> <C-\><C-n>
 
 "  Move lines in <Normal> and <Visual>
@@ -140,6 +139,10 @@ nnoremap <silent> ˚ :m .-2<CR>==
 vnoremap <silent> ∆ :m '>+1<CR>gv=gv
 vnoremap <silent> ˚ :m '<-2<CR>gv=gv
 
+"  Search files and buffers using CocList
+nnoremap <silent> <C-p> :CocList files<CR>
+nnoremap <silent> <C-b> :CocList buffers<CR>
+
 "  Diff mode
 if &diff
     nnoremap <silent> [c [c zz
@@ -148,16 +151,15 @@ endif
 
 "  Go To Definition
 augroup filetype_go
-    autocmd FileType go noremap <silent> <Leader>gds :sp <CR> :exe 'GoDef' <CR> <C-w>w zz
-    autocmd FileType go noremap <silent> <Leader>gdv :vsp <CR> :exe 'GoDef' <CR> <C-w>w zz
-    autocmd FileType go noremap <silent> <Leader>gdt :tab split <CR> :exe 'GoDef' <CR> zz
+    autocmd FileType go noremap <silent> gd :exe 'GoDef' <CR> zz
+    " autocmd FileType go noremap <silent> gds :sp <CR> :exe 'GoDef' <CR>
+    " autocmd FileType go noremap <silent> gdv :vsp <CR> :exe 'GoDef' <CR>
+    " autocmd FileType go noremap <silent> gdt :tab split <CR> :exe 'GoDef' <CR> zz
     " Run GoImports to format and import missing packages before saving
     autocmd FileType go autocmd BufWritePre <buffer> GoImports
 augroup END
 augroup filetype_javascript
-    autocmd FileType javascript,javascript.jsx noremap <silent> <Leader>gds :sp <CR> :exe 'TernDef' <CR> zz
-    autocmd FileType javascript,javascript.jsx noremap <silent> <Leader>gdv :vsp <CR> :exe 'TernDef' <CR> zz
-    autocmd FileType javascript,javascript.jsx noremap <silent> <Leader>gdt :tab split <CR> :exe 'TernDef' <CR> zz
+    autocmd Filetype javascript,javascript.jsx nmap <silent> gd <Plug>(coc-definition) zz
 augroup END
 
 "  Terminal Stuff
@@ -168,10 +170,10 @@ augroup terminal_stuff
     endif
 augroup END
 
-augroup cursor_line
-    autocmd!
-    autocmd BufEnter * if !&diff | setlocal nocursorline | endif
-augroup END
+" augroup cursor_line
+"     autocmd!
+"     autocmd BufEnter * if !&diff | setlocal nocursorline | endif
+" augroup END
 
 " --- Plugins ---
 
@@ -216,36 +218,16 @@ let NERDTreeShowHidden=1
 let NERDTreeIgnore=['node_modules', '\.pyc$', '.DS_Store', '\.class$', '__pycache__']
 nnoremap <silent> <C-n> :NERDTreeToggle<CR>
 
-" --- Neosnippet
-let g:neosnippet#enable_completed_snippet = 1
-let g:neosnippet#snippets_directory='~/.vim/snippets'
-let g:neosnippet#disable_runtime_snippets = {
-\   '_' : 1,
-\ }
-
 " --- CoC
 set updatetime=100
 set shortmess+=c
+let g:coc_global_extensions = ['coc-html', 'coc-json']
 
 " --- Coc Prettier
 command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
 
-" Plugin key-mappings.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
-
 " --- Supertabs
 let g:SuperTabDefaultCompletionType = "<c-n>"
-
-" --- LeaderF
-let g:Lf_ShortcutF = '<C-P>'
-let g:Lf_WildIgnore = {
-\   'dir': ['.svn','.git','.hg', 'node_modules'],
-\   'file': ['*.sw?','~$*','*.bak','*.exe','*.o','*.so','*.py[co]']
-\}
-
 
 " --- JavaScript ---
 let g:javascript_plugin_flow = 1
@@ -263,9 +245,3 @@ let python_highlight_all = 1
 
 " ---Go ---
 let g:go_def_mapping_enabled = 0
-
-" --- Functions ---
-function TrimWhiteSpace()
-  %s/\s*$//
-  ''
-endfunction
