@@ -2,6 +2,9 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH # Path to your oh-my-zsh installation.
 export ZSH="/Users/jiarong/.oh-my-zsh"
 
+# Load Customized color scheme
+source '/Users/jiarong/.dotfiles/.config/colors.sh'
+
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
@@ -119,7 +122,7 @@ export PATH="/usr/local/opt/mysql@5.6/bin:/usr/local/bin:$PATH"
 alias brew-services="brew services list | grep"
 
 # System SOCKS Proxy
-alias socksproxy="~/scripts/socksproxy.sh"
+alias socksproxy="~/src/socksproxy.sh"
 
 # For neovim
 alias vim="nvim"
@@ -132,7 +135,7 @@ export DYLD_LIBRARY_PATH=/usr/local/include
 export CPPFLAGS="-I/usr/local/include/snappy-c.h"
 export CFLAGS="-I/usr/local/include/snappy-c.h"
 
-export TERM=xterm-256color-italic
+export TERM="screen-256color"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -149,4 +152,9 @@ pyenv virtualenvwrapper_lazy
 export PATH="$HOME/go/bin:$PATH"
 export GOBIN="$HOME/go/bin"
 
+# Github CLI
+export PATH="$HOME/.githubcli/bin:$PATH"
+
 export LC_ALL=en_US.UTF-8
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
