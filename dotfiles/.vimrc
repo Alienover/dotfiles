@@ -139,9 +139,7 @@ nnoremap <silent> ˚ :m .-2<CR>==
 vnoremap <silent> ∆ :m '>+1<CR>gv=gv
 vnoremap <silent> ˚ :m '<-2<CR>gv=gv
 
-"  Search files and buffers using CocList
-nnoremap <silent> <C-p> :CocList files<CR>
-nnoremap <silent> <C-b> :CocList buffers<CR>
+nnoremap <silent> <leader>r :source $HOME/.vimrc<CR>
 
 "  Diff mode
 if &diff
@@ -215,6 +213,8 @@ let g:gitgutter_sign_modified_removed = 'w'
 let g:nerdtree_tabs_open_on_console_startup = 0
 let NERDTreeShowLineNumbers=1
 let NERDTreeShowHidden=1
+let NERDTreeAutoDeleteBuffer = 1
+let NERDTreeDirArrows = 1
 let NERDTreeIgnore=['node_modules', '\.pyc$', '.DS_Store', '\.class$', '__pycache__']
 nnoremap <silent> <C-n> :NERDTreeToggle<CR>
 
@@ -238,14 +238,17 @@ let g:jsdoc_enable_es6 = 1
 let g:jsdoc_underscore_private = 1
 let g:jsdoc_access_descriptions = 2
 
-" ---Python ---
+" --- Python ---
 
 " --- Python Syntax
 let python_highlight_all = 1
 
-" ---Go ---
+" --- Go ---
 let g:go_def_mapping_enabled = 0
 
+" ------------------------
+" --- Custom Functions ---
+" ------------------------
 "  Zoom / Restore window.
 function! s:ZoomToggle() abort
     if exists('t:zoomed') && t:zoomed
@@ -261,3 +264,101 @@ endfunction
 command! ZoomToggle call s:ZoomToggle()
 " Z(z)oom O(o)pen := Zoom in/out the split window
 nnoremap <silent> zo :ZoomToggle<CR>
+
+
+"  If installed using Homebrew
+set rtp+=/usr/local/opt/fzf
+let $FZF_DEFAULT_COMMAND = "find * -path '*/\.*' -prune -o -path 'node_modules/**' -prune -o -path 'target/**' -prune -o -path 'dist/**' -prune -o  -type f -print -o -type l -print 2> /dev/null"
+let $FZF_DEFAULT_OPTS="--color fg:242,bg:236,hl:114,fg+:15,bg+:236,hl+:114,info:108,prompt:109,spinner:108,pointer:114,marker:173 --layout=reverse --margin=1,2"
+"  Default fzf layout
+let g:fzf_layout = { 'window': 'call OpenFloatingWin()' }
+
+function! OpenFloatingWin(...)
+    let buf = nvim_create_buf(v:false, v:true)
+    call setbufvar(buf, '&signcolumn', 'no')
+
+    let height = float2nr(30)
+    let width = float2nr(80)
+    let horizontal = float2nr((&columns - width) / 2)
+    let vertical = 1
+
+    if a:0 > 0
+        if a:1
+            let height = float2nr(a:1)
+        endif
+        if a:2
+            let width = float2nr(a:2)
+        endif
+    endif
+
+    let opts = {
+            \ 'relative': 'editor',
+            \ 'row': vertical,
+            \ 'col': horizontal,
+            \ 'width': width,
+            \ 'height': height,
+            \ 'style': 'minimal'
+            \ }
+
+    call nvim_open_win(buf, v:true, opts)
+    tnoremap <ESC> <C-c>
+endfunction
+
+" -------------------------------
+" FZF - Files
+" -------------------------------
+function! s:BFiles()
+    let source = "find * -path '*/\.*' -prune -o -path 'node_modules' -prune -o -path '**/node_modules' -prune -o -path 'target/**' -prune -o -path 'dist' -prune -o -path '**/dist' -prune -o  -type f -print -o -type l -print 2> /dev/null"
+    let options = $FZF_DEFAULT_OPTS . " " . "--preview 'if file -i {}|grep -q binary; then file -b {}; else bat --style=changes --color always --line-range :40 {}; fi' --preview-window bottom"
+
+    call fzf#run(fzf#wrap({
+                \ 'source': source,
+                \ 'options': options,
+                \}))
+endfunction
+command! BFiles call s:BFiles()
+nnoremap <silent> <C-P> :BFiles<CR>
+
+" -------------------------------
+" FZF - Folders
+" -------------------------------
+function! s:BFolders()
+    let source = "find * -path '*/\.*' -prune -o -path 'target/**' -prune -o -path 'dist' -print -o -path '**/dict' -prune -o -type d -print -o -type l -print 2> /dev/null"
+    let sink = "NERDTree"
+    let options = $FZF_DEFAULT_OPTS . " " . "--preview 'tree -L 1 -C {}' --preview-window bottom"
+    call fzf#run(fzf#wrap({
+                \ 'source': source,
+                \ 'options': options,
+                \ 'sink': sink,
+                \ }))
+endfunction
+command! BFolders call s:BFolders()
+nnoremap <silent> <C-F> :BFolders<CR>
+
+" -------------------------------
+" FZF - Buffers
+" -------------------------------
+function! s:jump_buffer(e)
+    let b = matchstr(a:e, '^[ 0-9]*')
+    execute 'buffer' b
+endfunction
+
+function! s:buflist()
+  redir => ls
+  silent ls
+  redir END
+  return split(ls, '\n')
+endfunction
+
+function! s:BBuffers()
+    let source = s:buflist()
+    let options = $FZF_DEFAULT_OPTS . ' ' . '--prompt "Buffers > " --no-preview'
+    call fzf#run(fzf#wrap({
+                \ 'source': source,
+                \ 'options': options,
+                \ 'sink': function("s:jump_buffer"),
+                \ 'window': "call OpenFloatingWin(10, 80)"
+                \ }))
+endfunction
+command! BBuffers call s:BBuffers()
+nnoremap <silent> <C-B> :BBuffers<CR>
