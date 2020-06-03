@@ -5,10 +5,7 @@ brew install yarn --ignore-dependencies
 brew install python@2 python
 
 # Install the linters for javascript
-yarn global add eslint prettier flow-bin
+yarn global add eslint prettier flow-bin flow-language-server
 
 # Install the linters for python
 pip install pylint autopep8
-
-# Install tern for deoplete
-yarn global add tern
