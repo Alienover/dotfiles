@@ -128,6 +128,12 @@ alias socksproxy="~/src/socksproxy.sh"
 alias vim="nvim"
 alias vi="nvim"
 
+# Git
+alias gd="git diff"
+alias gc="git checkout"
+alias gs="git status"
+alias gp="git pull"
+
 # For zsh syntax-highlighting
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
