@@ -4,7 +4,7 @@ filetype off                  " required
 call plug#begin('~/.vim/plugged')
 " Plugins go here
 Plug 'marcweber/vim-addon-mw-utils'
-Plug 'tomtom/tlib_vim'
+" Plug 'tomtom/tlib_vim'
 Plug 'vim-scripts/kwbdi.vim'
 
 " --- Making Vim look good ---
@@ -21,11 +21,11 @@ Plug 'mileszs/ack.vim'
 Plug 'wincent/terminus'
 Plug 'ervandew/supertab'
 Plug 'anyakichi/vim-surround'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install' }
 Plug 'editorconfig/editorconfig-vim'
+Plug 'jiangmiao/auto-pairs'
 
-" --- Completion/Snippets ---
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" --- Linter ---
+Plug 'dense-analysis/ale'
 
 " --- Frontend
 Plug 'ap/vim-css-color'
@@ -154,10 +154,11 @@ augroup filetype_go
     " autocmd FileType go noremap <silent> gdv :vsp <CR> :exe 'GoDef' <CR>
     " autocmd FileType go noremap <silent> gdt :tab split <CR> :exe 'GoDef' <CR> zz
     " Run GoImports to format and import missing packages before saving
-    autocmd FileType go autocmd BufWritePre <buffer> GoImports
 augroup END
+
 augroup filetype_javascript
-    autocmd Filetype javascript,javascript.jsx nmap <silent> gd <Plug>(coc-definition) zz
+    autocmd FileType javascript noremap <silent> gd :exe 'ALEGoToDefinition' <CR> zz
+    autocmd FileType javascript.jsx noremap <silent> gd :exe 'ALEGoToDefinition' <CR> zz
 augroup END
 
 "  Terminal Stuff
@@ -175,6 +176,33 @@ augroup END
 
 " --- Plugins ---
 
+" --- ALE ---
+" Enable completion where available.
+" This setting must be set before ALE is loaded.
+"
+" You should not turn this setting on if you wish to use ALE as a completion
+" source for other completion plugins, like Deoplete.
+let g:ale_completion_enabled = 1
+" Set this variable to 1 to fix files when you save them.
+let g:ale_fix_on_save = 1
+let g:ale_fixers = {
+\ "*": ['remove_trailing_lines', 'trim_whitespace'],
+\ "javascript": ['prettier'],
+\ "css": ['prettier'],
+\ "scss": ['prettier'],
+\ "markdown": ['prettier'],
+\ "go" :['gofmt', 'goimports'],
+\}
+let g:ale_linters = {
+\ "javascript": ['flow', 'eslint', 'flow-language-server'],
+\ "go": ['golint', 'govet', 'golangserver'],
+\}
+let g:ale_echo_msg_format = '[%linter%] %s'
+
+" Referred from: https://www.rockyourcode.com/vim-autocomplete-with-ale/
+" To avoid automatically inserting stuff
+set completeopt=menu,menuone,preview,noselect,noinsert
+
 " --- ack options
 if executable('ag')
     let g:ackprg = 'ag --vimgrep'
@@ -186,16 +214,8 @@ let g:airline_theme = 'onedark'
 let g:airline_powerline_fonts = 1
 " enable tabline
 let g:airline#extensions#tabline#enabled = 1
-" enable/disable coc integration
-" let g:airline#extensions#coc#enabled = 1
-" " change error symbol
-" let airline#extensions#coc#error_symbol = 'E:'
-" " change warning symbol
-" let airline#extensions#coc#warning_symbol = 'W:'
-" " change error format
-" let airline#extensions#coc#stl_format_err = '%E{[%e(#%fe)]}'
-" " change warning format
-" let airline#extensions#coc#stl_format_warn = '%W{[%w(#%fw)]}'
+" Integrate with ALE and airline
+let g:airline#extensions#ale#enabled = 1
 
 set laststatus=2
 set noshowmode
@@ -217,14 +237,6 @@ let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeDirArrows = 1
 let NERDTreeIgnore=['node_modules', '\.pyc$', '.DS_Store', '\.class$', '__pycache__']
 nnoremap <silent> <C-n> :NERDTreeToggle<CR>
-
-" --- CoC
-set updatetime=100
-set shortmess+=c
-let g:coc_global_extensions = ['coc-html', 'coc-json']
-
-" --- Coc Prettier
-command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
 
 " --- Supertabs
 let g:SuperTabDefaultCompletionType = "<c-n>"
