@@ -164,3 +164,5 @@ export PATH="$HOME/.githubcli/bin:$PATH"
 export LC_ALL=en_US.UTF-8
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+export PYENV_ROOT='/Users/jiarong/.pyenv'

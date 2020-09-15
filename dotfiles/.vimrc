@@ -4,8 +4,8 @@ filetype off                  " required
 call plug#begin('~/.vim/plugged')
 " Plugins go here
 Plug 'marcweber/vim-addon-mw-utils'
-" Plug 'tomtom/tlib_vim'
 Plug 'vim-scripts/kwbdi.vim'
+Plug 'liuchengxu/vim-which-key'
 
 " --- Making Vim look good ---
 Plug 'joshdick/onedark.vim'
@@ -119,7 +119,7 @@ autocmd Filetype json setlocal ts=2 sw=2 expandtab foldmethod=marker foldmarker=
 autocmd Filetype python setlocal ts=4 sw=4 softtabstop=4 expandtab foldmethod=indent
 autocmd Filetype scss setlocal ts=2 sw=2 expandtab
 autocmd Filetype yaml setlocal ts=2 sw=2 expandtab
-autocmd Filetype go setlocal ts=4 sw=4 noexpandtab
+autocmd Filetype go setlocal ts=4 sw=4 noexpandtab foldmarker={,}
 autocmd Filetype javascript setlocal ts=2 sw=2 expandtab foldmethod=syntax
 autocmd Filetype javascript.jsx setlocal ts=2 sw=2 expandtab foldmethod=syntax
 
@@ -141,6 +141,9 @@ vnoremap <silent> ˚ :m '<-2<CR>gv=gv
 
 nnoremap <silent> <leader>r :source $HOME/.vimrc<CR>
 
+"  Mapping for which key
+nnoremap <silent> <Space> :WhichKey "<Space>"<CR>
+
 "  Diff mode
 if &diff
     nnoremap <silent> [c [c zz
@@ -149,7 +152,10 @@ endif
 
 "  Go To Definition
 augroup filetype_go
+    " Go to Definition
     autocmd FileType go noremap <silent> gd :exe 'GoDef' <CR> zz
+    " Go back
+    autocmd FileType go noremap <silent> gb :exe 'GoDefPop' <CR> zz
     " autocmd FileType go noremap <silent> gds :sp <CR> :exe 'GoDef' <CR>
     " autocmd FileType go noremap <silent> gdv :vsp <CR> :exe 'GoDef' <CR>
     " autocmd FileType go noremap <silent> gdt :tab split <CR> :exe 'GoDef' <CR> zz
@@ -157,8 +163,12 @@ augroup filetype_go
 augroup END
 
 augroup filetype_javascript
+    " Go to Definition
     autocmd FileType javascript noremap <silent> gd :exe 'ALEGoToDefinition' <CR> zz
     autocmd FileType javascript.jsx noremap <silent> gd :exe 'ALEGoToDefinition' <CR> zz
+    " Go back
+    autocmd FileType javascript noremap <silent> gb <C-o> zz
+    autocmd FileType javascript.jsx noremap <silent> gb <C-o> zz
 augroup END
 
 "  Terminal Stuff
@@ -180,6 +190,7 @@ augroup END
 " Enable completion where available.
 " This setting must be set before ALE is loaded.
 "
+" let g:ale_enabled = 0
 " You should not turn this setting on if you wish to use ALE as a completion
 " source for other completion plugins, like Deoplete.
 let g:ale_completion_enabled = 1
@@ -198,6 +209,9 @@ let g:ale_linters = {
 \ "go": ['golint', 'govet', 'golangserver'],
 \}
 let g:ale_echo_msg_format = '[%linter%] %s'
+let g:ale_set_balloons = 0
+let g:ale_hover_cursor = 0
+let g:ale_hover_to_preview = 0
 
 " Referred from: https://www.rockyourcode.com/vim-autocomplete-with-ale/
 " To avoid automatically inserting stuff
@@ -255,8 +269,57 @@ let g:jsdoc_access_descriptions = 2
 " --- Python Syntax
 let python_highlight_all = 1
 
+" Python2 for neovim
+if filereadable('/Users/jiarong/.virtualenvs/neovim_py2/bin/python')
+    let g:python_host_prog='/Users/jiarong/.virtualenvs/neovim_py2/bin/python'
+endif
+
+" Python3 for neovim
+if filereadable('/Users/jiarong/.virtualenvs/neovim_py3/bin/python')
+    let g:python3_host_prog='/Users/jiarong/.virtualenvs/neovim_py3/bin/python'
+endif
+
 " --- Go ---
 let g:go_def_mapping_enabled = 0
+
+" --- Which Key ---
+"  Define prefix dictionary
+let g:which_key_map = {}
+
+let g:which_key_map['d'] = ['bd', 'Delete Buffer']
+let g:which_key_map['s'] = [':split', "Split"]
+let g:which_key_map['v'] = [':vsplit', "vSplit"]
+let g:which_key_map['b'] = {
+            \ 'name': '+buffers',
+            \ 'd': ['bd', 'Delete'],
+            \ 'f': ['bfirst', 'First'],
+            \ 'l': ['blast', 'Last'],
+            \ 'n': ['bnext', 'Next'],
+            \ 'p': ['bprevious', 'Previous'],
+            \ 'b': ['BBuffers', 'Buffers']
+            \ }
+let g:which_key_map['f'] = {
+            \ 'name': '+folders',
+            \ 'f': ['BFolders', 'Folders'],
+            \ 'v': [':e ~/.vimrc', 'Open .vimrc']
+            \ }
+
+" Not a fan of floating windows for this
+let g:which_key_use_floating_win = 0
+
+" Change the colors if you want
+highlight default link WhichKey          Operator
+highlight default link WhichKeySeperator DiffAdded
+highlight default link WhichKeyGroup     Identifier
+highlight default link WhichKeyDesc      Function
+
+" Hide status line
+autocmd! FileType which_key
+autocmd  FileType which_key set laststatus=0 noshowmode noruler
+  \| autocmd BufLeave <buffer> set laststatus=2 noshowmode ruler
+
+" Register which key map
+call which_key#register('<Space>', "g:which_key_map")
 
 " ------------------------
 " --- Custom Functions ---
@@ -345,7 +408,6 @@ function! s:BFolders()
                 \ }))
 endfunction
 command! BFolders call s:BFolders()
-nnoremap <silent> <C-F> :BFolders<CR>
 
 " -------------------------------
 " FZF - Buffers
@@ -373,4 +435,3 @@ function! s:BBuffers()
                 \ }))
 endfunction
 command! BBuffers call s:BBuffers()
-nnoremap <silent> <C-B> :BBuffers<CR>
