@@ -270,19 +270,20 @@ let g:jsdoc_access_descriptions = 2
 let python_highlight_all = 1
 
 " Python2 for neovim
-if filereadable('/Users/jiarong/.virtualenvs/neovim_py2/bin/python')
-    let g:python_host_prog='/Users/jiarong/.virtualenvs/neovim_py2/bin/python'
+if filereadable($HOME.'/.virtualenvs/neovim_py2/bin/python')
+    let g:python_host_prog=$HOME.'/.virtualenvs/neovim_py2/bin/python'
 endif
 
 " Python3 for neovim
-if filereadable('/Users/jiarong/.virtualenvs/neovim_py3/bin/python')
-    let g:python3_host_prog='/Users/jiarong/.virtualenvs/neovim_py3/bin/python'
+if filereadable($HOME.'/.virtualenvs/neovim_py3/bin/python')
+    let g:python3_host_prog=$HOME.'/.virtualenvs/neovim_py3/bin/python'
 endif
 
 " --- Go ---
 let g:go_def_mapping_enabled = 0
 
 " --- Which Key ---
+
 "  Define prefix dictionary
 let g:which_key_map = {}
 
@@ -303,6 +304,7 @@ let g:which_key_map['f'] = {
             \ 'f': ['BFolders', 'Folders'],
             \ 'v': [':e ~/.vimrc', 'Open .vimrc']
             \ }
+let g:which_key_map['s'] = [':BTmuxSessions', 'Select tmux session']
 
 " Not a fan of floating windows for this
 let g:which_key_use_floating_win = 0
@@ -435,3 +437,16 @@ function! s:BBuffers()
                 \ }))
 endfunction
 command! BBuffers call s:BBuffers()
+
+function! s:BTmuxSessions()
+    let sink = "!tmux switch-client -t"
+    let source = 'tmux list-sessions -F "#S"'
+    let options = $FZF_DEFAULT_OPTS . ' ' . '--prompt "Project: > " --preview "tmux capture-pane -p -E 10 -t {}" --preview-window bottom'
+    call fzf#run(fzf#wrap({
+                \ 'source': source,
+                \ 'options': options,
+                \ 'sink': sink,
+                \ 'window': "call OpenFloatingWin(30, 80)"
+                \ }))
+endfunction
+command! BTmuxSessions call s:BTmuxSessions()
