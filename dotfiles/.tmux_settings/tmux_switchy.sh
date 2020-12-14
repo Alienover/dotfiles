@@ -16,6 +16,7 @@ switch_project() {
             PROJECT_NAME="🚀 polaris"
             PROJECT_ARGS="tmux send-keys -t \"$PROJECT_NAME\" \"cd $WORK_DIR/Polaris\" C-m \; \
                 send-keys -t \"$PROJECT_NAME\" \"clear\" C-m \; \
+                split-window -t \"$PROJECT_NAME\" \; \
                 new-window -t \"$PROJECT_NAME\" \; \
                 send-keys -t \"$PROJECT_NAME\" \"nvim\" C-m \;
             "
