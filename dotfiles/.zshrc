@@ -169,4 +169,4 @@ export PYENV_ROOT='/Users/jiarong/.pyenv'
 export PATH="/usr/local/opt/ruby/bin:$PATH"
 
 # Tmux switchy
-alias sw="sh ~/.tmux_settings/tmux_switchy.sh"
+alias sw="sh $HOME/.tmux_settings/tmux_switchy.sh"

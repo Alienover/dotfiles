@@ -1,50 +1,72 @@
 #!/usr/bin/bash
 
-PROJECTS="polaris\nvpn\nterm\nrigel"
+# Inspired by https://github.com/camspiers/tmuxinator-fzf-start/blob/master/tmuxinator-fzf-start.sh
+#
+# Usage:
+#
+# tmux_switchy.sh
+# tmux_switchy.sh "Query"
+#
+# Expectations:
+#
+# - fzf is on $PATH
+# - tmux is on $PATH
+
+PROJECT_POLARIS="🚀 polaris"
+PROJECT_RIGEL="💌 Rigel"
+PROJECT_VPN="🌈 vpn"
+PROJECT_TERM="🦄 term"
+PROJECTS="$PROJECT_POLARIS\n$PROJECT_RIGEL\n$PROJECT_VPN\n$PROJECT_TERM"
+
+# Custom variables
 WORK_DIR="$HOME/Documents/work/agent8"
 
+# Tmux session name for the target project
 PROJECT_NAME=""
+# Working root for the target project
+PROJECT_ROOT=""
+# Commands while initializing project
 PROJECT_ARGS=""
 
 check_is_started() {
     IS_STARTED=$(tmux list-session -F "#S" | fzf -i -1 -0 -q "$1")
 }
 
-switch_project() {
+search_project() {
     case $1 in
-        "polaris")
-            PROJECT_NAME="🚀 polaris"
-            PROJECT_ARGS="tmux send-keys -t \"$PROJECT_NAME\" \"cd $WORK_DIR/Polaris\" C-m \; \
-                send-keys -t \"$PROJECT_NAME\" \"clear\" C-m \; \
-                split-window -t \"$PROJECT_NAME\" \; \
+        "$PROJECT_POLARIS")
+            PROJECT_NAME="$PROJECT_POLARIS"
+            PROJECT_ROOT="$WORK_DIR/Polaris"
+            PROJECT_ARGS="tmux split-window -t \"$PROJECT_NAME\" \; \
                 new-window -t \"$PROJECT_NAME\" \; \
                 send-keys -t \"$PROJECT_NAME\" \"nvim\" C-m \;
             "
             ;;
-        "vpn")
-            PROJECT_NAME="🌈 vpn"
+        "$PROJECT_VPN")
+            PROJECT_NAME="$PROJECT_VPN"
+            PROJECT_ROOT="$HOME"
             PROJECT_ARGS="tmux send-keys -t \"$PROJECT_NAME\" \"$HOME/v2ray/v2ray\" C-m \; \
                 split-window -t \"$PROJECT_NAME\" \; \
                 split-window -t \"$PROJECT_NAME\" \; \
-                select-layout -t \"$PROJECT_NAME\" tiled \; \
-                send-keys -t \"$PROJECT_NAME\" \"clear\" C-m
+                select-layout -t \"$PROJECT_NAME\" tiled
             "
             ;;
-        "term")
-            PROJECT_NAME="🦄 term"
+        "$PROJECT_TERM")
+            PROJECT_NAME="$PROJECT_TERM"
+            PROJECT_ROOT="$HOME"
             PROJECT_ARGS=""
             ;;
-        "rigel")
-            PROJECT_NAME="💌 Rigel"
-            PROJECT_ARGS="tmux send-keys -t \"$PROJECT_NAME\" \"cd $WORK_DIR/Rigel\" C-m\; \
-                new-window -t \"$PROJECT_NAME\" \; \
-                send-keys -t \"$PROJECT_NAME\" \"cd $WORK_DIR/Rigel/go/cmd/webmail\" C-m \; \
+        "$PROJECT_RIGEL")
+            PROJECT_NAME="$PROJECT_RIGEL"
+            PROJECT_ROOT="$WORK_DIR/Rigel"
+            PROJECT_ARGS="tmux new-window -t \"$PROJECT_NAME\" \; \
+                send-keys -t \"$PROJECT_NAME\" \"cd ./go/cmd/webmail\" C-m \; \
                 send-keys -t \"$PROJECT_NAME\" \"clear\" C-m
             "
             ;;
         *)
             echo "Nothing found!"
-            exit
+            exit 1
             ;;
     esac
     if [ -n "$PROJECT_NAME" ]; then
@@ -54,11 +76,21 @@ switch_project() {
 
 attach() {
     if [ -z "$IS_STARTED" ]; then
-        cd "$HOME"
+        # Jump to project root
+        if [ -n "$PROJECT_ROOT" ]; then
+            cd "$PROJECT_ROOT"
+        else
+            cd "$HOME"
+        fi
+
+        # Start the tmux session
         tmux new-session -d -s "$1"
         if [ $? -ne 1 ] && [ -n "$2" ]; then
             eval "$2"
         fi
+
+        # Go back
+        cd -
     fi
 }
 
@@ -67,22 +99,50 @@ switch() {
 }
 
 attach_project() {
+    # Start the tmux session
     attach "$@"
+
     if [ -n "$TMUX" ]; then
+        # switch to target session
         switch "$1"
     else
-        tmux attach-session
+        # Attach to tmux server
+        tmux attach-session -t "$1"
     fi
+
+    exit 0
+}
+
+pick() {
+    SELECTED_PROJECT=$(echo "$PROJECTS" | fzf -f "$1")
 }
 
 
-SELECTED_PROJECT=$(echo $PROJECTS | fzf --prompt="Project: " -i -1 -0 -q "$1")
+FZF_OPTIONS="--color fg:242,bg:236,hl:114,fg+:15,bg+:236,hl+:114,info:108,prompt:109,spinner:108,pointer:114,marker:173 --layout=reverse --margin=1,2"
+
+if [ -n "$1" ]; then
+    MATCHEDS=$(echo "$1" | grep -oE "^[^:]+")
+else
+    MATCHEDS=$(tmux list-sessions -F "#S: #{session_windows} windows #{?session_attached,(attached),}" | fzf $FZF_OPTIONS --prompt "Project: " --print-query | grep -oE "^[^:]+")
+fi
+
+for EACH in $MATCHEDS; do
+    pick "$EACH"
+    if [ -n "$SELECTED_PROJECT" ]; then
+        break
+    fi
+done
 
 if [ -n "$SELECTED_PROJECT" ]; then
-    switch_project "$SELECTED_PROJECT"
-    check_is_started "$PROJECT_NAME"
-    attach_project "$PROJECT_NAME" "$PROJECT_ARGS"
+    # Search the project by fzf search
+    search_project "$SELECTED_PROJECT"
 else
     echo "No project selected!"
-    exit
+    exit 1
 fi
+
+# Check if the project is started
+check_is_started "$PROJECT_NAME"
+
+# Attach or switch to the target project
+attach_project "$PROJECT_NAME" "$PROJECT_ARGS"

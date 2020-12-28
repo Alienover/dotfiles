@@ -297,14 +297,15 @@ let g:which_key_map['b'] = {
             \ 'l': ['blast', 'Last'],
             \ 'n': ['bnext', 'Next'],
             \ 'p': ['bprevious', 'Previous'],
-            \ 'b': ['BBuffers', 'Buffers']
+            \ 'b': [':call FzfBuffers()', 'Buffers']
             \ }
 let g:which_key_map['f'] = {
             \ 'name': '+folders',
-            \ 'f': ['BFolders', 'Folders'],
-            \ 'v': [':e ~/.vimrc', 'Open .vimrc']
+            \ 'f': [':call FzfFolders()', 'Folders'],
+            \ 'v': [':e ~/.vimrc', 'Open .vimrc'],
+            \ 'z': [':e ~/.zshrc', 'Open ..zshrc']
             \ }
-let g:which_key_map['s'] = [':BTmuxSessions', 'Select tmux session']
+let g:which_key_map['s'] = [':call FzfTmuxSessions()', 'Select tmux session']
 
 " Not a fan of floating windows for this
 let g:which_key_use_floating_win = 0
@@ -327,7 +328,7 @@ call which_key#register('<Space>', "g:which_key_map")
 " --- Custom Functions ---
 " ------------------------
 "  Zoom / Restore window.
-function! s:ZoomToggle() abort
+function! ZoomToggle() abort
     if exists('t:zoomed') && t:zoomed
         execute t:zoom_winrestcmd
         let t:zoomed = 0
@@ -338,9 +339,8 @@ function! s:ZoomToggle() abort
         let t:zoomed = 1
     endif
 endfunction
-command! ZoomToggle call s:ZoomToggle()
 " Z(z)oom O(o)pen := Zoom in/out the split window
-nnoremap <silent> zo :ZoomToggle<CR>
+nnoremap <silent> zo :call ZoomToggle()<CR>
 
 
 "  If installed using Homebrew
@@ -378,13 +378,13 @@ function! OpenFloatingWin(...)
             \ }
 
     call nvim_open_win(buf, v:true, opts)
-    tnoremap <ESC> <C-c>
+    tnoremap <buffer> <silent> <Esc> <C-\><C-n>:q<CR>
 endfunction
 
 " -------------------------------
 " FZF - Files
 " -------------------------------
-function! s:BFiles()
+function! FzfFiles()
     let source = "find * -path '*/\.*' -prune -o -path 'node_modules' -prune -o -path '**/node_modules' -prune -o -path 'target/**' -prune -o -path 'dist' -prune -o -path '**/dist' -prune -o  -type f -print -o -type l -print 2> /dev/null"
     let options = $FZF_DEFAULT_OPTS . " " . "--preview 'if file -i {}|grep -q binary; then file -b {}; else bat --style=changes --color always --line-range :40 {}; fi' --preview-window bottom"
 
@@ -393,13 +393,12 @@ function! s:BFiles()
                 \ 'options': options,
                 \}))
 endfunction
-command! BFiles call s:BFiles()
-nnoremap <silent> <C-P> :BFiles<CR>
+nnoremap <silent> <C-P> :call FzfFiles()<CR>
 
 " -------------------------------
 " FZF - Folders
 " -------------------------------
-function! s:BFolders()
+function! FzfFolders()
     let source = "find * -path '*/\.*' -prune -o -path 'target/**' -prune -o -path 'dist' -print -o -path '**/dict' -prune -o -type d -print -o -type l -print 2> /dev/null"
     let sink = "NERDTree"
     let options = $FZF_DEFAULT_OPTS . " " . "--preview 'tree -L 1 -C {}' --preview-window bottom"
@@ -409,7 +408,6 @@ function! s:BFolders()
                 \ 'sink': sink,
                 \ }))
 endfunction
-command! BFolders call s:BFolders()
 
 " -------------------------------
 " FZF - Buffers
@@ -426,7 +424,7 @@ function! s:buflist()
   return split(ls, '\n')
 endfunction
 
-function! s:BBuffers()
+function! FzfBuffers()
     let source = s:buflist()
     let options = $FZF_DEFAULT_OPTS . ' ' . '--prompt "Buffers > " --no-preview'
     call fzf#run(fzf#wrap({
@@ -436,17 +434,18 @@ function! s:BBuffers()
                 \ 'window': "call OpenFloatingWin(10, 80)"
                 \ }))
 endfunction
-command! BBuffers call s:BBuffers()
 
-function! s:BTmuxSessions()
-    let sink = "!tmux switch-client -t"
-    let source = 'tmux list-sessions -F "#S"'
-    let options = $FZF_DEFAULT_OPTS . ' ' . '--prompt "Project: > " --preview "tmux capture-pane -p -E 10 -t {}" --preview-window bottom'
+
+" -------------------------------
+" FZF - Tmux Sessions
+" -------------------------------
+function! FzfTmuxSessions()
+    let source = 'tmux list-sessions -F "#S: #{session_windows} windows #{?session_attached,(attached),}"'
+    let options = $FZF_DEFAULT_OPTS . ' ' . '--prompt "Project: > " --preview "tmux capture-pane -p -E 10 -t {+1}" --preview-window bottom --print-query'
     call fzf#run(fzf#wrap({
                 \ 'source': source,
                 \ 'options': options,
-                \ 'sink': sink,
-                \ 'window': "call OpenFloatingWin(30, 80)"
+                \ 'sink': "!sh $HOME/.tmux_settings/tmux_switchy.sh ",
+                \ 'window': "call OpenFloatingWin(20, 80)"
                 \ }))
 endfunction
-command! BTmuxSessions call s:BTmuxSessions()
