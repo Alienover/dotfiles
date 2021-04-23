@@ -63,7 +63,6 @@ ZSH_THEME="astro"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
-  tmux
   zsh-autosuggestions
 )
 fpath=(/usr/local/share/zsh/site-functions $fpath)
@@ -170,3 +169,6 @@ export PATH="/usr/local/opt/ruby/bin:$PATH"
 
 # Tmux switchy
 alias sw="sh $HOME/.tmux_settings/tmux_switchy.sh"
+
+# Add Visual Studio Code (code)
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"

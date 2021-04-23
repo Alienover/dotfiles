@@ -303,7 +303,7 @@ let g:which_key_map['f'] = {
             \ 'name': '+folders',
             \ 'f': [':call FzfFolders()', 'Folders'],
             \ 'v': [':e ~/.vimrc', 'Open .vimrc'],
-            \ 'z': [':e ~/.zshrc', 'Open ..zshrc']
+            \ 'z': [':e ~/.zshrc', 'Open .zshrc']
             \ }
 let g:which_key_map['s'] = [':call FzfTmuxSessions()', 'Select tmux session']
 
