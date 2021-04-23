@@ -1,9 +1,7 @@
-# Install n --- node packages management
-curl -L http://git.io/n-install | bash
+source "$PWD/utils.sh"
 
-# Install node
-sudo n latest
-sudo n stable
+log_start "Installing node versions management..."
+silent "curl -Ls https://git.io/n-install | bash -s -- -y lts" || log_error
+log_success
 
-# Reload shell
-exec $SHELL
+reload_shell
