@@ -59,10 +59,7 @@ search_project() {
         "$PROJECT_RIGEL")
             PROJECT_NAME="$PROJECT_RIGEL"
             PROJECT_ROOT="$WORK_DIR/Rigel"
-            PROJECT_ARGS="tmux new-window -t \"$PROJECT_NAME\" \; \
-                send-keys -t \"$PROJECT_NAME\" \"cd ./go/cmd/webmail\" C-m \; \
-                send-keys -t \"$PROJECT_NAME\" \"clear\" C-m
-            "
+            PROJECT_ARGS=""
             ;;
         *)
             echo "Nothing found!"
