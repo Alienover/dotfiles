@@ -64,6 +64,7 @@ ZSH_THEME="astro"
 plugins=(
   git
   zsh-autosuggestions
+  zsh-syntax-highlighting
 )
 fpath=(/usr/local/share/zsh/site-functions $fpath)
 
@@ -133,9 +134,6 @@ alias gc="git checkout"
 alias gs="git status"
 alias gp="git pull"
 
-# For zsh syntax-highlighting
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
 export DYLD_LIBRARY_PATH=/usr/local/include
 export CPPFLAGS="-I/usr/local/include/snappy-c.h"
 export CFLAGS="-I/usr/local/include/snappy-c.h"
@@ -164,7 +162,8 @@ export LC_ALL=en_US.UTF-8
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
-export PYENV_ROOT='/Users/jiarong/.pyenv'
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
 export PATH="/usr/local/opt/ruby/bin:$PATH"
 
 # Tmux switchy
@@ -172,3 +171,6 @@ alias sw="sh $HOME/.tmux_settings/tmux_switchy.sh"
 
 # Add Visual Studio Code (code)
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
+# Perl
+eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
