@@ -33,7 +33,10 @@ Plug 'ap/vim-css-color'
 " --- JavaScript
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
-Plug 'heavenshell/vim-jsdoc'
+Plug 'heavenshell/vim-jsdoc', {
+  \ 'for': ['javascript', 'javascript.jsx','typescript'],
+  \ 'do': 'make install'
+\ }
 
 " --- Python
 Plug 'Vimjas/vim-python-pep8-indent'
@@ -119,7 +122,7 @@ autocmd Filetype json setlocal ts=2 sw=2 expandtab foldmethod=marker foldmarker=
 autocmd Filetype python setlocal ts=4 sw=4 softtabstop=4 expandtab foldmethod=indent
 autocmd Filetype scss setlocal ts=2 sw=2 expandtab
 autocmd Filetype yaml setlocal ts=2 sw=2 expandtab
-autocmd Filetype go setlocal ts=4 sw=4 noexpandtab foldmarker={,}
+autocmd Filetype go setlocal ts=4 sw=4 noexpandtab foldmethod=marker foldmarker={,}
 autocmd Filetype javascript setlocal ts=2 sw=2 expandtab foldmethod=syntax
 autocmd Filetype javascript.jsx setlocal ts=2 sw=2 expandtab foldmethod=syntax
 
