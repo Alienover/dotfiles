@@ -1,0 +1,14 @@
+{
+  "brace": {
+    "prefix": ["brace"],
+    "body": "{${1:$TM_SELECTED_TEXT}}"
+  },
+  "cwd": {
+    "prefix": ["cwd"],
+    "body": "$TM_FILEPATH"
+  },
+  "tag": {
+      "prefix": ["tag"],
+      "body": "<$1>${2:$TM_SELECTED_TEXT}</$1>"
+  }
+}
