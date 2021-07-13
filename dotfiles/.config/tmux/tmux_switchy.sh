@@ -114,8 +114,12 @@ pick() {
     SELECTED_PROJECT=$(echo "$PROJECTS" | fzf -f "$1")
 }
 
+C_FG=$GUI_WHITE
+C_BG=$GUI_CURSOR_GREY
+C_GREEN=$GUI_GREEN
+C_YELLOW=$GUI_DARK_YELLOW
 
-FZF_OPTIONS="--color fg:242,bg:236,hl:114,fg+:15,bg+:236,hl+:114,info:108,prompt:109,spinner:108,pointer:114,marker:173 --layout=reverse --margin=1,2"
+FZF_OPTIONS="--color fg:$C_FG,bg:$C_BG,hl:$C_GREEN,fg+:15,bg+:$C_BG,hl+:$C_GREEN,info:108,prompt:109,spinner:108,pointer:$C_GREEN,marker:$C_YELLOW --layout=reverse --margin=1,2"
 
 if [ -n "$1" ]; then
     MATCHEDS=$(echo "$1" | grep -oE "^[^:]+")
