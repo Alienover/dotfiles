@@ -133,12 +133,14 @@ alias gd="git diff"
 alias gc="git checkout"
 alias gs="git status"
 alias gp="git pull"
+alias gp="git push origin"
 
 export DYLD_LIBRARY_PATH=/usr/local/include
 export CPPFLAGS="-I/usr/local/include/snappy-c.h"
 export CFLAGS="-I/usr/local/include/snappy-c.h"
 
-export TERM="screen-256color"
+# export TERM="screen-256color"
+# export TERM="xterm-256color"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -167,7 +169,7 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 export PATH="/usr/local/opt/ruby/bin:$PATH"
 
 # Tmux switchy
-alias sw="sh $HOME/.tmux_settings/tmux_switchy.sh"
+alias sw="sh $HOME/.config/tmux/tmux_switchy.sh"
 
 # Add Visual Studio Code (code)
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
