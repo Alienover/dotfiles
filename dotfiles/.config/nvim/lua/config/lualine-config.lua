@@ -16,6 +16,6 @@ require "lualine".setup {
     },
     sections = {
         lualine_x = {"encoding", "filetype"},
-        lualine_y = {"diff"}
+        lualine_y = {"diff", "location"}
     }
 }
