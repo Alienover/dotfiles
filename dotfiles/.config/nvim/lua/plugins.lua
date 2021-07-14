@@ -13,12 +13,13 @@ return require "packer".startup(
             use {
                 "vim-scripts/kwbdi.vim",
                 opt = true,
-                event = "BufEnter"
+                keys = {"<leader>bd"}
             }
             use(
                 {
                     "folke/which-key.nvim",
-                    event = "VimEnter",
+                    opt = true,
+                    keys = {"<space>"},
                     config = function()
                         require "config/which-key-config"
                     end
@@ -61,10 +62,14 @@ return require "packer".startup(
             }
 
             -- Editor
-            use "tpope/vim-fugitive"
-            use "janko-m/vim-test"
+            use {
+                "tpope/vim-fugitive",
+                opt = true,
+                cmd = {"Git"}
+            }
+            use {"janko-m/vim-test", opt = true, cmd = {"TestFile", "TestNearest"}}
 
-            use "editorconfig/editorconfig-vim"
+            use {"editorconfig/editorconfig-vim", opt = true, event = "BufEnter"}
             use {
                 "b3nj5m1n/kommentary",
                 opt = true,
@@ -78,7 +83,10 @@ return require "packer".startup(
 
             use {
                 "kevinhwang91/rnvimr",
+                opt = true,
                 run = "make sync",
+                keys = {"<C-f>"},
+                cmd = "RnvimrToggle",
                 config = function()
                     require "config/rnvimr-config"
                 end
@@ -88,6 +96,7 @@ return require "packer".startup(
             -- Diffview
             use {
                 "sindrets/diffview.nvim",
+                opt = true,
                 cmd = {"DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles"},
                 config = function()
                     require "config/diffview-config"
@@ -96,11 +105,13 @@ return require "packer".startup(
 
             use {
                 "andymass/vim-matchup",
+                opt = true,
                 event = "CursorMoved"
             }
 
             use {
                 "simrat39/symbols-outline.nvim",
+                opt = true,
                 cmd = {"SymbolsOutline"},
                 config = function()
                     require "config/symbol-outline-config"
@@ -174,17 +185,20 @@ return require "packer".startup(
             -- Frontend
             use {
                 "ap/vim-css-color",
+                opt = true,
                 event = "BufReadPre"
             }
 
             -- JavaScript
             use {
                 "mxw/vim-jsx",
+                opt = true,
                 event = "BufReadPre",
                 ft = {"javascript.jsx", "javascriptreact", "typescript.jsx", "typescriptreact"}
             }
             use {
                 "pangloss/vim-javascript",
+                opt = true,
                 event = "BufReadPre",
                 ft = {
                     "javascript",
@@ -197,15 +211,17 @@ return require "packer".startup(
             }
             use {
                 "heavenshell/vim-jsdoc",
+                opt = true,
+                cmd = {"JsDoc", "JsDocFormat"},
                 ft = {"javascript", "javascript.jsx", "typescript", "typescript.jsx"},
-                event = "BufReadPre",
                 run = "make install"
             }
 
             -- Smooth Scrolling
             use {
                 "karb94/neoscroll.nvim",
-                keys = {"<C-u>", "<C-d>", "gg", "G"},
+                opt = true,
+                keys = {"<C-u>", "<C-d>", "gg", "G", "zz"},
                 config = function()
                     require "config/neoscroll-config"
                 end
@@ -214,6 +230,7 @@ return require "packer".startup(
             -- Git Gutter
             use {
                 "lewis6991/gitsigns.nvim",
+                opt = true,
                 event = "BufReadPre",
                 wants = "plenary.nvim",
                 requires = {"nvim-lua/plenary.nvim"},

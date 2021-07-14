@@ -28,14 +28,6 @@ nmap("˚", ":m .-2<CR>==", opts)
 vmap("∆", ":m '>+1<CR>gv=gv", opts)
 vmap("˚", ":m '<-2<CR>gv=gv", opts)
 
--- Diff mode
-cmd [[
-    if &diff
-	nnoremap <silent> [c [c zz
-	nnoremap <silent> ]c ]c zz
-    endif
-]]
-
 function _G.zoom_toggle()
     if w.zoomed and w.zoom_winrestcmd then
         cmd [[ execute w:zoom_winrestcmd ]]

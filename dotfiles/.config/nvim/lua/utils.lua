@@ -107,9 +107,68 @@ M.files = {
 M.colors = {
     FG = os.getenv "GUI_WHITE",
     BG = os.getenv "GUI_CURSOR_GREY",
+    RED = os.getenv "GUI_RED",
+    DARK_RED = os.getenv "GUI_DARK_RED",
     GREEN = os.getenv "GUI_GREEN",
+    VISUAL_GREY = os.getenv "GUI_VISUAL_GREY",
     DARK_YELLOW = os.getenv "GUI_DARK_YELLOW",
     COMMENT_GREY = os.getenv "GUI_COMMENT_GREY"
 }
+
+M.highlight = {
+    names = {}
+}
+
+function M.highlight:get(name)
+    return self.names[name]
+end
+
+function M.highlight:set(name, hl_name)
+    self.names[name] = hl_name
+end
+
+function M.highlight:has(name)
+    return self.names[name] and true or false
+end
+
+function M.highlight:create(name, colors)
+    local hl_name = "MyCustomHighlight_" .. name
+    local command = {"highlight", hl_name}
+
+    if self:has(name) then
+        return self:get(name)
+    end
+
+    if type(colors) == "table" then
+        if colors.fg then
+            table.insert(command, "guifg=" .. colors.fg)
+        end
+
+        if colors.bg then
+            table.insert(command, "guibg=" .. colors.bg)
+        end
+
+        M.cmd(table.concat(command, " "))
+
+        self:set(name, hl_name)
+    end
+
+    return hl_name
+end
+
+function M.highlight:format(args)
+    local prefix = ""
+    if type(args) == "table" then
+        if args.name ~= nil and self:has(args.name) then
+            prefix = "%#" .. self:get(args.name) .. "#"
+        elseif args.hl_name ~= nil then
+            prefix = "%#" .. args.hl_name .. "#"
+        end
+
+        return prefix .. args[1]
+    else
+        return ""
+    end
+end
 
 return M
