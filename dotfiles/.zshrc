@@ -2,13 +2,11 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH # Path to your oh-my-zsh installation.
 export ZSH="/Users/jiarong/.oh-my-zsh"
 
-# Load Customized color scheme
-source '/Users/jiarong/.dotfiles/.config/colors.sh'
-
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="astro"
+ZSH_THEME="agnoster"
+# ZSH_THEME="astro"
 # ZSH_THEME="ys"
 # ZSH_THEME="materialshell"
 
@@ -55,7 +53,7 @@ ZSH_THEME="astro"
 # HIST_STAMPS="mm/dd/yyyy"
 
 # Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
+# ZSH_CUSTOM=$HOME/.config/zsh
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -72,6 +70,14 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
+# !! Attention
+# Place under omz initialization to overwrite the color definination
+# Load Customized color scheme
+source "$HOME/.config/zsh/colors.sh"
+
+# Alias
+source "$HOME/.config/zsh/alias.sh"
+
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -83,6 +89,27 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
   export EDITOR='nvim'
 fi
+
+# PATHs
+
+# export PATH="/usr/local/opt/mysql@5.6/bin:/usr/local/bin:$PATH"
+# Go path
+export PATH="$HOME/go/bin:$PATH"
+
+# Yarn path
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+# Pyenv path
+export PATH="$PYENV_ROOT/bin:$PATH"
+
+# Ruby path
+export PATH="/usr/local/opt/ruby/bin:$PATH"
+
+# Add Visual Studio Code (code)
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
+# Github CLI path
+export PATH="$HOME/.githubcli/bin:$PATH"
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -99,42 +126,6 @@ fi
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# Proxychains
-alias proxychains="/usr/local/bin/proxychains4"
-
-# Edison
-alias agent8="~/Documents/work/agent8"
-alias saturn="~/Documents/work/agent8/Saturn"
-alias titan="~/Documents/work/agent8/Titan"
-alias ops="~/Documents/work/agent8/Ops"
-alias utils="~/Documents/work/agent8/Utils"
-alias polaris="~/Documents/work/agent8/Polaris"
-
-alias edo_login="sh ~/Documents/work/others/edo_login.sh"
-
-# MySQL
-alias mysql-start="brew services start mysql@5.6"
-alias mysql-stop="brew services stop mysql@5.6"
-alias mysql-restart="brew services restart mysql@5.6"
-export PATH="/usr/local/opt/mysql@5.6/bin:/usr/local/bin:$PATH"
-
-# Brew Services
-alias brew-services="brew services list | grep"
-
-# System SOCKS Proxy
-alias socksproxy="~/src/socksproxy.sh"
-
-# For neovim
-alias vim="nvim"
-alias vi="nvim"
-
-# Git
-alias gd="git diff"
-alias gc="git checkout"
-alias gs="git status"
-alias gp="git pull"
-alias gp="git push origin"
-
 export DYLD_LIBRARY_PATH=/usr/local/include
 export CPPFLAGS="-I/usr/local/include/snappy-c.h"
 export CFLAGS="-I/usr/local/include/snappy-c.h"
@@ -150,29 +141,16 @@ if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
     source /usr/local/bin/virtualenvwrapper.sh
 fi
 export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
+export VIRTUAL_ENV_DISABLE_PROMPT='true'
 eval "$(pyenv init -)"
 pyenv virtualenvwrapper_lazy
 
+export PYENV_ROOT="$HOME/.pyenv"
+
 # Go Path
-export PATH="$HOME/go/bin:$PATH"
 export GOBIN="$HOME/go/bin"
 
-# Github CLI
-export PATH="$HOME/.githubcli/bin:$PATH"
-
 export LC_ALL=en_US.UTF-8
-
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-export PATH="/usr/local/opt/ruby/bin:$PATH"
-
-# Tmux switchy
-alias sw="sh $HOME/.config/tmux/tmux_switchy.sh"
-
-# Add Visual Studio Code (code)
-export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 
 # Perl
 eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
