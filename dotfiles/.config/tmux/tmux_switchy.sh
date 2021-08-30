@@ -48,7 +48,8 @@ search_project() {
             PROJECT_ARGS="tmux send-keys -t \"$PROJECT_NAME\" \"$HOME/v2ray/v2ray\" C-m \; \
                 split-window -t \"$PROJECT_NAME\" \; \
                 split-window -t \"$PROJECT_NAME\" \; \
-                select-layout -t \"$PROJECT_NAME\" tiled
+                select-layout -t \"$PROJECT_NAME\" tiled \; \
+                resize-pane -t \"$PROJECT_NAME\" -U 20
             "
             ;;
         "$PROJECT_TERM")
@@ -114,12 +115,12 @@ pick() {
     SELECTED_PROJECT=$(echo "$PROJECTS" | fzf -f "$1")
 }
 
-C_FG=$GUI_WHITE
-C_BG=$GUI_CURSOR_GREY
-C_GREEN=$GUI_GREEN
+C_FG=$GUI_FOREGROUND
+C_BG=$GUI_BACKGROUND
+C_PRIMARY=$GUI_BLUE
 C_YELLOW=$GUI_DARK_YELLOW
 
-FZF_OPTIONS="--color fg:$C_FG,bg:$C_BG,hl:$C_GREEN,fg+:15,bg+:$C_BG,hl+:$C_GREEN,info:108,prompt:109,spinner:108,pointer:$C_GREEN,marker:$C_YELLOW --layout=reverse --margin=1,2"
+FZF_OPTIONS="--color fg:$C_FG,bg:$C_BG,hl:$C_PRIMARY,fg+:15,bg+:$C_BG,hl+:$C_YELLOW,info:$C_PRIMARY,prompt:$C_PRIMARY,spinner:$C_PRIMARY,pointer:$C_PRIMARY,marker:$C_YELLOW --layout=reverse --margin=1,2"
 
 if [ -n "$1" ]; then
     MATCHEDS=$(echo "$1" | grep -oE "^[^:]+")

@@ -1,17 +1,22 @@
+local Utils = require "utils"
+
 local lspconfig = require "lspconfig"
+
+local nmap, cmd = Utils.nmap, Utils.cmd
 
 local on_attach = function(client)
     -- Keymap
     local keymap_otps = {noremap = true, silent = true}
-    vim.api.nvim_set_keymap("n", "gb", "<C-o><CR>", keymap_otps)
-    vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", keymap_otps)
-    vim.api.nvim_set_keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", keymap_otps)
-    vim.api.nvim_set_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", keymap_otps)
-    vim.api.nvim_set_keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", keymap_otps)
-    vim.api.nvim_set_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", keymap_otps)
-    vim.api.nvim_set_keymap("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", keymap_otps)
-    vim.api.nvim_set_keymap("n", "<C-b>", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", keymap_otps)
-    vim.api.nvim_set_keymap("n", "<C-n>", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", keymap_otps)
+
+    nmap("gb", "<C-o><CR>", keymap_otps)
+    nmap("gd", "<cmd>Telescope lsp_definitions<CR>zz", keymap_otps)
+    nmap("gD", "<cmd>lua vim.lsp.buf.declaration()<CR>zz", keymap_otps)
+    nmap("gr", "<cmd>Telescope lsp_references<CR>", keymap_otps)
+    nmap("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", keymap_otps)
+    -- nmap("K", "<cmd>lua vim.lsp.buf.hover()<CR>", keymap_otps)
+    -- nmap("<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", keymap_otps)
+    -- nmap("<C-b>", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", keymap_otps)
+    -- nmap("<C-n>", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", keymap_otps)
 
     if client.name == "tsserver" then
         client.resolved_capabilities.document_formatting = false
@@ -19,15 +24,15 @@ local on_attach = function(client)
 
     -- Formatting on save
     if client.resolved_capabilities.document_formatting then
-        vim.api.nvim_command [[augroup Format]]
-        vim.api.nvim_command [[autocmd! * <buffer>]]
-        vim.api.nvim_command [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()]]
-        vim.api.nvim_command [[augroup END]]
+        cmd [[augroup Format]]
+        cmd [[autocmd! * <buffer>]]
+        cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()]]
+        cmd [[augroup END]]
     end
 
     -- Alias
-    vim.api.nvim_command [[command! LspFormat lua vim.lsp.buf.formatting()]]
-    vim.api.nvim_command [[command! LspSignature lua vim.lsp.buf.signature_help()]]
+    cmd [[command! LspFormat lua vim.lsp.buf.formatting()]]
+    cmd [[command! LspSignature lua vim.lsp.buf.signature_help()]]
 end
 
 local custom_capabilities = function()

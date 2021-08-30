@@ -61,22 +61,47 @@ M.r_code = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
+M.table_map_values = function(input_table, func)
+    local new_table = {}
+    for key, value in pairs(input_table) do
+        new_table[key] = func(value, key)
+    end
+
+    return new_table
+end
+
+M.table_map_list = function(input_table, func)
+    local new_list = {}
+    for i, value in ipairs(input_table) do
+        new_list[i] = func(value, i)
+    end
+
+    return new_list
+end
+
 M.columns = vim.api.nvim_get_option("columns")
 
 M.lines = vim.api.nvim_get_option("lines")
 
-M.get_float_win_opts = function(opts)
-    local l_offset, t_offset = opts.l_offset or 0.25, opts.t_offset or 0.25
+M.get_float_win_opts = function(args)
+    args = args or {}
+    local l_offset, t_offset = args.l_offset or 0.25, args.t_offset or 0.25
+
+    local border = args.border
+    args.border = nil
 
     return vim.tbl_deep_extend(
         "force",
         {
-            width = math.floor((1 - l_offset * 2) * M.columns),
-            height = math.floor((1 - t_offset * 2) * M.lines),
+            row = math.floor(t_offset * M.lines),
             col = math.floor(l_offset * M.columns),
-            row = math.floor(t_offset * M.lines)
+            height = math.floor((1 - t_offset * 2) * M.lines),
+            width = math.floor((1 - l_offset * 2) * M.columns),
+            style = "minimal",
+            relative = "editor",
+            border = border and {"╭", "─", "╮", "│", "╯", "─", "╰", "│"}
         },
-        opts[1] or {}
+        args
     )
 end
 
@@ -105,14 +130,16 @@ M.files = {
 }
 
 M.colors = {
-    FG = os.getenv "GUI_WHITE",
-    BG = os.getenv "GUI_CURSOR_GREY",
+    FG = os.getenv "GUI_FOREGROUND",
+    BG = os.getenv "GUI_BACKGROUND",
     RED = os.getenv "GUI_RED",
     DARK_RED = os.getenv "GUI_DARK_RED",
     GREEN = os.getenv "GUI_GREEN",
+    PRIMARY = os.getenv "GUI_BLUE",
     VISUAL_GREY = os.getenv "GUI_VISUAL_GREY",
     DARK_YELLOW = os.getenv "GUI_DARK_YELLOW",
-    COMMENT_GREY = os.getenv "GUI_COMMENT_GREY"
+    COMMENT_GREY = os.getenv "GUI_COMMENT_GREY",
+    SPECIAL_GREY = os.getenv "GUI_SPECIAL_GREY"
 }
 
 M.highlight = {
@@ -169,6 +196,36 @@ function M.highlight:format(args)
     else
         return ""
     end
+end
+
+M.float_terminal = function(args)
+    local cmd = args[1]
+    args[1] = nil
+
+    local buf = vim.api.nvim_create_buf(false, true)
+    local win =
+        vim.api.nvim_open_win(
+        buf,
+        true,
+        M.get_float_win_opts(
+            vim.tbl_deep_extend(
+                "force",
+                {
+                    border = true
+                },
+                args
+            )
+        )
+    )
+
+    vim.fn.termopen(cmd)
+    local autocmd = {
+        "autocmd! TermClose <buffer> lua",
+        string.format("vim.api.nvim_win_close(%d, {force = true});", win),
+        string.format("vim.api.nvim_buf_delete(%d, {force = true});", buf)
+    }
+    vim.cmd(table.concat(autocmd, " "))
+    vim.cmd([[startinsert]])
 end
 
 return M

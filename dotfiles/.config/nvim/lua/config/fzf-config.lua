@@ -10,11 +10,17 @@ local c = Utils.colors
 cmd [[set rtp+=/usr/local/opt/fzf]]
 local default_opts =
     string.format(
-    "--color %s,%s,fg+:15,%s,info:108,prompt:109,spinner:108,pointer:114,%s --layout=reverse --margin=1,2 --prompt=' 🌈 ' ",
-    string.format("fg:%s,bg:%s", c.FG, c.BG),
-    string.format("hl:%s", c.GREEN),
-    string.format("bg+:%s,hl+:%s", c.BG, c.GREEN),
-    string.format("marker:%s", c.DARK_YELLOW)
+    "--color %s,%s,%s,%s --layout=reverse --margin=1,2 --prompt=' 🌈 ' ",
+    ("fg:%s,bg:%s"):format(c.FG, c.BG),
+    ("hl:%s"):format(c.PRIMARY),
+    ("fg+:%s,bg+:%s,hl+:%s"):format("15", c.BG, c.DARK_YELLOW),
+    ("info:%s,prompt:%s,spinner:%s,pointer:%s,marker:%s"):format(
+        c.PRIMARY,
+        c.PRIMARY,
+        c.PRIMARY,
+        c.PRIMARY,
+        c.DARK_YELLOW
+    )
 )
 
 -- Default fzf layout

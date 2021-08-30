@@ -35,7 +35,7 @@
 CURRENT_BG='NONE'
 
 case ${SOLARIZED_THEME:-dark} in
-    light) CURRENT_FG=$GUI_GUTTER_FG_GREY;;
+    light) CURRENT_FG=$GUI_FOREGROUND;;
     *)     CURRENT_FG=$GUI_BLACK;;
 esac
 
@@ -119,9 +119,9 @@ prompt_git() {
     dirty=$(parse_git_dirty)
     ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
     if [[ -n $dirty ]]; then
-      prompt_segment $GUI_DARK_YELLOW black
+      prompt_segment $GUI_DARK_YELLOW $GUI_BLACK
     else
-      prompt_segment $GUI_SPECIAL_GREY $GUI_GUTTER_FG_GREY
+      prompt_segment $GUI_INACTIVE_TAB_BACKGROUND $GUI_FOREGROUND
     fi
 
     if [[ -e "${repo_path}/BISECT_LOG" ]]; then
@@ -139,7 +139,7 @@ prompt_git() {
     zstyle ':vcs_info:*' get-revision true
     zstyle ':vcs_info:*' check-for-changes true
     zstyle ':vcs_info:*' stagedstr '✚'
-    zstyle ':vcs_info:*' unstagedstr '±'
+    zstyle ':vcs_info:*' unstagedstr '#'
     zstyle ':vcs_info:*' formats ' %u%c'
     zstyle ':vcs_info:*' actionformats ' %u%c'
     vcs_info
@@ -216,7 +216,7 @@ prompt_dir() {
   local current_dir="$(perl -p -e "s|^${HOME}|\~|;s|(\.[^/])[^/]*/|$""1/|;s|([^./])[^/]*/|$""1/|g" <<<${PWD})"
   # Font bold
   prompt_bold
-  prompt_segment $GUI_GREEN $CURRENT_FG $current_dir
+  prompt_segment $GUI_ACTIVE_TAB_BACKGROUND $GUI_ACTIVE_TAB_FOREGROUND $current_dir
   prompt_bold_end
 }
 
@@ -225,7 +225,7 @@ prompt_virtualenv() {
   local virtualenv_path="$VIRTUAL_ENV"
   if [[ -n $virtualenv_path && -n $VIRTUAL_ENV_DISABLE_PROMPT ]]; then
     prompt_bold
-    prompt_segment $GUI_BLUE black `basename $virtualenv_path`
+    prompt_segment $GUI_SELECTION_BACKGROUND $GUI_SELECTION_FOREGROUND `basename $virtualenv_path`
     prompt_bold_end
   fi
 }

@@ -6,7 +6,8 @@ local c = Utils.colors
 
 require "lualine".setup {
     options = {
-        theme = "onedark",
+        theme = "tokyonight",
+        -- theme = "onedark",
         color_added = c.GREEN,
         color_removed = c.DARK_RED,
         color_modified = c.DARK_YELLOW,
@@ -16,6 +17,6 @@ require "lualine".setup {
     },
     sections = {
         lualine_x = {"encoding", "filetype"},
-        lualine_y = {"diff", "location"}
+        lualine_y = {"diff", "progress"}
     }
 }

@@ -1,35 +1,115 @@
+# Load theme from kitty config
+function load_theme() {
+    local kitty_dir="$HOME/.config/kitty"
+
+    if [[ ! -f "$kitty_dir/theme.sh" ]]; then
+	source "$kitty_dir/theme-gen.sh"
+    fi
+
+    source "$kitty_dir/theme.sh"
+}
+
+load_theme
+
 # Check with `man ls` and search `LSCOLORS` for the detail
 export LSCOLORS=Exfxcxdxbxegedabagacad
 
-export GUI_RED=#E86671 CTERM_RED=204 CTERM16_RED=1
-export GUI_DARK_RED=#BE5046 CTERM_DARK_RED=196 CTERM16_DARK_RED=9
-export GUI_GREEN=#98C379 CTERM_GREEN=114 CTERM16_GREEN=2
+export GUI_RED=$GUI_COLOR1 CTERM_RED=204 CTERM16_RED=1
+export GUI_DARK_RED=$GUI_COLOR17 CTERM_DARK_RED=196 CTERM16_DARK_RED=9
+export GUI_GREEN=$GUI_COLOR2 CTERM_GREEN=114 CTERM16_GREEN=2
 export GUI_GOLD=#FFD700 CTERM_GOLD=220 CTERM16_GOLD=3
-export GUI_YELLOW=#E0AF68 CTERM_YELLOW=180 CTERM16_YELLOW=3
-export GUI_DARK_YELLOW=#D19A66 CTERM_DARK_YELLOW=173 CTERM16_DARK_YELLOW=11
-export GUI_BLUE=#61AFEF CTERM_BLUE=039 CTERM16_BLUE=2
-export GUI_PURPLE=#C678DD CTERM_PURPLE=170 CTERM16_PURPLE=5
-export GUI_CYAN=#56B6C2 CTERM_CYAN=038 CTERM16_CYAN=6
+export GUI_YELLOW=$GUI_COLOR3 CTERM_YELLOW=180 CTERM16_YELLOW=3
+export GUI_DARK_YELLOW=$GUI_COLOR16 CTERM_DARK_YELLOW=173 CTERM16_DARK_YELLOW=11
+export GUI_BLUE=$GUI_COLOR4 CTERM_BLUE=039 CTERM16_BLUE=2
+export GUI_PURPLE=$GUI_COLOR5 CTERM_PURPLE=170 CTERM16_PURPLE=5
+export GUI_CYAN=$GUI_COLOR6 CTERM_CYAN=038 CTERM16_CYAN=6
 export GUI_MAGENTA=#C678DD CTERM_PURPLE=170 CTERM16_PURPLE=5
-export GUI_WHITE=#798294 CTERM_WHITE=145 CTERM16_WHITE=7
-export GUI_BLACK=#282C34 CTERM_BLACK=235 CTERM16_BLACK=0
-export GUI_BG_BLACK=#282c34 CTERM_BG_BLACK=237 CTERM16_BG_BLACK=0
+export GUI_WHITE=$GUI_COLOR7 CTERM_WHITE=145 CTERM16_WHITE=7
+export GUI_BLACK=$GUI_COLOR0 CTERM_BLACK=235 CTERM16_BLACK=0
+export GUI_BG_BLACK=$GUI_BACKGROUND CTERM_BG_BLACK=237 CTERM16_BG_BLACK=0
 export GUI_COMMENT_GREY=#5C6370 CTERM_COMMENT_GREY=059 CTERM16_COMMENT_GREY=15
-export GUI_GUTTER_FG_GREY=#abb2bf CTERM_GUTTER_FG_GREY=238 CTERM16_GUTTER_FG_GREY=15
-export GUI_CURSOR_GREY=#2C323C CTERM_CURSOR_GREY=236 CTERM16_CURSOR_GREY=8
-export GUI_VISUAL_GREY=#3E4452 CTERM_VISUAL_GREY=237 CTERM16_VISUAL_GREY=15
+export GUI_GUTTER_FG_GREY=$GUI_FOREGROUND CTERM_GUTTER_FG_GREY=238 CTERM16_GUTTER_FG_GREY=15
+export GUI_CURSOR_GREY=$GUI_CURSOR CTERM_CURSOR_GREY=236 CTERM16_CURSOR_GREY=8
+export GUI_VISUAL_GREY=$GUI_SELECTION_BACKGROUND CTERM_VISUAL_GREY=237 CTERM16_VISUAL_GREY=15
 export GUI_MENU_GREY=#3E4452 CTERM_MENU_GREY=237 CTERM16_MENU_GREY=8
 export GUI_SPECIAL_GREY=#3B4048 CTERM_SPECIAL_GREY=238 CTERM16_SPECIAL_GREY=15
 export GUI_VERTSPLIT=#181A1F CTERM_VERTSPLIT=059 CTERM16_VERTSPLIT=15
 export GUI_VISUAL_BLACK=NONE CTERM_VISUAL_BLACK=NONE CTERM16_VISUAL_BLACK=0
+export GUI_PRIMARY=$GUI_BLUE
+export GUI_SECONDARY=#3b4261
 
+
+print_segment() {
+    echo "%F{$1}$1%f %K{$1}($1)%k"
+}
 
 print_c() {
-    print -cP $1 "%F{$2}$2%f %K{$2}($2)%k" "%F{$3}$3%f %K{$3}($3)%k" "%F{$4}$4%f %K{$4}($4)%k"
+    local GUI_C=""
+    local CTERM_C=""
+    local CTERM16_C=""
+
+    if [[ $# -gt 1 ]]; then
+	GUI_C=$(print_segment "$2")
+    fi
+
+    if [[ $# -gt 2 ]]; then
+	CTERM_C=$(print_segment "$3")
+    fi
+
+    if [[ $# -gt 3 ]]; then
+	CTERM16_C=$(print_segment "$4")
+    fi
+
+    print -cP $1 "$GUI_C" "$CTERM_C" "$CTERM16_C"
+}
+
+print_theme() {
+    echo "Theme                    GUI"
+    echo "============================================================"
+    print_c PRIMARY $GUI_PRIMARY
+    print_c SECONDARY $GUI_SECONDARY
+    print_c BACKGROUND $GUI_BACKGROUND
+    print_c FOREGROUND $GUI_FOREGROUND
+    print_c SELECTION_BACKGROUND $GUI_SELECTION_BACKGROUND
+    print_c SELECTION_FOREGOUND $GUI_SELECTION_FOREGROUND
+    print_c URL_COLOR $GUI_URL_COLOR
+    print_c CURSOR $GUI_CURSOR
+    print_c ACTIVE_TAB_BACKGROUND $GUI_ACTIVE_TAB_BACKGROUND
+    print_c ACTIVE_TAB_FOREGROUND $GUI_ACTIVE_TAB_FOREGROUND
+    print_c INACTIVE_TAB_BACKGROUND $GUI_INACTIVE_TAB_BACKGROUND
+    print_c INACTIVE_TAB_FOREGROUND $GUI_INACTIVE_TAB_FOREGROUND
+
+    echo "\nNormal"
+    echo "============================================================"
+    print_c COLOR0 $GUI_COLOR0
+    print_c COLOR1 $GUI_COLOR1
+    print_c COLOR2 $GUI_COLOR2
+    print_c COLOR3 $GUI_COLOR3
+    print_c COLOR4 $GUI_COLOR4
+    print_c COLOR5 $GUI_COLOR5
+    print_c COLOR6 $GUI_COLOR6
+    print_c COLOR7 $GUI_COLOR7
+
+    echo "\nBright"
+    echo "============================================================"
+    print_c COLOR8 $GUI_COLOR8
+    print_c COLOR9 $GUI_COLOR9
+    print_c COLOR10 $GUI_COLOR10
+    print_c COLOR11 $GUI_COLOR11
+    print_c COLOR12 $GUI_COLOR12
+    print_c COLOR13 $GUI_COLOR13
+    print_c COLOR14 $GUI_COLOR14
+    print_c COLOR15 $GUI_COLOR15
+
+    echo "\nExtended colors"
+    echo "============================================================"
+    print_c COLOR16 $GUI_COLOR16
+    print_c COLOR17 $GUI_COLOR17
 }
 
 print_colors() {
-    echo "Name                    GUI           CTERM          CTERM16"
+    print_theme
+    echo "\nName                    GUI           CTERM          CTERM16"
     echo "============================================================"
     print_c RED $GUI_RED $CTERM_RED $CTERM16_RED
     print_c DARK_RED $GUI_DARK_RED $CTERM_DARK_RED $CTERM16_DARK_RED

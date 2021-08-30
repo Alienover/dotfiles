@@ -7,12 +7,19 @@ local nmap = Utils.nmap
 
 local r_code = Utils.r_code
 
+-- Populate the vim cmd prefix and suffix
 local t = function(str)
     return "<Cmd>" .. str .. "<CR>"
 end
 
-local e = function(str)
-    return t("e " .. str)
+-- Populate the command for file to edit
+local e = function(filepath)
+    return t("e " .. filepath)
+end
+
+-- Populate the floating terminal command with presets
+local ft = function(input)
+    return t(([[lua require"utils.floating_terminal":open({"%s", border = true })]]):format(input))
 end
 
 function _G.toggle_diffview()
@@ -73,7 +80,7 @@ wk.setup(
             padding = {1, 0, 1, 0} -- extra window padding [top, right, bottom, left]
         },
         layout = {
-            height = {min = 4, max = 15}, -- min and max height of the columns
+            height = {min = 2, max = 15}, -- min and max height of the columns
             width = {min = 20, max = 50}, -- min and max width of the columns
             spacing = 5, -- spacing between columns
             align = "center" -- align columns left, center or right
@@ -104,19 +111,31 @@ local key_maps = {
         l = {t "blast", "Last"},
         n = {t "bnext", "Next"},
         p = {t "bprevious", "Previous"},
-        s = {t "SymbolsOutline", "Symbols outline"}
+        s = {t "SymbolsOutline", "Symbols outline"},
+        b = {t "Telescope buffers", "Find buffers"}
     },
     t = {
-        name = "Telescope",
+        name = "Terminal",
+        [";"] = {ft "zsh", "terminal"},
+        h = {ft "htop", "htop"},
+        p = {ft "python", "python"},
+        n = {ft "node", "node"},
+        t = {t "lua require'utils.floating_terminal':toggle()", "Toggle"}
+    },
+    g = {
+        name = "Git",
+        c = {t "Telescope git_commits", "Git commits"},
+        f = {t "Telescope git_files", "Git files"},
+        j = {t "lua require'gitsigns'.next_hunk()", "Next hunk"},
+        k = {t "lua require'gitsigns'.prev_hunk()", "Previous hunk"},
+        p = {t "lua require'gitsigns'.preview_hunk()", "Preview hunk"},
+        b = {t "lua require'gitsigns'.blame_line()", "Blame line"}
+    },
+    f = {
+        name = "Files",
         r = {t "Telescope live_grep", "Live grep"},
         f = {t "Telescope find_files", "Find files"},
-        b = {t "Telescope buffers", "Find buffers"},
-        o = {t "Telescope oldfiles", "Recently opended"},
-        g = {
-            name = "Git",
-            c = {t "Telescope git_commits", "Git commits"},
-            f = {t "Telescope git_files", "Git files"}
-        }
+        o = {t "Telescope oldfiles", "Recently opended"}
     },
     o = {
         name = "Open",
@@ -125,6 +144,23 @@ local key_maps = {
         t = {e(Utils.files.tmux), ".tmux.conf"},
         n = {e(Utils.files.nvim), "init.vim"},
         k = {e(Utils.files.kitty), "kitty.conf"}
+    },
+    l = {
+        name = "LSP",
+        I = {t "LspInfo", "Info"},
+        R = {t "LspRestart", "Restart"},
+        f = {t "lua vim.lsp.buf.formatting()", "Format"},
+        q = {t "Telescope quickfix", "Quickfix"},
+        r = {t [[lua require"lspsaga.rename".rename()]], "Rename"},
+        s = {t "Telescope lsp_document_symbols", "Document symbols"},
+        d = {t "Telescope lsp_document_diagnostics", "Document diagnostic"},
+        n = {t [[lua require"lspsaga.diagnostic".lsp_jump_diagnostic_next()]], "Next diagnostic"},
+        p = {t [[lua require"lspsaga.diagnostic".lsp_jump_diagnostic_prev()]], "Previous diagnostic"}
+    },
+    c = {
+        name = "Code",
+        d = {t "Lspsaga preview_definition", "Definition"},
+        a = {t "Lspsaga code_action", "Code action"}
     }
 }
 

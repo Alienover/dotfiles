@@ -20,15 +20,7 @@ g.rnvimr_ranger_views = {
     {maxwidth = 49, ratio = {1}}
 }
 
-g.rnvimr_layout =
-    Utils.get_float_win_opts(
-    {
-        {
-            relative = "editor",
-            style = "minimal"
-        }
-    }
-)
+g.rnvimr_layout = Utils.get_float_win_opts()
 
 -- Link CursorLine into RnvimrNormal highlight in the Floating window
 cmd [[highlight link RnvimrNormal CursorLine]]

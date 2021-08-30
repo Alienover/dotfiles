@@ -4,6 +4,7 @@
 require("bufferline").setup(
     {
         options = {
+            theme = "tokyonight",
             -- theme = "onedark",
             mappings = true,
             show_close_icon = false,

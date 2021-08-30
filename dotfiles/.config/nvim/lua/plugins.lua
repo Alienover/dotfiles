@@ -28,11 +28,17 @@ return require "packer".startup(
 
             -- Styling
             use {
-                "monsonjeremy/onedark.nvim",
+                "folke/tokyonight.nvim",
                 config = function()
-                    require "config/onedark-config"
+                    require "config/theme-config"
                 end
             }
+            -- use {
+            --     "monsonjeremy/onedark.nvim",
+            --     config = function()
+            --         require "config/theme-config"
+            --     end
+            -- }
 
             -- Icons
             use {
@@ -154,12 +160,24 @@ return require "packer".startup(
                 "neovim/nvim-lspconfig",
                 opt = true,
                 event = "BufReadPre",
-                wants = {"lua-dev.nvim"},
+                wants = {"lua-dev.nvim", "lsp-colors.nvim"},
                 config = function()
                     require "lsp"
                 end,
                 requires = {
-                    "folke/lua-dev.nvim"
+                    "folke/lua-dev.nvim",
+                    {
+                        "glepnir/lspsaga.nvim",
+                        config = function()
+                            require "config/saga-config"
+                        end
+                    },
+                    {
+                        "folke/lsp-colors.nvim",
+                        config = function()
+                            require "lsp-colors".setup {}
+                        end
+                    }
                 }
             }
             use {
@@ -183,32 +201,41 @@ return require "packer".startup(
             }
 
             -- Frontend
+            -- use {
+            --     "ap/vim-css-color",
+            --     opt = true,
+            --     event = "BufReadPre"
+            -- }
+
             use {
-                "ap/vim-css-color",
+                "norcalli/nvim-colorizer.lua",
                 opt = true,
-                event = "BufReadPre"
+                event = "BufReadPre",
+                config = function()
+                    require "config/colorizer-config"
+                end
             }
 
             -- JavaScript
-            use {
-                "mxw/vim-jsx",
-                opt = true,
-                event = "BufReadPre",
-                ft = {"javascript.jsx", "javascriptreact", "typescript.jsx", "typescriptreact"}
-            }
-            use {
-                "pangloss/vim-javascript",
-                opt = true,
-                event = "BufReadPre",
-                ft = {
-                    "javascript",
-                    "javascriptreact",
-                    "javascript.jsx",
-                    "typescript",
-                    "typescriptreact",
-                    "typescript.jsx"
-                }
-            }
+            -- use {
+            --     "mxw/vim-jsx",
+            --     opt = true,
+            --     event = "BufReadPre",
+            --     ft = {"javascript.jsx", "javascriptreact", "typescript.jsx", "typescriptreact"}
+            -- }
+            -- use {
+            --     "pangloss/vim-javascript",
+            --     opt = true,
+            --     event = "BufReadPre",
+            --     ft = {
+            --         "javascript",
+            --         "javascriptreact",
+            --         "javascript.jsx",
+            --         "typescript",
+            --         "typescriptreact",
+            --         "typescript.jsx"
+            --     }
+            -- }
             use {
                 "heavenshell/vim-jsdoc",
                 opt = true,
@@ -246,19 +273,29 @@ return require "packer".startup(
                     require "config/treesitter-config"
                 end,
                 requires = {
+                    "andymass/vim-matchup",
                     {"nvim-treesitter/playground", cmd = {"TSHighlightCapturesUnderCursor", "TSPlaygroundToggle"}}
                 }
+            }
+
+            use {
+                "folke/todo-comments.nvim",
+                opt = true,
+                event = "BufReadPre",
+                cmd = {"TodoQuickFix", "TodoTelescope"},
+                config = function()
+                    require "config/todo-config"
+                end,
+                requires = "nvim-lua/plenary.nvim"
             }
         end,
         config = {
             display = {
                 open_fn = function()
                     return require "packer.util".float(
-                        Utils.get_float_win_opts(
-                            {
-                                {border = "single"}
-                            }
-                        )
+                        Utils.get_float_win_opts {
+                            border = true
+                        }
                     )
                 end
             }

@@ -36,8 +36,3 @@ autocmd TextYankPost * lua vim.highlight.on_yank {}
 " Windows to close with <q>
 autocmd FileType help,startuptime,qf,lspinfo,fugitiveblame nnoremap <buffer><silent> q :close<CR>
 autocmd FileType man nnoremap <buffer><silent> q :quit<CR>
-
-lua << EOF
-    local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
-    parser_config.typescript.used_by = "javascriptflow"
-EOF
