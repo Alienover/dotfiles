@@ -98,7 +98,6 @@ wk.setup(
 local key_maps = {
     w = {
         name = "Workspaces",
-        d = {t "lua toggle_diffview()", "Toggle diffview"},
         p = {t("Telescope find_files cwd=" .. Utils.files.polaris), "Search Polaris"},
         r = {t("Telescope find_files cwd=" .. Utils.files.rigel), "Search Rigel"}
     },
@@ -124,6 +123,7 @@ local key_maps = {
     },
     g = {
         name = "Git",
+        d = {t "lua toggle_diffview()", "Toggle diffview"},
         c = {t "Telescope git_commits", "Git commits"},
         f = {t "Telescope git_files", "Git files"},
         j = {t "lua require'gitsigns'.next_hunk()", "Next hunk"},
