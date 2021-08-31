@@ -41,8 +41,8 @@ set-option -g pane-active-border-style fg=$tm_color_inactive_bg
 set-option -g allow-rename off
 
 # Current playing track
-# tm_tunes="#[fg=$tm_color_music]#(osascript ~/.tmux_settings/google_play_music.scpt | cut -c 1-50)"
-tm_tunes="#[fg=$tm_color_music]#(osascript -l JavaScript ~/.config/tmux/tunes.js)"
+tm_tunes="#[fg=$tm_color_music]#(osascript $HOME/.config/tmux/music.scpt)"
+# tm_tunes="#[fg=$tm_color_music]#(osascript -l JavaScript ~/.config/tmux/tunes.js)"
 
 tm_date="#[bg=$tm_color_black,fg=$tm_color_grey]$tm_separator_left_arrow#[bg=$tm_color_grey,fg=$tm_color_inactive_fg] %R %d %b"
 tm_host="#[bg=$tm_color_grey,fg=$tm_color_primary,bold]$tm_separator_left_arrow#[bg=$tm_color_primary,fg=colour0,bold] #(whoami) "
