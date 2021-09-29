@@ -5,8 +5,9 @@ alias proxychains="/usr/local/bin/proxychains4"
 alias socksproxy="$HOME/src/socksproxy.sh"
 
 # For neovim
-alias vim="/usr/local/Cellar/neovim/nightly/bin/nvim"
-alias vi="/usr/local/Cellar/neovim/nightly/bin/nvim"
+alias nvim="/usr/local/Cellar/neovim/nightly/bin/nvim"
+alias vim="/usr/local/bin/nvim"
+alias vi="/usr/local/bin/nvim"
 
 # Git
 alias gd="git diff"
