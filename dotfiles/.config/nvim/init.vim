@@ -10,6 +10,10 @@ EOF
 " Require ~/.config/nvim/lua/init.lua
 lua require "init"
 
+" Italic support
+let &t_ZH="\e[3m"
+let &t_ZR="\e[23m"
+
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 

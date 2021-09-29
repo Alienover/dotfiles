@@ -59,7 +59,7 @@ return require "packer".startup(
             }
             -- Tabs
             use {
-                "akinsho/nvim-bufferline.lua",
+                "akinsho/bufferline.nvim",
                 event = "BufReadPre",
                 wants = "nvim-web-devicons",
                 config = function()

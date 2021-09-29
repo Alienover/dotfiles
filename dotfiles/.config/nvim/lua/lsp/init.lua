@@ -8,7 +8,7 @@ local on_attach = function(client)
     -- Keymap
     local keymap_otps = {noremap = true, silent = true}
 
-    nmap("gb", "<C-o><CR>", keymap_otps)
+    nmap("gb", "<C-o>", keymap_otps)
     nmap("gd", "<cmd>Telescope lsp_definitions<CR>zz", keymap_otps)
     nmap("gD", "<cmd>lua vim.lsp.buf.declaration()<CR>zz", keymap_otps)
     nmap("gr", "<cmd>Telescope lsp_references<CR>", keymap_otps)

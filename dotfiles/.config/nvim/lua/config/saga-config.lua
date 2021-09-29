@@ -19,8 +19,8 @@ local opts = {noremap = true}
 -- signature help in insert mode
 imap("<C-k>", [[<CMD>lua require"lspsaga.signaturehelp".signature_help()<CR>]], opts)
 -- Diagnostics navigation
-nmap("<C-b>", [[<CMD>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_prev()<CR>]], opts)
-nmap("<C-n>", [[<CMD>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_next()<CR>]], opts)
+nmap("<C-k>", [[<CMD>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_prev()<CR>]], opts)
+nmap("<C-j>", [[<CMD>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_next()<CR>]], opts)
 -- Scrolling
 nmap("<leader>[", [[<CMD>lua require"lspsaga.action".smart_scroll_with_saga(1)<CR>]], opts)
 nmap("<leader>]", [[<CMD>lua require"lspsaga.action".smart_scroll_with_saga(-1)<CR>]], opts)
