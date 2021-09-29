@@ -63,7 +63,7 @@ on getGoogleChromeSong()
 
                     set current to getGoogleMusicSong(theTab) of me
                     exit 
-                end 
+                end if
             end repeat
 
             if current is not null then

@@ -39,7 +39,7 @@ search_project() {
             PROJECT_ROOT="$WORK_DIR/Polaris"
             PROJECT_ARGS="tmux split-window -t \"$PROJECT_NAME\" \; \
                 new-window -t \"$PROJECT_NAME\" \; \
-                send-keys -t \"$PROJECT_NAME\" \"nvim\" C-m \;
+                send-keys -t \"$PROJECT_NAME\" \"vim\" C-m \;
             "
             ;;
         "$PROJECT_VPN")
