@@ -43,6 +43,18 @@ return require "packer".startup(
                 end
             }
 
+            use {
+                "onsails/lspkind-nvim",
+                config = function()
+                    require "lspkind".init(
+                        {
+                            withText = false,
+                            preset = "codicons"
+                        }
+                    )
+                end
+            }
+
             -- Statusline
             use {
                 "hoob3rt/lualine.nvim",
@@ -187,7 +199,9 @@ return require "packer".startup(
                     {"hrsh7th/cmp-calc", opt = true, event = "InsertEnter"},
                     "hrsh7th/cmp-nvim-lsp",
                     "hrsh7th/cmp-nvim-lua",
-                    "ray-x/cmp-treesitter"
+                    "ray-x/cmp-treesitter",
+                    -- Icons
+                    "onsails/lspkind-nvim"
                 }
             }
 
@@ -214,7 +228,11 @@ return require "packer".startup(
             use {
                 "steelsojka/pears.nvim",
                 config = function()
-                    require "pears".setup()
+                    require "pears".setup(
+                        function(conf)
+                            conf.preset("tag_matching")
+                        end
+                    )
                 end
             }
 

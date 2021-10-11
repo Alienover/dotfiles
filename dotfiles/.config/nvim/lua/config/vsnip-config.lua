@@ -1,27 +1,15 @@
 local Utils = require "utils"
 
-local g = Utils.g
+local g, cmd = Utils.g, Utils.cmd
 
-local imap, smap, xmap = Utils.imap, Utils.smap, Utils.xmap
+-- Keybindings for snippets expand, jumpping forward or backward
+cmd [[
+    imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+    smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
 
-local opts = {expr = true, silent = true}
+    imap <expr> <C-h>   vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)' : '<C-h>'
+    smap <expr> <C-h>   vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)' : '<C-h>'
+]]
 
-local t = function(str)
-    return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-function _G.vsnip_expand_or_jump()
-    if vim.fn.call("vsnip#available", {1}) then
-        return t "<Plug>(vsnip-expand-or-jump)"
-    else
-        return t "<C-l>"
-    end
-end
-
-imap("<C-l>", "v:lua.vsnip_expand_or_jump()", opts)
-smap("<C-l>", "v:lua.vsnip_expand_or_jump()", opts)
-
-xmap("<C-l>", "<Plug>(vsnip-select-text)", {})
-xmap("<C-l>", "<Plug>(vsnip-cut-text)", {})
-
+-- Directory to save the custom snippets
 g.vsnip_snippet_dir = Utils.files.snippets_dir

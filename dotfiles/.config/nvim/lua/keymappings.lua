@@ -9,7 +9,7 @@ local t = Utils.r_code
 local opts = {noremap = true, silent = true}
 
 -- Reload the config file
-nmap("<leader>r", ":source " .. Utils.files.nvim .. "<CR>", opts)
+nmap("<leader>r", ":execute 'so " .. Utils.files.nvim .. "' | echo 'Config reloaded!'<CR>", opts)
 
 -- Buffers navigation
 nmap("<C-h>", ":bp<CR>", opts)

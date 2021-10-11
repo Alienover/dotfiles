@@ -2,26 +2,7 @@
 -- https://github.com/hrsh7th/nvim-cmp
 
 local cmp = require "cmp"
-
--- Reference:
--- https://github.com/onsails/lspkind-nvim/blob/521e4f9217d9bcc388daf184be8b168233e8aeed/lua/lspkind/init.lua#L130-L148
-local function cmp_format(opts)
-    if opts == nil then
-        opts = {}
-    end
-
-    return function(entry, vim_item)
-        if opts.menu ~= nil then
-            vim_item.menu = opts.menu[entry.source.name]
-        end
-
-        if opts.maxwidth ~= nil then
-            vim_item.abbr = string.sub(vim_item.abbr, 1, opts.maxwidth)
-        end
-
-        return vim_item
-    end
-end
+local lspkind = require "lspkind"
 
 cmp.setup(
     {
@@ -38,33 +19,47 @@ cmp.setup(
             end
         },
         mapping = {
+            -- Scrolling
             ["<C-d>"] = cmp.mapping.scroll_docs(4),
             ["<C-u>"] = cmp.mapping.scroll_docs(-4),
+            -- Navigating
             ["<C-n>"] = cmp.mapping.select_next_item({behavior = cmp.SelectBehavior.Insert}),
             ["<C-p>"] = cmp.mapping.select_prev_item({behavior = cmp.SelectBehavior.Insert}),
             ["<Down>"] = cmp.mapping.select_next_item({behavior = cmp.SelectBehavior.Select}),
             ["<Up>"] = cmp.mapping.select_prev_item({behavior = cmp.SelectBehavior.Select}),
-            ["<C-e>"] = cmp.mapping.close(),
-            ["<CR>"] = cmp.mapping.confirm(
-                {
-                    behavior = cmp.ConfirmBehavior.Replace,
-                    select = true
-                }
-            ),
             ["<Tab>"] = function(fallback)
                 if cmp.visible() then
-                    cmp.select_next_item()
+                    cmp.select_next_item({behavior = cmp.SelectBehavior.Select})
                 else
                     fallback()
                 end
             end,
             ["<S-Tab>"] = function(fallback)
                 if cmp.visible() then
-                    cmp.select_prev_item()
+                    cmp.select_prev_item({behavior = cmp.SelectBehavior.Select})
                 else
                     fallback()
                 end
-            end
+            end,
+            -- Completion
+            ["<C-e>"] = cmp.mapping.close(),
+            ["<C-o>"] = cmp.mapping.complete(),
+            ["<C-l>"] = cmp.mapping(
+                function(fallback)
+                    if cmp.core.view:get_selected_entry() then
+                        cmp.confirm()
+                    else
+                        fallback()
+                    end
+                end,
+                {"i", "s"}
+            ),
+            ["<CR>"] = cmp.mapping.confirm(
+                {
+                    behavior = cmp.ConfirmBehavior.Replace,
+                    select = true
+                }
+            )
         },
         sources = {
             -- LSP
@@ -86,8 +81,9 @@ cmp.setup(
             {name = "emoji"}
         },
         formatting = {
-            format = cmp_format(
+            format = lspkind.cmp_format(
                 {
+                    with_text = false,
                     menu = ({
                         buffer = "[Buffer]",
                         nvim_lsp = "[LSP]",
