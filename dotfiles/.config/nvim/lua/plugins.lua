@@ -33,12 +33,6 @@ return require "packer".startup(
                     require "config/theme-config"
                 end
             }
-            -- use {
-            --     "monsonjeremy/onedark.nvim",
-            --     config = function()
-            --         require "config/theme-config"
-            --     end
-            -- }
 
             -- Icons
             use {
@@ -145,16 +139,6 @@ return require "packer".startup(
                 }
             }
 
-            -- Snippets
-            use {
-                "hrsh7th/vim-vsnip",
-                opt = true,
-                config = function()
-                    require "config/vsnip-config"
-                end,
-                requires = {"hrsh7th/vim-vsnip-integ"}
-            }
-
             -- LSP
             use {
                 "neovim/nvim-lspconfig",
@@ -180,32 +164,61 @@ return require "packer".startup(
                     }
                 }
             }
+
             use {
-                "hrsh7th/nvim-compe",
-                opt = true,
-                event = "InsertEnter",
+                "hrsh7th/nvim-cmp",
                 config = function()
-                    require "config/compe-config"
+                    require "config/cmp-config"
                 end,
-                wants = {"vim-vsnip"},
                 requires = {
-                    "hrsh7th/vim-vsnip",
-                    "hrsh7th/vim-vsnip-integ",
+                    -- Snippets
                     {
-                        "windwp/nvim-autopairs",
+                        "hrsh7th/vim-vsnip",
                         config = function()
-                            require "config/autopairs-config"
-                        end
-                    }
+                            require "config/vsnip-config"
+                        end,
+                        requires = {"hrsh7th/vim-vsnip-integ"}
+                    },
+                    -- Sources
+                    {"hrsh7th/cmp-vsnip", opt = true, event = "InsertEnter"},
+                    {"hrsh7th/cmp-buffer", opt = true, event = "InsertEnter"},
+                    {"hrsh7th/cmp-emoji", opt = true, event = "InsertEnter"},
+                    {"hrsh7th/cmp-path", opt = true, event = "InsertEnter"},
+                    {"hrsh7th/cmp-calc", opt = true, event = "InsertEnter"},
+                    "hrsh7th/cmp-nvim-lsp",
+                    "hrsh7th/cmp-nvim-lua",
+                    "ray-x/cmp-treesitter"
                 }
             }
 
-            -- Frontend
             -- use {
-            --     "ap/vim-css-color",
+            --     "hrsh7th/nvim-compe",
             --     opt = true,
-            --     event = "BufReadPre"
+            --     event = "InsertEnter",
+            --     config = function()
+            --         require "config/compe-config"
+            --     end,
+            --     wants = {"vim-vsnip"},
+            --     requires = {
+            --         "hrsh7th/vim-vsnip",
+            --         "hrsh7th/vim-vsnip-integ"
+            --         -- {
+            --         --     "windwp/nvim-autopairs",
+            --         --     config = function()
+            --         --         require "config/autopairs-config"
+            --         --     end
+            --         -- }
+            --     }
             -- }
+
+            use {
+                "steelsojka/pears.nvim",
+                config = function()
+                    require "pears".setup()
+                end
+            }
+
+            -- Frontend
 
             use {
                 "norcalli/nvim-colorizer.lua",
@@ -217,25 +230,6 @@ return require "packer".startup(
             }
 
             -- JavaScript
-            -- use {
-            --     "mxw/vim-jsx",
-            --     opt = true,
-            --     event = "BufReadPre",
-            --     ft = {"javascript.jsx", "javascriptreact", "typescript.jsx", "typescriptreact"}
-            -- }
-            -- use {
-            --     "pangloss/vim-javascript",
-            --     opt = true,
-            --     event = "BufReadPre",
-            --     ft = {
-            --         "javascript",
-            --         "javascriptreact",
-            --         "javascript.jsx",
-            --         "typescript",
-            --         "typescriptreact",
-            --         "typescript.jsx"
-            --     }
-            -- }
             use {
                 "heavenshell/vim-jsdoc",
                 opt = true,
