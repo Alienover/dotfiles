@@ -17,13 +17,19 @@ require "lspsaga".init_lsp_saga {
 local opts = {noremap = true}
 
 -- signature help in insert mode
-imap("<C-k>", [[<CMD>lua require"lspsaga.signaturehelp".signature_help()<CR>]], opts)
+imap("<C-k>", [[<CMD>Lspsaga signature_help<CR>]], opts)
 -- Diagnostics navigation
-nmap("<C-k>", [[<CMD>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_prev()<CR>]], opts)
-nmap("<C-j>", [[<CMD>lua require"lspsaga.diagnostic".lsp_jump_diagnostic_next()<CR>]], opts)
+nmap("<C-k>", [[<CMD>Lspsaga diagnostic_jump_prev<CR>]], opts)
+nmap("<C-j>", [[<CMD>Lspsaga diagnostic_jump_next<CR>]], opts)
 -- Scrolling
 nmap("<leader>[", [[<CMD>lua require"lspsaga.action".smart_scroll_with_saga(1)<CR>]], opts)
 nmap("<leader>]", [[<CMD>lua require"lspsaga.action".smart_scroll_with_saga(-1)<CR>]], opts)
 -- Definition and references
-nmap("gh", [[<CMD>lua require"lspsaga.provider".lsp_finder()<CR>]], opts)
-nmap("K", [[<CMD>lua require"lspsaga.hover".render_hover_doc()<CR>]], opts)
+nmap("gh", [[<CMD>Lspsaga lsp_finder<CR>]], opts)
+nmap("K", [[<CMD>Lspsaga hover_doc<CR>]], opts)
+
+-- -- Rewrite the mappings due to the lspsaga issues in v5.1 and nightly
+-- imap("<C-k>", [[<CMD>lua vim.lsp.buf.signature_help()<CR>]], opts)
+-- nmap("<C-k>", [[<CMD>lua vim.lsp.diagnostic.goto_next()<CR>]], opts)
+-- nmap("<C-j>", [[<CMD>lua vim.lsp.diagnostic.goto_prev()<CR>]], opts)
+-- nmap("K", [[<CMD>lua vim.lsp.buf.hover()<CR>]], opts)

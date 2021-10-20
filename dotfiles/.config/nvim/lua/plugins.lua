@@ -77,7 +77,7 @@ return require "packer".startup(
             use {
                 "tpope/vim-fugitive",
                 opt = true,
-                cmd = {"Git"}
+                cmd = {"Git", "Gdiff"}
             }
             use {"janko-m/vim-test", opt = true, cmd = {"TestFile", "TestNearest"}}
 
@@ -163,7 +163,10 @@ return require "packer".startup(
                 requires = {
                     "folke/lua-dev.nvim",
                     {
-                        "glepnir/lspsaga.nvim",
+                        -- Replace the original repo for nvim v5.1 compatibility
+                        -- "glepnir/lspsaga.nvim",
+                        "tami5/lspsaga.nvim",
+                        branch = "nvim51",
                         config = function()
                             require "config/saga-config"
                         end
