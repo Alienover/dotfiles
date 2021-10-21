@@ -90,9 +90,28 @@ on getAppleMusicSong()
     return current
 end getAppleMusicSong
 
+on getSpotifyAppSong()
+    set current to ""
+
+    tell application "Spotify"
+	if player state is playing then
+	    set currName to name of current track
+	    set currArtist to artist of current track
+
+	    set current to currName & " - " & currArtist
+	end if
+    end tell
+
+    return current
+end getSpotifyAppSong
+
 set current to ""
 
-if application "Music" is running then
+if application "Spotify" is running then
+    set current to getSpotifyAppSong() of me
+end if
+
+if current is "" and application "Music" is running then
     set current to getAppleMusicSong() of me
 end if
 
