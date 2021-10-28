@@ -25,10 +25,6 @@
       "}"
     ]
   },
-  "redux-action": {
-    "prefix": ["action"],
-    "body": []
-  },
   "redux-request-action-types": {
     "prefix": ["rrat"],
     "body": [
