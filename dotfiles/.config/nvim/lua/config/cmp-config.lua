@@ -75,10 +75,10 @@ cmp.setup(
             -- { name = 'ultisnips' },
 
             -- Utilities
-            {name = "buffer"},
             {name = "path"},
             {name = "calc"},
-            {name = "emoji"}
+            {name = "emoji"},
+            {name = "buffer", keyword_length = 5}
         },
         formatting = {
             format = lspkind.cmp_format(
@@ -96,6 +96,10 @@ cmp.setup(
                     })
                 }
             )
+        },
+        experimental = {
+            native_menu = false,
+            ghost_text = true
         }
     }
 )
