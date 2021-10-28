@@ -95,7 +95,8 @@ fi
 
 # PATHs
 
-# export PATH="/usr/local/opt/mysql@5.6/bin:/usr/local/bin:$PATH"
+# MySQL installed by brew
+export PATH="/usr/local/opt/mysql-client/bin:$PATH"
 # Go path
 export PATH="$HOME/go/bin:$PATH"
 
