@@ -60,6 +60,7 @@ ZSH_THEME="agnoster"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+  gh
   git
   sudo
   encode64
@@ -92,28 +93,6 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
   export EDITOR='nvim'
 fi
-
-# PATHs
-
-# MySQL installed by brew
-export PATH="/usr/local/opt/mysql-client/bin:$PATH"
-# Go path
-export PATH="$HOME/go/bin:$PATH"
-
-# Yarn path
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-
-# Pyenv path
-export PATH="$PYENV_ROOT/bin:$PATH"
-
-# Ruby path
-export PATH="/usr/local/opt/ruby/bin:$PATH"
-
-# Add Visual Studio Code (code)
-export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-
-# Github CLI path
-export PATH="$HOME/.githubcli/bin:$PATH"
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -158,3 +137,6 @@ export LC_ALL=en_US.UTF-8
 
 # Perl
 eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
+
+# Paths
+source "$HOME/.config/zsh/paths.sh"
