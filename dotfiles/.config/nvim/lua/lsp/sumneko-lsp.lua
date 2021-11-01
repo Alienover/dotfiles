@@ -9,17 +9,8 @@
 -- rm sumneko-lua.vsix
 -- chmod +x sumneko-lua/extension/server/bin/$platform/lua-language-server
 
-local lua_cmd = {
-    "lua-language-server",
-    "-E",
-    "-e",
-    "LANG=en",
-    os.getenv "HOME" .. "/src/sumneko-lua/main.lua"
-}
-
 return require "lua-dev".setup {
     lspconfig = {
-        cmd = lua_cmd,
         settings = {
             Lua = {
                 workspace = {

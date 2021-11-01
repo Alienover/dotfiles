@@ -1,8 +1,70 @@
 local Utils = require "utils"
 
 local lspconfig = require "lspconfig"
+local lspinstaller = require "nvim-lsp-installer"
 
 local nmap, cmd = Utils.nmap, Utils.cmd
+
+local LSP_SOURCES = {
+    MANUAL = 0,
+    INSTALLER = 1
+}
+
+local installed_lsp = {
+    -- `npm` required
+    flow = {
+        filename = "flow-lsp",
+        source = LSP_SOURCES.MANUAL
+    },
+    html = {
+        filename = "",
+        source = LSP_SOURCES.INSTALLER
+    },
+    cssls = {
+        filename = "",
+        source = LSP_SOURCES.INSTALLER
+    },
+    vimls = {
+        filename = "",
+        source = LSP_SOURCES.INSTALLER
+    },
+    jsonls = {
+        filename = "json-lsp",
+        source = LSP_SOURCES.INSTALLER
+    },
+    bashls = {
+        filename = "",
+        source = LSP_SOURCES.INSTALLER
+    },
+    tsserver = {
+        filename = "ts-lsp",
+        source = LSP_SOURCES.INSTALLER
+    },
+    tailwindcss = {
+        filename = "",
+        source = LSP_SOURCES.INSTALLER
+    },
+    pyright = {
+        filename = "",
+        source = LSP_SOURCES.INSTALLER
+    },
+    -- `go` required
+    efm = {
+        -- NOTE: `sudo` required
+        filename = "efm-lsp",
+        source = LSP_SOURCES.INSTALLER
+    },
+    gopls = {
+        -- NOTE: `sudo` required
+        filename = "go-lsp",
+        source = LSP_SOURCES.INSTALLER
+    },
+    -- `git` required
+    sumneko_lua = {
+        filename = "sumneko-lsp",
+        source = LSP_SOURCES.INSTALLER
+    }
+}
 
 local on_attach = function(client)
     -- Keymap
@@ -13,10 +75,6 @@ local on_attach = function(client)
     nmap("gD", "<cmd>lua vim.lsp.buf.declaration()<CR>zz", keymap_otps)
     nmap("gr", "<cmd>Telescope lsp_references<CR>", keymap_otps)
     nmap("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", keymap_otps)
-    -- nmap("K", "<cmd>lua vim.lsp.buf.hover()<CR>", keymap_otps)
-    -- nmap("<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", keymap_otps)
-    -- nmap("<C-b>", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", keymap_otps)
-    -- nmap("<C-n>", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", keymap_otps)
 
     if client.name == "tsserver" then
         client.resolved_capabilities.document_formatting = false
@@ -42,33 +100,71 @@ local custom_capabilities = function()
     return capabilities
 end
 
-local lsp_packages = {
-    bashls = "bash-lsp",
-    efm = "efm-lsp",
-    flow = "flow-lsp",
-    gopls = "go-lsp",
-    vimls = "vim-lsp",
-    jsonls = "json-lsp",
-    html = "html-lsp",
-    cssls = "css-lsp",
-    sumneko_lua = "sumneko-lsp",
-    tsserver = "ts-lsp"
-}
+local function init_lsp()
+    local function load_config(name)
+        local config = {}
 
-for server, pkg_name in pairs(lsp_packages) do
-    local config = require("lsp/" .. pkg_name)
+        if (name or "") ~= "" then
+            local config_filename = "lsp/" .. name
 
-    lspconfig[server].setup(
-        vim.tbl_deep_extend(
+            if
+                pcall(
+                    function()
+                        require(config_filename)
+                    end
+                )
+             then
+                config = require(config_filename)
+            end
+        end
+
+        return vim.tbl_deep_extend(
             "force",
             {
                 on_attach = on_attach,
-                capabilities = config.capabilities or custom_capabilities()
+                capabilities = config.capabilities or custom_capabilities(),
+                flags = {
+                    debounce_text_changes = 150
+                }
             },
             config
         )
+    end
+
+    -- Setup the lsp for the one installed manually
+    for server, opts in pairs(installed_lsp) do
+        if opts.source == LSP_SOURCES.MANUAL then
+            local config = load_config(opts.filename)
+
+            lspconfig[server].setup(config)
+        end
+    end
+
+    -- Setup the lsp for the one from installer
+    lspinstaller.on_server_ready(
+        function(server)
+            local config = {}
+            local opts = installed_lsp[server.name]
+
+            if opts ~= nil then
+                config = load_config(opts.filename)
+            end
+
+            server:setup(config)
+        end
     )
 end
+
+for name, _ in pairs(installed_lsp) do
+    local existed, server = lspinstaller.get_server(name)
+    if existed then
+        if not server:is_installed() then
+            server:install()
+        end
+    end
+end
+
+init_lsp()
 
 -- Automatically update diagnostics
 vim.lsp.handlers["textDocument/publishDiagnostics"] =

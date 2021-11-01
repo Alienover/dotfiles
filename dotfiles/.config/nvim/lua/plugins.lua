@@ -43,18 +43,6 @@ return require "packer".startup(
                 end
             }
 
-            use {
-                "onsails/lspkind-nvim",
-                config = function()
-                    require "lspkind".init(
-                        {
-                            withText = false,
-                            preset = "codicons"
-                        }
-                    )
-                end
-            }
-
             -- Statusline
             use {
                 "hoob3rt/lualine.nvim",
@@ -152,6 +140,7 @@ return require "packer".startup(
             }
 
             -- LSP
+            use {"williamboman/nvim-lsp-installer"}
             use {
                 "neovim/nvim-lspconfig",
                 opt = true,
@@ -161,6 +150,7 @@ return require "packer".startup(
                     require "lsp"
                 end,
                 requires = {
+                    "williamboman/nvim-lsp-installer",
                     "folke/lua-dev.nvim",
                     {
                         -- Replace the original repo for nvim v5.1 compatibility

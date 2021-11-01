@@ -83,16 +83,17 @@ cmp.setup(
         formatting = {
             format = lspkind.cmp_format(
                 {
+                    -- preset = "codicons",
                     with_text = false,
                     menu = ({
                         buffer = "[Buffer]",
                         nvim_lsp = "[LSP]",
-                        treesitter = "[[Treesitter]]",
-                        vsnip = "[[VSnip]]",
+                        treesitter = "[Treesitter]",
+                        vsnip = "[VSnip]",
                         nvim_lua = "[Lua]",
-                        path = "[[Path]]",
-                        calc = "[[Calc]]",
-                        emoji = "[[Emoji]]"
+                        path = "[Path]",
+                        calc = "[Calc]",
+                        emoji = "[Emoji]"
                     })
                 }
             )

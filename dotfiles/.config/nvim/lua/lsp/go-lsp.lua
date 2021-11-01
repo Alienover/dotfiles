@@ -1,5 +1,4 @@
 local M = {
-    cmd = {"gopls", "serve"},
     filetypes = {"go", "gomod"},
     settings = {
         gopls = {

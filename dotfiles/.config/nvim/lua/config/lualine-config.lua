@@ -16,7 +16,6 @@ require "lualine".setup {
         }
     },
     sections = {
-        lualine_x = {"encoding", "filetype"},
-        lualine_y = {"diff", "progress"}
+        lualine_x = {"encoding", "filetype"}
     }
 }

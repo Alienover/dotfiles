@@ -13,8 +13,6 @@ local prettier = {
             prettier_bin = "prettier --config " .. vim.loop.os_homedir() .. "/.prettierrc"
         end
 
-        print(prettier_bin)
-
         return prettier_bin .. " --stdin-filepath ${INPUT}"
     end)()
 }
@@ -31,6 +29,16 @@ local luafmt = {
     formatCommand = "luafmt --stdin ${INPUT}"
 }
 
+local isort = {
+    formatStdin = true,
+    formatCommand = "isort --quiet -"
+}
+
+local black = {
+    formatStdin = true,
+    formatCommand = "black --quiet -"
+}
+
 local M = {
     init_options = {documentFormatting = true},
     filetypes = {
@@ -43,7 +51,8 @@ local M = {
         "css",
         "html",
         "json",
-        "lua"
+        "lua",
+        "python"
     },
     settings = {
         rootMarkers = {".git/", "package.json"},
@@ -57,7 +66,8 @@ local M = {
             css = {prettier},
             html = {prettier},
             json = {prettier},
-            lua = {luafmt}
+            lua = {luafmt},
+            python = {isort, black}
         }
     }
 }

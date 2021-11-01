@@ -6,14 +6,11 @@ local M = {
     filetypes = {"json", "jsonc"},
     settings = {
         json = {
+            -- Find more schemas from: https://www.schemastore.org/json/
             schemas = {
                 {
                     fileMatch = {"package.json"},
                     url = "https://json.schemastore.org/package.json"
-                },
-                {
-                    fileMatch = {"jsconfig*.json"},
-                    url = "https://json.schemastore.org/jsconfig.json"
                 },
                 {
                     fileMatch = {"tsconfig*.json"},
@@ -30,10 +27,6 @@ local M = {
                 {
                     fileMatch = {".eslintrc", ".eslintrc.json"},
                     url = "https://json.schemastore.org/eslintrc.json"
-                },
-                {
-                    fileMatch = {"nodemon.json"},
-                    url = "https://json.schemastore.org/nodemon.json"
                 }
             }
         }
