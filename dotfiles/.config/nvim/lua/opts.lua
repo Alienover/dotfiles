@@ -4,12 +4,14 @@ local o, bo, wo, g = Utils.o, Utils.bo, Utils.wo, Utils.g
 
 local cmd = Utils.cmd
 
--- be iMproved, required
-cmd [[set nocompatible]]
 cmd [[filetype plugin indent on]]
 
 cmd [[syntax on]]
 
+-- be iMproved, required
+o.compatible = false
+
+-- Leader key mapping
 g.mapleader = "\\"
 
 o.title = true
@@ -44,8 +46,13 @@ o.clipboard = "unnamed"
 o.backspace = "indent,eol,start"
 o.wildignore = "*.swp, *.bak, *.pyc, *.class"
 
+-- Diff mode
 o.fillchars = "diff:╱"
 wo.fillchars = "diff:╱"
+
+-- Llist mode
+wo.list = true
+wo.listchars = "tab:>-,lead:·,trail:·"
 
 -- Python for neovim
 cmd [[
