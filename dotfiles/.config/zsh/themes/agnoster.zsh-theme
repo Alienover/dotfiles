@@ -54,6 +54,9 @@ esac
   # escape sequence with a single literal character.
   # Do not change this! Do not make it '\u2b80'; that is the old, wrong code point.
   SEGMENT_SEPARATOR=$'\ue0b0'
+  SEGMENT_SEPARATOR_REV=""
+
+  SEPARATOR=$SEGMENT_SEPARATOR
 }
 
 # Begin a segment
@@ -72,10 +75,31 @@ prompt_segment() {
   [[ -n $3 ]] && echo -n $3
 }
 
+prompt_segment_rev() {
+  local bg fg
+  [[ -n $1 ]] && bg="%K{$1}" || bg="%k"
+  [[ -n $2 ]] && fg="%F{$2}" || fg="%f"
+  if [[ $CURRENT_BG != 'NONE' && $1 != $CURRENT_BG ]]; then
+    # echo -n " %{$bg%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR_REV%{$fg%} "
+    echo -n "%{%K{$CURRENT_BG}%F{$1}%}$SEGMENT_SEPARATOR_REV%{$bg$fg%} "
+  else
+    echo -n "%{$bg%}%{$fg%} "
+  fi
+  CURRENT_BG=$1
+  [[ -n $3 ]] && echo -n "$3 "
+}
+
+prompt_start() {
+  CURRENT_BG=''
+}
+
 # End the prompt, closing any open segments
 prompt_end() {
+  local separator
+  [[ -n $1 ]] && separator="$1" || separator="$SEGMENT_SEPARATOR"
+
   if [[ -n $CURRENT_BG ]]; then
-    echo -n " %{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR"
+    echo -n " %{%k%F{$CURRENT_BG}%}$separator"
   else
     echo -n "%{%k%}"
   fi
@@ -222,12 +246,21 @@ prompt_dir() {
 
 # Virtualenv: current working virtualenv
 prompt_virtualenv() {
-  local virtualenv_path="$VIRTUAL_ENV"
-  if [[ -n $virtualenv_path && -n $VIRTUAL_ENV_DISABLE_PROMPT ]]; then
-    prompt_bold
-    prompt_segment $GUI_SELECTION_BACKGROUND $GUI_SELECTION_FOREGROUND `basename $virtualenv_path`
-    prompt_bold_end
-  fi
+  prompt_bold
+  prompt_segment_rev $GUI_SELECTION_BACKGROUND $GUI_SELECTION_FOREGROUND "\ue73c `/usr/bin/basename $VIRTUAL_ENV`"
+  prompt_bold_end
+}
+
+prompt_node() {
+  prompt_bold
+  prompt_segment_rev $GUI_GREEN $GUI_BLACK "\ue718 `node -v | sed 's/v//'`"
+  prompt_bold_end
+}
+
+prompt_go() {
+	prompt_bold
+  prompt_segment_rev $GUI_CYAN $GUI_BLACK "\ue724 `/usr/local/go/bin/go env GOVERSION | /usr/bin/sed 's/go//'`"
+  prompt_bold_end
 }
 
 # Status:
@@ -260,18 +293,111 @@ prompt_aws() {
   esac
 }
 
+prompt_vi() {
+  local mode=""
+
+  case $ZVM_MODE in
+    $ZVM_MODE_NORMAL)
+      mode="NORMAL"
+      # Something you want to do...
+    ;;
+    $ZVM_MODE_INSERT)
+      mode="INSERT"
+      # Something you want to do...
+    ;;
+    $ZVM_MODE_VISUAL)
+      mode="VISUAL"
+      # Something you want to do...
+    ;;
+    $ZVM_MODE_VISUAL_LINE)
+      mode="V-LINE"
+      # Something you want to do...
+    ;;
+    $ZVM_MODE_REPLACE)
+      mode="REPLACE"
+      # Something you want to do...
+    ;;
+  esac
+
+  if [[ ! -z "$mode" ]]; then
+    prompt_bold
+    prompt_segment_rev $GUI_ACTIVE_TAB_BACKGROUND $GUI_ACTIVE_TAB_FOREGROUND $mode
+    prompt_bold_end
+  fi
+}
+
+prompt_runtime() {
+	local function __runtime_format() {
+		local hours=$(printf '%u' $(($1 / 3600)))
+		local mins=$(printf '%u' $((($1 - hours * 3600) / 60)))
+		local secs=$(printf "%.2f" $(($1 - 60 * mins - 3600 * hours)))
+		if [[ ! "$hours" == "0" || ! "$mins" == "0" ]]; then
+			secs=$(printf "%u" $(($1 - 60 * mins - 3600 * hours)))
+		fi
+
+		local output=""
+		local function append() {
+			if [[ ! "$1" == 0 ]]; then
+				[[ -n $output ]] && output+=" "
+				
+				output+="$1$2"
+			fi
+		}
+
+		append $hours "h"
+		append $mins "m"
+		append $secs "s"
+
+		echo "$output"
+	}
+
+  local cmd_duration=$CMD_DURATION
+
+  if [[ -n $cmd_duration && $cmd_runtime -ge 0 ]]; then
+		local formatted=$(__runtime_format $cmd_duration)
+		prompt_segment_rev $GUI_DARK_YELLOW $GUI_BLACK "${formatted}"
+  fi
+}
+
+prompt_env() {
+	local root=`git rev-parse --show-toplevel --quiet 2>/dev/null`
+
+	if [[ -n $root ]]; then
+		if [[ -n `find $root -maxdepth 1 -type f -name "package.json"` ]]; then
+			prompt_node
+			return 0
+		fi
+	fi
+
+	if [[ -n $GO_PROJECTS_PATH ]]; then
+		for path in "$GO_PROJECTS_PATH[@]"; do
+			if [[ $PWD =~ $path ]]; then
+				prompt_go
+			fi
+		done
+	fi
+
+	local virtualenv_path="$VIRTUAL_ENV"
+	if [[ -n $virtualenv_path && -n $VIRTUAL_ENV_DISABLE_PROMPT ]]; then
+		prompt_virtualenv
+	fi
+}
+
 ## Main prompt
 build_prompt() {
   RETVAL=$?
   prompt_status
-  prompt_virtualenv
-  prompt_aws
-  prompt_context
   prompt_dir
   prompt_git
-  prompt_bzr
-  prompt_hg
   prompt_end
 }
 
+build_rprompt() {
+  prompt_start
+  prompt_runtime
+  prompt_env
+  prompt_vi
+}
+
 PROMPT='%{%f%b%k%}$(build_prompt) '
+RPROMPT=' %{%f%b%k%}$(build_rprompt)'

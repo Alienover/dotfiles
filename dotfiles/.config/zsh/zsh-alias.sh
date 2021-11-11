@@ -2,7 +2,7 @@
 alias proxychains="/usr/local/bin/proxychains4"
 
 # System SOCKS Proxy
-alias socksproxy="$HOME/src/socksproxy.sh"
+alias socksproxy="${HOME}/src/socksproxy.sh"
 
 # For neovim
 alias nvim="/usr/local/Cellar/neovim/nightly/bin/nvim"
@@ -16,6 +16,13 @@ alias gs="git status"
 alias gp="git pull"
 alias gp="git push origin"
 
+# Directories
+alias ls="ls -G"
+alias ll="ls -lh"
+
+# alias -g ..='cd ..'
+# alias -g ...='cd ../..'
+
 init_config_alias() {
     local MY_CONFIG_DIR="$HOME/.config"
 
@@ -28,13 +35,14 @@ init_work_alias() {
     local MY_WORK_DIR="$HOME/Documents/work"
 
     # Edison
-    local EDISON_REPO_DIR="$MY_WORK_DIR/agent8"
+    export EDISON_REPO_DIR="$MY_WORK_DIR/agent8"
 
     alias agent8="cd $EDISON_REPO_DIR"
-    alias saturn="cd $EDISON_REPO_DIR/Saturn"
-    alias titan="cd $EDISON_REPO_DIR/Titan"
     alias ops="cd $EDISON_REPO_DIR/Ops"
+    alias titan="cd $EDISON_REPO_DIR/Titan"
+    alias rigel="cd $EDISON_REPO_DIR/Rigel"
     alias utils="cd $EDISON_REPO_DIR/Utils"
+    alias saturn="cd $EDISON_REPO_DIR/Saturn"
     alias polaris="cd $EDISON_REPO_DIR/Polaris"
 
     alias edo_login="sh $MY_WORK_DIR/others/edo_login.sh"
