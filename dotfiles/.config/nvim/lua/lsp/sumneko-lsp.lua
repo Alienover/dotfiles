@@ -9,17 +9,17 @@
 -- rm sumneko-lua.vsix
 -- chmod +x sumneko-lua/extension/server/bin/$platform/lua-language-server
 
-return require "lua-dev".setup {
+return require("lua-dev").setup({
     lspconfig = {
         settings = {
             Lua = {
                 workspace = {
-                    checkThirdParty = false
-                }
-            }
-        }
-    }
-}
+                    checkThirdParty = false,
+                },
+            },
+        },
+    },
+})
 
 -- local M = {}
 

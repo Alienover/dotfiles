@@ -1,9 +1,9 @@
-local Utils = require "utils"
+local Utils = require("utils")
 
 local M = {
     options = {},
     instance = nil,
-    is_toggle = false
+    is_toggle = false,
 }
 
 local function reset()
@@ -23,33 +23,31 @@ function _G.clear_float_term(win, buf, opts)
 
     -- Only clear the win and buf when it's close
     if win and vim.api.nvim_win_is_valid(win) then
-        vim.api.nvim_win_close(win, {force = true})
+        vim.api.nvim_win_close(win, { force = true })
     end
 
     if buf and vim.api.nvim_buf_is_valid(buf) then
-        vim.api.nvim_buf_delete(buf, {force = true})
+        vim.api.nvim_buf_delete(buf, { force = true })
     end
 
     reset()
 end
 
 local function open_window(buf, args)
-    local win =
-        vim.api.nvim_open_win(
+    local win = vim.api.nvim_open_win(
         buf,
         true,
-        Utils.get_float_win_opts(
-            vim.tbl_deep_extend(
-                "force",
-                {
-                    border = true
-                },
-                args
-            )
-        )
+        Utils.get_float_win_opts(vim.tbl_deep_extend("force", {
+            border = true,
+        }, args))
     )
 
-    Utils.cmd(("autocmd! TermClose <buffer> lua clear_float_term(%s, %s)"):format(win, buf))
+    Utils.cmd(
+        ("autocmd! TermClose <buffer> lua clear_float_term(%s, %s)"):format(
+            win,
+            buf
+        )
+    )
 
     Utils.cmd([[startinsert]])
 
@@ -104,7 +102,7 @@ function M:close()
         win = 0
     end
 
-    clear_float_term(win, self.instance, {force = true})
+    clear_float_term(win, self.instance, { force = true })
 end
 
 return M

@@ -1,13 +1,13 @@
 local M = {
-    filetypes = {"go", "gomod"},
+    filetypes = { "go", "gomod" },
     settings = {
         gopls = {
             analyses = {
-                unusedparams = true
+                unusedparams = true,
             },
-            staticcheck = true
-        }
-    }
+            staticcheck = true,
+        },
+    },
 }
 
 -- require "lspconfig".gopls.setup(M)

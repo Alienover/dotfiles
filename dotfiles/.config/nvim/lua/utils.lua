@@ -1,11 +1,11 @@
-vim.cmd [[packadd nvim-lspconfig]]
+vim.cmd([[packadd nvim-lspconfig]])
 
-local lsputil = require "lspconfig.util"
+local lsputil = require("lspconfig.util")
 
 local M = {}
 
 local map = function(mode, key, cmd, opts)
-    opts = vim.tbl_deep_extend("force", {silent = true}, opts or {})
+    opts = vim.tbl_deep_extend("force", { silent = true }, opts or {})
 
     if opts.buffer ~= nil then
         local buffer = opts.buffer
@@ -90,60 +90,65 @@ M.get_float_win_opts = function(args)
     local border = args.border
     args.border = nil
 
-    return vim.tbl_deep_extend(
-        "force",
-        {
-            row = math.floor(t_offset * M.lines),
-            col = math.floor(l_offset * M.columns),
-            height = math.floor((1 - t_offset * 2) * M.lines),
-            width = math.floor((1 - l_offset * 2) * M.columns),
-            style = "minimal",
-            relative = "editor",
-            border = border and {"╭", "─", "╮", "│", "╯", "─", "╰", "│"}
+    return vim.tbl_deep_extend("force", {
+        row = math.floor(t_offset * M.lines),
+        col = math.floor(l_offset * M.columns),
+        height = math.floor((1 - t_offset * 2) * M.lines),
+        width = math.floor((1 - l_offset * 2) * M.columns),
+        style = "minimal",
+        relative = "editor",
+        border = border and {
+            "╭",
+            "─",
+            "╮",
+            "│",
+            "╯",
+            "─",
+            "╰",
+            "│",
         },
-        args
-    )
+    }, args)
 end
 
 M.find_git_ancestor = function()
-    local pwd = os.getenv "PWD"
+    local pwd = os.getenv("PWD")
     return lsputil.find_git_ancestor(pwd)
 end
 
 -- Constant values
 
 M.files = {
-    vim = os.getenv "HOME" .. "/.vimrc",
+    vim = os.getenv("HOME") .. "/.vimrc",
     -- NeoVim initialization file
-    nvim = os.getenv "HOME" .. "/.config/nvim/init.vim",
+    nvim = os.getenv("HOME") .. "/.config/nvim/init.vim",
     -- Folder saved snippets
-    snippets_dir = os.getenv "HOME" .. "/.config/nvim/snippets",
+    snippets_dir = os.getenv("HOME") .. "/.config/nvim/snippets",
     -- Tmux config
-    tmux = os.getenv "HOME" .. "/.tmux.conf",
+    tmux = os.getenv("HOME") .. "/.tmux.conf",
     -- Kitty config
-    kitty = os.getenv "HOME" .. "/.config/kitty/kitty.conf",
+    kitty = os.getenv("HOME") .. "/.config/kitty/kitty.conf",
     -- ZSH config
-    zsh = os.getenv "HOME" .. "/.zshrc",
+    zsh = os.getenv("HOME") .. "/.zshrc",
     -- Work directories
-    polaris = os.getenv "HOME" .. "/Documents/work/agent8/Polaris",
-    rigel = os.getenv "HOME" .. "/Documents/work/agent8/Rigel"
+    polaris = os.getenv("HOME") .. "/Documents/work/agent8/Polaris",
+    rigel = os.getenv("HOME") .. "/Documents/work/agent8/Rigel",
 }
 
 M.colors = {
-    FG = os.getenv "GUI_FOREGROUND",
-    BG = os.getenv "GUI_BACKGROUND",
-    RED = os.getenv "GUI_RED",
-    DARK_RED = os.getenv "GUI_DARK_RED",
-    GREEN = os.getenv "GUI_GREEN",
-    PRIMARY = os.getenv "GUI_BLUE",
-    VISUAL_GREY = os.getenv "GUI_VISUAL_GREY",
-    DARK_YELLOW = os.getenv "GUI_DARK_YELLOW",
-    COMMENT_GREY = os.getenv "GUI_COMMENT_GREY",
-    SPECIAL_GREY = os.getenv "GUI_SPECIAL_GREY"
+    FG = os.getenv("GUI_FOREGROUND"),
+    BG = os.getenv("GUI_BACKGROUND"),
+    RED = os.getenv("GUI_RED"),
+    DARK_RED = os.getenv("GUI_DARK_RED"),
+    GREEN = os.getenv("GUI_GREEN"),
+    PRIMARY = os.getenv("GUI_BLUE"),
+    VISUAL_GREY = os.getenv("GUI_VISUAL_GREY"),
+    DARK_YELLOW = os.getenv("GUI_DARK_YELLOW"),
+    COMMENT_GREY = os.getenv("GUI_COMMENT_GREY"),
+    SPECIAL_GREY = os.getenv("GUI_SPECIAL_GREY"),
 }
 
 M.highlight = {
-    names = {}
+    names = {},
 }
 
 function M.highlight:get(name)
@@ -160,7 +165,7 @@ end
 
 function M.highlight:create(name, colors)
     local hl_name = "MyCustomHighlight_" .. name
-    local command = {"highlight", hl_name}
+    local command = { "highlight", hl_name }
 
     if self:has(name) then
         return self:get(name)
@@ -203,26 +208,19 @@ M.float_terminal = function(args)
     args[1] = nil
 
     local buf = vim.api.nvim_create_buf(false, true)
-    local win =
-        vim.api.nvim_open_win(
+    local win = vim.api.nvim_open_win(
         buf,
         true,
-        M.get_float_win_opts(
-            vim.tbl_deep_extend(
-                "force",
-                {
-                    border = true
-                },
-                args
-            )
-        )
+        M.get_float_win_opts(vim.tbl_deep_extend("force", {
+            border = true,
+        }, args))
     )
 
     vim.fn.termopen(cmd)
     local autocmd = {
         "autocmd! TermClose <buffer> lua",
         string.format("vim.api.nvim_win_close(%d, {force = true});", win),
-        string.format("vim.api.nvim_buf_delete(%d, {force = true});", buf)
+        string.format("vim.api.nvim_buf_delete(%d, {force = true});", buf),
     }
     vim.cmd(table.concat(autocmd, " "))
     vim.cmd([[startinsert]])

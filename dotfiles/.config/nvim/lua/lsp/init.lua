@@ -1,74 +1,73 @@
-local Utils = require "utils"
+local Utils = require("utils")
 
-local lspconfig = require "lspconfig"
-local lspinstaller = require "nvim-lsp-installer"
+local lspconfig = require("lspconfig")
+local lspinstaller = require("nvim-lsp-installer")
 
 local nmap, cmd = Utils.nmap, Utils.cmd
 
 local LSP_SOURCES = {
     MANUAL = 0,
-    INSTALLER = 1
+    INSTALLER = 1,
 }
 
 local installed_lsp = {
+    ["null-ls"] = {
+        filename = "null-lsp",
+        source = LSP_SOURCES.MANUAL,
+    },
     -- `npm` required
     flow = {
         filename = "flow-lsp",
-        source = LSP_SOURCES.MANUAL
+        source = LSP_SOURCES.MANUAL,
     },
     html = {
         filename = "",
-        source = LSP_SOURCES.INSTALLER
+        source = LSP_SOURCES.INSTALLER,
     },
     cssls = {
         filename = "",
-        source = LSP_SOURCES.INSTALLER
+        source = LSP_SOURCES.INSTALLER,
     },
     vimls = {
         filename = "",
-        source = LSP_SOURCES.INSTALLER
+        source = LSP_SOURCES.INSTALLER,
     },
     jsonls = {
         filename = "json-lsp",
-        source = LSP_SOURCES.INSTALLER
+        source = LSP_SOURCES.INSTALLER,
     },
     bashls = {
         filename = "",
-        source = LSP_SOURCES.INSTALLER
+        source = LSP_SOURCES.INSTALLER,
     },
     tsserver = {
         filename = "ts-lsp",
-        source = LSP_SOURCES.INSTALLER
+        source = LSP_SOURCES.INSTALLER,
     },
     tailwindcss = {
         filename = "",
-        source = LSP_SOURCES.INSTALLER
+        source = LSP_SOURCES.INSTALLER,
     },
     pyright = {
         filename = "",
-        source = LSP_SOURCES.INSTALLER
+        source = LSP_SOURCES.INSTALLER,
     },
     -- `go` required
-    efm = {
-        -- NOTE: `sudo` required
-        filename = "efm-lsp",
-        source = LSP_SOURCES.INSTALLER
-    },
     gopls = {
         -- NOTE: `sudo` required
         filename = "go-lsp",
-        source = LSP_SOURCES.INSTALLER
+        source = LSP_SOURCES.INSTALLER,
     },
     -- `git` required
     sumneko_lua = {
         filename = "sumneko-lsp",
-        source = LSP_SOURCES.INSTALLER
-    }
+        source = LSP_SOURCES.INSTALLER,
+    },
 }
 
 local on_attach = function(client)
     -- Keymap
-    local keymap_otps = {noremap = true, silent = true}
+    local keymap_otps = { noremap = true, silent = true }
 
     nmap("gb", "<C-o>", keymap_otps)
     nmap("gd", "<cmd>Telescope lsp_definitions<CR>zz", keymap_otps)
@@ -82,25 +81,35 @@ local on_attach = function(client)
 
     -- Formatting on save
     if client.resolved_capabilities.document_formatting then
-        cmd [[augroup Format]]
-        cmd [[autocmd! * <buffer>]]
-        cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()]]
-        cmd [[augroup END]]
+        cmd([[augroup Format]])
+        cmd([[autocmd! * <buffer>]])
+        cmd(
+            [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()]]
+        )
+        cmd([[augroup END]])
     end
 
     -- Alias
-    cmd [[command! LspFormat lua vim.lsp.buf.formatting()]]
-    cmd [[command! LspSignature lua vim.lsp.buf.signature_help()]]
+    cmd([[command! LspFormat lua vim.lsp.buf.formatting()]])
+    cmd([[command! LspSignature lua vim.lsp.buf.signature_help()]])
 end
 
 local custom_capabilities = function()
-    local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
-    -- local capabilities = vim.lsp.protocol.make_client_capabilities()
-    -- capabilities.textDocument.completion.completionItem.snippetSupport = true
+    local capabilities = require("cmp_nvim_lsp").update_capabilities(
+        vim.lsp.protocol.make_client_capabilities()
+    )
     return capabilities
 end
 
 local function init_lsp()
+    local DEFAULT_CONFIG = {
+        on_attach = on_attach,
+        capabilities = custom_capabilities(),
+        flags = {
+            debounce_text_changes = 150,
+        },
+    }
+
     local function load_config(name)
         local config = {}
 
@@ -108,27 +117,15 @@ local function init_lsp()
             local config_filename = "lsp/" .. name
 
             if
-                pcall(
-                    function()
-                        require(config_filename)
-                    end
-                )
-             then
+                pcall(function()
+                    require(config_filename)
+                end)
+            then
                 config = require(config_filename)
             end
         end
 
-        return vim.tbl_deep_extend(
-            "force",
-            {
-                on_attach = on_attach,
-                capabilities = config.capabilities or custom_capabilities(),
-                flags = {
-                    debounce_text_changes = 150
-                }
-            },
-            config
-        )
+        return vim.tbl_deep_extend("force", DEFAULT_CONFIG, config)
     end
 
     -- Setup the lsp for the one installed manually
@@ -141,18 +138,16 @@ local function init_lsp()
     end
 
     -- Setup the lsp for the one from installer
-    lspinstaller.on_server_ready(
-        function(server)
-            local config = {}
-            local opts = installed_lsp[server.name]
+    lspinstaller.on_server_ready(function(server)
+        local config = {}
+        local opts = installed_lsp[server.name]
 
-            if opts ~= nil then
-                config = load_config(opts.filename)
-            end
-
-            server:setup(config)
+        if opts ~= nil then
+            config = load_config(opts.filename)
         end
-    )
+
+        server:setup(config)
+    end)
 end
 
 for name, _ in pairs(installed_lsp) do
@@ -167,22 +162,26 @@ end
 init_lsp()
 
 -- Automatically update diagnostics
-vim.lsp.handlers["textDocument/publishDiagnostics"] =
-    vim.lsp.with(
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     vim.lsp.diagnostic.on_publish_diagnostics,
     {
         virtual_text = {
-            prefix = " ●",
-            spacing = 4
+            prefix = " ",
+            spacing = 4,
         },
         signs = true,
-        update_in_insert = false
+        update_in_insert = false,
     }
 )
 
-local signs = {Error = "✖ ", Warning = " ", Hint = " ", Information = " "}
+local signs = {
+    Error = "✖ ",
+    Warning = " ",
+    Hint = " ",
+    Information = " ",
+}
 
 for type, icon in pairs(signs) do
     local hl = "LspDiagnosticsSign" .. type
-    vim.fn.sign_define(hl, {text = icon, texthl = hl, numhl = ""})
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end

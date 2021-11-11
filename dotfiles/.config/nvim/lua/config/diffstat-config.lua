@@ -1,4 +1,4 @@
-local Utils = require "utils"
+local Utils = require("utils")
 
 local highlight = Utils.highlight
 
@@ -7,17 +7,17 @@ local c = Utils.colors
 M = {
     getter = nil,
     setup = nil,
-    data = nil
+    data = nil,
 }
 
 local diff_types = {
     added = "DIFF_ADDED",
-    removed = "DIFF_REMOVED"
+    removed = "DIFF_REMOVED",
 }
 
 local diff_colors = {
     [diff_types.added] = c.GREEN,
-    [diff_types.removed] = c.DARK_RED
+    [diff_types.removed] = c.DARK_RED,
 }
 
 local block = "▧"
@@ -31,11 +31,17 @@ local function get_diffstat_blocks(added, removed)
     local blocks = {}
 
     for _ = 1, added_blocks do
-        table.insert(blocks, highlight:format({name = diff_types.added, block}))
+        table.insert(
+            blocks,
+            highlight:format({ name = diff_types.added, block })
+        )
     end
 
     for _ = 1, removed_blocks do
-        table.insert(blocks, highlight:format({name = diff_types.removed, block}))
+        table.insert(
+            blocks,
+            highlight:format({ name = diff_types.removed, block })
+        )
     end
 
     if vim.tbl_count(blocks) < 5 then
@@ -48,13 +54,13 @@ local function get_diffstat_blocks(added, removed)
 end
 
 function M.setup()
-    vim.cmd [[
+    vim.cmd([[
 	autocmd BufEnter * lua require"config.diffstat-config".getter()
 	autocmd BufWritePost * lua require"config.diffstat-config".getter()
-    ]]
+    ]])
 
     for name, color in pairs(diff_colors) do
-        highlight:create(name, {fg = color, bg = c.VISUAL_GREY})
+        highlight:create(name, { fg = color, bg = c.VISUAL_GREY })
     end
 
     M.getter()
@@ -68,7 +74,10 @@ function M.getter()
         return
     end
 
-    local cmd = ("echo $(git -C %s diff --shortstat %s) "):format(vim.fn.expand("%:h"), vim.fn.expand("%:t"))
+    local cmd = ("echo $(git -C %s diff --shortstat %s) "):format(
+        vim.fn.expand("%:h"),
+        vim.fn.expand("%:t")
+    )
 
     local f = assert(io.popen(cmd, "r"))
     local s = assert(f:read("*a"))
@@ -81,22 +90,28 @@ function M.getter()
     local stat = {}
 
     if added > 0 then
-        table.insert(stat, highlight:format {name = diff_types.added, "+" .. added})
+        table.insert(
+            stat,
+            highlight:format({ name = diff_types.added, "+" .. added })
+        )
     end
 
     if removed > 0 then
-        table.insert(stat, highlight:format {name = diff_types.removed, "-" .. removed})
+        table.insert(
+            stat,
+            highlight:format({ name = diff_types.removed, "-" .. removed })
+        )
     end
 
     local status = table.concat(stat, " ") .. " "
 
     if #status > 1 then
-        return table.concat {
+        return table.concat({
             "%#lualine_b_normal#",
             status,
             "%#lualine_a_normal_to_lualine_b_normal#",
-            get_diffstat_blocks(added, removed)
-        }
+            get_diffstat_blocks(added, removed),
+        })
     else
         return ""
     end

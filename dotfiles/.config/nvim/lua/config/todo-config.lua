@@ -1,14 +1,13 @@
-local Utils = require "utils"
+local Utils = require("utils")
 
 local function get_pattern()
     local ft_comments = {
-        common = {"#", "//"},
-        lua = {"--"},
-        javascript = {"/\\*", "\\*"}
+        common = { "#", "//" },
+        lua = { "--" },
+        javascript = { "/\\*", "\\*" },
     }
 
-    local pattern =
-        table.concat(
+    local pattern = table.concat(
         Utils.table_map_list(
             -- Flatten the table
             vim.tbl_flatten(vim.tbl_values(ft_comments)),
@@ -28,7 +27,7 @@ local function get_pattern()
 end
 
 local function get_ignore_args()
-    local ignored = {"flow-typed"}
+    local ignored = { "flow-typed" }
 
     local args = {}
 
@@ -39,7 +38,7 @@ local function get_ignore_args()
     return table.concat(args, " ")
 end
 
-require "todo-comments".setup {
+require("todo-comments").setup({
     search = {
         command = "rg",
         args = {
@@ -48,12 +47,12 @@ require "todo-comments".setup {
             "--with-filename",
             "--line-number",
             "--column",
-            get_ignore_args()
+            get_ignore_args(),
         },
         -- regex that will be used to match keywords.
         -- don't replace the (KEYWORDS) placeholder
-        pattern = ([[%s(KEYWORDS):]]):format(get_pattern()) -- ripgrep regex
+        pattern = ([[%s(KEYWORDS):]]):format(get_pattern()), -- ripgrep regex
         -- pattern = [[\b(KEYWORDS):]], -- ripgrep regex
         -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
-    }
-}
+    },
+})

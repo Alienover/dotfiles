@@ -1,4 +1,4 @@
-local Utils = require "utils"
+local Utils = require("utils")
 
 local w, cmd = Utils.w, Utils.cmd
 
@@ -6,10 +6,14 @@ local nmap, vmap, tmap = Utils.nmap, Utils.vmap, Utils.tmap
 
 local t = Utils.r_code
 
-local opts = {noremap = true, silent = true}
+local opts = { noremap = true, silent = true }
 
 -- Reload the config file
-nmap("<leader>r", ":execute 'so " .. Utils.files.nvim .. "' | echo 'Config reloaded!'<CR>", opts)
+nmap(
+    "<leader>r",
+    ":execute 'so " .. Utils.files.nvim .. "' | echo 'Config reloaded!'<CR>",
+    opts
+)
 
 -- Buffers navigation
 nmap("<C-h>", ":bp<CR>", opts)
@@ -30,18 +34,18 @@ vmap("˚", ":m '<-2<CR>gv=gv", opts)
 
 function _G.zoom_toggle()
     if w.zoomed and w.zoom_winrestcmd then
-        cmd [[ execute w:zoom_winrestcmd ]]
+        cmd([[ execute w:zoom_winrestcmd ]])
         w.zoomed = false
     else
         w.zoom_winrestcmd = vim.fn.winrestcmd()
-        cmd [[resize]]
-        cmd [[vertical resize]]
+        cmd([[resize]])
+        cmd([[vertical resize]])
         w.zoomed = true
     end
     return true
 end
 
-nmap("zo", "v:lua.zoom_toggle()", {expr = true, silent = true})
+nmap("zo", "v:lua.zoom_toggle()", { expr = true, silent = true })
 
 function _G.smart_ctrlp()
     if Utils.find_git_ancestor() then
@@ -51,20 +55,15 @@ function _G.smart_ctrlp()
             table.insert(options, "theme=get_dropdown")
         end
 
-        return t(
-            table.concat(
-                {
-                    "<Cmd>",
-                    "Telescope find_files",
-                    table.concat(options, " "),
-                    "<CR>"
-                },
-                " "
-            )
-        )
+        return t(table.concat({
+            "<Cmd>",
+            "Telescope find_files",
+            table.concat(options, " "),
+            "<CR>",
+        }, " "))
     else
-        return t [[<cmd>call v:lua.fzf_files()<CR>]]
+        return t([[<cmd>call v:lua.fzf_files()<CR>]])
     end
 end
 
-nmap("<C-p>", "v:lua.smart_ctrlp()", {expr = true, silent = true})
+nmap("<C-p>", "v:lua.smart_ctrlp()", { expr = true, silent = true })

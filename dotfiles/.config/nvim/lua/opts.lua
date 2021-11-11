@@ -1,12 +1,12 @@
-local Utils = require "utils"
+local Utils = require("utils")
 
 local o, bo, wo, g = Utils.o, Utils.bo, Utils.wo, Utils.g
 
 local cmd = Utils.cmd
 
-cmd [[filetype plugin indent on]]
+cmd([[filetype plugin indent on]])
 
-cmd [[syntax on]]
+cmd([[syntax on]])
 
 -- be iMproved, required
 o.compatible = false
@@ -55,7 +55,7 @@ wo.list = true
 wo.listchars = "tab:>-,lead:·,trail:·"
 
 -- Python for neovim
-cmd [[
+cmd([[
     let g:python_venv_home = $VIRTUALENVWRAPPER_HOOK_DIR . '/neovim_py2'
     let g:python3_venv_home = $VIRTUALENVWRAPPER_HOOK_DIR . '/neovim_py3'
 
@@ -69,4 +69,4 @@ cmd [[
     if filereadable(g:python3_venv_bin)
 	let g:python3_host_prog = g:python3_venv_bin
     endif
-]]
+]])
