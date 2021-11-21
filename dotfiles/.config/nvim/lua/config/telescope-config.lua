@@ -20,6 +20,11 @@ require("telescope").setup({
             },
         },
     },
+    pickers = {
+        buffers = {
+            sort_lastused = true,
+        },
+    },
     extensions = {
         fzy_native = {
             override_generic_sorter = false,

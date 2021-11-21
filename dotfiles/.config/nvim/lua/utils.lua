@@ -151,6 +151,13 @@ M.highlight = {
     names = {},
 }
 
+M.icons = {
+    ERROR = "✖ ",
+    WARN = " ",
+    HINT = " ",
+    INFOR = " ",
+}
+
 function M.highlight:get(name)
     return self.names[name]
 end

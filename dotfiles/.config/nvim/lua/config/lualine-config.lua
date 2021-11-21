@@ -2,7 +2,7 @@
 -- https://github.com/hoob3rt/lualine.nvim
 local Utils = require("utils")
 
-local c = Utils.colors
+local c, icons = Utils.colors, Utils.icons
 
 require("lualine").setup({
     options = {
@@ -12,6 +12,10 @@ require("lualine").setup({
         color_removed = c.DARK_RED,
         color_modified = c.DARK_YELLOW,
         symbols = {
+            error = icons.ERROR,
+            warn = icons.WARN,
+            info = icons.INFOR,
+            hint = icons.HINT,
             modified = "#",
         },
     },

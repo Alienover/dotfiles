@@ -5,6 +5,8 @@ local lspinstaller = require("nvim-lsp-installer")
 
 local nmap, cmd = Utils.nmap, Utils.cmd
 
+local icons = Utils.icons
+
 local LSP_SOURCES = {
     MANUAL = 0,
     INSTALLER = 1,
@@ -175,10 +177,10 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 )
 
 local signs = {
-    Error = "✖ ",
-    Warning = " ",
-    Hint = " ",
-    Information = " ",
+    Error = icons.ERROR,
+    Warning = icons.WARN,
+    Hint = icons.HINT,
+    Information = icons.INFOR,
 }
 
 for type, icon in pairs(signs) do

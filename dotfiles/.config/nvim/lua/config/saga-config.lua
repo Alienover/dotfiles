@@ -2,11 +2,13 @@ local Utils = require("utils")
 
 local nmap, imap = Utils.nmap, Utils.imap
 
+local icons = Utils.icons
+
 require("lspsaga").init_lsp_saga({
-    error_sign = "✖ ",
-    warn_sign = " ",
-    hint_sign = " ",
-    infor_sign = " ",
+    error_sign = icons.ERROR,
+    warn_sign = icons.WARN,
+    hint_sign = icons.HINT,
+    infor_sign = icons.INFOR,
     border_style = "round",
     rename_prompt_prefix = " 🌈 ",
     rename_action_keys = {

@@ -40,7 +40,10 @@ o.shiftwidth = 4
 o.history = 1000
 -- Disable the native suggestion list
 o.spellsuggest = "0"
+-- Undo
+bo.undofile = true
 o.undolevels = 1000
+
 o.encoding = "utf-8"
 o.clipboard = "unnamed"
 o.backspace = "indent,eol,start"
