@@ -24,8 +24,27 @@ function zsh_add_plugin() {
     fi
 }
 
+function zsh_add_custom_plugin() {
+    zsh_add_plugin "custom/$1" false
+}
+
 function zsh_add_theme() {
     setopt prompt_subst
 
     zsh_add_file "themes/$1.zsh-theme"
+}
+
+function zsh_lazy_load() {
+    local cmd=$1
+    local args=${@:2}
+
+    local placeholder="
+	function $cmd {
+	    unfunction \$0
+	    $args
+	    \$0 \$@
+	}
+    "
+
+    eval "$placeholder"
 }

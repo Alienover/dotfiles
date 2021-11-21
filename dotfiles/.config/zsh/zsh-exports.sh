@@ -1,3 +1,10 @@
+# Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='nvim'
+fi
+
 export LC_ALL=en_US.UTF-8
 
 export DYLD_LIBRARY_PATH=/usr/local/include
@@ -33,34 +40,5 @@ init_paths
 
 # zsh-vi-mode config
 export ZVM_CURSOR_STYLE_ENABLED=false
-
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='nvim'
-fi
-
-# Perl
-# eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
-
-# For virtualenvwrapper
-if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
-    export WORKON_HOME=$HOME/.virtualenvs
-    source /usr/local/bin/virtualenvwrapper.sh
-fi
-export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
-export VIRTUAL_ENV_DISABLE_PROMPT='true'
-
-# Lazy load pyenv
-# Refer to: https://github.com/davidparsson/zsh-pyenv-lazy/blob/master/pyenv-lazy.plugin.zsh
-function pyenv() {
-    unset -f pyenv
-    eval "$(command pyenv init -)"
-    if [[ -n "${ZSH_PYENV_LAZY_VIRTUALENV}" ]]; then
-	eval "$(command pyenv virtualenv-init -)"
-    fi
-    pyenv $@
-}
 
 export GO_PROJECTS_PATH=("$HOME/Documents/work/agent8/Rigel")

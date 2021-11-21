@@ -270,7 +270,7 @@ prompt_go() {
 prompt_status() {
   local -a symbols
 
-  [[ $RETVAL -ne 0 ]] && symbols+="%{%F{$GUI_RED}%}✖"
+  [[ $RETVAL -ne 0 ]] && symbols+="%{%F{$GUI_RED}%}✖ "
   [[ $UID -eq 0 ]] && symbols+="%{%F{$GUI_YELLOW}%}⚡"
   [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}⚙"
 

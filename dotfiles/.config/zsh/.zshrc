@@ -1,10 +1,10 @@
 # export ZSH="$HOME/.oh-my-zsh"
 
-export ZDOTDIR="$HOME/.config/zsh"
-
-fpath=(/usr/local/share/zsh/site-functions $fpath)
+# fpath=(/usr/local/share/zsh/site-functions $fpath)
 
 # source "$ZSH/oh-my-zsh.sh"
+
+export ZDOTDIR="$HOME/.config/zsh"
 
 source "$ZDOTDIR/zsh-functions.sh"
 
@@ -28,13 +28,15 @@ zsh_add_file "zsh-git.sh"
 zsh_add_theme "agnoster"
 
 # Load plugins
-zsh_add_plugin "custom/cmd-duration" false
+# Custom
+zsh_add_custom_plugin "fzf"
+zsh_add_custom_plugin "perl"
+zsh_add_custom_plugin "pyenv"
+zsh_add_custom_plugin "cmd-duration"
+# From Web
 zsh_add_plugin "jeffreytse/zsh-vi-mode"
 zsh_add_plugin "zsh-users/zsh-autosuggestions"
 zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
-
-# load Fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Completions
 autoload -Uz compinit
