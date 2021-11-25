@@ -277,7 +277,7 @@ prompt_status() {
   # Rainbow when all is well
   [[ -z "$symbols" ]] && symbols="🌈"
 
-  prompt_segment black default "$symbols"
+  prompt_segment $GUI_SECONDARY default "$symbols"
 }
 
 #AWS Profile:
@@ -383,9 +383,18 @@ prompt_env() {
 	fi
 }
 
+prompt_prefix() {
+	echo -n "%{%K%F{$GUI_SECONDARY}%}%{%k%f%}"
+}
+
+prompt_suffix() {
+	echo -n "%{%K%F{$CURRENT_BG}%}%{%k%f%}"
+}
+
 ## Main prompt
 build_prompt() {
   RETVAL=$?
+	prompt_prefix
   prompt_status
   prompt_dir
   prompt_git
@@ -397,6 +406,7 @@ build_rprompt() {
   prompt_runtime
   prompt_env
   prompt_vi
+	prompt_suffix
 }
 
 PROMPT='%{%f%b%k%}$(build_prompt) '

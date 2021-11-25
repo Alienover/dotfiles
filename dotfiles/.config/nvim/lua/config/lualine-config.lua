@@ -2,7 +2,17 @@
 -- https://github.com/hoob3rt/lualine.nvim
 local Utils = require("utils")
 
+local o = Utils.o
+
 local c, icons = Utils.colors, Utils.icons
+
+local function spellcheck()
+    if o.spell then
+        return ("SPELL [%s]"):format(o.spelllang)
+    end
+
+    return ""
+end
 
 require("lualine").setup({
     options = {
@@ -20,6 +30,22 @@ require("lualine").setup({
         },
     },
     sections = {
+        lualine_a = {
+            {
+                "mode",
+                separator = { left = "", right = "" },
+            },
+        },
+        lualine_c = {
+            spellcheck,
+            "filename",
+        },
         lualine_x = { "encoding", "filetype" },
+        lualine_z = {
+            {
+                "location",
+                separator = { left = "", right = "" },
+            },
+        },
     },
 })

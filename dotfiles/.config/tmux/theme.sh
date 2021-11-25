@@ -31,7 +31,7 @@ set-window-option -g window-status-format "#[bg=$tm_color_black,fg=$tm_color_bla
 # active window title colors
 # set-window-option -g window-status-current-style fg=$tm_color_grey
 set-window-option -g window-status-current-style bg=$tm_color_grey
-set-window-option -g window-status-current-format "#[bg=$tm_color_grey,fg=$tm_color_black]$tm_separator_right_arrow#[fg=$tm_color_primary,bold] * #W #[bg=$tm_color_black,fg=$tm_color_grey]$tm_separator_right_arrow"
+set-window-option -g window-status-current-format "#[bg=$tm_color_grey,fg=$tm_color_black]$tm_separator_right_arrow#[fg=$tm_color_primary,bold]  #W #[bg=$tm_color_black,fg=$tm_color_grey]$tm_separator_right_arrow"
 
 # pane border
 set-option -g pane-border-style fg=$tm_color_inactive_bg
@@ -40,16 +40,26 @@ set-option -g pane-active-border-style fg=$tm_color_inactive_bg
 # Prevent annoying renames
 set-option -g allow-rename off
 
+# Prompt
+# Left
+tm_session_name="#[bg=$tm_color_primary,fg=colour0,bold] #S #[bg=$tm_color_grey,fg=$tm_color_primary]$tm_separator_right_arrow#[bg=$tm_color_black,fg=$tm_color_grey]$tm_separator_right_arrow"
+
+# Right
 # Current playing track
 tm_tunes="#[fg=$tm_color_music]#(osascript $HOME/.config/tmux/music.scpt)"
 # tm_tunes="#[fg=$tm_color_music]#(osascript -l JavaScript ~/.config/tmux/tunes.js)"
 
 tm_date="#[bg=$tm_color_black,fg=$tm_color_grey]$tm_separator_left_arrow#[bg=$tm_color_grey,fg=$tm_color_inactive_fg] %R %d %b"
 tm_host="#[bg=$tm_color_grey,fg=$tm_color_primary,bold]$tm_separator_left_arrow#[bg=$tm_color_primary,fg=colour0,bold] #(whoami) "
-tm_session_name="#[bg=$tm_color_primary,fg=colour0,bold] #S #[bg=$tm_color_grey,fg=$tm_color_primary]$tm_separator_right_arrow#[bg=$tm_color_black,fg=$tm_color_grey]$tm_separator_right_arrow"
 
-set -g status-left $tm_session_name' '
-set -g status-right $tm_tunes' '$tm_date' '$tm_host
+tm_prompt_prefix=""
+tm_prompt_suffix="#[bg=colour0,fg=$tm_color_primary]"
+
+tm_prompt_left="$tm_prompt_prefix$tm_session_name "
+tm_prompt_right="$tm_tunes $tm_date $tm_host$tm_prompt_suffix"
+
+set -g status-left $tm_prompt_left
+set -g status-right $tm_prompt_right
 
 # message text
 set -gF  message-style "fg=$tm_color_primary,bg=$tm_color_black"
