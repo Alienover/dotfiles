@@ -1,6 +1,8 @@
 # Place your plugin content here
 source "$ZDOTDIR/zsh-functions.sh"
 
+export VIRTUALENVWRAPPER_HOOK_DIR="$HOME/.virtualenvs"
+
 # pyenv
 # Refer to: https://github.com/davidparsson/zsh-pyenv-lazy/blob/master/pyenv-lazy.plugin.zsh
 function __load_pyenv {
