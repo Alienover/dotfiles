@@ -18,6 +18,7 @@ return require("packer").startup({
             "folke/which-key.nvim",
             opt = true,
             keys = { "<space>" },
+            cmd = { "WhichKey" },
             config = function()
                 require("config/which-key-config")
             end,

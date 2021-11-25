@@ -3,7 +3,7 @@
 
 local Utils = require("utils")
 
-local g, cmd = Utils.g, Utils.cmd
+local g = Utils.g
 
 g.symbols_outline = {
     keymaps = {

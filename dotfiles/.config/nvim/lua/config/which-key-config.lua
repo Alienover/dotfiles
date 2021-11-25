@@ -3,10 +3,6 @@ local wk = require("which-key")
 
 local o, g, cmd = Utils.o, Utils.g, Utils.cmd
 
-local nmap = Utils.nmap
-
-local r_code = Utils.r_code
-
 -- Populate the vim cmd prefix and suffix
 local t = function(str)
     return "<Cmd>" .. str .. "<CR>"
@@ -36,29 +32,6 @@ function _G.toggle_diffview()
     end
     return true
 end
-
--- Smart toogling the spell checking
-function _G.toggle_spell()
-    local cursor_word = vim.fn.expand("<cword>")
-
-    if cursor_word == "" then
-        -- Toogle the spell check when hover on empty word
-        if o.spell then
-            o.spell = false
-        else
-            o.spell = true
-        end
-    else
-        -- List suggestions when hovering on word
-        return r_code(
-            t('lua require "which-key".show("z=", {mode = "n", auto = true})')
-        )
-    end
-
-    return true
-end
-
-nmap("<leader>s", "v:lua.toggle_spell()", { expr = true, silent = true })
 
 o.timeoutlen = 500
 

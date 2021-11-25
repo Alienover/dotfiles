@@ -1,19 +1,12 @@
 local Utils = require("utils")
 
-local w, cmd = Utils.w, Utils.cmd
+local w, o, cmd = Utils.w, Utils.o, Utils.cmd
 
 local nmap, vmap, tmap = Utils.nmap, Utils.vmap, Utils.tmap
 
 local t = Utils.r_code
 
 local opts = { noremap = true, silent = true }
-
--- Reload the config file
-nmap(
-    "<leader>r",
-    ":execute 'so " .. Utils.files.nvim .. "' | echo 'Config reloaded!'<CR>",
-    opts
-)
 
 -- Buffers navigation
 nmap("<C-h>", ":bp<CR>", opts)
@@ -67,3 +60,24 @@ function _G.smart_ctrlp()
 end
 
 nmap("<C-p>", "v:lua.smart_ctrlp()", { expr = true, silent = true })
+
+-- Smart toogling the spell checking
+function _G.toggle_spell()
+    local cursor_word = vim.fn.expand("<cword>")
+
+    if cursor_word == "" then
+        -- Toogle the spell check when hover on empty word
+        if o.spell then
+            o.spell = false
+        else
+            o.spell = true
+        end
+    else
+        -- List suggestions when hovering on word
+        return t("<Cmd>WhichKey z=<CR>")
+    end
+
+    return true
+end
+
+nmap("<leader>s", "v:lua.toggle_spell()", { expr = true, silent = true })
