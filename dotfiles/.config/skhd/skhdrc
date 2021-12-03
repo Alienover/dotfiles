@@ -1,0 +1,56 @@
+#! /bin/bash
+## Refer to: https://github.com/koekeishiya/skhd/blob/master/examples/skhdrc
+
+## open terminal, blazingly fast compared to iTerm/Hyper
+alt - t : /Applications/kitty.app/Contents/MacOS/kitty --single-instance -d ~
+
+## Focus window
+ctrl + alt - h : yabai -m window --focus west || yabai -m window --focus last
+ctrl + alt - j : yabai -m window --focus south || yabai -m window --focus first
+ctrl + alt - k : yabai -m window --focus north || yabai -m window --foccus last
+ctrl + alt - l : yabai -m window --focus east || yabai -m window --focus first
+
+## toggle window fullscreen zoom
+ctrl + alt - f : yabai -m window --toggle zoom-fullscreen
+
+## Send window and follow focus
+# * Save current window ID as CUR_WIN
+# * Move the window to prev/next display
+# * Focus the window by given ID
+ctrl + alt - 0x21 : CUR_WIN=`yabai -m query --windows --window | /usr/local/bin/jq -re ".id"` && (yabai -m window --display prev || yabai -m window --display last) && yabai -m window --focus $CUR_WIN && unset CUR_WIN
+ctrl + alt - 0x1E : CUR_WIN=`yabai -m query --windows --window | /usr/local/bin/jq -re ".id"` && (yabai -m window --display next || yabai -m window --display first) && yabai -m window --focus $CUR_WIN && unset CUR_WIN
+
+## swap
+## Refer to: https://github.com/Shufflepuck/MenuLock/blob/master/README.md
+shift + alt - 0x21 : yabai -m window --swap west # 0x21 is the "[" key
+shift + alt - 0x1E : yabai -m window --swap east # 0x1E is the "]" key
+
+## Switch layout
+shift + alt - f : yabai -m space --layout float
+shift + alt - t : yabai -m space --layout bsp
+
+## Rotate
+shift + alt - r : yabai -m space --rotate 90
+
+## Balance window
+shift + alt - 0x18 : yabai -m space --balance # 0x18 is the "=" key
+
+## Focus space
+# alt - 1 : yabai -m display --focus 1
+# alt - 2 : yabai -m display --focus 2
+# alt - 3 : yabai -m display --focus 3
+
+## focus display
+ctrl + alt - 1 : yabai -m display --focus 1
+ctrl + alt - 2 : yabai -m display --focus 2
+
+## Focus window up/down in stack
+ctrl + alt - n : yabai -m window --focus stack.next || yabai -m window --focus stack.first
+ctrl + alt- p : yabai -m window --focus stack.prev || yabai -m window --focus stack.last
+
+## Add the active window  to the window or stack to the {direction}
+## Note that this only works when the active window does *not* already belong to a stack
+shift + alt - h  : CUR_WIN=`yabai -m query --windows --window | jq -r '.id'` && (yabai -m window west --stack $CUR_WIN || yabai -m window last --stack $CUR_WIN) && unset CUR_WIN
+shift + alt - j  : CUR_WIN=`yabai -m query --windows --window | jq -r '.id'` && (yabai -m window south --stack $CUR_WIN || yabai -m window first --stack $CUR_WIN) && unset CUR_WIN
+shift + alt - k  : CUR_WIN=`yabai -m query --windows --window | jq -r '.id'` && (yabai -m window north --stack $CUR_WIN || yabai -m window last --stack $CUR_WIN) && unset CUR_WIN
+shift + alt - l  : CUR_WIN=`yabai -m query --windows --window | jq -r '.id'` && (yabai -m window east --stack $CUR_WIN || yabai -m window first --stack $CUR_WIN) && unset CUR_WIN

@@ -1,0 +1,69 @@
+#! /bin/bash
+## My custom spaces
+yabai -m space 1 --label Anthing
+yabai -m space 2 --label Web
+yabai -m space 3 --label Code
+
+## float system preferences. Most of these just diable Yabai form resizing them.
+yabai -m rule --add app="^System Preferences$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Finder$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Keka$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Alfred Preferences$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Disk Utility$" sticky=on layer=above manage=off
+yabai -m rule --add app="^System Information$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Activity Monitor$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Spotify$" manage=off
+yabai -m rule --add app="^iTerm2$" manage=off
+yabai -m rule --add app="^console$" manage=off
+yabai -m rule --add app="^Logi Options$" manage=off
+yabai -m rule --add app="^VLC$" manage=off
+yabai -m rule --add app="^QQ$" manage=off
+yabai -m rule --add app="^WeChat$" manage=off
+
+## New window spawns to the right if vertical split, or bottom if horizontal split
+yabai -m config window_placement second_child
+yabai -m config window_topmost off
+
+yabai -m config window_opacity off
+# yabai -m config window_opacity_duration 0.00
+# yabai -m config active_window_opacity 1.0
+
+## set mouse interaction modifier key (default: fn)
+yabai -m config mouse_modifier ctrl
+## set modifier + left-click drag to resize window (default: move)
+yabai -m config mouse_action1 move
+## set modifier + right-click drag to resize window (default: resize)
+yabai -m config mouse_action2 resize
+
+## WITH SIP ENABLED (Installed Limelight seperately, Don't need this)
+yabai -m config window_border off
+
+## WTIH SIP DISABLED (Limelight build into Yabai, enable it here)
+# yabai -m config window_border on
+# yabai -m config window_border_width 3
+# yabai -m config active_window_border_color 0xFF40FF00
+# yabai -m config normal_window_border_color 0x00FFFFFF
+# yabai -m config insert_feedback_color      0xffd75f5f
+
+## Change how yabai looks
+yabai -m config layout bsp
+## Override default layout for space 2 only
+yabai -m config --space 1 layout float
+
+# Set all padding and gaps to 0pt (default: 0)
+yabai -m config top_padding 0
+yabai -m config bottom_padding 0
+yabai -m config left_padding 0
+yabai -m config right_padding 0
+yabai -m config window_gap 0
+
+## Limelight addon (Kill it and start it each time Yabai starts)
+# killall limelight &>/dev/null
+# limelight &>/dev/null &
+
+## If I close the active window, focus on any other visible window.
+yabai -m signal --add event=window_destroyed action="bash $XDG_CONFIG_HOME/yabai/window-focus-on-destroy.sh"
+
+echo "yabai configuration loaded.."
+
+## END
