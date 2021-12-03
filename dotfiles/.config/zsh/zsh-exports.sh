@@ -1,3 +1,7 @@
+# Undercurl support
+# Refer to: https://github.com/kovidgoyal/kitty/issues/3235#issuecomment-758354252
+export TERM="xterm-kitty"
+
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
@@ -12,7 +16,7 @@ export CPPFLAGS="-I/usr/local/include/snappy-c.h"
 export CFLAGS="-I/usr/local/include/snappy-c.h"
 
 # ZSH caches and histories
-export HISTFILE="${XDG_CACHE_HOME:-$HOME/.cche}/zsh/.zsh_history"
+export HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zsh_history"
 export ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcompdump"
 
 # Go Path
