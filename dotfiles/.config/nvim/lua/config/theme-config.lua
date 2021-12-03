@@ -1,8 +1,9 @@
-local Utils = require("utils")
+local utils = require("utils")
+local constants = require("utils.constants")
 
-local g, cmd = Utils.g, Utils.cmd
+local g, cmd = utils.g, utils.cmd
 
-local c = Utils.colors
+local c = constants.colors
 
 g.tokyonight_style = "night"
 g.tokyonight_italic_functions = true

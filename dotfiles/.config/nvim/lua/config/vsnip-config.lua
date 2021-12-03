@@ -1,6 +1,7 @@
-local Utils = require("utils")
+local utils = require("utils")
+local constants = require("utils.constants")
 
-local g, cmd = Utils.g, Utils.cmd
+local g, cmd = utils.g, utils.cmd
 
 -- Keybindings for snippets expand, jumpping forward or backward
 cmd([[
@@ -12,4 +13,4 @@ cmd([[
 ]])
 
 -- Directory to save the custom snippets
-g.vsnip_snippet_dir = Utils.files.snippets_dir
+g.vsnip_snippet_dir = constants.files.snippets_dir

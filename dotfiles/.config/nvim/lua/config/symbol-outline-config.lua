@@ -1,13 +1,13 @@
 -- Reference
 -- https://github.com/simrat39/symbols-outline.nvim
 
-local Utils = require("utils")
+local utils = require("utils")
 
-local g = Utils.g
+local g = utils.g
 
 g.symbols_outline = {
-    keymaps = {
-        close = "q",
-        hover_symbol = "<C-k>",
-    },
+  keymaps = {
+    close = "q",
+    hover_symbol = "<C-k>",
+  },
 }

@@ -1,8 +1,8 @@
-local Utils = require("utils")
+local utils = require("utils")
 
-local o, bo, wo, g = Utils.o, Utils.bo, Utils.wo, Utils.g
+local o, bo, wo, g = utils.o, utils.bo, utils.wo, utils.g
 
-local cmd = Utils.cmd
+local cmd = utils.cmd
 
 cmd([[filetype plugin indent on]])
 

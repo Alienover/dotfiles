@@ -1,8 +1,8 @@
-local Utils = require("utils")
+local utils = require("utils")
 
-local g, cmd = Utils.g, Utils.cmd
+local g, cmd = utils.g, utils.cmd
 
-local nmap = Utils.nmap
+local nmap = utils.nmap
 
 -- Make Ranger replace netrw and be the file explorer
 -- let g:rnvimr_vanilla = 1
@@ -15,18 +15,18 @@ g.rnvimr_ranger_cmd = g.python3_venv_home .. "/bin/ranger"
 
 -- Add views for Ranger to adapt the size of floating window
 g.rnvimr_ranger_views = {
-    { minwidth = 90, ratio = { 1, 2, 3 } },
-    { minwidth = 50, maxwidth = 89, ratio = { 1, 2 } },
-    { maxwidth = 49, ratio = { 1 } },
+  { minwidth = 90, ratio = { 1, 2, 3 } },
+  { minwidth = 50, maxwidth = 89, ratio = { 1, 2 } },
+  { maxwidth = 49, ratio = { 1 } },
 }
 
-g.rnvimr_layout = Utils.get_float_win_opts()
+g.rnvimr_layout = utils.get_float_win_opts()
 
 -- Link CursorLine into RnvimrNormal highlight in the Floating window
 cmd([[highlight link RnvimrNormal CursorLine]])
 
 if vim.fn.executable(g.rnvimr_ranger_cmd) then
-    nmap("<C-f>", "<cmd>RnvimrToggle<CR>", { noremap = true })
+  nmap("<C-f>", "<cmd>RnvimrToggle<CR>", { noremap = true })
 else
-    nmap("<C-f>", "<NOP>", { noremap = true })
+  nmap("<C-f>", "<NOP>", { noremap = true })
 end
