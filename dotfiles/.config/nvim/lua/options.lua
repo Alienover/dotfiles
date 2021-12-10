@@ -55,7 +55,7 @@ wo.fillchars = "diff:╱"
 
 -- Llist mode
 wo.list = true
-wo.listchars = "tab:>-,lead:·,trail:·"
+wo.listchars = "tab: ,lead:·,trail:·"
 
 -- Python for neovim
 cmd([[

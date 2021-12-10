@@ -20,7 +20,18 @@ nls.config({
       end,
     }),
     -- Refer to: https://github.com/mantoni/eslint_d.js
-    nls.builtins.diagnostics.eslint_d,
+    nls.builtins.diagnostics.eslint_d.with({
+      extra_args = function()
+        if vim.fn.empty(vim.fn.glob(vim.loop.cwd() .. "/.eslintrc")) == 1 then
+          return {
+            "--no-eslintrc",
+            "--env",
+            "es6",
+          }
+        end
+        return {}
+      end,
+    }),
     -- Json
     -- Refer to: https://github.com/rhysd/fixjson
     nls.builtins.formatting.fixjson,

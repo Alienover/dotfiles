@@ -62,21 +62,6 @@ function M.wrap(use)
   return function(spec)
     spec = M.process_local_plugins(spec)
 
-    local function log_spec(input)
-      if type(input) == "string" then
-        utils.info(input, "packer")
-      else
-        for _, s in ipairs(input) do
-          log_spec(s)
-        end
-      end
-      if input.requires then
-        log_spec(input.requires)
-      end
-    end
-
-    log_spec(spec)
-
     use(spec)
   end
 end

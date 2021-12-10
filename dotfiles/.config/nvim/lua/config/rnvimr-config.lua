@@ -6,7 +6,6 @@ local nmap = utils.nmap
 
 -- Make Ranger replace netrw and be the file explorer
 -- let g:rnvimr_vanilla = 1
-g.rnimr_ex_enable = 1
 g.rnvimr_enable_ex = 1
 g.rnvimr_draw_border = 1
 g.rnvimr_enable_picker = 1

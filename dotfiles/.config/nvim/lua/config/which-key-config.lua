@@ -55,8 +55,9 @@ wk.setup({
   window = {
     border = "none", -- none, single, double, shadow
     position = "bottom", -- bottom, top
-    margin = { 0, 0, 0, 0 }, -- extra window margin [top, right, bottom, left]
+    margin = { 1, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
     padding = { 1, 0, 1, 0 }, -- extra window padding [top, right, bottom, left]
+    winblend = 0,
   },
   layout = {
     height = { min = 2, max = 15 }, -- min and max height of the columns
@@ -158,11 +159,11 @@ local key_maps = {
       "Document diagnostic",
     },
     n = {
-      t([[lua require"lspsaga.diagnostic".lsp_jump_diagnostic_next()]]),
+      t([[Lspsaga diagnostic_jump_next]]),
       "Next diagnostic",
     },
     p = {
-      t([[lua require"lspsaga.diagnostic".lsp_jump_diagnostic_prev()]]),
+      t([[Lspsaga diagnostic_jump_prev]]),
       "Previous diagnostic",
     },
   },

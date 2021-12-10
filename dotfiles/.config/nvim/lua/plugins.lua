@@ -65,6 +65,7 @@ local plugins = function(use)
     config = function()
       require("config/lualine-config")
     end,
+    requires = { "kyazdani42/nvim-web-devicons", opt = true },
   })
   -- Tabs
   use({
@@ -93,29 +94,19 @@ local plugins = function(use)
     opt = true,
     event = "BufEnter",
   })
-  use({
-    "b3nj5m1n/kommentary",
-    opt = true,
-    wants = "nvim-ts-context-commentstring",
-    keys = { "gc", "gcc" },
-    config = function()
-      require("config/kommentary-config")
-    end,
-    requires = "JoosepAlviste/nvim-ts-context-commentstring",
-  })
 
   use({
-    "kevinhwang91/rnvimr",
+    "numToStr/Comment.nvim",
     opt = true,
-    run = "make sync",
-    keys = { "<C-f>" },
-    cmd = "RnvimrToggle",
+    keys = { "gc", "gb", "gcc", "gbc" },
     config = function()
-      require("config/rnvimr-config")
+      require("Comment").setup()
     end,
   })
+
   use({ "nvim-lua/plenary.nvim", module = "plenary" })
   use({ "nvim-lua/popup.nvim", module = "popup" })
+
   -- Diffview
   use({
     "sindrets/diffview.nvim",
@@ -146,7 +137,7 @@ local plugins = function(use)
     end,
   })
 
-  -- Fuzzy finder
+  -- Files browser
   use({
     "nvim-telescope/telescope.nvim",
     opt = true,
@@ -165,6 +156,17 @@ local plugins = function(use)
       "nvim-lua/plenary.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
     },
+  })
+
+  use({
+    "kevinhwang91/rnvimr",
+    opt = true,
+    run = "make sync",
+    keys = { "<C-f>" },
+    cmd = "RnvimrToggle",
+    config = function()
+      require("config/rnvimr-config")
+    end,
   })
 
   -- LSP
@@ -208,6 +210,7 @@ local plugins = function(use)
       -- Snippets
       {
         "hrsh7th/vim-vsnip",
+        event = "InsertEnter",
         config = function()
           require("config/vsnip-config")
         end,
@@ -227,14 +230,14 @@ local plugins = function(use)
     },
   })
 
-  use({
-    "steelsojka/pears.nvim",
-    config = function()
-      require("pears").setup(function(conf)
-        conf.preset("tag_matching")
-      end)
-    end,
-  })
+  -- use({
+  --   "steelsojka/pears.nvim",
+  --   config = function()
+  --     require("pears").setup(function(conf)
+  --       conf.preset("tag_matching")
+  --     end)
+  --   end,
+  -- })
 
   -- Frontend
 
@@ -291,6 +294,15 @@ local plugins = function(use)
     end,
     requires = {
       "andymass/vim-matchup",
+      "windwp/nvim-ts-autotag",
+      "nvim-treesitter/nvim-treesitter-refactor",
+      {
+        "windwp/nvim-autopairs",
+        event = "BufReadPre",
+        config = function()
+          require("config/autopairs-config")
+        end,
+      },
       {
         "nvim-treesitter/playground",
         cmd = {

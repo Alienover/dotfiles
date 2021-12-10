@@ -3,25 +3,34 @@
 local utils = require("utils")
 local constants = require("utils.constants")
 
-local o = utils.o
+local o, g = utils.o, utils.g
 
 local c, icons = constants.colors, constants.icons
 
 local function spellcheck()
   if o.spell then
-    return ("SPELL [%s]"):format(o.spelllang)
+    return (" [%s]"):format(o.spelllang)
   end
 
   return ""
 end
 
+g.tokyonight_lualine_bold = true
+
 require("lualine").setup({
   options = {
+    -- Theme
     theme = "tokyonight",
-    -- theme = "onedark",
+
+    -- Icons
+    icons_enabled = true,
+
+    -- Colors
     color_added = c.GREEN,
     color_removed = c.DARK_RED,
     color_modified = c.DARK_YELLOW,
+
+    -- Symbols
     symbols = {
       error = icons.ERROR,
       warn = icons.WARN,

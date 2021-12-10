@@ -73,7 +73,7 @@ local on_attach = function(client)
   local keymap_otps = { noremap = true, silent = true }
 
   nmap("gb", "<C-o>", keymap_otps)
-  nmap("gd", "<cmd>lua vim.lsp.buf.definition()<CR>zz", keymap_otps)
+  nmap("gd", "<cmd>Telescope lsp_definitions<CR>zz", keymap_otps)
   nmap("gD", "<cmd>lua vim.lsp.buf.declaration()<CR>zz", keymap_otps)
   nmap("gr", "<cmd>Telescope lsp_references<CR>", keymap_otps)
   nmap("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", keymap_otps)
