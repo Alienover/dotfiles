@@ -19,6 +19,7 @@ yabai -m rule --add app="^Logi Options$" manage=off
 yabai -m rule --add app="^VLC$" manage=off
 yabai -m rule --add app="^QQ$" manage=off
 yabai -m rule --add app="^WeChat$" manage=off
+yabai -m rule --add app="^Mini Program$" manage=off
 
 ## New window spawns to the right if vertical split, or bottom if horizontal split
 yabai -m config window_placement second_child
@@ -50,19 +51,22 @@ yabai -m config layout bsp
 ## Override default layout for space 2 only
 yabai -m config --space 1 layout float
 
-# Set all padding and gaps to 0pt (default: 0)
-yabai -m config top_padding 0
-yabai -m config bottom_padding 0
-yabai -m config left_padding 0
-yabai -m config right_padding 0
-yabai -m config window_gap 0
+# Set all padding and gaps to 12pt (default: 0)
+yabai -m config top_padding 12
+yabai -m config bottom_padding 12
+yabai -m config left_padding 12
+yabai -m config right_padding 12
+yabai -m config window_gap 12
+
+# add 20 padding to the top and bottom of all spaces regardless of the display it belongs to
+# yabai -m config external_bar all:28:0
 
 ## Limelight addon (Kill it and start it each time Yabai starts)
 # killall limelight &>/dev/null
 # limelight &>/dev/null &
 
 ## If I close the active window, focus on any other visible window.
-yabai -m signal --add event=window_destroyed action="bash $XDG_CONFIG_HOME/yabai/window-focus-on-destroy.sh"
+yabai -m signal --add event=window_destroyed action="bash ~/.config/yabai/window-focus-on-destroy.sh"
 
 echo "yabai configuration loaded.."
 
