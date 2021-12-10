@@ -394,7 +394,7 @@ prompt_suffix() {
 ## Main prompt
 build_prompt() {
   RETVAL=$?
-	prompt_prefix
+  prompt_prefix
   prompt_status
   prompt_dir
   prompt_git
@@ -406,7 +406,7 @@ build_rprompt() {
   prompt_runtime
   prompt_env
   prompt_vi
-	prompt_suffix
+  prompt_suffix
 }
 
 PROMPT='%{%f%b%k%}$(build_prompt) '
