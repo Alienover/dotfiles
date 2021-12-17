@@ -1,0 +1,100 @@
+tap "homebrew/cask", "https://mirrors.ustc.edu.cn/homebrew-cask.git"
+tap "homebrew/core", "https://mirrors.ustc.edu.cn/homebrew-core.git"
+
+# Clone of cat(1) with syntax highlighting and Git integration
+brew "bat"
+
+# Get, unpack, build, and install modules from CPAN
+brew "cpanminus"
+
+# Platform built on V8 to build network applications
+brew "node", link: false
+
+# Node version management
+brew "n"
+
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.9"
+
+# Simple, fast and user-friendly alternative to find
+brew "fd"
+
+# Command-line fuzzy finder written in Go
+brew "fzf"
+
+# GitHub command-line tool
+brew "gh"
+
+# Distributed revision control system
+brew "git"
+
+# Terminal based graphical activity monitor inspired by gtop and vtop
+brew "gotop"
+
+# Improved top (interactive process viewer)
+brew "htop"
+
+# Lightweight and flexible command-line JSON processor
+brew "jq"
+
+# Just-In-Time Compiler (JIT) for the Lua programming language
+brew "luajit", args: ["HEAD"]
+
+# Open source relational database management system
+brew "mysql-client"
+
+# Parser generator tool and incremental parsing library
+brew "tree-sitter"
+
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+
+# SSL/TLS VPN implementing OSI layer 2 or 3 secure network extension
+brew "openvpn"
+
+# Highly capable, feature-rich programming language
+brew "perl"
+
+# Go support for Google's protocol buffers
+brew "protoc-gen-go"
+
+# Hook preloader
+brew "proxychains-ng"
+
+# Python version management
+brew "pyenv"
+
+# Alternative to pyenv for managing virtualenvs
+brew "pyenv-virtualenvwrapper"
+
+# Persistent key-value database, with built-in net interface
+brew "redis"
+
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+
+# Terminal multiplexer
+brew "tmux"
+
+# Lightweight BitTorrent client
+brew "transmission-cli"
+
+# Internet file retriever
+brew "wget"
+
+# UNIX shell (command interpreter)
+brew "zsh"
+
+# Simple hotkey-daemon for macOS.
+brew "koekeishiya/formulae/skhd"
+
+# A tiling window manager for macOS based on binary space partitioning.
+brew "koekeishiya/formulae/yabai", args: ["HEAD"]
+
+# Desktop automation application
+cask "hammerspoon"
+
+# GUI application
+mas "QQ", id: 451108668
+mas "WeChat", id: 836500024
+mas "Hidden Bar", id: 1452453066

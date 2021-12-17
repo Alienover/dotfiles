@@ -1,27 +1,45 @@
+#! /bin/bash
+CHECK_MARK="\033[0;32m\033[0m"
+
+DOT_DIR="$PWD/dotfiles"
 echo "HOME: ${HOME}"
+echo "DOT DIR: $DOT_DIR"
 
 # Symlinks all the dotfiles into your home directory
-echo "Setting up symlinks to custom dotfiles"
-echo ""
+echo "\nSetting up symlinks to custom dotfiles ...\n"
 
-for FILE in `ls -A $PWD/dotfiles/`; do
-    echo "Linking $PWD/dotfiles/$FILE to $HOME/$FILE ..."
+function create_link() {
+    local source="$1"
+    local target="$2"
+    local source_file=`echo $source | sed "s|$PWD|.|"`
+    local target_file=`echo $target | sed "s|$HOME|~|"`
 
-    if [ -e "$PWD/dotfiles/$FILE" ]; then
-        echo "$HOME/$FILE already exists, renaming it to $FILE.bak"
+    echo "\033[0;90m\c"
 
-        if [ -e "$HOME/$FILE.bak" ]
-        then
-            rm -r "$HOME/$FILE.bak"
+    if [[ -e "$target" ]]; then
+        echo "$target_file already exists, renaming it to $target_file.bak \c"
+
+        if [[ -e "$target.bak" ]]; then
+            rm -r "$target.bak"
         fi
 
-	echo "Deleting $HOME/$FILE.bak ..."
-	mv $HOME/$FILE $HOME/$FILE.bak
-
-	ll | grep $FILE
+	mv $target $target.bak
     fi
-    ln -s $PWD/dotfiles/$FILE $HOME/$FILE
-    echo ""
+    ln -s $source $target
 
+    echo "\r\033[K\c" 
+    echo "$CHECK_MARK \033[0;90m `printf "%-35s->" $source_file` \t$target_file \033[0m"
+}
+
+for FILE in `ls -A $DOT_DIR`; do
+    if [[ $FILE == ".config" ]]; then
+        for FOLDER in `ls -A $DOT_DIR/$FILE`; do
+            if [[ -d "$DOT_DIR/$FILE/$FOLDER" ]]; then
+                create_link "$DOT_DIR/$FILE/$FOLDER" "$HOME/$FILE/$FOLDER"
+            fi
+        done
+    else
+        create_link "$DOT_DIR/$FILE" "$HOME/$FILE"
+    fi
 done
-echo "Success!"
+echo "\nDone!"
