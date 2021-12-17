@@ -1,0 +1,45 @@
+[user]
+	email = alienover.l.d@gmail.com
+	name = Jiarong
+[github]
+	user = 
+[credential]
+    helper = osxkeychain
+[color]
+	branch = auto
+	diff = auto
+	status = auto
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = red
+
+[merge]
+	tool = vimdiff
+[mergetool]
+	keepBackup = false
+[core]
+	editor = nvim
+
+[mergetool "vimdiff"]
+        cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J' -c 'wincmd ='
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[http]
+        proxy= socks5://127.0.0.1:1080
+	postBuffer = 1048576000
+[alias]
+	ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
+        pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
