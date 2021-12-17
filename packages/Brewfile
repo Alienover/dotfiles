@@ -1,6 +1,9 @@
 tap "homebrew/cask", "https://mirrors.ustc.edu.cn/homebrew-cask.git"
 tap "homebrew/core", "https://mirrors.ustc.edu.cn/homebrew-core.git"
 
+# set arguments for all 'brew install --cask' commands
+cask_args appdir: "~/Applications", require_sha: true
+
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 
@@ -37,14 +40,8 @@ brew "htop"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 
-# Just-In-Time Compiler (JIT) for the Lua programming language
-brew "luajit", args: ["HEAD"]
-
 # Open source relational database management system
 brew "mysql-client"
-
-# Parser generator tool and incremental parsing library
-brew "tree-sitter"
 
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
@@ -91,10 +88,34 @@ brew "koekeishiya/formulae/skhd"
 # A tiling window manager for macOS based on binary space partitioning.
 brew "koekeishiya/formulae/yabai", args: ["HEAD"]
 
+## GUI application
+
 # Desktop automation application
 cask "hammerspoon"
 
-# GUI application
-mas "QQ", id: 451108668
-mas "WeChat", id: 836500024
-mas "Hidden Bar", id: 1452453066
+# QQ for mac
+cask "qq"
+
+# WeChat for mac
+cask "wechat"
+
+# Utility to hide menu bar items
+cask "hidden-bar"
+
+# Web browser
+cask "google-chrome"
+
+# Music streaming service
+cask "spotify"
+
+# Application launcher and productivity software
+cask "alfred"
+
+# GPU-based terminal emulator
+cask "kitty"
+
+# Multimedia player
+cask "vlc"
+
+# Binary releases of VS Code without MS branding/telemetry/licensing
+cask "vscodium"

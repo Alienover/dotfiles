@@ -1,9 +1,11 @@
+
 echo "Choose what kind of action for Homebrew:"
 echo "\t 1 - Original installation"
 echo "\t 2 - Fully installation from gitee.com"
 echo "\t 3 - Simple installation from gitee.com"
 echo "\t r - Uninstall"
 echo  "(1/2/3/r): \c"; read option
+
 
 case "$option" in
     1)
@@ -28,9 +30,4 @@ HOMEBREW_BIN=`which brew`
 
 if [[ $? -eq 0 ]]; then
     echo "Done! Homebrew located at $HOMEBREW_BIN"
-
-    # Install the Apple app store command line tool
-    brew install mas
-
-    echo "Completed! Reopen the terminal to reload the related config."
 fi
