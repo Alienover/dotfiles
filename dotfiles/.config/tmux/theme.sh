@@ -11,7 +11,7 @@ tm_color_primary="$GUI_ACTIVE_TAB_BACKGROUND"
 tm_color_white="$GUI_FOREGROUND"
 tm_color_grey="$GUI_SECONDARY"
 
-tm_color_black="$GUI_ACTIVE_TAB_FOREGROUND"
+tm_color_black="$GUI_BACKGROUND"
 
 # separators
 tm_separator_left_arrow=""
