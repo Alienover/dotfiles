@@ -30,6 +30,8 @@ init_paths() {
 
     local YARN_BIN="$HOME/.yarn/bin"
 
+    local YARN_GLOBAL_BIN="$HOME/.config/yarn/global/node_modules/.bin"
+
     local VS_CODE_BIN="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 
     local PYENV_BIN="$PYENV_ROOT/shims"
@@ -37,7 +39,7 @@ init_paths() {
     # Removed
     local RUBY_BIN="/usr/local/opt/ruby/bin"
 
-    export PATH="$MYSQL_CLIENT_BIN:$YARN_BIN:$VS_CODE_BIN:$GOBIN:$PYENV_BIN:$PATH"
+    export PATH="$MYSQL_CLIENT_BIN:$YARN_BIN:$YARN_GLOBAL_BIN:$VS_CODE_BIN:$GOBIN:$PYENV_BIN:$PATH"
 }
 
 init_paths
