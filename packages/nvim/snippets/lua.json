@@ -1,6 +1,0 @@
-{
-  "vim set keymap": {
-    "prefix": ["keymap"],
-    "body": "vim.api.nvim_set_keymap($1, $2, $3, $4)"
-  }
-}
