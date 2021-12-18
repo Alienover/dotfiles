@@ -8,63 +8,39 @@ local nmap, cmd = utils.nmap, utils.cmd
 
 local icons = constants.icons
 
-local LSP_SOURCES = {
-  MANUAL = 0,
-  INSTALLER = 1,
-}
-
 local installed_lsp = {
   ["null-ls"] = {
     filename = "null-lsp",
-    source = LSP_SOURCES.MANUAL,
+    setup = function(config)
+      config:setup({
+        on_attach = config.on_attach,
+      })
+    end,
   },
   -- `npm` required
+  html = {},
+  cssls = {},
+  vimls = {},
+  bashls = {},
+  pyright = {},
+  tailwindcss = {},
   flow = {
     filename = "flow-lsp",
-    source = LSP_SOURCES.MANUAL,
-  },
-  html = {
-    filename = "",
-    source = LSP_SOURCES.INSTALLER,
-  },
-  cssls = {
-    filename = "",
-    source = LSP_SOURCES.INSTALLER,
-  },
-  vimls = {
-    filename = "",
-    source = LSP_SOURCES.INSTALLER,
   },
   jsonls = {
     filename = "json-lsp",
-    source = LSP_SOURCES.INSTALLER,
-  },
-  bashls = {
-    filename = "",
-    source = LSP_SOURCES.INSTALLER,
   },
   tsserver = {
     filename = "ts-lsp",
-    source = LSP_SOURCES.INSTALLER,
-  },
-  tailwindcss = {
-    filename = "",
-    source = LSP_SOURCES.INSTALLER,
-  },
-  pyright = {
-    filename = "",
-    source = LSP_SOURCES.INSTALLER,
   },
   -- `go` required
   gopls = {
     -- NOTE: `sudo` required
     filename = "go-lsp",
-    source = LSP_SOURCES.INSTALLER,
   },
   -- `git` required
   sumneko_lua = {
     filename = "sumneko-lsp",
-    source = LSP_SOURCES.INSTALLER,
   },
 }
 
@@ -129,31 +105,24 @@ local function init_lsp()
 
   -- Setup the lsp for the one installed manually
   for server, opts in pairs(installed_lsp) do
-    if opts.source == LSP_SOURCES.MANUAL then
-      local config = load_config(opts.filename)
+    local config = load_config(opts.filename)
 
-      lspconfig[server].setup(config)
-    end
-  end
+    local existed, requested_server = lspinstaller.get_server(server)
+    if existed then
+      requested_server:on_ready(function()
+        requested_server:setup(config)
+      end)
 
-  -- Setup the lsp for the one from installer
-  lspinstaller.on_server_ready(function(server)
-    local config = {}
-    local opts = installed_lsp[server.name]
-
-    if opts ~= nil then
-      config = load_config(opts.filename)
-    end
-
-    server:setup(config)
-  end)
-end
-
-for name, _ in pairs(installed_lsp) do
-  local existed, server = lspinstaller.get_server(name)
-  if existed then
-    if not server:is_installed() then
-      server:install()
+      if not requested_server:is_installed() then
+        -- Queue the requested_server to be installed
+        requested_server:install()
+      end
+    else
+      if opts.setup ~= nil then
+        opts.setup(config)
+      else
+        lspconfig[server].setup(config)
+      end
     end
   end
 end

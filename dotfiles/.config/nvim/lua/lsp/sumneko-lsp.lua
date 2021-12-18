@@ -21,8 +21,6 @@ return require("lua-dev").setup({
   },
 })
 
--- local M = {}
-
 -- M = {
 --     cmd = lua_cmd,
 --     settings = {
@@ -54,5 +52,3 @@ return require("lua-dev").setup({
 --         }
 --     }
 -- }
-
--- return M

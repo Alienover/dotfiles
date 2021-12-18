@@ -1,5 +1,6 @@
 local nls = require("null-ls")
-nls.config({
+
+local config = {
   debounce = 150,
   default_timeout = 5000,
   save_after_format = false,
@@ -53,8 +54,14 @@ nls.config({
     -- Refer to: https://github.com/psf/black
     nls.builtins.formatting.black,
   },
-})
+}
 
-local M = {}
+local M = {
+  config = config,
+}
+
+function M:setup(opts)
+  nls.setup(vim.tbl_deep_extend("keep", self.config, opts))
+end
 
 return M
