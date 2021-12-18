@@ -2,6 +2,7 @@ local M = {}
 
 M.custom_plugins = {
   lspsaga = "~/Documents/myself/lspsaga.nvim",
+  lspinstaller = "~/Documents/myself/nvim-lsp-installer",
 }
 
 M.files = {

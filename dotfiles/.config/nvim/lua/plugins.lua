@@ -20,6 +20,10 @@ local config = {
       enabled = true,
       path = constants.custom_plugins.lspsaga,
     },
+    ["nvim-lsp-installer"] = {
+      enabled = true,
+      path = constants.custom_plugins.lspinstaller,
+    },
   },
 }
 
