@@ -21,7 +21,7 @@ local config = {
       path = constants.custom_plugins.lspsaga,
     },
     ["nvim-lsp-installer"] = {
-      enabled = true,
+      enabled = false,
       path = constants.custom_plugins.lspinstaller,
     },
   },
@@ -30,6 +30,25 @@ local config = {
 local plugins = function(use)
   -- Packer can manage itself
   use({ "wbthomason/packer.nvim", opt = true })
+  use({ "tweekmonster/startuptime.vim", opt = true, cmd = "StartupTime" })
+
+  -- speed up neovim!
+  use({
+    "nathom/filetype.nvim",
+    config = function()
+      require("filetype").setup({
+        -- overrides the filetype or function for filetype
+        -- See https://github.com/nathom/filetype.nvim#customization
+        overrides = {},
+      })
+    end,
+  })
+
+  use("github/copilot.vim")
+
+  -- Fix the CursorHold performance bug
+  use("antoinemadec/FixCursorHold.nvim")
+
   use({
     "vim-scripts/kwbdi.vim",
     opt = true,
@@ -165,7 +184,6 @@ local plugins = function(use)
   use({
     "kevinhwang91/rnvimr",
     opt = true,
-    run = "make sync",
     keys = { "<C-f>" },
     cmd = "RnvimrToggle",
     config = function()
@@ -218,7 +236,6 @@ local plugins = function(use)
         config = function()
           require("config/vsnip-config")
         end,
-        requires = { "hrsh7th/vim-vsnip-integ" },
       },
       -- Sources
       { "hrsh7th/cmp-vsnip", opt = true, event = "InsertEnter" },
@@ -233,15 +250,6 @@ local plugins = function(use)
       "onsails/lspkind-nvim",
     },
   })
-
-  -- use({
-  --   "steelsojka/pears.nvim",
-  --   config = function()
-  --     require("pears").setup(function(conf)
-  --       conf.preset("tag_matching")
-  --     end)
-  --   end,
-  -- })
 
   -- Frontend
 

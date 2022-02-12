@@ -1,4 +1,7 @@
+local utils = require("utils")
 local nls = require("null-ls")
+
+local g = utils.g
 
 local config = {
   debounce = 150,
@@ -50,9 +53,13 @@ local config = {
     }),
     -- Python
     -- Refer to: https://github.com/PyCQA/isort
-    nls.builtins.formatting.isort,
+    nls.builtins.formatting.isort.with({
+      command = g.python3_venv_home .. "/bin/isort",
+    }),
     -- Refer to: https://github.com/psf/black
-    nls.builtins.formatting.black,
+    nls.builtins.formatting.black.with({
+      command = g.python3_venv_home .. "/bin/black",
+    }),
   },
 }
 

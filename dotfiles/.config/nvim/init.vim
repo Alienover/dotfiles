@@ -14,9 +14,6 @@ lua require "init"
 let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
 
-set foldmethod=expr
-set foldexpr=nvim_treesitter#foldexpr()
-
 " Remove the editor styling for terminal
 augroup terminal
     autocmd!

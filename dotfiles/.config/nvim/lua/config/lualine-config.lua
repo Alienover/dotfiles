@@ -3,7 +3,7 @@
 local utils = require("utils")
 local constants = require("utils.constants")
 
-local o, g = utils.o, utils.g
+local o = utils.o
 
 local c, icons = constants.colors, constants.icons
 
@@ -14,8 +14,6 @@ local function spellcheck()
 
   return ""
 end
-
-g.tokyonight_lualine_bold = true
 
 require("lualine").setup({
   options = {

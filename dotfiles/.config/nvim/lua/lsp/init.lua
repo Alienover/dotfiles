@@ -4,7 +4,7 @@ local constants = require("utils.constants")
 local lspconfig = require("lspconfig")
 local lspinstaller = require("nvim-lsp-installer")
 
-local nmap, cmd = utils.nmap, utils.cmd
+local o, nmap, cmd = utils.o, utils.nmap, utils.cmd
 
 local icons = constants.icons
 
@@ -80,6 +80,7 @@ end
 
 local function init_lsp()
   local DEFAULT_CONFIG = {
+    autostart = o.diff == false,
     on_attach = on_attach,
     capabilities = custom_capabilities(),
     flags = {

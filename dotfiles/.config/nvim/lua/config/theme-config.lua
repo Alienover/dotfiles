@@ -7,6 +7,8 @@ local c = constants.colors
 
 g.tokyonight_style = "night"
 g.tokyonight_italic_functions = true
+g.tokyonight_lualine_bold = true
+
 cmd([[colorscheme tokyonight]])
 
 -- g.onedark_italic_function = true

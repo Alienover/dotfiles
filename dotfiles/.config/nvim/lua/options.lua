@@ -29,8 +29,13 @@ o.showmatch = true
 o.shiftround = true
 wo.number = true
 o.showmode = false
+o.swapfile = false
 bo.swapfile = false
+
+-- Folding
 wo.foldenable = false
+wo.foldmethod = "expr"
+wo.foldexpr = "nvim_treesitter#foldexpr()"
 
 -- set updatetime=100
 o.lsp = 3
