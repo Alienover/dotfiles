@@ -1,12 +1,6 @@
 #!/bin/bash
 ## Refer to: https://github.com/koekeishiya/skhd/blob/master/examples/skhdrc
 
-## Open terminal, blazingly fast compared to iTerm/Hyper
-# alt - t : CUR_DISP=`yabai -m query --displays --display | /usr/local/bin/jq -r '.index'` && \
-#     /Applications/kitty.app/Contents/MacOS/kitty --instance-group=$CUR_DISP --single-instance -d ~ && \
-#     unset CUR_DISP
-alt - t : /Applications/kitty.app/Contents/MacOS/kitty --instance-group=2 --single-instance -d ~ 
-
 ## Focus window
 ctrl + alt - h : yabai -m window --focus west || yabai -m window --focus last
 ctrl + alt - j : yabai -m window --focus south || yabai -m window --focus first
