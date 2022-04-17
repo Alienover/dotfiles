@@ -48,3 +48,7 @@ init_paths
 export ZVM_CURSOR_STYLE_ENABLED=false
 
 export GO_PROJECTS_PATH=("$HOME/Documents/work/agent8/Rigel")
+
+export NNN_PLUG="o:fzopen;p:preview-tabbed"
+
+export NNN_FIFO='/tmp/nnn.fifo'

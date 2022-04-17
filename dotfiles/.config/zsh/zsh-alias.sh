@@ -23,6 +23,8 @@ alias ll="ls -lh"
 # alias -g ..='cd ..'
 # alias -g ...='cd ../..'
 
+alias goproxy="GOPROXY=https://goproxy.cn,direct go"
+
 init_config_alias() {
     local MY_CONFIG_DIR="$HOME/.config"
 

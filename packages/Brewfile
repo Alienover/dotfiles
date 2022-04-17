@@ -122,3 +122,6 @@ cask "vscodium"
 
 # File archiver
 cask "keka"
+
+# System monitor for the menu bar
+cask "stats"
