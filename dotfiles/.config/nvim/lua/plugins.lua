@@ -17,7 +17,7 @@ local config = {
   local_plugins = {
     -- INFO: this is NOT packer functionality!
     ["lspsaga.nvim"] = {
-      enabled = true,
+      enabled = false,
       path = constants.custom_plugins.lspsaga,
     },
     ["nvim-lsp-installer"] = {
@@ -44,7 +44,7 @@ local plugins = function(use)
     end,
   })
 
-  use("github/copilot.vim")
+  -- use("github/copilot.vim")
 
   -- Fix the CursorHold performance bug
   use("antoinemadec/FixCursorHold.nvim")
@@ -223,26 +223,32 @@ local plugins = function(use)
     },
   })
 
+  -- Snippets
+  use({
+    "L3MON4D3/LuaSnip",
+    config = function()
+      require("config/luasnip-config")
+    end,
+  })
+
   use({
     "hrsh7th/nvim-cmp",
     config = function()
       require("config/cmp-config")
     end,
     requires = {
-      -- Snippets
-      {
-        "hrsh7th/vim-vsnip",
-        event = "InsertEnter",
-        config = function()
-          require("config/vsnip-config")
-        end,
-      },
       -- Sources
-      { "hrsh7th/cmp-vsnip", opt = true, event = "InsertEnter" },
+      -- { "hrsh7th/cmp-vsnip", opt = true, event = "InsertEnter" },
       { "hrsh7th/cmp-buffer", opt = true, event = "InsertEnter" },
       { "hrsh7th/cmp-emoji", opt = true, event = "InsertEnter" },
       { "hrsh7th/cmp-path", opt = true, event = "InsertEnter" },
       { "hrsh7th/cmp-calc", opt = true, event = "InsertEnter" },
+      {
+        "hrsh7th/cmp-nvim-lsp-signature-help",
+        opt = true,
+        event = "InsertEnter",
+      },
+      "saadparwaiz1/cmp_luasnip",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-nvim-lua",
       "ray-x/cmp-treesitter",

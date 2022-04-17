@@ -10,7 +10,7 @@ M.files = {
   -- NeoVim initialization file
   nvim = os.getenv("XDG_CONFIG_HOME") .. "/nvim/init.vim",
   -- Folder saved snippets
-  snippets_dir = os.getenv("XDG_CONFIG_HOME") .. "/nvim/snippets",
+  snippets = os.getenv("XDG_CONFIG_HOME") .. "/nvim/snippets",
   -- Tmux config
   tmux = os.getenv("HOME") .. "/.tmux.conf",
   -- Kitty config

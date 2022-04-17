@@ -54,7 +54,11 @@ local on_attach = function(client)
   nmap("gr", "<cmd>Telescope lsp_references<CR>", keymap_otps)
   nmap("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", keymap_otps)
 
-  if client.name == "tsserver" or client.name == "jsonls" then
+  if
+    client.name == "tsserver"
+    or client.name == "jsonls"
+    or client.name == "html"
+  then
     client.resolved_capabilities.document_formatting = false
   end
 

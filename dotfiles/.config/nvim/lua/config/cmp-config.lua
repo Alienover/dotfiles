@@ -4,14 +4,14 @@
 local cmp = require("cmp")
 local lspkind = require("lspkind")
 
-cmp.setup({
+local config = {
   snippet = {
     expand = function(args)
       -- For `vsnip` user.
-      vim.fn["vsnip#anonymous"](args.body)
+      -- vim.fn["vsnip#anonymous"](args.body)
 
       -- For `luasnip` user.
-      -- require('luasnip').lsp_expand(args.body)
+      require("luasnip").lsp_expand(args.body)
 
       -- For `ultisnips` user.
       -- vim.fn["UltiSnips#Anon"](args.body)
@@ -51,16 +51,16 @@ cmp.setup({
     -- Completion
     ["<C-e>"] = cmp.mapping.close(),
     ["<C-o>"] = cmp.mapping.complete(),
-    ["<C-l>"] = cmp.mapping(function(fallback)
-      if cmp.core.view:get_selected_entry() then
-        cmp.confirm()
-      else
-        fallback()
-      end
-    end, {
-      "i",
-      "s",
-    }),
+    -- ["<C-l>"] = cmp.mapping(function(fallback)
+    --   if cmp.core.view:get_selected_entry() then
+    --     cmp.confirm()
+    --   else
+    --     fallback()
+    --   end
+    -- end, {
+    --   "i",
+    --   "s",
+    -- }),
     ["<CR>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
@@ -72,9 +72,9 @@ cmp.setup({
     { name = "treesitter" },
     { name = "nvim_lua" },
     -- For vsnip user.
-    { name = "vsnip" },
+    -- { name = "vsnip" },
     -- For luasnip user.
-    -- { name = 'luasnip' },
+    { name = "luasnip" },
 
     -- For ultisnips user.
     -- { name = 'ultisnips' },
@@ -93,7 +93,7 @@ cmp.setup({
         buffer = "[Buffer]",
         nvim_lsp = "[LSP]",
         treesitter = "[Treesitter]",
-        vsnip = "[VSnip]",
+        luasnip = "[LuaSnip]",
         nvim_lua = "[Lua]",
         path = "[Path]",
         calc = "[Calc]",
@@ -105,4 +105,6 @@ cmp.setup({
     native_menu = false,
     ghost_text = true,
   },
-})
+}
+
+cmp.setup(config)

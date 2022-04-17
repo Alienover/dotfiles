@@ -62,6 +62,8 @@ wo.fillchars = "diff:╱"
 wo.list = true
 wo.listchars = "tab: ,lead:·,trail:·"
 
+g.copilot_no_tab_map = true
+
 -- Python for neovim
 cmd([[
     let g:python_venv_home = $VIRTUALENVWRAPPER_HOOK_DIR . '/neovim_py2'

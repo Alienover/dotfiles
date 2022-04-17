@@ -28,6 +28,9 @@ require("lualine").setup({
     color_removed = c.DARK_RED,
     color_modified = c.DARK_YELLOW,
 
+    -- Global line
+    globalstatus = true,
+
     -- Symbols
     symbols = {
       error = icons.ERROR,

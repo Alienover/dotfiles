@@ -1,10 +1,9 @@
+local ls = require("luasnip")
 local utils = require("utils")
 
 local w, o, cmd = utils.w, utils.o, utils.cmd
 
 local nmap, vmap, tmap = utils.nmap, utils.vmap, utils.tmap
-
-local t = utils.r_code
 
 local opts = { noremap = true, silent = true }
 
@@ -25,7 +24,8 @@ nmap("˚", ":m .-2<CR>==", opts)
 vmap("∆", ":m '>+1<CR>gv=gv", opts)
 vmap("˚", ":m '<-2<CR>gv=gv", opts)
 
-function _G.zoom_toggle()
+-- Zoom in/out pane
+vim.keymap.set({ "n" }, "zo", function()
   if w.zoomed and w.zoom_winrestcmd then
     cmd([[ execute w:zoom_winrestcmd ]])
     w.zoomed = false
@@ -35,12 +35,12 @@ function _G.zoom_toggle()
     cmd([[vertical resize]])
     w.zoomed = true
   end
-  return true
-end
+end, {
+  silent = true,
+})
 
-nmap("zo", "v:lua.zoom_toggle()", { expr = true, silent = true })
-
-function _G.smart_ctrlp()
+-- Smart toggling file finder by telescope or fzf
+vim.keymap.set({ "n" }, "<C-p>", function()
   if utils.find_git_ancestor() then
     local options = {}
     local win_spec = utils.get_window_sepc()
@@ -49,21 +49,19 @@ function _G.smart_ctrlp()
       table.insert(options, "theme=get_dropdown")
     end
 
-    return t(table.concat({
-      "<Cmd>",
+    cmd(table.concat({
       "Telescope find_files",
       table.concat(options, " "),
-      "<CR>",
     }, " "))
   else
-    return t([[<cmd>call v:lua.fzf_files()<CR>]])
+    fzf_files()
   end
-end
-
-nmap("<C-p>", "v:lua.smart_ctrlp()", { expr = true, silent = true })
+end, {
+  silent = true,
+})
 
 -- Smart toogling the spell checking
-function _G.toggle_spell()
+vim.keymap.set({ "n" }, "<leader>s", function()
   local cursor_word = vim.fn.expand("<cword>")
 
   if cursor_word == "" then
@@ -75,10 +73,36 @@ function _G.toggle_spell()
     end
   else
     -- List suggestions when hovering on word
-    return t("<Cmd>WhichKey z=<CR>")
+    cmd("WhichKey z=")
   end
+end, {
+  silent = true,
+})
 
-  return true
-end
+-- Expand the current snippet or jump to the next item within the snippet
+vim.keymap.set({ "i", "s" }, "<C-l>", function()
+  if ls.expand_or_jumpable() then
+    ls.expand_or_jump()
+  end
+end, {
+  silent = true,
+})
 
-nmap("<leader>s", "v:lua.toggle_spell()", { expr = true, silent = true })
+-- Always move to the previous item within the snippet
+vim.keymap.set({ "i", "s" }, "<C-h>", function()
+  if ls.jumpable(-1) then
+    ls.jump(-1)
+  end
+end, {
+  silent = true,
+})
+
+-- Selects within a list of options.
+-- Useful for choice node
+vim.keymap.set({ "i" }, "<C-j>", function()
+  if ls.choice_active() then
+    ls.change_choice(1)
+  end
+end, {
+  silent = true,
+})

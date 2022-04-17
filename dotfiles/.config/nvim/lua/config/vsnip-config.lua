@@ -13,4 +13,4 @@ cmd([[
 ]])
 
 -- Directory to save the custom snippets
-g.vsnip_snippet_dir = constants.files.snippets_dir
+g.vsnip_snippet_dir = constants.files.snippets
