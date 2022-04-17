@@ -31,21 +31,20 @@ on getSpotifySong(activeTab)
     return ""
 end getSpotifySong
 
-on getGoogleMusicSong(activeTab)
-    set songJsCode to "document.querySelector('#currently-playing-title').innerHTML"
-    set artistJsCode to "document.querySelector('.currently-playing-details #player-artist').innerText"
+on getYoutubeMusicSong(activeTab)
+	set songJsCode to "document.querySelector('.ytmusic-player-bar .subtitle .complex-string').title"
 
-    if activeTab is not null then
-        set song to executeJavaScript(activeTab, songJsCode) of me
-        set artist to executeJavaScript(activeTab, artistJsCode) of me 
-        try
-        if currentSong does not contain "missing value" then
-            return song & " - " & artist
-        end if
-        on error err
-        end try
-    end if
-end getGoogleMusicSong
+	if activeTab is not null then
+		try
+			set song to executeJavaScript(activeTab, songJsCode) of me
+			return song
+		on error err
+			return ""
+		end try
+	end if
+
+	return ""
+end getYoutubeMusicSong
 
 on getGoogleChromeSong()
     set current to ""
@@ -53,21 +52,21 @@ on getGoogleChromeSong()
     tell application "Google Chrome"
         repeat with theWindow in every window
             repeat with theTab in every tab of theWindow
-                if theTab's URL contains "spotify.com" and theTab's title does not contains "Spotify" then
-		    (* Spotify *)
+                if theTab's URL contains "spotify.com" and theTab's title does not contain "Spotify" then
+                    (* Spotify *)
 
                     set current to getSpotifySong(theTab) of me
                     exit repeat
-                else if theTab's title ends with "- Google Play Music" then
-		    (* Goole Play Music *)
+                else if theTab's URL contains "music.youtube.com" and theTab's title ends with "- Youtube Music" then
+                    (* Youtube Music *)
 
-                    set current to getGoogleMusicSong(theTab) of me
-                    exit 
+                    set current to getYoutubeMusicSong(theTab) of me
+                    exit repeat
                 end if
             end repeat
 
-            if current is not null then
-                exit repeat
+            if current is not "" then
+                    exit repeat
             end if
         end repeat
     end tell
