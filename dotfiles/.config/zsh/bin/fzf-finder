@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Switch between Ripgrep launcher mode (CTRL-R) and fzf filtering mode (CTRL-F)
+RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
+FD_PREFIX="fd --type f -i -H --color always --exclude node_modules "
+
+RG_PROMPT="1. ripgrep > "
+FD_PROMPT="2. fd > "
+FZF_PROMPT="3. fzf > "
+
+RG_BINDKEY="ctrl-r"
+FD_BINDKEY="ctrl-f"
+FZF_BINDKEY="ctrl-h"
+
+INITIAL_QUERY="${*:-}"
+IFS=: read -ra selected < <(
+  FZF_DEFAULT_COMMAND="$RG_PREFIX $(printf %q "$INITIAL_QUERY")" \
+  fzf-tmux -p $__TMUX_POPUP_SCALE,$__TMUX_POPUP_SCALE +s --ansi \
+      --color "hl:-1:underline,hl+:-1:underline:reverse" \
+      --disabled --query "$INITIAL_QUERY" \
+      --bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
+      --bind "$FZF_BINDKEY:unbind(change,$FZF_BINDKEY)+rebind($RG_BINDKEY,$FD_BINDKEY)+change-prompt($FZF_PROMPT)+reload($RG_PREFIX '' || true)+enable-search+clear-query" \
+      --bind "$RG_BINDKEY:unbind($RG_BINDKEY)+rebind(change,$FZF_BINDKEY,$FD_BINDKEY)+change-prompt($RG_PROMPT)+disable-search+reload($RG_PREFIX {q} || true)" \
+      --bind "$FD_BINDKEY:unbind(change,$FD_BINDKEY)+rebind($RG_BINDKEY,$FZF_BINDKEY)+change-prompt($FD_PROMPT)+reload($FD_PREFIX --type f || true)+enable-search+clear-query" \
+      --bind "ctrl-d:preview-down,ctrl-u:preview-up" \
+      --prompt "$RG_PROMPT" \
+      --delimiter : \
+      --header '╱ CTRL-R (ripgrep mode) ╱ CTRL-F (fd mode) ╱ CTRL-H (fzf mode) ╱' \
+      --preview 'bat --color=always {1} --highlight-line `tmp={2}; echo $(($tmp + 0))`' \
+      --preview-window 'up,60%,border-bottom,+{2}+3/3,~3'
+)
+[ -n "${selected[0]}" ] && nvim "${selected[0]}" "+${selected[1]}"
+
+exit 0

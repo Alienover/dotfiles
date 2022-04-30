@@ -48,3 +48,19 @@ function zsh_lazy_load() {
 
     eval "$placeholder"
 }
+
+function zsh_lazy_load_completions() {
+    local cmd=$1
+    local args=${@:2}
+    local comp="comp_$cmd"
+
+    eval "
+	function $comp {
+	    compdef -d $cmd
+
+	    $args
+	}
+    "
+
+    compdef $comp $cmd
+}

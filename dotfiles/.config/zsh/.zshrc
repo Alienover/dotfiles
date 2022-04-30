@@ -1,8 +1,4 @@
-# export ZSH="$HOME/.oh-my-zsh"
-
-# fpath=(/usr/local/share/zsh/site-functions $fpath)
-
-# source "$ZSH/oh-my-zsh.sh"
+#! $SHELL
 
 export ZDOTDIR="$HOME/.config/zsh"
 
@@ -21,22 +17,8 @@ zsh_add_file "zsh-colors.sh"
 # Load alias
 zsh_add_file "zsh-alias.sh"
 
-# Load git utils
-zsh_add_file "zsh-git.sh"
-
 # Load theme
 zsh_add_theme "agnoster"
-
-# Load plugins
-# Custom
-zsh_add_custom_plugin "fzf"
-zsh_add_custom_plugin "perl"
-zsh_add_custom_plugin "pyenv"
-zsh_add_custom_plugin "cmd-duration"
-# From Web
-zsh_add_plugin "jeffreytse/zsh-vi-mode"
-zsh_add_plugin "zsh-users/zsh-autosuggestions"
-zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
 
 # Completions
 autoload -Uz compinit
@@ -55,3 +37,22 @@ zmodload zsh/complist
 _comp_options+=(globdots)
 
 compinit -d $ZSH_COMPDUMP
+
+# Load plugins
+# -- Work
+zsh_add_custom_plugin "edo_work"
+# -- Custom
+zsh_add_custom_plugin "brew"
+zsh_add_custom_plugin "cmd-duration"
+zsh_add_custom_plugin "fnm"
+zsh_add_custom_plugin "fzf"
+zsh_add_custom_plugin "git"
+zsh_add_custom_plugin "go"
+zsh_add_custom_plugin "perl"
+zsh_add_custom_plugin "pyenv"
+zsh_add_custom_plugin "tmux"
+
+# From Web
+zsh_add_plugin "jeffreytse/zsh-vi-mode"
+zsh_add_plugin "zsh-users/zsh-autosuggestions"
+zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
