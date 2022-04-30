@@ -13,27 +13,3 @@ lua require "init"
 " Italic support
 let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
-
-" Remove the editor styling for terminal
-augroup terminal
-    autocmd!
-    if v:progname == "nvim"
-	autocmd TermOpen * setlocal nonumber norelativenumber
-    endif
-augroup END
-
-augroup diff_cursor
-    " Disable the cursorline to remove the annoying underling
-    autocmd BufEnter * if &diff | setlocal nocursorline | endif
-
-    " Show cursor line only in active window
-    autocmd InsertLeave,WinEnter * if !&diff | set cursorline | endif
-    autocmd InsertEnter,WinLeave * if !&diff | set nocursorline | endif
-augroup END
-
-" Highlight on yank
-autocmd TextYankPost * lua vim.highlight.on_yank {}
-
-" Windows to close with <q>
-autocmd FileType help,startuptime,qf,lspinfo,fugitiveblame nnoremap <buffer><silent> q :close<CR>
-autocmd FileType man nnoremap <buffer><silent> q :quit<CR>

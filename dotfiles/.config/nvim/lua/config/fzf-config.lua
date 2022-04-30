@@ -8,7 +8,7 @@ local tmap = utils.tmap
 local c = constants.colors
 
 -- If installed using Homebrew
-cmd([[set rtp+=/usr/local/opt/fzf]])
+cmd([[set rtp+=/opt/homebrew/opt/fzf]])
 local default_opts = string.format(
   "--color %s,%s,%s,%s --layout=reverse --margin=1,2 --prompt=' 🌈 ' ",
   ("fg:%s,bg:%s"):format(c.FG, c.BG),

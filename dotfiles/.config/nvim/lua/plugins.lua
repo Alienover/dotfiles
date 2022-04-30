@@ -197,7 +197,11 @@ local plugins = function(use)
     "neovim/nvim-lspconfig",
     -- opt = true,
     -- event = "BufReadPre",
-    wants = { "lua-dev.nvim", "lsp-colors.nvim", "null-ls.nvim" },
+    wants = {
+      "lua-dev.nvim",
+      "lsp-colors.nvim",
+      "null-ls.nvim",
+    },
     config = function()
       require("lsp")
     end,

@@ -4,7 +4,7 @@ local constants = require("utils.constants")
 local lspconfig = require("lspconfig")
 local lspinstaller = require("nvim-lsp-installer")
 
-local o, nmap, cmd = utils.o, utils.nmap, utils.cmd
+local o, nmap = utils.o, utils.nmap
 
 local icons = constants.icons
 
@@ -17,8 +17,10 @@ local installed_lsp = {
       })
     end,
   },
-  -- `npm` required
-  html = {},
+  -- NOTE: `npm` required
+  html = {
+    format = false,
+  },
   cssls = {},
   vimls = {},
   bashls = {},
@@ -28,51 +30,64 @@ local installed_lsp = {
     filename = "flow-lsp",
   },
   jsonls = {
+    format = false,
     filename = "json-lsp",
   },
   tsserver = {
+    format = false,
     filename = "ts-lsp",
   },
-  -- `go` required
+  -- NOTE: `go` required
   gopls = {
     -- NOTE: `sudo` required
     filename = "go-lsp",
   },
-  -- `git` required
+  -- NOTE: `git` required
   sumneko_lua = {
+    format = false,
     filename = "sumneko-lsp",
   },
 }
 
 local on_attach = function(client)
   -- Keymap
-  local keymap_otps = { noremap = true, silent = true }
+  local keymap_opts = { noremap = true, silent = true }
 
-  nmap("gb", "<C-o>", keymap_otps)
-  nmap("gd", "<cmd>Telescope lsp_definitions<CR>zz", keymap_otps)
-  nmap("gD", "<cmd>lua vim.lsp.buf.declaration()<CR>zz", keymap_otps)
-  nmap("gr", "<cmd>Telescope lsp_references<CR>", keymap_otps)
-  nmap("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", keymap_otps)
+  nmap("gb", "<C-o>", keymap_opts)
+  nmap("gd", "<cmd>Telescope lsp_definitions<CR>zz", keymap_opts)
+  nmap("gD", "<cmd>lua vim.lsp.buf.declaration()<CR>zz", keymap_opts)
+  nmap("gr", "<cmd>Telescope lsp_references<CR>", keymap_opts)
+  nmap("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", keymap_opts)
 
-  if
-    client.name == "tsserver"
-    or client.name == "jsonls"
-    or client.name == "html"
-  then
+  local lsp_opts = installed_lsp[client.name]
+
+  local format = true
+  -- Set the document formatting to false only when the format option is false
+  if lsp_opts ~= nil and lsp_opts.format == false then
+    format = false
+  end
+
+  if not format then
     client.resolved_capabilities.document_formatting = false
   end
 
-  -- Formatting on save
   if client.resolved_capabilities.document_formatting then
-    cmd([[augroup Format]])
-    cmd([[autocmd! * <buffer>]])
-    cmd([[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()]])
-    cmd([[augroup END]])
+    local formatGroup = vim.api.nvim_create_augroup("Format", { clear = true })
+
+    vim.api.nvim_create_autocmd("BufWritePost", {
+      desc = "Format the buffer on save",
+      buffer = 0,
+      group = formatGroup,
+      callback = function()
+        vim.lsp.buf.formatting_sync({}, 2 * 1000)
+      end,
+    })
   end
 
   -- Alias
-  cmd([[command! LspFormat lua vim.lsp.buf.formatting()]])
-  cmd([[command! LspSignature lua vim.lsp.buf.signature_help()]])
+  vim.api.nvim_create_user_command("LspFormat", function()
+    vim.lsp.buf.formatting({})
+  end, {})
 end
 
 local custom_capabilities = function()

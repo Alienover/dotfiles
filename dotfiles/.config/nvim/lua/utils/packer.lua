@@ -1,4 +1,4 @@
--- Refer to: https://github.com/folke/dot/blob/499fdfa47c72cefb440bff08a3e1eae19db65a8d/config/nvim/lua/util/packer.lualocal M = {}
+-- Refer to: https://github.com/folke/dot/blob/499fdfa47c72cefb440bff08a3e1eae19db65a8d/config/nvim/lua/util/packer.lua
 local utils = require("utils")
 
 local M = {}
