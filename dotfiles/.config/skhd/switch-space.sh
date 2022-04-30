@@ -1,5 +1,5 @@
 #!/bin/bash
-SPAC_LEN=`yabai -m query --spaces | /usr/local/bin/jq 'map(select(.windows|length > 0)) | length'`
+SPAC_LEN=`yabai -m query --spaces | jq 'map(select(.windows|length > 0)) | length'`
 __HYPER="cmd + alt + ctrl"
 if [[ "$1" > "$SPAC_LEN" ]]; then
     skhd -k "$__HYPER - $SPAC_LEN"

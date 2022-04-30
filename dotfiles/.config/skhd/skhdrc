@@ -46,13 +46,6 @@ shift + alt - r : yabai -m space --rotate 90
 ## Balance window
 shift + alt - 0x18 : yabai -m space --balance # 0x18 is the "=" key
 
-## Focus space
-alt - 1 : sh ~/.config/skhd/switch-space.sh 1
-alt - 2 : sh ~/.config/skhd/switch-space.sh 2
-alt - 3 : sh ~/.config/skhd/switch-space.sh 3
-alt - 4 : sh ~/.config/skhd/switch-space.sh 4
-alt - 5 : sh ~/.config/skhd/switch-space.sh 5
-
 ## Add the active window to the window or stack to the {direction}
 ## Note that this only works when the active window does *not* already belong to a stack
 shift + alt - h  : sh ~/.config/skhd/stack-window.sh west

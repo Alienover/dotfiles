@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CUR_WIN=`yabai -m query --windows --window | /usr/local/bin/jq -r ".id"`
+CUR_WIN=`yabai -m query --windows --window | jq -r ".id"`
 
 case "$1" in
     "next")
