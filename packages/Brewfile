@@ -1,8 +1,9 @@
 tap "homebrew/cask", "https://mirrors.ustc.edu.cn/homebrew-cask.git"
 tap "homebrew/core", "https://mirrors.ustc.edu.cn/homebrew-core.git"
+tap "homebrew/cask-fonts"
 
 # set arguments for all 'brew install --cask' commands
-cask_args appdir: "~/Applications", require_sha: true
+cask_args appdir: "~/Applications", require_sha: false
 
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
@@ -10,14 +11,11 @@ brew "bat"
 # Get, unpack, build, and install modules from CPAN
 brew "cpanminus"
 
-# Platform built on V8 to build network applications
-brew "node", link: false
-
-# Node version management
-brew "n"
+# Fast and simple Node.js version manager
+brew "fnm"
 
 # Interpreted, interactive, object-oriented programming language
-brew "python@3.9"
+# brew "python@3.9"
 
 # Simple, fast and user-friendly alternative to find
 brew "fd"
@@ -30,9 +28,6 @@ brew "gh"
 
 # Distributed revision control system
 brew "git"
-
-# Terminal based graphical activity monitor inspired by gtop and vtop
-brew "gotop"
 
 # Improved top (interactive process viewer)
 brew "htop"
@@ -86,7 +81,7 @@ brew "zsh"
 brew "koekeishiya/formulae/skhd"
 
 # A tiling window manager for macOS based on binary space partitioning.
-brew "koekeishiya/formulae/yabai", args: ["HEAD"]
+brew "koekeishiya/formulae/yabai"
 
 ## GUI application
 
@@ -100,7 +95,7 @@ cask "qq"
 cask "wechat"
 
 # Utility to hide menu bar items
-cask "hidden-bar"
+cask "hiddenbar"
 
 # Web browser
 cask "google-chrome"
@@ -125,3 +120,9 @@ cask "keka"
 
 # System monitor for the menu bar
 cask "stats"
+
+# Victor Mono
+cask "font-victor-mono"
+
+# Nerf font patch for victor mono
+cask "font-victor-mono-nerd-font"

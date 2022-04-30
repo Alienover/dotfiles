@@ -11,21 +11,29 @@
 #
 # reload_shell
 #
-echo "Choose what kind of action for zsh:"
-echo "\t 1 - Install"
-echo "\t 2 - Replace bash"
-echo "(1/2): \c"; read option
+__zsh_setup() {
+    echo "Choose what kind of action for zsh:"
+    echo "\t 1 - Install"
+    echo "\t 2 - Replace bash"
+    echo "(1/2): \c"; read option
 
-case "$option" in
-    1)
-        brew install zsh
-        ;;
-    2)
-        sudo sh -c "echo $(which zsh) >> /etc/shells"
-        chsh -s $(which zsh)
-        ;;
-    *)
-        echo 'Invalid option! Please try again...'
-        exit 1
-        ;;
-esac
+    case "$option" in
+        1)
+            brew install zsh
+            exit 0
+            ;;
+        2)
+            sudo sh -c "echo $(which zsh) >> /etc/shells"
+            chsh -s $(which zsh)
+            exit 0
+            ;;
+        *)
+            clear
+            echo 'Invalid option! Please try again...'
+            ;;
+    esac
+}
+
+while true; do
+    __zsh_setup
+done
