@@ -1,6 +1,4 @@
-on output(input)
-    set prefix to "♫"
-
+on output(input, prefix)
     if input is not "" then
         set strLength to the length of input
 
@@ -47,6 +45,7 @@ on getYoutubeMusicSong(activeTab)
 end getYoutubeMusicSong
 
 on getGoogleChromeSong()
+    set prefix to ""
     set current to ""
 
     tell application "Google Chrome"
@@ -55,11 +54,13 @@ on getGoogleChromeSong()
                 if theTab's URL contains "spotify.com" and theTab's title does not contain "Spotify" then
                     (* Spotify *)
 
+                    set prefix to ""
                     set current to getSpotifySong(theTab) of me
                     exit repeat
                 else if theTab's URL contains "music.youtube.com" and theTab's title ends with "- Youtube Music" then
                     (* Youtube Music *)
 
+                    set prefix to ""
                     set current to getYoutubeMusicSong(theTab) of me
                     exit repeat
                 end if
@@ -71,10 +72,11 @@ on getGoogleChromeSong()
         end repeat
     end tell
     
-    return current
+    return {current, prefix}
 end getCurrentSong
 
 on getAppleMusicSong()
+    set prefix to ""
     set current to ""
 
     tell application "Music"
@@ -86,10 +88,11 @@ on getAppleMusicSong()
         end if 
     end tell
 
-    return current
+    return {current, prefix}
 end getAppleMusicSong
 
 on getSpotifyAppSong()
+    set prefix to ""
     set current to ""
 
     tell application "Spotify"
@@ -101,21 +104,22 @@ on getSpotifyAppSong()
 	end if
     end tell
 
-    return current
+    return {current, prefix}
 end getSpotifyAppSong
 
 set current to ""
+set prefix to ""
 
 if application "Spotify" is running then
-    set current to getSpotifyAppSong() of me
+    set {current, prefix} to getSpotifyAppSong() of me
 end if
 
 if current is "" and application "Music" is running then
-    set current to getAppleMusicSong() of me
+    set {current, prefix} to getAppleMusicSong() of me
 end if
 
 if current is "" and application "Google Chrome" is running then
-    set current to getGoogleChromeSong() of me
+    set {current, prefix} to getGoogleChromeSong() of me
 end if
 
-output(current)
+output(current, prefix)

@@ -45,7 +45,7 @@ search_project() {
         "$PROJECT_VPN")
             PROJECT_NAME="$PROJECT_VPN"
             PROJECT_ROOT="$HOME"
-            PROJECT_ARGS="tmux send-keys -t \"$PROJECT_NAME\" \"$HOME/v2ray/v2ray\" C-m \; \
+            PROJECT_ARGS="tmux send-keys -t \"$PROJECT_NAME\" \"make proxy\" C-m \; \
                 split-window -t \"$PROJECT_NAME\" \; \
                 split-window -t \"$PROJECT_NAME\" \; \
                 select-layout -t \"$PROJECT_NAME\" tiled \; \
