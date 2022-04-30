@@ -20,7 +20,7 @@ IFS=: read -ra selected < <(
       --disabled --query "$INITIAL_QUERY" \
       --bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
       --bind "$FZF_BINDKEY:unbind(change,$FZF_BINDKEY)+rebind($RG_BINDKEY,$FD_BINDKEY)+change-prompt($FZF_PROMPT)+reload($RG_PREFIX '' || true)+enable-search+clear-query" \
-      --bind "$RG_BINDKEY:unbind($RG_BINDKEY)+rebind(change,$FZF_BINDKEY,$FD_BINDKEY)+change-prompt($RG_PROMPT)+disable-search+reload($RG_PREFIX {q} || true)" \
+      --bind "$RG_BINDKEY:unbind($RG_BINDKEY)+rebind(change,$FZF_BINDKEY,$FD_BINDKEY)+change-prompt($RG_PROMPT)+reload($RG_PREFIX {q} || true)+disable-search" \
       --bind "$FD_BINDKEY:unbind(change,$FD_BINDKEY)+rebind($RG_BINDKEY,$FZF_BINDKEY)+change-prompt($FD_PROMPT)+reload($FD_PREFIX --type f || true)+enable-search+clear-query" \
       --bind "ctrl-d:preview-down,ctrl-u:preview-up" \
       --prompt "$RG_PROMPT" \
