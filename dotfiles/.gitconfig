@@ -23,6 +23,11 @@
 	changed = green
 	untracked = red
 
+[diff]
+	tool = nvim
+[difftool "nvim"]
+        cmd = nvim -d $REMOTE $LOCAL
+
 [merge]
 	tool = vimdiff
 [mergetool]
@@ -43,3 +48,9 @@
 [alias]
 	ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
         pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
+        logs = "!tmux popup -h $__TMUX_POPUP_SCALE -w $__TMUX_POPUP_SCALE -E 'TERM='$TERM'; cd '$PWD';__FZF_POPUP_HEIGHT=100% popup-logs'"
+        diffs = "!tmux popup -h $__TMUX_POPUP_SCALE -w $__TMUX_POPUP_SCALE -E 'TERM='$TERM'; cd '$PWD';__FZF_POPUP_HEIGHT=100% popup-diff'"
+[safe]
+	directory = /opt/homebrew/Library/Taps/homebrew/homebrew-cask
+	directory = /opt/homebrew/Library/Taps/homebrew/homebrew-core
+	directory = /opt/homebrew/Library/Taps/homebrew/homebrew-services
