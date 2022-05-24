@@ -123,7 +123,7 @@ local plugins = function(use)
     opt = true,
     keys = { "gc", "gb", "gcc", "gbc" },
     config = function()
-      require("Comment").setup()
+      require("Comment").setup({})
     end,
   })
 

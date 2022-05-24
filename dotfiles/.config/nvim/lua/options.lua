@@ -65,18 +65,16 @@ wo.listchars = "tab: ,lead:·,trail:·"
 g.copilot_no_tab_map = true
 
 -- Python for neovim
-cmd([[
-    let g:python_venv_home = $VIRTUALENVWRAPPER_HOOK_DIR . '/neovim_py2'
-    let g:python3_venv_home = $VIRTUALENVWRAPPER_HOOK_DIR . '/neovim_py3'
+g.python_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py2"
+g.python3_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py3"
 
-    let g:python_venv_bin = g:python_venv_home . '/bin/python'
-    let g:python3_venv_bin = g:python3_venv_home . '/bin/python'
+g.python_venv_bin = g.python_venv_home .. "/bin/python"
+g.python3_venv_bin = g.python3_venv_home .. "/bin/python"
 
-    if filereadable(g:python_venv_bin)
-	let g:python_host_prog = g:python_venv_bin
-    endif
+if vim.fn.executable(g.python_venv_bin) then
+  g.python_host_prog = g.python_venv_bin
+end
 
-    if filereadable(g:python3_venv_bin)
-	let g:python3_host_prog = g:python3_venv_bin
-    endif
-]])
+if vim.fn.executable(g.python3_venv_bin) then
+  g.python3_host_prog = g.python3_venv_bin
+end

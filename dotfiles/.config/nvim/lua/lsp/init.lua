@@ -74,7 +74,7 @@ local on_attach = function(client)
   if client.resolved_capabilities.document_formatting then
     local formatGroup = vim.api.nvim_create_augroup("Format", { clear = true })
 
-    vim.api.nvim_create_autocmd("BufWritePost", {
+    vim.api.nvim_create_autocmd("BufWritePre", {
       desc = "Format the buffer on save",
       buffer = 0,
       group = formatGroup,
@@ -128,6 +128,7 @@ local function init_lsp()
     local config = load_config(opts.filename)
 
     local existed, requested_server = lspinstaller.get_server(server)
+
     if existed then
       requested_server:on_ready(function()
         requested_server:setup(config)

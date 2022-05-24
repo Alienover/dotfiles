@@ -23,18 +23,11 @@ local config = {
         return {}
       end,
     }),
-    -- Refer to: https://github.com/mantoni/eslint_d.js
-    nls.builtins.diagnostics.eslint_d.with({
-      extra_args = function()
-        if vim.fn.empty(vim.fn.glob(vim.loop.cwd() .. "/.eslintrc")) == 1 then
-          return {
-            "--no-eslintrc",
-            "--env",
-            "es6",
-          }
-        end
-        return {}
-      end,
+    nls.builtins.diagnostics.eslint.with({
+      prefer_local = vim.loop.cwd() .. "/node_modules/.bin",
+    }),
+    nls.builtins.code_actions.eslint.with({
+      prefer_local = vim.loop.cwd() .. "/node_modules/.bin",
     }),
     -- Json
     -- Refer to: https://github.com/rhysd/fixjson
