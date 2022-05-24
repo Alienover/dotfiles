@@ -20,6 +20,12 @@ zsh_add_file "zsh-alias.sh"
 # Load theme
 zsh_add_theme "agnoster"
 
+# From Web
+zsh_add_plugin "jeffreytse/zsh-vi-mode"
+zsh_add_plugin "zsh-users/zsh-autosuggestions"
+zsh_add_plugin "zdharma-continuum/fast-syntax-highlighting"
+# zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
+
 # Completions
 autoload -Uz compinit
 
@@ -51,8 +57,3 @@ zsh_add_custom_plugin "go"
 zsh_add_custom_plugin "perl"
 zsh_add_custom_plugin "pyenv"
 zsh_add_custom_plugin "tmux"
-
-# From Web
-zsh_add_plugin "jeffreytse/zsh-vi-mode"
-zsh_add_plugin "zsh-users/zsh-autosuggestions"
-zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
