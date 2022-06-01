@@ -36,11 +36,7 @@ local plugins = function(use)
   use({
     "nathom/filetype.nvim",
     config = function()
-      require("filetype").setup({
-        -- overrides the filetype or function for filetype
-        -- See https://github.com/nathom/filetype.nvim#customization
-        overrides = {},
-      })
+      require("config/filetype-config")
     end,
   })
 
@@ -140,6 +136,7 @@ local plugins = function(use)
       "DiffviewToggleFiles",
       "DiffviewFocusFiles",
     },
+    requires = { "nvim-lua/plenary.nvim" },
     config = function()
       require("config/diffview-config")
     end,

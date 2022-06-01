@@ -8,6 +8,9 @@ cmd([[filetype plugin indent on]])
 
 cmd([[syntax on]])
 
+-- Do not source the default filetype.vim
+g.did_load_filetypes = 1
+
 -- be iMproved, required
 o.compatible = false
 
