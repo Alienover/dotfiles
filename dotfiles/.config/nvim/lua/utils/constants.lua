@@ -22,9 +22,11 @@ M.files = {
   yabai = os.getenv("XDG_CONFIG_HOME") .. "/yabai/yabairc",
   -- SKHD config
   skhd = os.getenv("XDG_CONFIG_HOME") .. "/skhd/skhdrc",
-  -- Work directories
-  polaris = os.getenv("HOME") .. "/Documents/work/agent8/Polaris",
-  rigel = os.getenv("HOME") .. "/Documents/work/agent8/Rigel",
+  -- Dotfiles folder
+  dotfiles = os.getenv("HOME") .. "/src/dotfiles",
+  -- Work relatives
+  work_config = os.getenv("EDISON_REPO_DIR") .. "/../others",
+  workdirs = os.getenv("EDISON_REPO_DIR"),
 }
 
 M.colors = {

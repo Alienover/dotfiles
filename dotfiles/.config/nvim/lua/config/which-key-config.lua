@@ -6,7 +6,9 @@ local o, g, cmd = utils.o, utils.g, utils.cmd
 
 -- Populate the vim cmd prefix and suffix
 local t = function(str)
-  return "<Cmd>" .. str .. "<CR>"
+  return function()
+    cmd(str)
+  end
 end
 
 -- Populate the command for file to edit
@@ -16,22 +18,107 @@ end
 
 -- Populate the floating terminal command with presets
 local ft = function(input)
-  return t(
-    ([[lua require"utils.floating_terminal":open({"%s", border = true })]]):format(
-      input
-    )
-  )
+  return function()
+    local options = { border = true }
+    local terminal = require("utils/floating_terminal")
+
+    if input == nil then
+      terminal:toggle()
+    else
+      table.insert(options, 1, input)
+      terminal:open(options)
+    end
+  end
 end
 
-function _G.toggle_diffview()
+local function toggle_diffview()
   if g.diffview_opened then
     g.diffview_opened = false
-    cmd([[DiffviewClose]])
+    cmd("DiffviewClose")
   else
     g.diffview_opened = true
-    cmd([[DiffviewOpen]])
+    cmd("DiffviewOpen")
   end
-  return true
+end
+
+local function telescope(sub_cmd, opts)
+  return function()
+    local options = {}
+
+    for k, v in pairs(opts or {}) do
+      table.insert(options, ("%s=%s"):format(k, v))
+    end
+
+    local win_spec = utils.get_window_sepc()
+
+    if win_spec.columns < 200 then
+      table.insert(options, "layout_strategy=vertical")
+    end
+
+    cmd(table.concat({
+      "Telescope",
+      sub_cmd,
+      table.concat(options, " "),
+    }, " "))
+  end
+end
+
+local function workspaces(base)
+  -- Scan the certain workspace
+  local plenary = require("plenary.scandir")
+  local dirs = plenary.scan_dir(base, { depth = 1, only_dirs = true })
+
+  -- Default config
+  local config = {
+    name = ("%s Edison"):format(constants.icons.ui.Email),
+    O = {
+      telescope("find_files", {
+        cwd = constants.files.work_config,
+        prompt_title = "Search\\ Config",
+      }),
+      "Search Config",
+    },
+  }
+
+  -- Set the first letter of the folder as the trigger key
+  for _, v in pairs(dirs) do
+    local dir = string.match(v, "/([^/]+)$")
+    local key = string.sub(dir, 1, 1)
+
+    if config[key] == nil then
+      key = string.lower(key)
+    end
+
+    config[key] = {
+      telescope("find_files", {
+        cwd = v,
+        no_ignore = true,
+        prompt_title = ("Search " .. dir):gsub(" ", "\\ "),
+      }),
+      "Search " .. dir,
+    }
+  end
+
+  return config
+end
+
+local function gitsigns(sub_cmd)
+  return t("Gitsigns " .. sub_cmd)
+end
+
+local function lspsaga(sub_cmd)
+  return t("Lspsaga " .. sub_cmd)
+end
+
+local function buffer_delete(force)
+  return function()
+    local kwdbi = require("config/kwbdi-config")
+    if force == true then
+      kwdbi:kill_buf()
+    else
+      kwdbi:kill_buf_safe()
+    end
+  end
 end
 
 o.timeoutlen = 500
@@ -77,10 +164,10 @@ wk.setup({
 local key_maps = {
   h = {
     name = "Help",
-    t = { t("Telescope builtin"), "Telescope" },
-    c = { t("Telescope command"), "Commands" },
-    k = { t("Telescope keymaps"), "key Maps" },
-    h = { t("Telescope highlights"), "Highlight Groups" },
+    t = { telescope("builtin"), "Telescope" },
+    c = { telescope("command"), "Commands" },
+    k = { telescope("keymaps"), "key Maps" },
+    h = { telescope("highlights"), "Highlight Groups" },
     p = {
       name = "Packer",
       p = { t("PackerSync"), "Sync" },
@@ -89,28 +176,18 @@ local key_maps = {
       c = { t("PackerCompile"), "Compile" },
     },
   },
-  w = {
-    name = "Workspaces",
-    p = {
-      t("Telescope find_files cwd=" .. constants.files.polaris),
-      "Search Polaris",
-    },
-    r = {
-      t("Telescope find_files cwd=" .. constants.files.rigel),
-      "Search Rigel",
-    },
-  },
+  e = workspaces(constants.files.workdirs),
   s = { t("split"), "Split" },
   v = { t("vsplit"), "Split vertically" },
   b = {
     name = "Buffers",
-    d = { t("bd"), "Delete" },
+    d = { buffer_delete(), "Delete" },
+    D = { buffer_delete(true), "Force Delete" },
     f = { t("bfirst"), "First" },
     l = { t("blast"), "Last" },
     n = { t("bnext"), "Next" },
     p = { t("bprevious"), "Previous" },
-    s = { t("SymbolsOutline"), "Symbols outline" },
-    b = { t("Telescope buffers"), "Find buffers" },
+    b = { telescope("buffers"), "Find buffers" },
   },
   t = {
     name = "Terminal",
@@ -118,26 +195,30 @@ local key_maps = {
     h = { ft("htop"), "htop" },
     p = { ft("python"), "python" },
     n = { ft("node"), "node" },
-    t = { t("lua require'constants.floating_terminal':toggle()"), "Toggle" },
+    t = { ft(), "Toggle" },
   },
   g = {
     name = "Git",
-    d = { t("lua toggle_diffview()"), "Toggle diffview" },
-    c = { t("Telescope git_commits"), "Git commits" },
-    f = { t("Telescope git_files"), "Git files" },
-    j = { t("lua require'gitsigns'.next_hunk()"), "Next hunk" },
-    k = { t("lua require'gitsigns'.prev_hunk()"), "Previous hunk" },
-    p = { t("lua require'gitsigns'.preview_hunk()"), "Preview hunk" },
-    b = { t("lua require'gitsigns'.blame_line()"), "Blame line" },
+    d = { toggle_diffview, "Toggle diffview" },
+    c = { telescope("git_commits"), "Git commits" },
+    f = { telescope("git_files"), "Git files" },
+    j = { gitsigns("next_hunk"), "Next hunk" },
+    k = { gitsigns("prev_hunk"), "Previous hunk" },
+    p = { gitsigns("preview_hunk"), "Preview hunk" },
+    b = { gitsigns("blame_line"), "Blame line" },
   },
   f = {
     name = "Files",
-    r = { t("Telescope live_grep"), "Live grep" },
-    f = { t("Telescope find_files"), "Find files" },
-    o = { t("Telescope oldfiles"), "Recently opended" },
+    r = { telescope("live_grep"), "Live grep" },
+    f = { telescope("find_files"), "Find files" },
+    o = { telescope("oldfiles"), "Recently opended" },
   },
   o = {
     name = "Open",
+    d = {
+      telescope("git_files", { cwd = constants.files.dotfiles }),
+      "dotfiles",
+    },
     v = { e(constants.files.vim), ".vimrc" },
     z = { e(constants.files.zsh), ".zshrc" },
     t = { e(constants.files.tmux), ".tmux.conf" },
@@ -151,26 +232,26 @@ local key_maps = {
     I = { t("LspInfo"), "Info" },
     R = { t("LspRestart"), "Restart" },
     f = { t("lua vim.lsp.buf.formatting()"), "Format" },
-    q = { t("Telescope quickfix"), "Quickfix" },
-    r = { t([[lua require"lspsaga.rename".rename()]]), "Rename" },
-    s = { t("Telescope lsp_document_symbols"), "Document symbols" },
+    q = { telescope("quickfix"), "Quickfix" },
+    r = { lspsaga("rename"), "Rename" },
+    s = { telescope("lsp_document_symbols"), "Document symbols" },
     d = {
-      t("Telescope lsp_document_diagnostics"),
+      telescope("lsp_document_diagnostics"),
       "Document diagnostic",
     },
     n = {
-      t([[Lspsaga diagnostic_jump_next]]),
+      lspsaga("diagnostic_jump_next"),
       "Next diagnostic",
     },
     p = {
-      t([[Lspsaga diagnostic_jump_prev]]),
+      lspsaga("diagnostic_jump_prev"),
       "Previous diagnostic",
     },
   },
   c = {
     name = "Code",
-    d = { t("Lspsaga preview_definition"), "Definition" },
-    a = { t("Lspsaga code_action"), "Code action" },
+    d = { lspsaga("preview_definition"), "Definition" },
+    a = { lspsaga("code_action"), "Code action" },
   },
   z = { t("ZenMode"), "Zen Mode" },
 }
