@@ -101,7 +101,6 @@ local plugins = function(use)
   use({
     "akinsho/bufferline.nvim",
     event = "BufReadPre",
-    wants = "nvim-web-devicons",
     config = function()
       require("config/bufferline-config")
     end,
@@ -134,7 +133,7 @@ local plugins = function(use)
     end,
   })
 
-  use({ "nvim-lua/plenary.nvim", module = "plenary" })
+  use({ "nvim-lua/plenary.nvim" })
   use({ "nvim-lua/popup.nvim", module = "popup" })
 
   -- Diffview
@@ -146,6 +145,7 @@ local plugins = function(use)
       "DiffviewClose",
       "DiffviewToggleFiles",
       "DiffviewFocusFiles",
+      "DiffviewFileHistory",
     },
     requires = { "nvim-lua/plenary.nvim" },
     config = function()
@@ -159,29 +159,14 @@ local plugins = function(use)
     event = "CursorMoved",
   })
 
-  use({
-    "simrat39/symbols-outline.nvim",
-    opt = true,
-    cmd = { "SymbolsOutline" },
-    config = function()
-      require("config/symbol-outline-config")
-    end,
-  })
-
   -- Files browser
   use({
     "nvim-telescope/telescope.nvim",
-    opt = true,
+    cmd = { "Telescope" },
+    event = "VimEnter",
     config = function()
       require("config/telescope-config")
     end,
-    cmd = { "Telescope" },
-    keys = { "<leader><space>" },
-    wants = {
-      "popup.nvim",
-      "plenary.nvim",
-      "telescope-fzf-native.nvim",
-    },
     requires = {
       "nvim-lua/popup.nvim",
       "nvim-lua/plenary.nvim",
@@ -205,11 +190,6 @@ local plugins = function(use)
     "neovim/nvim-lspconfig",
     -- opt = true,
     -- event = "BufReadPre",
-    wants = {
-      "lua-dev.nvim",
-      "lsp-colors.nvim",
-      "null-ls.nvim",
-    },
     config = function()
       require("lsp")
     end,
@@ -307,7 +287,6 @@ local plugins = function(use)
     "lewis6991/gitsigns.nvim",
     opt = true,
     event = "BufReadPre",
-    wants = "plenary.nvim",
     requires = { "nvim-lua/plenary.nvim" },
     config = function()
       require("config/gitsigns-config")
@@ -356,7 +335,6 @@ local plugins = function(use)
     "folke/zen-mode.nvim",
     opt = true,
     cmd = "ZenMode",
-    wants = "twilight.nvim",
     requires = { "folke/twilight.nvim" },
     config = function()
       require("zen-mode").setup({
