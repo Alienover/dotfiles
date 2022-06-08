@@ -2,7 +2,10 @@
 -- https://github.com/hrsh7th/nvim-cmp
 
 local cmp = require("cmp")
-local lspkind = require("lspkind")
+local constants = require("utils.constants")
+
+local icons = constants.icons
+local kind_icons = icons.kind
 
 local config = {
   snippet = {
@@ -86,10 +89,15 @@ local config = {
     { name = "buffer", keyword_length = 5 },
   },
   formatting = {
-    format = lspkind.cmp_format({
-      -- preset = "codicons",
-      with_text = false,
-      menu = {
+    format = function(entry, vim_item)
+      -- Kind icons
+      vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
+
+      if entry.source.name == "cmp_tabnine" then
+        vim_item.kind = icons.misc.Robot
+      end
+
+      vim_item.menu = ({
         buffer = "[Buffer]",
         nvim_lsp = "[LSP]",
         treesitter = "[Treesitter]",
@@ -98,8 +106,9 @@ local config = {
         path = "[Path]",
         calc = "[Calc]",
         emoji = "[Emoji]",
-      },
-    }),
+      })[entry.source.name]
+      return vim_item
+    end,
   },
   experimental = {
     native_menu = false,

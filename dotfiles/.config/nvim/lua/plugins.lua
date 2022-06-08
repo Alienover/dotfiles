@@ -264,8 +264,6 @@ local plugins = function(use)
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-nvim-lua",
       "ray-x/cmp-treesitter",
-      -- Icons
-      "onsails/lspkind-nvim",
     },
   })
 
