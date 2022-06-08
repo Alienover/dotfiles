@@ -7,9 +7,41 @@ local o = utils.o
 
 local c, icons = constants.colors, constants.icons
 
-local function spellcheck()
-  if o.spell then
-    return (" [%s]"):format(o.spelllang)
+local spellcheck = {
+  function()
+    if o.spell then
+      return ("%s [%s]"):format(icons.ui.Language, o.spelllang)
+    end
+
+    return ""
+  end,
+}
+
+local function filename()
+  local devicons = require("nvim-web-devicons")
+
+  ---@diagnostic disable-next-line: missing-parameter
+  local name = vim.fn.expand("%:t")
+  ---@diagnostic disable-next-line: missing-parameter
+  local ext = vim.fn.expand("%:e")
+
+  if name == "" then
+    return ""
+  end
+
+  local icon, color = devicons.get_icon(name, ext, { default = true })
+
+  return "%#"
+    .. color
+    .. "#"
+    .. icon
+    .. " "
+    .. "%*"
+    .. "%#CursorLineNr#"
+    .. name
+    .. "%*"
+end
+
 local function gps_location()
   local gps = require("nvim-gps")
   local location = ""
@@ -20,6 +52,28 @@ local function gps_location()
   return location
 end
 
+local diff = {
+  "diff",
+  diff_color = {
+    added = { fg = c.GREEN },
+    modified = { fg = c.DARK_YELLOW },
+    removed = { fg = c.DARK_RED },
+  },
+  symbols = {
+    added = icons.git.Add .. " ",
+    modified = icons.git.Mod .. " ",
+    removed = icons.git.Remove .. " ",
+  },
+  separator = "",
+}
+
+local spaces = {
+  function()
+    return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
+  end,
+  separator = "",
+}
+
 require("lualine").setup({
   options = {
     -- Theme
@@ -27,11 +81,6 @@ require("lualine").setup({
 
     -- Icons
     icons_enabled = true,
-
-    -- Colors
-    color_added = c.GREEN,
-    color_removed = c.DARK_RED,
-    color_modified = c.DARK_YELLOW,
 
     -- Global line
     globalstatus = true,
@@ -42,26 +91,41 @@ require("lualine").setup({
       warn = icons.WARN,
       info = icons.INFOR,
       hint = icons.HINT,
-      modified = "#",
+    },
+    -- Separators
+    component_separators = {
+      left = icons.ui.ChevronRight,
+      right = icons.ui.ChevronLeft,
     },
   },
   sections = {
     lualine_a = {
       {
         "mode",
-        separator = { left = "", right = "" },
+        separator = {
+          left = icons.ui.HalfCircleLeft,
+          right = icons.ui.TriangleRight,
+        },
       },
+    },
+    lualine_b = {
+      "branch",
+      "diagnostics",
     },
     lualine_c = {
       spellcheck,
       filename,
       gps_location,
     },
-    lualine_x = { "encoding", "filetype" },
+    lualine_x = { diff, "filetype" },
+    lualine_y = { "encoding", spaces },
     lualine_z = {
       {
         "location",
-        separator = { left = "", right = "" },
+        separator = {
+          left = icons.ui.TriangelLeft,
+          right = icons.ui.HalfCircleRight,
+        },
       },
     },
   },
