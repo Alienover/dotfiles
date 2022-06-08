@@ -4,6 +4,8 @@ local constants = require("utils.constants")
 local lspconfig = require("lspconfig")
 local lspinstaller = require("nvim-lsp-installer")
 
+local marks = require("config/marks-config")
+
 local o, nmap = utils.o, utils.nmap
 
 local icons = constants.icons
@@ -17,7 +19,6 @@ local installed_lsp = {
       })
     end,
   },
-  -- NOTE: `npm` required
   html = {
     format = false,
   },
@@ -37,12 +38,10 @@ local installed_lsp = {
     format = false,
     filename = "ts-lsp",
   },
-  -- NOTE: `go` required
+  -- NOTE: `sudo` required
   gopls = {
-    -- NOTE: `sudo` required
     filename = "go-lsp",
   },
-  -- NOTE: `git` required
   sumneko_lua = {
     format = false,
     filename = "sumneko-lsp",
@@ -50,14 +49,16 @@ local installed_lsp = {
 }
 
 local on_attach = function(client)
+  marks.init()
+
   -- Keymap
   local keymap_opts = { noremap = true, silent = true }
 
-  nmap("gb", "<C-o>", keymap_opts)
-  nmap("gd", "<cmd>Telescope lsp_definitions<CR>zz", keymap_opts)
-  nmap("gD", "<cmd>lua vim.lsp.buf.declaration()<CR>zz", keymap_opts)
+  nmap("go", marks.go_back, keymap_opts)
+  nmap("gd", marks.go_def, keymap_opts)
+  nmap("gD", vim.lsp.buf.declaration, keymap_opts)
+  nmap("gi", vim.lsp.buf.implementation, keymap_opts)
   nmap("gr", "<cmd>Telescope lsp_references<CR>", keymap_opts)
-  nmap("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", keymap_opts)
 
   local lsp_opts = installed_lsp[client.name]
 
