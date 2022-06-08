@@ -9,11 +9,13 @@ local config = {
   save_after_format = false,
   diagnostics_format = "[#{s}] #{m}",
   sources = {
+    nls.builtins.code_actions.gitsigns,
     -- JavaScript
     -- Faster prettier
     -- Reter to: https://github.com/mikew/prettier_d_slim
     nls.builtins.formatting.prettier_d_slim.with({
       extra_args = function()
+        ---@diagnostic disable-next-line: missing-parameter
         if vim.fn.empty(vim.fn.glob(vim.loop.cwd() .. "/.prettierrc")) == 1 then
           return {
             "--config",
