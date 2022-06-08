@@ -46,11 +46,6 @@ local plugins = function(use)
   use("antoinemadec/FixCursorHold.nvim")
 
   use({
-    "vim-scripts/kwbdi.vim",
-    opt = true,
-    keys = { "<leader>bd" },
-  })
-  use({
     "folke/which-key.nvim",
     opt = true,
     keys = { "<space>" },
