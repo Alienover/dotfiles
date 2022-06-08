@@ -37,15 +37,14 @@ M.cmd = vim.api.nvim_command
 local map = function(mode, key, cmd, opts)
   opts = vim.tbl_deep_extend("force", { silent = true }, opts or {})
 
-  if opts.buffer ~= nil then
-    local buffer = opts.buffer
-    opts.buffer = nil
-
-    vim.api.nvim_buf_set_keymap(buffer, mode, key, cmd, opts)
-  else
-    vim.api.nvim_set_keymap(mode, key, cmd, opts)
+  if type(mode) == "string" then
+    mode = { mode }
   end
+
+  vim.keymap.set(mode, key, cmd, opts)
 end
+
+M.map = map
 
 M.nmap = function(...)
   map("n", ...)
@@ -214,4 +213,5 @@ M.float_terminal = function(args)
   vim.cmd(table.concat(autocmd, " "))
   vim.cmd([[startinsert]])
 end
+
 return M

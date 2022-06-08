@@ -3,9 +3,18 @@ local utils = require("utils")
 
 local w, o, cmd = utils.w, utils.o, utils.cmd
 
-local nmap, vmap, tmap = utils.nmap, utils.vmap, utils.tmap
+local map, imap, nmap, vmap, tmap =
+  utils.map, utils.imap, utils.nmap, utils.vmap, utils.tmap
 
 local opts = { noremap = true, silent = true }
+
+-- Modes
+-- * normal_mode	 = "n"
+-- * insert_mode	 = "i"
+-- * visual_mode	 = "v"
+-- * visual_block_mode	 = "x"
+-- * term_mode		 = "t"
+-- * command_mode	 = "c"
 
 -- Buffers navigation
 nmap("<C-h>", ":bp<CR>", opts)
@@ -24,8 +33,18 @@ nmap("˚", ":m .-2<CR>==", opts)
 vmap("∆", ":m '>+1<CR>gv=gv", opts)
 vmap("˚", ":m '<-2<CR>gv=gv", opts)
 
+-- Press `jk` to escape from insert mode
+imap("jk", "<ESC>", opts)
+
+-- Increase/decrease indents without losing the selected
+vmap("<", "<gv", opts)
+vmap(">", ">gv", opts)
+
+-- Paste without losing the yanked content
+vmap("p", '"_dP', opts)
+
 -- Zoom in/out pane
-vim.keymap.set({ "n" }, "zo", function()
+nmap("zo", function()
   if w.zoomed and w.zoom_winrestcmd then
     cmd([[ execute w:zoom_winrestcmd ]])
     w.zoomed = false
@@ -40,7 +59,7 @@ end, {
 })
 
 -- Smart toggling file finder by telescope or fzf
-vim.keymap.set({ "n" }, "<C-p>", function()
+nmap("<C-p>", function()
   if utils.find_git_ancestor() then
     local options = {}
     local win_spec = utils.get_window_sepc()
@@ -56,12 +75,11 @@ vim.keymap.set({ "n" }, "<C-p>", function()
   else
     fzf_files()
   end
-end, {
-  silent = true,
-})
+end, opts)
 
 -- Smart toogling the spell checking
-vim.keymap.set({ "n" }, "<leader>s", function()
+nmap("<leader>s", function()
+  ---@diagnostic disable-next-line: missing-parameter
   local cursor_word = vim.fn.expand("<cword>")
 
   if cursor_word == "" then
@@ -75,34 +93,37 @@ vim.keymap.set({ "n" }, "<leader>s", function()
     -- List suggestions when hovering on word
     cmd("WhichKey z=")
   end
-end, {
-  silent = true,
-})
+end, opts)
 
 -- Expand the current snippet or jump to the next item within the snippet
-vim.keymap.set({ "i", "s" }, "<C-l>", function()
+map({ "i", "s" }, "<C-l>", function()
   if ls.expand_or_jumpable() then
     ls.expand_or_jump()
   end
-end, {
-  silent = true,
-})
+end, opts)
 
 -- Always move to the previous item within the snippet
-vim.keymap.set({ "i", "s" }, "<C-h>", function()
+map({ "i", "s" }, "<C-h>", function()
   if ls.jumpable(-1) then
     ls.jump(-1)
   end
-end, {
-  silent = true,
-})
+end, opts)
 
 -- Selects within a list of options.
 -- Useful for choice node
-vim.keymap.set({ "i" }, "<C-j>", function()
+imap("<C-j>", function()
   if ls.choice_active() then
     ls.change_choice(1)
   end
-end, {
-  silent = true,
-})
+end, opts)
+
+-- Delete buffer but keep the window
+nmap("<leader>bd", function()
+  local kwbdi = require("config/kwbdi-config")
+  kwbdi:kill_buf_safe()
+end, opts)
+
+nmap("<leader>bD", function()
+  local kwbdi = require("config/kwbdi-config")
+  kwbdi:kill_buf()
+end, opts)
