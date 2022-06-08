@@ -24,6 +24,10 @@ local config = {
       enabled = false,
       path = constants.custom_plugins.lspinstaller,
     },
+    ["nvim-gps"] = {
+      enabled = true,
+      path = constants.custom_plugins.gps,
+    },
   },
 }
 
@@ -79,8 +83,20 @@ local plugins = function(use)
     config = function()
       require("config/lualine-config")
     end,
-    requires = { "kyazdani42/nvim-web-devicons", opt = true },
+    requires = {
+      "SmiteshP/nvim-gps",
+      { "kyazdani42/nvim-web-devicons", opt = true },
+    },
   })
+
+  use({
+    "SmiteshP/nvim-gps",
+    requires = "nvim-treesitter/nvim-treesitter",
+    config = function()
+      require("config/gps-config")
+    end,
+  })
+
   -- Tabs
   use({
     "akinsho/bufferline.nvim",

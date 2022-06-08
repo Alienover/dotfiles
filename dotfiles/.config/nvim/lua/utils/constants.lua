@@ -3,6 +3,7 @@ local M = {}
 M.custom_plugins = {
   lspsaga = "~/Documents/myself/lspsaga.nvim",
   lspinstaller = "~/Documents/myself/nvim-lsp-installer",
+  gps = os.getenv("HOME") .. "/src/nvim-gps",
 }
 
 M.files = {

@@ -10,9 +10,14 @@ local c, icons = constants.colors, constants.icons
 local function spellcheck()
   if o.spell then
     return (" [%s]"):format(o.spelllang)
+local function gps_location()
+  local gps = require("nvim-gps")
+  local location = ""
+  if gps.is_available() then
+    location = gps.get_location()
   end
 
-  return ""
+  return location
 end
 
 require("lualine").setup({
@@ -49,7 +54,8 @@ require("lualine").setup({
     },
     lualine_c = {
       spellcheck,
-      "filename",
+      filename,
+      gps_location,
     },
     lualine_x = { "encoding", "filetype" },
     lualine_z = {
