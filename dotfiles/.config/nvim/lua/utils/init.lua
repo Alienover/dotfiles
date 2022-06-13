@@ -3,7 +3,7 @@ local M = {}
 M.log = function(msg, hl, name)
   name = name or "Neovim"
   hl = hl or "Todo"
-  vim.api.nvim_echo({ { name .. ": ", hl }, { msg } }, true, {})
+  vim.api.nvim_echo({ { name .. ": ", hl }, { msg, hl } }, true, {})
 end
 
 M.warn = function(msg, name)
@@ -33,6 +33,10 @@ M.g = vim.g
 M.t = vim.t
 -- Vim command
 M.cmd = vim.api.nvim_command
+
+M.expand = function(expr)
+  return vim.fn.expand(expr, nil, nil)
+end
 
 local map = function(mode, key, cmd, opts)
   opts = vim.tbl_deep_extend("force", { silent = true }, opts or {})
@@ -129,8 +133,6 @@ end
 
 M.find_git_ancestor = function()
   local pwd = os.getenv("PWD")
-
-  vim.cmd([[packadd nvim-lspconfig]])
 
   return require("lspconfig.util").find_git_ancestor(pwd)
 end

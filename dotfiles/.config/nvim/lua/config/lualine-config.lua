@@ -3,7 +3,7 @@
 local utils = require("utils")
 local constants = require("utils.constants")
 
-local o = utils.o
+local o, expand = utils.o, utils.expand
 
 local c, icons = constants.colors, constants.icons
 
@@ -20,10 +20,7 @@ local spellcheck = {
 local function filename()
   local devicons = require("nvim-web-devicons")
 
-  ---@diagnostic disable-next-line: missing-parameter
-  local name = vim.fn.expand("%:t")
-  ---@diagnostic disable-next-line: missing-parameter
-  local ext = vim.fn.expand("%:e")
+  local name, ext = expand("%:t"), expand("%:e")
 
   if name == "" then
     return ""

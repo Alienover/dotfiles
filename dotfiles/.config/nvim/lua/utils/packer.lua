@@ -9,6 +9,7 @@ M.install_path = vim.fn.stdpath("data") .. "/site/pack/packer/opt/packer.nvim"
 
 function M.bootstrap()
   local fn = vim.fn
+  ---@diagnostic disable-next-line: missing-parameter
   if fn.empty(fn.glob(M.install_path)) > 0 then
     fn.system({
       "git",
@@ -27,7 +28,7 @@ function M.get_name(pkg)
 end
 
 function M.has_local(path)
-  return vim.loop.fs_stat(vim.fn.expand(path)) ~= nil
+  return vim.loop.fs_stat(utils.expand(path)) ~= nil
 end
 
 -- This method replaces any plugins with the local clone under ~/projects
