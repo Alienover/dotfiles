@@ -56,7 +56,7 @@ local function toggleCursorLine(val, scope)
         table.insert(cmd, "nocursorline")
       end
 
-      vim.cmd(table.concat(cmd, " "))
+      utils.cmd(table.concat(cmd, " "))
     end
   end
 end
@@ -65,13 +65,13 @@ vim.api.nvim_create_autocmd("BufEnter", {
   desc = "Disable the cursorline to remove the annoying underling",
 
   callback = toggleCursorLine(false, "local"),
-  group = diffGroup,
+  group = groups.diff,
 })
 vim.api.nvim_create_autocmd("BufLeave", {
   desc = "Enable again when leave the buffer",
 
   callback = toggleCursorLine(true, "local"),
-  group = diffGroup,
+  group = groups.diff,
 })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -99,6 +99,28 @@ vim.api.nvim_create_autocmd("FileType", {
     nmap("q", function()
       utils.cmd("close")
     end, { silent = true, buffer = 0 })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Don't expand tab",
+
+  group = groups.filetype,
+  pattern = { "make" },
+  callback = function()
+    vim.bo.expandtab = false
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  desc = "Setup folding method and marker for certain files",
+
+  group = groups.folding,
+  pattern = { "*/nvim/lua/plugins.lua", "kitty.conf" },
+  callback = function()
+    vim.opt_local.foldenable = true
+    vim.opt_local.foldmethod = "marker"
+    vim.opt_local.foldmarker = " {{{, }}}"
   end,
 })
   end,
