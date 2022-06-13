@@ -8,7 +8,7 @@ local caches = {}
 local marks = ""
 local initialled = false
 
-M.init = function()
+M.setup = function()
   if not initialled then
     local function append_chars(r_start, r_end)
       for i = r_start, r_end, 1 do

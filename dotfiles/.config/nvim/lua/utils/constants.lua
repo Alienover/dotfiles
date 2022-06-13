@@ -1,9 +1,13 @@
 local M = {}
 
-M.custom_plugins = {
-  lspsaga = "~/Documents/myself/lspsaga.nvim",
-  lspinstaller = "~/Documents/myself/nvim-lsp-installer",
+M.local_plugins = {
   gps = os.getenv("HOME") .. "/src/nvim-gps",
+  kwbdi = os.getenv("XDG_CONFIG_HOME") .. "/nvim/lua/local_plugins/kwbdi.nvim",
+  fzf = os.getenv("XDG_CONFIG_HOME")
+    .. "/nvim/lua/local_plugins/fzf-finder.nvim",
+  marks = os.getenv("XDG_CONFIG_HOME")
+    .. "/nvim/lua/local_plugins/lsp-marks.nvim",
+}
 
 M.runtime_paths = {
   -- Installed by Homebre

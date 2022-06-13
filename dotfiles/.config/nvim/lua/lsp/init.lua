@@ -4,7 +4,7 @@ local constants = require("utils.constants")
 local lspconfig = require("lspconfig")
 local lspinstaller = require("nvim-lsp-installer")
 
-local marks = require("config/marks-config")
+local marks = require("lsp-marks")
 
 local o, nmap = utils.o, utils.nmap
 
@@ -48,36 +48,30 @@ local installed_lsp = {
   },
 }
 
-local on_attach = function(client)
-  marks.init()
-
-  -- Keymap
-  local keymap_opts = { noremap = true, silent = true }
+-- Keymaps for LSP interfaces
+local lsp_keymaps = function(_, bufnr)
+  local keymap_opts = { noremap = true, silent = true, buffer = bufnr }
 
   nmap("go", marks.go_back, keymap_opts)
   nmap("gd", marks.go_def, keymap_opts)
   nmap("gD", vim.lsp.buf.declaration, keymap_opts)
   nmap("gi", vim.lsp.buf.implementation, keymap_opts)
   nmap("gr", "<cmd>Telescope lsp_references<CR>", keymap_opts)
+end
 
+-- Formatting config
+local lsp_formatting = function(client, bufnr)
   local lsp_opts = installed_lsp[client.name]
 
-  local format = true
   -- Set the document formatting to false only when the format option is false
   if lsp_opts ~= nil and lsp_opts.format == false then
-    format = false
-  end
-
-  if not format then
     client.resolved_capabilities.document_formatting = false
-  end
-
-  if client.resolved_capabilities.document_formatting then
+  else
     local formatGroup = vim.api.nvim_create_augroup("Format", { clear = true })
 
     vim.api.nvim_create_autocmd("BufWritePre", {
       desc = "Format the buffer on save",
-      buffer = 0,
+      buffer = bufnr,
       group = formatGroup,
       callback = function()
         vim.lsp.buf.formatting_sync({}, 2 * 1000)
@@ -100,7 +94,12 @@ local lsp_highlight_document = function(client, _)
   illuminate.on_attach(client)
 end
 
+local on_attach = function(client, bufnr)
+  lsp_keymaps(client, bufnr)
+  lsp_formatting(client, bufnr)
   lsp_highlight_document(client, bufnr)
+end
+
 local custom_capabilities = function()
   local capabilities = require("cmp_nvim_lsp").update_capabilities(
     vim.lsp.protocol.make_client_capabilities()

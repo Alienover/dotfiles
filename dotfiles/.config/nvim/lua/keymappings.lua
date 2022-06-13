@@ -1,10 +1,9 @@
 local ls = require("luasnip")
 local utils = require("utils")
 
-local w, o, cmd = utils.w, utils.o, utils.cmd
+local w, o, cmd, expand = utils.w, utils.o, utils.cmd, utils.expand
 
-local map, imap, nmap, vmap, tmap =
-  utils.map, utils.imap, utils.nmap, utils.vmap, utils.tmap
+local map, imap, nmap, vmap = utils.map, utils.imap, utils.nmap, utils.vmap
 
 local opts = { noremap = true, silent = true }
 
@@ -70,14 +69,13 @@ nmap("<C-p>", function()
       table.concat(options, " "),
     }, " "))
   else
-    fzf_files()
+    cmd("FZFFiles")
   end
 end, opts)
 
 -- Smart toogling the spell checking
 nmap("<leader>s", function()
-  ---@diagnostic disable-next-line: missing-parameter
-  local cursor_word = vim.fn.expand("<cword>")
+  local cursor_word = expand("<cword>")
 
   if cursor_word == "" then
     -- Toogle the spell check when hover on empty word
@@ -115,12 +113,6 @@ imap("<C-j>", function()
 end, opts)
 
 -- Delete buffer but keep the window
-nmap("<leader>bd", function()
-  local kwbdi = require("config/kwbdi-config")
-  kwbdi:kill_buf_safe()
-end, opts)
+nmap("<leader>bd", ":KWBufDel<CR>", opts)
 
-nmap("<leader>bD", function()
-  local kwbdi = require("config/kwbdi-config")
-  kwbdi:kill_buf()
-end, opts)
+nmap("<leader>bD", ":KWBufDel force<CR>", opts)

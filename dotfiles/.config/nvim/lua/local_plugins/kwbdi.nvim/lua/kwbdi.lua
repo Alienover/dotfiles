@@ -8,12 +8,18 @@
 
 local utils = require("utils")
 
-local cmd = utils.cmd
+local cmd, expand, error = utils.cmd, utils.expand, utils.error
+
+local PLUGIN_NAME = "kwbdi"
 
 local M = {
   bufnr = 0,
   buf_count = 0,
   empty_buf = 0,
+}
+
+local default_opts = {
+  force = false,
 }
 
 function M:init()
@@ -31,18 +37,23 @@ function M:init()
   end
 end
 
-function M:kill_buf_safe()
-  if vim.api.nvim_buf_get_option(self.bufnr, "modified") then
-    error("[Error] No write since last change for buffer " .. self.bufnr)
-    return
-  end
-
-  self:kill_buf()
-end
-
-function M:kill_buf()
+function M:kill_buf(opts)
   -- Initial necessary variables
   self:init()
+
+  opts = vim.tbl_deep_extend("force", default_opts, opts or {})
+
+  -- Check whehter to close the buffer without saving
+  if not opts.force then
+    if vim.api.nvim_buf_get_option(self.bufnr, "modified") then
+      local filename = expand("%:t")
+      error(
+        "No write since last change for file " .. filename,
+        string.format("[%s]", PLUGIN_NAME)
+      )
+      return
+    end
+  end
 
   -- Move current buffer to the alternate one in all the window
   for _, i in pairs(vim.api.nvim_list_wins()) do
@@ -90,6 +101,27 @@ function M:move()
     -- Focus to the next bufer
     cmd("silent bp!")
   end
+end
+
+M.setup = function()
+  vim.api.nvim_create_user_command("KWBufDel", function(args)
+    local opts = default_opts or {}
+    for _, item in ipairs(args.fargs) do
+      local splited = vim.split(item, "=")
+      local k, v = splited[1], splited[#splited]
+
+      if k == "force" then
+        local arg_value = false
+        if v ~= "false" then
+          arg_value = true
+        end
+
+        opts[k] = arg_value
+      end
+    end
+
+    M:kill_buf(opts)
+  end, { nargs = "?" })
 end
 
 return M
