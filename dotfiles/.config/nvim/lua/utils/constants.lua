@@ -32,6 +32,7 @@ M.files = {
 M.colors = {
   FG = os.getenv("GUI_FOREGROUND"),
   BG = os.getenv("GUI_BACKGROUND"),
+  BLACK = os.getenv("GUI_BLACK"),
   RED = os.getenv("GUI_RED"),
   DARK_RED = os.getenv("GUI_DARK_RED"),
   GREEN = os.getenv("GUI_GREEN"),

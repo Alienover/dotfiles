@@ -1,15 +1,43 @@
-local terminalGroup = vim.api.nvim_create_augroup("Terminal", { clear = true })
-local diffGroup = vim.api.nvim_create_augroup("Diff", { clear = true })
-local quitGroup = vim.api.nvim_create_augroup("Quit", { clear = true })
+local utils = require("utils")
+local constants = require("utils.constants")
 
-if vim.v.progname == "nvim" then
-  vim.api.nvim_create_autocmd("TermOpen", {
-    desc = "Remove the editor styling for terminal",
+local nmap, tmap, expand = utils.nmap, utils.tmap, utils.expand
 
-    command = "setlocal nonumber norelativenumber",
-    group = terminalGroup,
-  })
-end
+local groups = {
+  terminal = vim.api.nvim_create_augroup("Terminal", { clear = true }),
+  diff = vim.api.nvim_create_augroup("Diff", { clear = true }),
+  filetype = vim.api.nvim_create_augroup("FT", { clear = true }),
+  folding = vim.api.nvim_create_augroup("Folding", { clear = true }),
+  directory = vim.api.nvim_create_augroup("Directory", { clear = true }),
+}
+
+vim.api.nvim_create_autocmd("TermEnter", {
+  desc = "Remove the editor styling and define keymaps on entering terminal",
+
+  callback = function()
+    local excluded_filetypes = { "rnvimr", "fzf" }
+    local curr_ft = vim.api.nvim_buf_get_option(0, "filetype")
+
+    if vim.tbl_contains(excluded_filetypes, curr_ft) then
+      return
+    end
+
+    utils.cmd("setlocal nocursorline nonumber norelativenumber")
+    -- Set darker background color
+    utils.cmd("hi TerminalBG guibg=" .. constants.colors.BLACK)
+    utils.cmd("set winhighlight=Normal:TerminalBG")
+
+    -- Keymaps
+    local opts = { noremap = true, silent = true, buffer = 0 }
+    tmap("<ESC>", "<C-\\><C-n>", opts)
+    tmap("jk", "<C-\\><C-n>", opts)
+    tmap("<c-w>h", "<C-\\><C-n><C-w>h", opts)
+    tmap("<c-w>j", "<C-\\><C-n><C-w>j", opts)
+    tmap("<c-w>k", "<C-\\><C-n><C-w>k", opts)
+    tmap("<c-w>l", "<C-\\><C-n><C-w>l", opts)
+  end,
+  group = groups.terminal,
+})
 
 local function toggleCursorLine(val, scope)
   return function()
@@ -57,11 +85,21 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Close the listed window with `q`",
 
-  group = quitGroup,
-  pattern = { "help", "startuptime", "qf", "lspinfo", "fugitiveblame", "man" },
+  group = groups.filetype,
+  pattern = {
+    "fugitiveblame",
+    "fzf",
+    "help",
+    "lspinfo",
+    "man",
+    "qf",
+    "startuptime",
+  },
   callback = function()
-    vim.keymap.set("n", "q", function()
-      vim.cmd("close")
-    end, { silent = true })
+    nmap("q", function()
+      utils.cmd("close")
+    end, { silent = true, buffer = 0 })
+  end,
+})
   end,
 })

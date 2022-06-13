@@ -23,9 +23,6 @@ nmap("<C-l>", ":bn<CR>", opts)
 -- Open  nvim terminal in split or vertival split
 nmap("<C-t>", ":terminal<CR>i", opts)
 
--- Unfocus the terminal window
-tmap("<leader><ESC>", "<C-\\><C-n>", opts)
-
 -- Move lines in <Normal> and <Visual>
 -- ∆ for <Option-j> up and ˚ for <Option-k> down
 nmap("∆", ":m .+1<CR>==", opts)
