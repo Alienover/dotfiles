@@ -52,7 +52,7 @@ local function telescope(sub_cmd, opts)
     local win_spec = utils.get_window_sepc()
 
     if win_spec.columns < 200 then
-      table.insert(options, "layout_strategy=vertical")
+      table.insert(options, "theme=dropdown")
     end
 
     cmd(table.concat({
@@ -112,7 +112,7 @@ end
 
 local function buffer_delete(force)
   return function()
-    local kwdbi = require("config/kwbdi-config")
+    local kwdbi = require("local_plugins.kwdbi")
     if force == true then
       kwdbi:kill_buf()
     else

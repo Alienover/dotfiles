@@ -62,7 +62,7 @@ nmap("<C-p>", function()
     local win_spec = utils.get_window_sepc()
 
     if win_spec.columns < 200 then
-      table.insert(options, "theme=get_dropdown")
+      table.insert(options, "theme=dropdown")
     end
 
     cmd(table.concat({
