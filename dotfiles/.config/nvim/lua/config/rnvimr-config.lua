@@ -5,10 +5,10 @@ local g, cmd = utils.g, utils.cmd
 local ranger_cmd = g.python3_venv_home .. "/bin/ranger"
 
 -- Make Ranger replace netrw and be the file explorer
-g.rnvimr_enable_ex = 1
-g.rnvimr_draw_border = 1
-g.rnvimr_enable_picker = 1
-g.rnvimr_enable_bw = 1
+g.rnvimr_enable_ex = true
+g.rnvimr_draw_border = true
+g.rnvimr_enable_picker = true
+g.rnvimr_enable_bw = true
 g.rnvimr_ranger_cmd = { ranger_cmd }
 
 -- Add views for Ranger to adapt the size of floating window

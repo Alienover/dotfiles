@@ -123,5 +123,14 @@ vim.api.nvim_create_autocmd("BufEnter", {
     vim.opt_local.foldmarker = " {{{, }}}"
   end,
 })
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  desc = "Open Ranger once the current buffer is a directory",
+
+  group = groups.folding,
+  callback = function()
+    if vim.fn.isdirectory(expand("%")) == 1 then
+      vim.cmd("RnvimrToggle")
+    end
   end,
 })
