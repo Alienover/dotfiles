@@ -54,6 +54,7 @@ local config = {
     -- Refer to: https://github.com/psf/black
     nls.builtins.formatting.black.with({
       command = g.python3_venv_home .. "/bin/black",
+      pextra_args = { "--fast" },
     }),
   },
 }
