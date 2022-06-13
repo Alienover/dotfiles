@@ -4,6 +4,10 @@ M.custom_plugins = {
   lspsaga = "~/Documents/myself/lspsaga.nvim",
   lspinstaller = "~/Documents/myself/nvim-lsp-installer",
   gps = os.getenv("HOME") .. "/src/nvim-gps",
+
+M.runtime_paths = {
+  -- Installed by Homebre
+  fzf = "/opt/homebrew/opt/fzf",
 }
 
 M.files = {

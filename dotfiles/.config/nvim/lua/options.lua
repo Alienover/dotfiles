@@ -1,6 +1,5 @@
 local utils = require("utils")
-
-local o, bo, wo, g = utils.o, utils.bo, utils.wo, utils.g
+local constants = require("utils.constants")
 
 local cmd = utils.cmd
 
@@ -8,76 +7,114 @@ cmd([[filetype plugin indent on]])
 
 cmd([[syntax on]])
 
--- Do not source the default filetype.vim
-g.did_load_filetypes = 1
-
--- be iMproved, required
-o.compatible = false
-
--- Leader key mapping
-g.mapleader = "\\"
-
-o.title = true
-o.visualbell = true
-bo.copyindent = true
-bo.expandtab = true
-o.shiftround = true
-o.showmatch = true
-wo.cursorline = true
-wo.relativenumber = true
-o.smartcase = true
-o.ignorecase = true
-o.showcmd = true
-o.showmatch = true
-o.shiftround = true
-wo.number = true
-o.showmode = false
-o.swapfile = false
-bo.swapfile = false
-
--- Folding
-wo.foldenable = false
-wo.foldmethod = "expr"
-wo.foldexpr = "nvim_treesitter#foldexpr()"
-
 -- set updatetime=100
-o.lsp = 3
-o.pumheight = 15
-o.laststatus = 2
-o.shiftwidth = 4
-o.history = 1000
--- Disable the native suggestion list
-o.spellsuggest = "0"
--- Undo
-bo.undofile = true
-o.undolevels = 1000
+-- FIXME: what's `vim.o.lsp`
+-- vim.o.lsp = 3
 
-o.encoding = "utf-8"
-o.clipboard = "unnamed"
-o.backspace = "indent,eol,start"
-o.wildignore = "*.swp, *.bak, *.pyc, *.class"
+-- Global variables
+local global = {
+  -- Disable the builtin NetRW plugin
+  loaded_netrw = true,
+  loaded_netrwPlugin = true,
 
--- Diff mode
-o.fillchars = "diff:╱"
-wo.fillchars = "diff:╱"
+  -- Do not source the default filetype.vim
+  did_load_filetypes = 1,
 
--- Llist mode
-wo.list = true
-wo.listchars = "tab: ,lead:·,trail:·"
+  -- Leader key mapping
+  mapleader = "\\",
 
-g.copilot_no_tab_map = true
+  -- Disable tab key in copilot
+  copilot_no_tab_map = true,
 
--- Python for neovim
-g.python_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py2"
-g.python3_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py3"
+  -- in millisecond, used for both CursorHold and CursorHoldI,
+  -- " use updatetime instead if not defined
+  cursorhold_updatetime = 1000,
 
-g.python_venv_bin = g.python_venv_home .. "/bin/python"
-g.python3_venv_bin = g.python3_venv_home .. "/bin/python"
+  -- Python for neovim
+  python_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py2",
+  python3_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py3",
+}
 
-if vim.fn.executable(g.python_venv_bin) then
-  g.python_host_prog = g.python_venv_bin
+local python_venv_bin = global.python_venv_home .. "/bin/python"
+local python3_venv_bin = global.python3_venv_home .. "/bin/python"
+
+if vim.fn.executable(python_venv_bin) then
+  global.python_host_prog = python_venv_bin
 end
 
-if vim.fn.executable(g.python3_venv_bin) then
-  g.python3_host_prog = g.python3_venv_bin
+if vim.fn.executable(python3_venv_bin) then
+  global.python3_host_prog = python3_venv_bin
+end
+
+-- Vim based Options
+local options = {
+  -- Base
+  title = true,
+  showmode = false,
+  shiftround = true,
+  showmatch = true,
+  history = 1000,
+  visualbell = true,
+  copyindent = true,
+  showcmd = true,
+  swapfile = false,
+
+  -- Search case matching
+  smartcase = true,
+  ignorecase = true,
+
+  -- Number
+  number = true,
+  relativenumber = true,
+
+  -- be iMproved, required
+  compatible = false,
+
+  -- Folding
+  foldenable = false,
+  -- NOTE: set the fold method on autocmd by filetypes or filenames
+  -- foldmethod = "expr",
+  -- foldexpr = "nvim_treesitter#foldexpr()",
+
+  --  Count for the items in the menu popup
+  pumheight = 15,
+
+  -- Cursor line
+  cursorline = true,
+
+  -- Disable the native suggestion list
+  spellsuggest = { "0" },
+
+  -- Undo
+  undofile = true,
+  undolevels = 1000,
+
+  backspace = { "indent", "eol", "start" },
+  wildignore = { "*.swp", "*.bak", "*.pyc" },
+  encoding = "utf-8",
+  clipboard = { "unnamed" },
+
+  -- Diff Mode
+  fillchars = { diff = "╱" },
+
+  -- List Mode
+  list = true,
+  listchars = { tab = "> ", lead = "·", trail = "·" },
+
+  -- Spaces of indent
+  shiftwidth = 2,
+  tabstop = 2,
+  expandtab = true,
+}
+
+for k, v in pairs(options) do
+  vim.opt[k] = v
+end
+
+for k, v in pairs(global) do
+  vim.g[k] = v
+end
+
+for _, v in pairs(constants.runtime_paths) do
+  cmd("set rtp+=" .. v)
 end
