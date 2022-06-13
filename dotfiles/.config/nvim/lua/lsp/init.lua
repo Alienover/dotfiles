@@ -91,6 +91,16 @@ local on_attach = function(client)
   end, {})
 end
 
+local lsp_highlight_document = function(client, _)
+  local status_ok, illuminate = pcall(require, "illuminate")
+  if not status_ok then
+    return
+  end
+
+  illuminate.on_attach(client)
+end
+
+  lsp_highlight_document(client, bufnr)
 local custom_capabilities = function()
   local capabilities = require("cmp_nvim_lsp").update_capabilities(
     vim.lsp.protocol.make_client_capabilities()
