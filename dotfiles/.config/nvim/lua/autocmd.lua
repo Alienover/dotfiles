@@ -14,7 +14,7 @@ local groups = {
 vim.api.nvim_create_autocmd("TermEnter", {
   desc = "Remove the editor styling and define keymaps on entering terminal",
 
-  callback = function()
+  callback = function() -- {{{
     local excluded_filetypes = { "rnvimr", "fzf" }
     local curr_ft = vim.api.nvim_buf_get_option(0, "filetype")
 
@@ -36,10 +36,11 @@ vim.api.nvim_create_autocmd("TermEnter", {
     tmap("<c-w>k", "<C-\\><C-n><C-w>k", opts)
     tmap("<c-w>l", "<C-\\><C-n><C-w>l", opts)
   end,
+  -- }}}
   group = groups.terminal,
 })
 
-local function toggleCursorLine(val, scope)
+local function toggleCursorLine(val, scope) -- {{{
   return function()
     if vim.api.nvim_win_get_option(0, "diff") then
       local cmd = {}
@@ -60,6 +61,7 @@ local function toggleCursorLine(val, scope)
     end
   end
 end
+-- }}}
 
 vim.api.nvim_create_autocmd("BufEnter", {
   desc = "Disable the cursorline to remove the annoying underling",
@@ -77,9 +79,10 @@ vim.api.nvim_create_autocmd("BufLeave", {
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight on yark",
 
-  callback = function()
+  callback = function() -- {{{
     vim.highlight.on_yank({})
   end,
+  -- }}}
 })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -95,11 +98,12 @@ vim.api.nvim_create_autocmd("FileType", {
     "qf",
     "startuptime",
   },
-  callback = function()
+  callback = function() -- {{{
     nmap("q", function()
       utils.cmd("close")
     end, { silent = true, buffer = 0 })
   end,
+  -- }}}
 })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -107,30 +111,53 @@ vim.api.nvim_create_autocmd("FileType", {
 
   group = groups.filetype,
   pattern = { "make" },
-  callback = function()
+  callback = function() -- {{{
     vim.bo.expandtab = false
   end,
+  -- }}}
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
   desc = "Setup folding method and marker for certain files",
 
   group = groups.folding,
-  pattern = { "*/nvim/lua/plugins.lua", "kitty.conf" },
-  callback = function()
+  pattern = {
+    "*/nvim/lua/plugins.lua",
+    "*/nvim/lua/autocmd.lua",
+    "kitty.conf",
+  },
+  callback = function() -- {{{
     vim.opt_local.foldenable = true
     vim.opt_local.foldmethod = "marker"
     vim.opt_local.foldmarker = " {{{, }}}"
   end,
+  -- }}}
 })
 
 vim.api.nvim_create_autocmd("VimEnter", {
   desc = "Open Ranger once the current buffer is a directory",
 
   group = groups.folding,
-  callback = function()
+  callback = function() -- {{{
+    local bufnr = vim.api.nvim_get_current_buf()
     if vim.fn.isdirectory(expand("%")) == 1 then
       vim.cmd("RnvimrToggle")
+
+      vim.g.__RNVIMR_autocmd_id = vim.api.nvim_create_autocmd("TermLeave", {
+        callback = function()
+          local autocmd_id = vim.g.__RNVIMR_autocmd_id
+          if autocmd_id ~= nil then
+            vim.api.nvim_del_autocmd(vim.g.__RNVIMR_autocmd_id)
+          end
+
+          if bufnr ~= nil then
+            vim.api.nvim_buf_call(bufnr, function()
+              vim.api.nvim_command("KWBufDel force")
+            end)
+          end
+        end,
+      })
     end
   end,
+  -- }}}
 })
