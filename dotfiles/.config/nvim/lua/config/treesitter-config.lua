@@ -33,7 +33,10 @@ require("nvim-treesitter.configs").setup({
     },
   },
   refactor = {
-    highlight_definitions = { enable = true },
+    highlight_definitions = {
+      -- Replace it with vim-illuminate
+      enable = false,
+    },
     smart_rename = {
       enable = true,
       keymaps = {

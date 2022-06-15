@@ -274,7 +274,7 @@ local plugins = function(use)
       "jose-elias-alvarez/null-ls.nvim",
       "williamboman/nvim-lsp-installer",
       "folke/lua-dev.nvim",
-      { "RRethy/vim-illuminate", event = "BufReadPre" },
+      { "RRethy/vim-illuminate", event = "CursorMoved" },
       {
         -- Replace the original repo for nvim v5.1 compatibility
         -- "glepnir/lspsaga.nvim",
