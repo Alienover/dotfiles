@@ -2,8 +2,8 @@
 alias proxychains="/opt/homebrew/bin/proxychains4"
 
 # For neovim
-# alias nvim="/usr/local/Cellar/neovim/nightly/bin/nvim"
-alias vim="nvim"
+alias vim="/opt/homebrew/Cellar/neovim/nightly/bin/nvim"
+# alias vim="nvim"
 # alias vi="/usr/local/bin/nvim"
 
 # Directories

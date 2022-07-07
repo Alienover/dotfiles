@@ -46,7 +46,7 @@ compinit -d $ZSH_COMPDUMP
 
 # Load plugins
 # -- Work
-zsh_add_custom_plugin "edo_work"
+zsh_add_custom_plugin "edo-work"
 # -- Custom
 zsh_add_custom_plugin "brew"
 zsh_add_custom_plugin "cmd-duration"
