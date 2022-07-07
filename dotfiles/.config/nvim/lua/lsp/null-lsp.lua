@@ -3,6 +3,8 @@ local nls = require("null-ls")
 
 local g = utils.g
 
+local NODE_MODULES_LOCAL_BIN = vim.loop.cwd() .. "/node_modules/.bin"
+
 local config = {
   debounce = 150,
   default_timeout = 5000,
@@ -13,23 +15,14 @@ local config = {
     -- JavaScript
     -- Faster prettier
     -- Reter to: https://github.com/mikew/prettier_d_slim
-    nls.builtins.formatting.prettier_d_slim.with({
-      extra_args = function()
-        ---@diagnostic disable-next-line: missing-parameter
-        if vim.fn.empty(vim.fn.glob(vim.loop.cwd() .. "/.prettierrc")) == 1 then
-          return {
-            "--config",
-            vim.loop.os_homedir() .. "/.prettierrc",
-          }
-        end
-        return {}
-      end,
+    nls.builtins.formatting.prettier.with({
+      prefer_local = NODE_MODULES_LOCAL_BIN,
     }),
     nls.builtins.diagnostics.eslint.with({
-      prefer_local = vim.loop.cwd() .. "/node_modules/.bin",
+      prefer_local = NODE_MODULES_LOCAL_BIN,
     }),
     nls.builtins.code_actions.eslint.with({
-      prefer_local = vim.loop.cwd() .. "/node_modules/.bin",
+      prefer_local = NODE_MODULES_LOCAL_BIN,
     }),
     -- Json
     -- Refer to: https://github.com/rhysd/fixjson
@@ -37,14 +30,18 @@ local config = {
     -- Lua
     -- Refer to: https://github.com/JohnnyMorganz/StyLua
     nls.builtins.formatting.stylua.with({
-      extra_args = {
-        "--indent-width",
-        "2",
-        "--indent-type",
-        "Spaces",
-        "--column-width",
-        "80",
-      },
+      extra_args = function()
+        if not utils.file_existed(vim.loop.cwd() .. "/.stylua.toml") then
+          return {
+            "--indent-width",
+            "2",
+            "--indent-type",
+            "Spaces",
+            "--column-width",
+            "80",
+          }
+        end
+      end,
     }),
     -- Python
     -- Refer to: https://github.com/PyCQA/isort

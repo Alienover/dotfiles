@@ -1,7 +1,7 @@
 local utils = require("utils")
 local constants = require("utils.constants")
 
-local g, cmd = utils.g, utils.cmd
+local g = utils.g
 
 local c = constants.colors
 
@@ -70,7 +70,7 @@ M.fzf_files = function()
     "--preview-window=bottom",
   }, " ")
 
-  cmd(string.format(
+  utils.cmd(string.format(
     [[
 	call fzf#run(fzf#wrap({ "source": "%s", "options": "%s" }))
     ]],
@@ -89,7 +89,7 @@ M.setup = function()
 
   vim.api.nvim_create_user_command("FZFFiles", function()
     M.fzf_files()
-  end, { nargs = 0 })
+  end, { nargs = 0, desc = "FZF files finder" })
 end
 
 return M

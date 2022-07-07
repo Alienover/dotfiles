@@ -15,15 +15,39 @@ require("lspsaga").init_lsp_saga({
   rename_action_keys = {
     quit = "<esc>",
   },
+  finder_action_keys = {
+    split = "s",
+    vsplit = "v",
+    scroll_up = "<C-u>",
+    scroll_down = "<C-d>",
+    quit = { "q", "<esc>" },
+  },
+  code_action_prompt = {
+    enable = false,
+  },
+  code_action_keys = {
+    quit = { "q", "<esc>" },
+  },
+  definition_preview_action_keys = {
+    open = "o",
+    split = "s",
+    vsplit = "v",
+  },
 })
 
 local opts = { noremap = true }
 
+local function lspsaga(sub_cmd)
+  return function()
+    utils.cmd("Lspsaga " .. sub_cmd)
+  end
+end
+
 -- signature help in insert mode
-imap("<C-k>", [[<CMD>Lspsaga signature_help<CR>]], opts)
+imap("<C-k>", lspsaga("signature_help"), opts)
 -- Diagnostics navigation
-nmap("<C-k>", [[<CMD>Lspsaga diagnostic_jump_prev<CR>]], opts)
-nmap("<C-j>", [[<CMD>Lspsaga diagnostic_jump_next<CR>]], opts)
+nmap("<C-k>", lspsaga("diagnostic_jump_prev"), opts)
+nmap("<C-j>", lspsaga("diagnostic_jump_next"), opts)
 -- Scrolling
 nmap(
   "<leader>[",
@@ -36,11 +60,6 @@ nmap(
   opts
 )
 -- Definition and references
-nmap("gh", [[<CMD>Lspsaga lsp_finder<CR>]], opts)
-nmap("K", [[<CMD>Lspsaga hover_doc<CR>]], opts)
-
--- -- Rewrite the mappings due to the lspsaga issues in v5.1 and nightly
--- imap("<C-k>", [[<CMD>lua vim.lsp.buf.signature_help()<CR>]], opts)
--- nmap("<C-k>", [[<CMD>lua vim.lsp.diagnostic.goto_next()<CR>]], opts)
--- nmap("<C-j>", [[<CMD>lua vim.lsp.diagnostic.goto_prev()<CR>]], opts)
--- nmap("K", [[<CMD>lua vim.lsp.buf.hover()<CR>]], opts)
+nmap("gh", lspsaga("lsp_finder"), opts)
+nmap("gp", lspsaga("preview_definition"), opts)
+nmap("K", lspsaga("hover_doc"), opts)

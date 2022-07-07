@@ -3,9 +3,11 @@ local constants = require("utils.constants")
 
 local cmd = utils.cmd
 
-cmd([[filetype plugin indent on]])
-
 cmd([[syntax on]])
+
+cmd([[filetype on]])
+
+cmd([[filetype plugin indent on]])
 
 -- set updatetime=100
 -- FIXME: what's `vim.o.lsp`
@@ -17,7 +19,11 @@ local global = {
   loaded_netrw = true,
   loaded_netrwPlugin = true,
 
-  -- Do not source the default filetype.vim
+  -- Disable the builtin `matchit.vim`
+  loaded_matchit = 1,
+  loaded_matchparen = 1,
+
+  -- Disable the builtin `filetype.vim`
   did_load_filetypes = 1,
 
   -- Leader key mapping
@@ -33,6 +39,15 @@ local global = {
   -- Python for neovim
   python_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py2",
   python3_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py3",
+
+  -- Filetypes without illuminate
+  Illuminate_ftblacklist = {
+    "fugitiveblame",
+    "checkhealth",
+    "help",
+    "LspsagaFinder",
+  },
+  Illuminate_highlightUnderCursor = 0,
 }
 
 local python_venv_bin = global.python_venv_home .. "/bin/python"
@@ -50,14 +65,16 @@ end
 local options = {
   -- Base
   title = true,
-  showmode = false,
-  shiftround = true,
-  showmatch = true,
   history = 1000,
-  visualbell = true,
-  copyindent = true,
   showcmd = true,
+  showmatch = true,
+  showmode = false,
   swapfile = false,
+  copyindent = true,
+  shiftround = true,
+  splitbelow = true,
+  splitright = true,
+  visualbell = true,
 
   -- Search case matching
   smartcase = true,
@@ -89,10 +106,10 @@ local options = {
   undofile = true,
   undolevels = 1000,
 
-  backspace = { "indent", "eol", "start" },
-  wildignore = { "*.swp", "*.bak", "*.pyc" },
   encoding = "utf-8",
   clipboard = { "unnamed" },
+  backspace = { "indent", "eol", "start" },
+  wildignore = { "*.swp", "*.bak", "*.pyc" },
 
   -- Diff Mode
   fillchars = { diff = "╱" },

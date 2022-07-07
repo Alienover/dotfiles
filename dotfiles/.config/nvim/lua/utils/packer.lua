@@ -40,7 +40,7 @@ function M.process_local_plugins(spec)
       or M.local_plugins[owner]
       or M.local_plugins[spec]
 
-    if local_pkg and local_pkg.enabled then
+    if local_pkg and local_pkg.enable then
       if M.has_local(local_pkg.path) then
         return local_pkg.path
       else

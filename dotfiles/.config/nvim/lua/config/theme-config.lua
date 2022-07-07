@@ -5,11 +5,16 @@ local g, cmd = utils.g, utils.cmd
 
 local c = constants.colors
 
-g.tokyonight_style = "night"
-g.tokyonight_italic_functions = true
-g.tokyonight_lualine_bold = true
+-- Tokyo Night
+if true then
+  g.tokyonight_style = "night"
+  g.tokyonight_italic_functions = true
+  g.tokyonight_lualine_bold = true
+  g.tokyonight_hide_inactive_statusline = true
+  g.tokyonight_sidebars = { "qf", "terminal", "packer" }
 
-cmd([[colorscheme tokyonight]])
+  cmd([[colorscheme tokyonight]])
+end
 
 cmd("hi DiffDelete guifg=" .. c.COMMENT_GREY)
 

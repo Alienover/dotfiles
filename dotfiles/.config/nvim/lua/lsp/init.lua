@@ -56,7 +56,7 @@ local lsp_keymaps = function(_, bufnr)
   nmap("gd", marks.go_def, keymap_opts)
   nmap("gD", vim.lsp.buf.declaration, keymap_opts)
   nmap("gi", vim.lsp.buf.implementation, keymap_opts)
-  nmap("gr", "<cmd>Telescope lsp_references<CR>", keymap_opts)
+  nmap("gr", vim.lsp.buf.references, keymap_opts)
 end
 
 -- Formatting config
@@ -65,7 +65,11 @@ local lsp_formatting = function(client, bufnr)
 
   -- Set the document formatting to false only when the format option is false
   if lsp_opts ~= nil and lsp_opts.format == false then
-    client.resolved_capabilities.document_formatting = false
+    if utils.has_nvim_08 then
+      client.server_capabilities.documentFormattingProvider = false
+    else
+      client.resolved_capabilities.document_formatting = false
+    end
   else
     local formatGroup = vim.api.nvim_create_augroup("Format", { clear = true })
 
@@ -74,14 +78,22 @@ local lsp_formatting = function(client, bufnr)
       buffer = bufnr,
       group = formatGroup,
       callback = function()
-        vim.lsp.buf.formatting_sync({}, 2 * 1000)
+        if utils.has_nvim_08 then
+          vim.lsp.buf.format({ sync = true, timeout_ms = 2 * 1000 })
+        else
+          vim.lsp.buf.formatting_sync({}, 2 * 1000)
+        end
       end,
     })
   end
 
   -- Alias
   vim.api.nvim_create_user_command("LspFormat", function()
-    vim.lsp.buf.formatting({})
+    if utils.has_nvim_08 then
+      vim.lsp.buf.format()
+    else
+      vim.lsp.buf.formatting({})
+    end
   end, {})
 end
 
@@ -94,20 +106,75 @@ local lsp_highlight_document = function(client, _)
   illuminate.on_attach(client)
 end
 
+-- Custom on_attach handler
 local on_attach = function(client, bufnr)
   lsp_keymaps(client, bufnr)
   lsp_formatting(client, bufnr)
   lsp_highlight_document(client, bufnr)
 end
 
-local custom_capabilities = function()
-  local capabilities = require("cmp_nvim_lsp").update_capabilities(
-    vim.lsp.protocol.make_client_capabilities()
+-- Re-write lsp handlers
+local rewrite_lsp_handlers = function()
+  -- Automatically update diagnostics
+  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics,
+    {
+      virtual_text = {
+        prefix = " ",
+        spacing = 4,
+      },
+      signs = true,
+      underline = true,
+      severity_sort = true,
+      update_in_insert = false,
+    }
   )
-  return capabilities
+
+  vim.lsp.handlers["textDocument/definition"] = function(...)
+    local status_ok, ts = pcall(require, "telescope.builtin")
+    if not status_ok then
+      return
+    end
+
+    return ts.lsp_definitions(...)
+  end
+
+  vim.lsp.handlers["textDocument/references"] = function()
+    local status_ok, ts = pcall(require, "telescope.builtin")
+    if not status_ok then
+      return
+    end
+
+    return ts.lsp_references({
+      bufnr = vim.api.nvim_get_current_buf(),
+      winnr = vim.api.nvim_get_current_win(),
+    })
+  end
 end
 
-local function init_lsp()
+-- Re-write lsp diagnostic icons
+local rewrite_lsp_icons = function()
+  local signs = {
+    Error = icons.ERROR,
+    Warn = icons.WARN,
+    Hint = icons.HINT,
+    Info = icons.INFOR,
+  }
+
+  for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+  end
+end
+
+local extend_config = function(config)
+  local custom_capabilities = function()
+    local capabilities = require("cmp_nvim_lsp").update_capabilities(
+      vim.lsp.protocol.make_client_capabilities()
+    )
+    return capabilities
+  end
+
   local DEFAULT_CONFIG = {
     autostart = o.diff == false,
     on_attach = on_attach,
@@ -117,6 +184,10 @@ local function init_lsp()
     },
   }
 
+  return vim.tbl_deep_extend("force", DEFAULT_CONFIG, config)
+end
+
+local function init_lsp()
   local function load_config(name)
     local config = {}
 
@@ -130,7 +201,7 @@ local function init_lsp()
       end
     end
 
-    return vim.tbl_deep_extend("force", DEFAULT_CONFIG, config)
+    return extend_config(config)
   end
 
   -- Setup the lsp for the one installed manually
@@ -156,33 +227,9 @@ local function init_lsp()
       end
     end
   end
+
+  rewrite_lsp_handlers()
+  rewrite_lsp_icons()
 end
 
 init_lsp()
-
--- Automatically update diagnostics
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics,
-  {
-    virtual_text = {
-      prefix = " ",
-      spacing = 4,
-    },
-    signs = true,
-    underline = true,
-    severity_sort = true,
-    update_in_insert = false,
-  }
-)
-
-local signs = {
-  Error = icons.ERROR,
-  Warn = icons.WARN,
-  Hint = icons.HINT,
-  Info = icons.INFOR,
-}
-
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-end

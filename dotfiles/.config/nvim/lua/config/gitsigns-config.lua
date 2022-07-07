@@ -1,7 +1,11 @@
 -- Reference
 -- https://github.com/folke/dot/blob/master/config/nvim/lua/config/gitsigns.lua
+local utils = require("utils")
+local gs = require("gitsigns")
 
-require("gitsigns").setup({
+local cmd, nmap, map = utils.cmd, utils.nmap, utils.map
+
+gs.setup({
   signs = {
     add = {
       hl = "GitSignsAdd",
@@ -34,26 +38,30 @@ require("gitsigns").setup({
       linehl = "GitSignsChangeLn",
     },
   },
-  keymaps = {
-    -- Default keymap options
-    noremap = true,
-    buffer = true,
-    ["n ]c"] = {
-      expr = true,
-      "&diff ? ']c zz' : '<cmd>lua require\"gitsigns\".next_hunk()<CR> zz'",
-    },
-    ["n [c"] = {
-      expr = true,
-      "&diff ? '[c zz' : '<cmd>lua require\"gitsigns\".prev_hunk()<CR> zz'",
-    },
-    ["n <leader>ghs"] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
-    ["n <leader>ghu"] = '<cmd>lua require"gitsigns".undo_stage_hunk()<CR>',
-    ["n <leader>ghr"] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
-    ["n <leader>ghR"] = '<cmd>lua require"gitsigns".reset_buffer()<CR>',
-    ["n <leader>ghp"] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',
-    ["n <leader>ghb"] = '<cmd>lua require"gitsigns".blame_line()<CR>',
-    -- Text objects
-    ["o ih"] = ':<C-U>lua require"gitsigns".select_hunk()<CR>',
-    ["x ih"] = ':<C-U>lua require"gitsigns".select_hunk()<CR>',
-  },
+
+  on_attach = function(bufnr)
+    local opts = { buffer = bufnr, silent = true, expr = true }
+
+    local make_hunk_navigate = function(key, gs_fn)
+      return function()
+        if vim.wo.diff then
+          return key .. "zz"
+        end
+
+        vim.schedule(function()
+          gs_fn()
+          cmd([[call feedkeys("zz")]])
+        end)
+        return "<Ignore>"
+      end
+    end
+
+    -- Navigation
+    nmap("]c", make_hunk_navigate("]c", gs.next_hunk), opts)
+    nmap("[c", make_hunk_navigate("[c", gs.prev_hunk), opts)
+
+    -- Text Objects
+    opts.expr = false
+    map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", opts)
+  end,
 })

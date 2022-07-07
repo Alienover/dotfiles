@@ -7,10 +7,12 @@ require("nvim-treesitter.configs").setup({
     "jsdoc",
     "python",
     "javascript",
+    "json",
     "jsonc",
     "lua",
     "tsx",
     "typescript",
+    "http",
   },
   highlight = {
     enable = true,
@@ -28,7 +30,7 @@ require("nvim-treesitter.configs").setup({
     keymaps = {
       init_selection = "∑", -- <alt-w> maps in normal mode to init the node/scope selection
       node_incremental = "∑", -- <alt-w> increment to the upper named parent
-      node_decremental = "„", -- <alt-W> decrement to the previous node
+      node_decremental = "ß", -- <alt-s> decrement to the previous node
       scope_incremental = "å", -- <alt-a> increment to the upper scope
     },
   },
@@ -38,13 +40,13 @@ require("nvim-treesitter.configs").setup({
       enable = false,
     },
     smart_rename = {
-      enable = true,
+      enable = false,
       keymaps = {
         smart_rename = "grr",
       },
     },
     navigation = {
-      enable = true,
+      enable = false,
       keymaps = {
         goto_definition = "gnd",
         -- list_definitions = "gnD",

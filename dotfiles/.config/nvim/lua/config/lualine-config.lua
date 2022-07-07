@@ -18,7 +18,10 @@ local spellcheck = {
 }
 
 local function filename()
-  local devicons = require("nvim-web-devicons")
+  local status_ok, devicons = pcall(require, "nvim-web-devicons")
+  if not status_ok then
+    return ""
+  end
 
   local name, ext = expand("%:t"), expand("%:e")
 
@@ -39,14 +42,41 @@ local function filename()
     .. "%*"
 end
 
+local function filetype()
+  local status_ok, devicons = pcall(require, "nvim-web-devicons")
+  if not status_ok then
+    return ""
+  end
+
+  local name, ext = expand("%:t"), expand("%:e")
+  if ext == "" then
+    return ""
+  end
+
+  local icon, color = devicons.get_icon(name, ext, { default = true })
+  icon = "%#" .. color .. "#" .. icon .. "%*"
+
+  local ft = constants.filetype_mappings[vim.bo.filetype]
+
+  return icon .. " " .. ft
+end
+
 local function gps_location()
-  local gps = require("nvim-gps")
+  if utils.has_nvim_08 then
+    return ""
+  end
+
+  local status_ok, gps = pcall(require, "nvim-gps")
   local location = ""
-  if gps.is_available() then
+  if status_ok and gps.is_available() then
     location = gps.get_location()
   end
 
   return location
+end
+
+local function encoding()
+  return vim.opt.fileencoding:get():upper()
 end
 
 local diff = {
@@ -66,7 +96,7 @@ local diff = {
 
 local spaces = {
   function()
-    return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
+    return "Spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
   end,
   separator = "",
 }
@@ -114,8 +144,8 @@ require("lualine").setup({
       filename,
       gps_location,
     },
-    lualine_x = { diff, "filetype" },
-    lualine_y = { "encoding", spaces },
+    lualine_x = { diff, filetype },
+    lualine_y = { encoding, spaces },
     lualine_z = {
       {
         "location",

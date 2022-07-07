@@ -40,8 +40,10 @@ M.go_def = function()
   -- Save the bufnr and mark
   table.insert(caches, { bufnr, mark })
 
-  -- Goto definition
-  vim.lsp.buf.definition()
+  vim.schedule(function()
+    -- Goto definition
+    vim.lsp.buf.definition()
+  end)
 end
 
 M.go_back = function()
@@ -65,7 +67,7 @@ M.go_back = function()
     -- Pop the mark
     table.remove(caches)
   else
-    cmd("call feedkeys('<C-o>')")
+    cmd([[execute "normal \<C-O>"]])
   end
 end
 

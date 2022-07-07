@@ -31,16 +31,6 @@ local ft = function(input)
   end
 end
 
-local function toggle_diffview()
-  if g.diffview_opened then
-    g.diffview_opened = false
-    cmd("DiffviewClose")
-  else
-    g.diffview_opened = true
-    cmd("DiffviewOpen")
-  end
-end
-
 local function telescope(sub_cmd, opts)
   return function()
     local options = {}
@@ -110,6 +100,29 @@ local function lspsaga(sub_cmd)
   return t("Lspsaga " .. sub_cmd)
 end
 
+local function toggle_diffview()
+  if g.diffview_opened then
+    g.diffview_opened = false
+    cmd("DiffviewClose")
+  else
+    g.diffview_opened = true
+    cmd("DiffviewOpen")
+  end
+end
+
+local function toggle_diff()
+  -- Don't diff this under diff view
+  if g.diffview_opened then
+    return
+  end
+
+  if vim.api.nvim_win_get_option(0, "diff") then
+    cmd("close")
+  else
+    gitsigns("diffthis")()
+  end
+end
+
 local function buffer_delete(force)
   return function()
     local kwdbi = require("local_plugins.kwdbi")
@@ -161,7 +174,7 @@ wk.setup({
   },
 })
 
-local key_maps = {
+local n_mappings = {
   h = {
     name = "Help",
     t = { telescope("builtin"), "Telescope" },
@@ -199,13 +212,15 @@ local key_maps = {
   },
   g = {
     name = "Git",
-    d = { toggle_diffview, "Toggle diffview" },
+    D = { toggle_diffview, "Toggle diffview" },
+    d = { toggle_diff, "Diff this" },
     c = { telescope("git_commits"), "Git commits" },
     f = { telescope("git_files"), "Git files" },
     j = { gitsigns("next_hunk"), "Next hunk" },
     k = { gitsigns("prev_hunk"), "Previous hunk" },
     p = { gitsigns("preview_hunk"), "Preview hunk" },
     b = { gitsigns("blame_line"), "Blame line" },
+    s = { gitsigns("select_hunk"), "Select hunk" },
   },
   f = {
     name = "Files",
@@ -231,12 +246,13 @@ local key_maps = {
     name = "LSP",
     I = { t("LspInfo"), "Info" },
     R = { t("LspRestart"), "Restart" },
-    f = { t("lua vim.lsp.buf.formatting()"), "Format" },
+    N = { t("NullLsInfo"), "null-ls info" },
+    f = { t("LspFormat"), "Format" },
     q = { telescope("quickfix"), "Quickfix" },
     r = { lspsaga("rename"), "Rename" },
     s = { telescope("lsp_document_symbols"), "Document symbols" },
-    d = {
-      telescope("lsp_document_diagnostics"),
+    D = {
+      telescope("diagnostics"),
       "Document diagnostic",
     },
     n = {
@@ -247,13 +263,27 @@ local key_maps = {
       lspsaga("diagnostic_jump_prev"),
       "Previous diagnostic",
     },
+    t = { telescope("lsp_type_definitions"), "Type definitions" },
+    a = { lspsaga("code_action"), "Code action" },
+    d = { lspsaga("preview_definition"), "Definition" },
   },
   c = {
-    name = "Code",
-    d = { lspsaga("preview_definition"), "Definition" },
-    a = { lspsaga("code_action"), "Code action" },
+    name = "Commands",
+    r = { t("RestExecute"), "Execute HTTP request" },
   },
   z = { t("ZenMode"), "Zen Mode" },
 }
 
-wk.register(key_maps, { prefix = "<space>" })
+local v_mappings = {
+  c = {
+    name = "Code",
+    a = { ":<C-U>Lspsaga range_code_action<CR>", "Range code action" },
+  },
+  g = {
+    name = "Git",
+    s = { ":Gitsigns stage_hunk<CR>", "Stage hunk" },
+  },
+}
+
+wk.register(n_mappings, { prefix = "<space>" })
+wk.register(v_mappings, { prefix = "<space>", mode = "v" })

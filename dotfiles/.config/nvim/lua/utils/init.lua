@@ -1,21 +1,22 @@
 local M = {}
 
-M.log = function(msg, hl, name)
+M.log = function(msg, level, name)
   name = name or "Neovim"
-  hl = hl or "Todo"
-  vim.api.nvim_echo({ { name .. ": ", hl }, { msg, hl } }, true, {})
+
+  local output = string.format("%s: %s", name, msg)
+  vim.notify(output, level)
 end
 
 M.warn = function(msg, name)
-  M.log(msg, "DiagnosticWarn", name)
+  M.log(msg, vim.log.levels.WARN, name)
 end
 
 M.error = function(msg, name)
-  M.log(msg, "DiagnosticError", name)
+  M.log(msg, vim.log.levels.ERROR, name)
 end
 
 M.info = function(msg, name)
-  M.log(msg, "DiagnosticInfo", name)
+  M.log(msg, vim.log.levels.INFO, name)
 end
 
 M.o = vim.o
@@ -38,40 +39,34 @@ M.expand = function(expr)
   return vim.fn.expand(expr, nil, nil)
 end
 
-local map = function(mode, key, cmd, opts)
+M.map = function(mode, key, cmd, opts)
   opts = vim.tbl_deep_extend("force", { silent = true }, opts or {})
-
-  if type(mode) == "string" then
-    mode = { mode }
-  end
 
   vim.keymap.set(mode, key, cmd, opts)
 end
 
-M.map = map
-
 M.nmap = function(...)
-  map("n", ...)
+  M.map("n", ...)
 end
 
 M.imap = function(...)
-  map("i", ...)
+  M.map("i", ...)
 end
 
 M.tmap = function(...)
-  map("t", ...)
+  M.map("t", ...)
 end
 
 M.vmap = function(...)
-  map("v", ...)
+  M.map("v", ...)
 end
 
 M.smap = function(...)
-  map("s", ...)
+  M.map("s", ...)
 end
 
 M.xmap = function(...)
-  map("x", ...)
+  M.map("x", ...)
 end
 
 M.r_code = function(str)
@@ -212,8 +207,26 @@ M.float_terminal = function(args)
     string.format("vim.api.nvim_win_close(%d, {force = true});", win),
     string.format("vim.api.nvim_buf_delete(%d, {force = true});", buf),
   }
-  vim.cmd(table.concat(autocmd, " "))
-  vim.cmd([[startinsert]])
+  M.cmd(table.concat(autocmd, " "))
+  M.cmd([[startinsert]])
 end
+
+M.file_existed = function(path)
+  ---@diagnostic disable-next-line: missing-parameter
+  return vim.fn.empty(vim.fn.glob(path)) == 0
+end
+
+M.require_lazy = function(pkg_name, module)
+  local pkg = package.loaded[module]
+  if pkg ~= nil then
+    return true, pkg
+  else
+    M.cmd("packadd " .. pkg_name)
+
+    return pcall(require, module)
+  end
+end
+
+M.has_nvim_08 = vim.fn.has("nvim-0.8") == 1
 
 return M

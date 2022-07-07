@@ -16,21 +16,29 @@ local config = {
   },
   local_plugins = {
     -- INFO: this is NOT packer functionality!
+    ["lspsaga.nvim"] = {
+      enable = true,
+      path = constants.local_plugins.lspsaga,
+    },
     ["nvim-gps"] = {
-      enabled = true,
+      enable = true,
       path = constants.local_plugins.gps,
     },
     ["kwbdi.nvim"] = {
-      enabled = true,
+      enable = true,
       path = constants.local_plugins.kwbdi,
     },
     ["lsp-marks.nvim"] = {
-      enabled = true,
+      enable = true,
       path = constants.local_plugins.marks,
     },
     ["fzf-finder.nvim"] = {
-      enabled = true,
+      enable = true,
       path = constants.local_plugins.fzf,
+    },
+    ["winbar.nvim"] = {
+      enable = true,
+      path = constants.local_plugins.winbar,
     },
   },
 }
@@ -52,7 +60,7 @@ local plugins = function(use)
   use({ -- speed up neovim!
     "nathom/filetype.nvim",
     config = function()
-      require("config/filetype-config")
+      require("config.filetype-config")
     end,
   })
 
@@ -80,7 +88,7 @@ local plugins = function(use)
     keys = { "<space>" },
     cmd = { "WhichKey" },
     config = function()
-      require("config/which-key-config")
+      require("config.which-key-config")
     end,
   })
 
@@ -95,7 +103,7 @@ local plugins = function(use)
     cmd = { "Telescope" },
     event = "VimEnter",
     config = function()
-      require("config/telescope-config")
+      require("config.telescope-config")
     end,
     requires = {
       "nvim-lua/popup.nvim",
@@ -110,7 +118,7 @@ local plugins = function(use)
     keys = { "<C-f>" },
     cmd = { "RnvimrToggle" },
     config = function()
-      require("config/rnvimr-config")
+      require("config.rnvimr-config")
     end,
   })
 
@@ -128,7 +136,7 @@ local plugins = function(use)
     opt = true,
     keys = { "<C-u>", "<C-d>", "gg", "G", "zz" },
     config = function()
-      require("config/neoscroll-config")
+      require("config.neoscroll-config")
     end,
   })
 
@@ -137,7 +145,7 @@ local plugins = function(use)
     opt = true,
     event = "BufReadPre",
     config = function()
-      require("config/colorizer-config")
+      require("config.colorizer-config")
     end,
   })
 
@@ -147,7 +155,7 @@ local plugins = function(use)
     event = "BufReadPre",
     cmd = { "TodoQuickFix", "TodoTelescope" },
     config = function()
-      require("config/todo-config")
+      require("config.todo-config")
     end,
     requires = "nvim-lua/plenary.nvim",
   })
@@ -155,14 +163,14 @@ local plugins = function(use)
   use({ -- Snippets
     "L3MON4D3/LuaSnip",
     config = function()
-      require("config/luasnip-config")
+      require("config.luasnip-config")
     end,
   })
 
   use({ -- Completions
     "hrsh7th/nvim-cmp",
     config = function()
-      require("config/cmp-config")
+      require("config.cmp-config")
     end,
     requires = {
       -- Sources
@@ -191,15 +199,39 @@ local plugins = function(use)
     end,
   })
 
+  use({
+    "janko-m/vim-test",
+    opt = true,
+    cmd = { "TestFile", "TestNearest" },
+  })
+
+  use({
+    "NTBBloodbath/rest.nvim",
+    ft = { "http" },
+    cmd = { "RestExecute" },
+    requires = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("config.rest-config").setup()
+    end,
+  })
+
+  use({
+    "winbar.nvim",
+    -- disable = true,
+    event = { "VimEnter" },
+    requires = { "kyazdani42/nvim-web-devicons", "SmiteshP/nvim-gps" },
+  })
+
   -- }}}
 
   -- Theming {{{
   use({
     "folke/tokyonight.nvim",
     config = function()
-      require("config/theme-config")
+      require("config.theme-config")
     end,
   })
+
   use({ -- Icons
     "kyazdani42/nvim-web-devicons",
     module = "nvim-web-devicons",
@@ -211,7 +243,7 @@ local plugins = function(use)
     "hoob3rt/lualine.nvim",
     event = "VimEnter",
     config = function()
-      require("config/lualine-config")
+      require("config.lualine-config")
     end,
     requires = {
       "SmiteshP/nvim-gps",
@@ -222,7 +254,7 @@ local plugins = function(use)
     "akinsho/bufferline.nvim",
     event = "VimEnter",
     config = function()
-      require("config/bufferline-config")
+      require("config.bufferline-config")
     end,
   })
   -- }}}
@@ -231,7 +263,7 @@ local plugins = function(use)
   use({
     "tpope/vim-fugitive",
     opt = true,
-    cmd = { "Git", "Gdiff" },
+    cmd = { "Git" },
   })
   use({
     "sindrets/diffview.nvim",
@@ -245,16 +277,17 @@ local plugins = function(use)
     },
     requires = { "nvim-lua/plenary.nvim" },
     config = function()
-      require("config/diffview-config")
+      require("config.diffview-config")
     end,
   })
   use({ -- Git Gutter
     "lewis6991/gitsigns.nvim",
     opt = true,
-    event = "BufReadPre",
+    cmd = { "Gitsigns" },
+    event = "BufReadPost",
     requires = { "nvim-lua/plenary.nvim" },
     config = function()
-      require("config/gitsigns-config")
+      require("config.gitsigns-config")
     end,
   })
   -- }}}
@@ -282,7 +315,7 @@ local plugins = function(use)
         -- branch = "nvim51",
         event = "BufReadPre",
         config = function()
-          require("config/saga-config")
+          require("config.saga-config")
         end,
       },
       {
@@ -304,7 +337,7 @@ local plugins = function(use)
     "SmiteshP/nvim-gps",
     requires = "nvim-treesitter/nvim-treesitter",
     config = function()
-      require("config/gps-config")
+      require("config.gps-config")
     end,
   })
 
@@ -312,17 +345,16 @@ local plugins = function(use)
     "nvim-treesitter/nvim-treesitter",
     run = ":TSUpdate",
     config = function()
-      require("config/treesitter-config")
+      require("config.treesitter-config")
     end,
     requires = {
       { "andymass/vim-matchup", opt = true, event = "CursorMoved" },
       "windwp/nvim-ts-autotag",
-      "nvim-treesitter/nvim-treesitter-refactor",
       {
         "windwp/nvim-autopairs",
         event = "BufReadPre",
         config = function()
-          require("config/autopairs-config")
+          require("config.autopairs-config")
         end,
       },
       {
@@ -331,6 +363,11 @@ local plugins = function(use)
           "TSHighlightCapturesUnderCursor",
           "TSPlaygroundToggle",
         },
+      },
+      {
+        -- Disable it due to no usage
+        disable = true,
+        "nvim-treesitter/nvim-treesitter-refactor",
       },
     },
   })
@@ -351,27 +388,6 @@ local plugins = function(use)
         },
       })
     end,
-  })
-  -- }}}
-
-  -- Frontend {{{
-  -- JavaScript
-  use({
-    "heavenshell/vim-jsdoc",
-    opt = true,
-    cmd = { "JsDoc", "JsDocFormat" },
-    ft = {
-      "javascript",
-      "javascript.jsx",
-      "typescript",
-      "typescript.jsx",
-    },
-    run = "make install",
-  })
-  use({
-    "janko-m/vim-test",
-    opt = true,
-    cmd = { "TestFile", "TestNearest" },
   })
   -- }}}
 end
