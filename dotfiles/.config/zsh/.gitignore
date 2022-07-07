@@ -1,10 +1,5 @@
 # Plugins
-plugins/*
-
-!plugins/fzf
-!plugins/perl
-!plugins/pyenv
-!plugins/cmd-duration
+plugins/zsh-*
 
 # Auto-generated
 .zsh_history
