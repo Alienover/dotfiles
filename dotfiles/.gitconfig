@@ -1,7 +1,7 @@
 [user]
   email = alienover.l.d@gmail.com
   name = Jiarong
-  signingkey = EB92C625BA9EC0D5D2B904C0E6622E3B438846B0
+  signingkey = <signingkey>
 [credential]
   helper = osxkeychain
 [color]
