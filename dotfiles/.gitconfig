@@ -1,6 +1,6 @@
 [user]
-  email = alienover.l.d@gmail.com
-  name = Jiarong
+  email = <email>
+  name = <name>
   signingkey = <signingkey>
 [credential]
   helper = osxkeychain
