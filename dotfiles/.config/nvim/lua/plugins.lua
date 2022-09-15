@@ -17,11 +17,11 @@ local config = {
   local_plugins = {
     -- INFO: this is NOT packer functionality!
     ["lspsaga.nvim"] = {
-      enable = true,
+      enable = false,
       path = constants.local_plugins.lspsaga,
     },
     ["nvim-gps"] = {
-      enable = true,
+      enable = false,
       path = constants.local_plugins.gps,
     },
     ["kwbdi.nvim"] = {
@@ -70,8 +70,6 @@ local plugins = function(use)
 
   use({ "nvim-lua/plenary.nvim" })
 
-  use({ "nvim-lua/popup.nvim", module = "popup" })
-
   use({
     "kwbdi.nvim",
     cmd = { "KWBufDel" },
@@ -106,7 +104,6 @@ local plugins = function(use)
       require("config.telescope-config")
     end,
     requires = {
-      "nvim-lua/popup.nvim",
       "nvim-lua/plenary.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
     },
@@ -211,7 +208,7 @@ local plugins = function(use)
     cmd = { "RestExecute" },
     requires = { "nvim-lua/plenary.nvim" },
     config = function()
-      require("config.rest-config").setup()
+      require("config.rest-config")
     end,
   })
 
@@ -219,7 +216,15 @@ local plugins = function(use)
     "winbar.nvim",
     -- disable = true,
     event = { "VimEnter" },
-    requires = { "kyazdani42/nvim-web-devicons", "SmiteshP/nvim-gps" },
+    requires = { "kyazdani42/nvim-web-devicons" },
+  })
+
+  use({
+    "RRethy/vim-illuminate",
+    event = "CursorMoved",
+    config = function()
+      require("illuminate").configure()
+    end,
   })
 
   -- }}}
@@ -246,7 +251,6 @@ local plugins = function(use)
       require("config.lualine-config")
     end,
     requires = {
-      "SmiteshP/nvim-gps",
       { "kyazdani42/nvim-web-devicons", opt = true },
     },
   })
@@ -309,10 +313,7 @@ local plugins = function(use)
       "folke/lua-dev.nvim",
       { "RRethy/vim-illuminate", event = "CursorMoved" },
       {
-        -- Replace the original repo for nvim v5.1 compatibility
-        -- "glepnir/lspsaga.nvim",
-        "tami5/lspsaga.nvim",
-        -- branch = "nvim51",
+        "glepnir/lspsaga.nvim",
         event = "BufReadPre",
         config = function()
           require("config.saga-config")
@@ -331,14 +332,6 @@ local plugins = function(use)
         end,
       },
     },
-  })
-
-  use({
-    "SmiteshP/nvim-gps",
-    requires = "nvim-treesitter/nvim-treesitter",
-    config = function()
-      require("config.gps-config")
-    end,
   })
 
   use({

@@ -9,7 +9,7 @@ local config = {
   debounce = 150,
   default_timeout = 5000,
   save_after_format = false,
-  diagnostics_format = "[#{s}] #{m}",
+  diagnostics_format = "#{m}",
   sources = {
     nls.builtins.code_actions.gitsigns,
     -- JavaScript

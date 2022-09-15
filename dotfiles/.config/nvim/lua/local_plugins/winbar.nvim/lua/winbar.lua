@@ -5,46 +5,45 @@ local expand = utils.expand
 
 local icons = constants.icons
 
-local SEPARATOR = string.format(" %%#LineNr#%s%%* ", icons.ui.ChevronRight)
-
 local DEFAULT_OPTS = {
   separator = icons.ui.ChevronRight,
   separator_hl = "LineNr",
   text_hl = "CursorLineNr",
-  max_path_depth = 4,
+  max_path_depth = 3,
   show_filepath = true,
-  show_gps = true,
+  show_symbol = true,
   excluded_filetypes = {
     "git",
     "help",
     "packer",
+    "rnvimr",
   },
 }
 
 local M = {}
+local MM = {}
 
-local is_excluded = function(opts)
+function MM:is_excluded()
   local ft = vim.bo.filetype
-  return ft == "" or vim.tbl_contains(opts.excluded_filetypes, ft)
+  return ft == "" or vim.tbl_contains(self.opts.excluded_filetypes, ft)
 end
 
-local set_winbar = function(value)
-  pcall(vim.api.nvim_set_option_value, "winbar", value, { scope = "local" })
+function MM:separator()
+  local sep, sep_hl = self.opts.separator, self.opts.separator_hl
+  return string.format(" %%#%s#%s%%* ", sep_hl, sep)
 end
 
-local separator = function(opts)
-  return string.format(" %%#%s#%s%%* ", opts.separator_hl, opts.separator)
-end
-
-local get_filepath_depth = function(opts)
-  local winwidth = vim.api.nvim_win_get_width(0)
+function MM:get_filepath_depth()
+  local max_path_depth = self.opts.max_path_depth
+  local winnr = vim.api.nvim_get_current_win()
+  local winwidth = vim.api.nvim_win_get_width(winnr)
 
   if winwidth > 150 then
-    return opts.max_path_depth
+    return max_path_depth
   elseif winwidth > 120 then
-    return opts.max_path_depth > 3 and 3 or opts.max_path_depth
+    return max_path_depth > 2 and 2 or max_path_depth
   elseif winwidth > 100 then
-    return opts.max_path_depth > 2 and 2 or opts.max_path_depth
+    return max_path_depth > 1 and 1 or max_path_depth
   elseif winwidth > 70 then
     return 1
   else
@@ -52,54 +51,47 @@ local get_filepath_depth = function(opts)
   end
 end
 
-function M.get_filepath(opts)
-  if opts.max_path_depth == 0 then
-    return ""
+function MM:get_filepath()
+  local show_filepath, text_hl = self.opts.show_filepath, self.opts.text_hl
+  local max_path_depth = self:get_filepath_depth()
+
+  if max_path_depth == 0 or not show_filepath then
+    return
   end
 
   local head = expand("%:h")
 
   if head == "" or head == "." then
-    return ""
+    return
   end
 
   local splitted = vim.split(head, "/")
   local paths = {}
 
   for i = #splitted, 1, -1 do
-    if #paths < opts.max_path_depth then
-      table.insert(
-        paths,
-        #splitted - i + 1,
-        string.format("%%#%s#%s%%*", opts.text_hl, splitted[i])
-      )
+    if #paths < max_path_depth then
+      table.insert(paths, 1, string.format("%%#%s#%s%%*", text_hl, splitted[i]))
     else
-      local prefix = string.format(
-        "%%#%s#%s%%*",
-        opts.text_hl,
-        icons.ui.EllipsisH
-      )
+      local prefix = string.format("%%#%s#%s%%*", text_hl, icons.ui.EllipsisH)
       table.insert(paths, 1, prefix .. " ")
       break
     end
   end
 
-  return table.concat(paths, separator(opts))
+  table.insert(self.elements, table.concat(paths, self:separator()))
 end
 
-function M.get_filename(opts)
-  opts = opts or {}
-
+function MM:get_filename()
   local name, ext = expand("%:t"), expand("%:e")
 
   if name == "" then
-    return ""
+    return
   end
 
   local status_ok, devicons = pcall(require, "nvim-web-devicons")
 
   local icon = nil
-  local color, hl = "", opts.text_hl
+  local color, hl = "", self.opts.text_hl
   if status_ok then
     icon, color = devicons.get_icon(name, ext, { default = true })
   end
@@ -107,61 +99,46 @@ function M.get_filename(opts)
   icon = string.format("%%#%s#%s%%*", color, icon)
   name = string.format("%%#%s#%s%%*", hl, name)
 
-  return icon .. " " .. name
+  table.insert(self.elements, icon .. " " .. name)
 end
 
-function M.get_gps_location()
-  local status_ok, gps = pcall(require, "nvim-gps")
-  local location = ""
-  if status_ok and gps.is_available() then
-    location = gps.get_location()
+function MM:get_symbol_node()
+  local status_ok, winbar = pcall(require, "lspsaga.symbolwinbar")
+  if not status_ok or not self.opts.show_symbol then
+    return
   end
 
-  return location
+  local symbol_node = winbar.get_symbol_node()
+
+  if symbol_node ~= "" then
+    table.insert(self.elements, symbol_node)
+  end
 end
 
-function M.get_winbar(opts)
-  opts = setmetatable(opts or {}, {
+local set_winbar = function(value)
+  pcall(vim.api.nvim_set_option_value, "winbar", value, { scope = "local" })
+end
+
+function M.render_winbar(opts)
+  MM.opts = setmetatable(opts or {}, {
     __index = function(_, key)
       return DEFAULT_OPTS[key]
     end,
   })
 
-  if is_excluded(opts) then
+  if MM:is_excluded() or not utils.has_nvim_08 then
     set_winbar("")
     return
   end
 
-  opts.max_path_depth = get_filepath_depth(opts)
+  MM.elements = {}
 
-  local winbar = {}
+  MM:get_filepath()
+  MM:get_filename()
+  MM:get_symbol_node()
 
-  local filename = M.get_filename(opts)
-
-  if filename == "" then
-    set_winbar("")
-    return
-  else
-    table.insert(winbar, filename)
-  end
-
-  if opts.show_filepath then
-    local filepath = M.get_filepath(opts)
-    if filepath ~= "" then
-      table.insert(winbar, 1, filepath)
-    end
-  end
-
-  if opts.show_gps then
-    local gps = M.get_gps_location()
-
-    if gps ~= "" then
-      table.insert(winbar, gps)
-    end
-  end
-
-  if #winbar > 0 then
-    set_winbar(" " .. table.concat(winbar, SEPARATOR))
+  if #MM.elements > 0 then
+    set_winbar(" " .. table.concat(MM.elements, MM:separator()))
   else
     set_winbar("")
   end

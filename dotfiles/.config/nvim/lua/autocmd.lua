@@ -3,6 +3,7 @@ local utils = require("utils")
 local nmap, tmap, expand = utils.nmap, utils.tmap, utils.expand
 
 local groups = {
+  ui = vim.api.nvim_create_augroup("UI", { clear = true }),
   filetype = vim.api.nvim_create_augroup("FT", { clear = true }),
   folding = vim.api.nvim_create_augroup("Folding", { clear = true }),
   terminal = vim.api.nvim_create_augroup("Terminal", { clear = true }),
@@ -128,18 +129,27 @@ vim.api.nvim_create_autocmd("VimEnter", {
   -- }}}
 })
 
-vim.api.nvim_create_autocmd(
-  { "CursorMoved", "BufWinEnter", "BufFilePost", "InsertEnter", "BufWritePost" },
-  {
-    desc = "",
+local render_winbar = function()
+  local status_ok, winbar = pcall(require, "winbar")
+  if not status_ok then
+    return
+  end
 
-    callback = function()
-      local status_ok, winbar = pcall(require, "winbar")
-      if not status_ok or not utils.has_nvim_08 then
-        return
-      end
+  winbar.render_winbar()
+end
 
-      winbar.get_winbar()
-    end,
-  }
-)
+vim.api.nvim_create_autocmd({ "CursorMoved", "BufWinEnter", "BufEnter" }, {
+  desc = "Winbar handler",
+
+  group = groups.ui,
+  pattern = "*",
+  callback = render_winbar,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  desc = "Update Winbar",
+
+  group = groups.ui,
+  pattern = "LspsagaUpdateSymbol",
+  callback = render_winbar,
+})

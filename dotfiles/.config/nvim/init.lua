@@ -8,3 +8,9 @@ require("keymappings")
 vim.defer_fn(function()
   require("plugins")
 end, 0)
+
+-- Italic support
+vim.api.nvim_command([[
+  let &t_ZH="\e[3m"
+  let &t_ZR="\e[23m"
+]])

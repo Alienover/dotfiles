@@ -61,20 +61,6 @@ local function filetype()
   return icon .. " " .. ft
 end
 
-local function gps_location()
-  if utils.has_nvim_08 then
-    return ""
-  end
-
-  local status_ok, gps = pcall(require, "nvim-gps")
-  local location = ""
-  if status_ok and gps.is_available() then
-    location = gps.get_location()
-  end
-
-  return location
-end
-
 local function encoding()
   return vim.opt.fileencoding:get():upper()
 end
@@ -142,7 +128,6 @@ require("lualine").setup({
     lualine_c = {
       spellcheck,
       filename,
-      gps_location,
     },
     lualine_x = { diff, filetype },
     lualine_y = { encoding, spaces },

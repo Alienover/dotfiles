@@ -1,8 +1,7 @@
 [user]
   email = alienover.l.d@gmail.com
   name = Jiarong
-[github]
-	user = 
+  signingkey = EB92C625BA9EC0D5D2B904C0E6622E3B438846B0
 [credential]
   helper = osxkeychain
 [color]
@@ -42,16 +41,12 @@
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
-[http]
-  proxy=http://127.0.0.1:1081
-[https]
-  proxy=http://127.0.0.1:1081
 
 [alias]
   ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
   pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
-  logs = "!tmux popup -h $__TMUX_POPUP_SCALE -w $__TMUX_POPUP_SCALE -E 'TERM='$TERM'; cd '$PWD';__FZF_POPUP_HEIGHT=100% popup-logs'"
-  diffs = "!tmux popup -h $__TMUX_POPUP_SCALE -w $__TMUX_POPUP_SCALE -E 'TERM='$TERM'; cd '$PWD';__FZF_POPUP_HEIGHT=100% popup-diff'"
+  logs = "!tmux popup -h 60% -w 60$ -E 'TERM='$TERM'; cd '$PWD';__FZF_POPUP_HEIGHT=100% popup-logs'"
+  diffs = "!tmux popup -h 60% -w 60% -E 'TERM='$TERM'; cd '$PWD';__FZF_POPUP_HEIGHT=100% popup-diff'"
 [safe]
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-cask
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-core

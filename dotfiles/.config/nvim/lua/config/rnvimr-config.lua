@@ -1,6 +1,6 @@
 local utils = require("utils")
 
-local g, cmd = utils.g, utils.cmd
+local g, cmd, nmap = utils.g, utils.cmd, utils.nmap
 
 local ranger_cmd = g.python3_venv_home .. "/bin/ranger"
 
@@ -24,7 +24,5 @@ g.rnvimr_layout = utils.get_float_win_opts()
 cmd([[highlight link RnvimrNormal CursorLine]])
 
 if vim.fn.executable(ranger_cmd) then
-  vim.keymap.set({ "n" }, "<C-f>", function()
-    cmd("RnvimrToggle")
-  end, { silent = true })
+  nmap("<C-f>", ":RnvimrToggle<CR>", { silent = true })
 end

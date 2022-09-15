@@ -1,13 +1,8 @@
 # Proxychains
-alias proxychains="/opt/homebrew/bin/proxychains4"
-
-# For neovim
-alias vim="/opt/homebrew/Cellar/neovim/nightly/bin/nvim"
-# alias vim="nvim"
-# alias vi="/usr/local/bin/nvim"
+alias proxychains="`which proxychains4`"
 
 # Directories
-alias ls="ls -G"
+alias ls="ls --color=always"
 alias ll="ls -lh"
 
 alias goproxy="GOPROXY=https://goproxy.cn,direct go"

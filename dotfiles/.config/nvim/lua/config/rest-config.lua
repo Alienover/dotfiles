@@ -50,7 +50,7 @@ local cmds = {
       nargs = 0,
       desc = "http filetype only! Preview the request cURL command",
     },
-  }
+  },
 }
 
 for _, cmd in ipairs(cmds) do

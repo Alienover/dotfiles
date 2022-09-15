@@ -19,9 +19,7 @@ local installed_lsp = {
       })
     end,
   },
-  html = {
-    format = false,
-  },
+  html = { format = false },
   cssls = {},
   vimls = {},
   bashls = {},

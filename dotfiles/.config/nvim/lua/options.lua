@@ -15,16 +15,24 @@ cmd([[filetype plugin indent on]])
 
 -- Global variables
 local global = {
+  loaded_gzip = 1,
+  loaded_tar = 1,
+  loaded_tarPlugin = 1,
+  loaded_zip = 1,
+  loaded_zipPlugin = 1,
+
   -- Disable the builtin NetRW plugin
-  loaded_netrw = true,
-  loaded_netrwPlugin = true,
+  loaded_netrw = 1,
+  loaded_netrwPlugin = 1,
+  loaded_netrwSettings = 1,
+  loaded_netrwFileHandlers = 1,
 
   -- Disable the builtin `matchit.vim`
   loaded_matchit = 1,
   loaded_matchparen = 1,
 
   -- Disable the builtin `filetype.vim`
-  did_load_filetypes = 1,
+  did_load_filetypes = utils.has_nvim_08 and 0 or 1,
 
   -- Leader key mapping
   mapleader = "\\",
@@ -45,7 +53,7 @@ local global = {
     "fugitiveblame",
     "checkhealth",
     "help",
-    "LspsagaFinder",
+    "lspsagafinder",
   },
   Illuminate_highlightUnderCursor = 0,
 }

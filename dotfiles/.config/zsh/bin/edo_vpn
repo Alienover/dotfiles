@@ -4,6 +4,18 @@ set argv1 [lindex $argv 0]
 set argv2 [lindex $argv 1]
 set argv3 [lindex $argv 2]
 
+set office_ssid "edison-gz"
+
+proc _use_socs_proxy {} {
+  ssid=`networksetup -getairportnetwork en0 | cut -c 24-`
+
+  if { "$ssid" eq "$office_ssid" } {
+    echo "0"
+  } else {
+    echo "1"
+  }
+}
+
 if { $argv1 eq "--config" } {
     set service $argv2
     set port $argv3
@@ -26,7 +38,12 @@ set mypassword "vABkav6JNNpZn6qdcL3jdLXGy1pempWb"
 set configfile /Users/jiarong/Documents/work/others/edison_local.ovpn
 #set timeout 10
 
-spawn openvpn --config $configfile --socks-proxy $service $port
+if { "`_use_socs_proxy`" eq "1" } {
+  spawn openvpn --config $configfile --socks-pkroxy $service $port
+} else {
+  spawn openvpn --config $configfile
+}
+
 expect {
 "*Enter Auth Username:" { send "$username\r"; exp_continue}
 "*Enter Auth Password:" { send "$mypassword\r"; exp_continue }

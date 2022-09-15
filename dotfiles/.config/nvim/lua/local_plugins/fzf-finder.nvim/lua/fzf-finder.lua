@@ -1,3 +1,4 @@
+local popup = require("plenary.popup")
 local utils = require("utils")
 local constants = require("utils.constants")
 
@@ -36,19 +37,21 @@ M.open_floating_win = function(opts)
   local width = opts.width or 90
   local col = math.floor((win_spec.columns - width) / 2)
 
-  vim.api.nvim_open_win(buf, true, {
-    height = height,
+  popup.create(buf, {
+    minheight = height,
     width = width,
     col = col,
-    row = 0,
+    line = 0,
     relative = "editor",
     style = "minimal",
+    -- pos = "center",
   })
 end
 
 M.fzf_files = function()
   local source = table.concat({
-    "fd --type=f --no-ignore",
+    "fd --hidden --no-ignore",
+    "--type=f",
     "--exclude=node_modules",
     "--exclude=dist",
     "--exclude=target",

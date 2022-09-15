@@ -1,7 +1,7 @@
 local stackline = require("stackline")
 
-local conf = require("stackline/conf")
+-- local conf = require("stackline/conf")
 
-conf.appearance.showIcons = false
+-- conf.appearance.showIcons = false
 
-stackline:init(conf)
+stackline:init()

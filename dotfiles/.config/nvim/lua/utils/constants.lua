@@ -20,7 +20,7 @@ M.runtime_paths = {
 M.files = {
   vim = os.getenv("HOME") .. "/.vimrc",
   -- NeoVim initialization file
-  nvim = os.getenv("XDG_CONFIG_HOME") .. "/nvim/init.vim",
+  nvim = os.getenv("XDG_CONFIG_HOME") .. "/nvim/init.lua",
   -- Folder saved snippets
   snippets = os.getenv("XDG_CONFIG_HOME") .. "/nvim/snippets",
   -- Tmux config
