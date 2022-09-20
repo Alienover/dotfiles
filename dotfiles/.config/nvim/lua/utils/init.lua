@@ -36,6 +36,7 @@ M.t = vim.t
 M.cmd = vim.api.nvim_command
 
 M.expand = function(expr)
+  ---@diagnostic disable-next-line: param-type-mismatch
   return vim.fn.expand(expr, nil, nil)
 end
 

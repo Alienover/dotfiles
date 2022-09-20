@@ -64,10 +64,6 @@ local plugins = function(use)
     end,
   })
 
-  use({ -- Fix the CursorHold performance bug
-    "antoinemadec/FixCursorHold.nvim",
-  })
-
   use({ "nvim-lua/plenary.nvim" })
 
   use({
@@ -75,6 +71,13 @@ local plugins = function(use)
     cmd = { "KWBufDel" },
     config = function()
       require("kwbdi").setup()
+    end,
+  })
+
+  use({
+    "max397574/better-escape.nvim",
+    config = function()
+      require("config.escape-config")
     end,
   })
   -- }}}

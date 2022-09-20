@@ -19,7 +19,7 @@ local opts = { noremap = true, silent = true }
 nmap("<C-h>", ":bp<CR>", opts)
 nmap("<C-l>", ":bn<CR>", opts)
 
--- Open  nvim terminal in split or vertival split
+-- Open  nvim terminal in split or vertical split
 nmap("<C-t>", ":terminal<CR>i", opts)
 
 -- Move lines in <Normal> and <Visual>
@@ -28,9 +28,6 @@ nmap("∆", ":m .+1<CR>==", opts)
 nmap("˚", ":m .-2<CR>==", opts)
 vmap("∆", ":m '>+1<CR>gv=gv", opts)
 vmap("˚", ":m '<-2<CR>gv=gv", opts)
-
--- Press `jk` to escape from insert mode
-imap("jk", "<ESC>", opts)
 
 -- Increase/decrease indents without losing the selected
 vmap("<", "<gv", opts)
@@ -73,12 +70,12 @@ nmap("<C-p>", function()
   end
 end, opts)
 
--- Smart toogling the spell checking
+-- Smart toggling the spell checking
 nmap("<leader>s", function()
   local cursor_word = expand("<cword>")
 
   if cursor_word == "" then
-    -- Toogle the spell check when hover on empty word
+    -- Toggle the spell check when hover on empty word
     if o.spell then
       o.spell = false
     else

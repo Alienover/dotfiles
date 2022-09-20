@@ -20,7 +20,7 @@ local config = {
       -- vim.fn["UltiSnips#Anon"](args.body)
     end,
   },
-  mapping = {
+  mapping = cmp.mapping.preset.insert({
     -- Scrolling
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
     ["<C-u>"] = cmp.mapping.scroll_docs(-4),
@@ -68,8 +68,8 @@ local config = {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     }),
-  },
-  sources = {
+  }),
+  sources = cmp.config.sources({
     -- LSP
     { name = "nvim_lsp" },
     { name = "treesitter" },
@@ -87,7 +87,7 @@ local config = {
     { name = "calc" },
     { name = "emoji" },
     { name = "buffer", keyword_length = 5 },
-  },
+  }),
   formatting = {
     format = function(entry, vim_item)
       -- Kind icons
