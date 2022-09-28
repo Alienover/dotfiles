@@ -8,5 +8,13 @@ require("filetype").setup({
     literal = {
       [".gitignore"] = "conf",
     },
+    function_extensions = {
+      ["pdf"] = function()
+        vim.bo.filetype = "pdf"
+
+        -- Open in PDF previewer automatically
+        vim.fn.jobstart(string.format('open "%s"', vim.fn.expand("%")))
+      end,
+    },
   },
 })
