@@ -31,6 +31,9 @@ local global = {
   loaded_matchit = 1,
   loaded_matchparen = 1,
 
+  -- Disble Perl support
+  loaded_perl_provider = 0,
+
   -- Disable the builtin `filetype.vim`
   did_load_filetypes = utils.has_nvim_08 and 0 or 1,
 
