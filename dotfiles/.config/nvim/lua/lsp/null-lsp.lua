@@ -25,8 +25,8 @@ local config = {
       prefer_local = NODE_MODULES_LOCAL_BIN,
     }),
     -- Json
-    -- Refer to: https://github.com/rhysd/fixjson
-    nls.builtins.formatting.fixjson,
+    -- Refer to: https://github.com/stedolan/jq
+    nls.builtins.formatting.jq,
     -- Lua
     -- Refer to: https://github.com/JohnnyMorganz/StyLua
     nls.builtins.formatting.stylua.with({
@@ -51,7 +51,7 @@ local config = {
     -- Refer to: https://github.com/psf/black
     nls.builtins.formatting.black.with({
       command = g.python3_venv_home .. "/bin/black",
-      pextra_args = { "--fast" },
+      extra_args = { "--fast" },
     }),
   },
 }

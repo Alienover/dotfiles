@@ -2,7 +2,7 @@ local utils = require("utils")
 local constants = require("utils.constants")
 
 local lspconfig = require("lspconfig")
-local lspinstaller = require("nvim-lsp-installer")
+local mason_lspconfig = require("mason-lspconfig")
 
 local marks = require("lsp-marks")
 
@@ -45,6 +45,18 @@ local installed_lsp = {
     filename = "sumneko-lsp",
   },
 }
+
+local init_mason = function()
+  local config = {
+    ensure_installed = {},
+  }
+
+  for key, _ in pairs(installed_lsp) do
+    table.insert(config.ensure_installed, key)
+  end
+
+  mason_lspconfig.setup(config)
+end
 
 -- Keymaps for LSP interfaces
 local lsp_keymaps = function(_, bufnr)
@@ -206,23 +218,10 @@ local function init_lsp()
   for server, opts in pairs(installed_lsp) do
     local config = load_config(opts.filename)
 
-    local existed, requested_server = lspinstaller.get_server(server)
-
-    if existed then
-      requested_server:on_ready(function()
-        requested_server:setup(config)
-      end)
-
-      if not requested_server:is_installed() then
-        -- Queue the requested_server to be installed
-        requested_server:install()
-      end
+    if opts.setup ~= nil then
+      opts.setup(config)
     else
-      if opts.setup ~= nil then
-        opts.setup(config)
-      else
-        lspconfig[server].setup(config)
-      end
+      lspconfig[server].setup(config)
     end
   end
 
@@ -230,4 +229,5 @@ local function init_lsp()
   rewrite_lsp_icons()
 end
 
+init_mason()
 init_lsp()

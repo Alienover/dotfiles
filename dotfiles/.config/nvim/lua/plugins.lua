@@ -300,19 +300,28 @@ local plugins = function(use)
   -- }}}
 
   -- LSP {{{
-  use({ "williamboman/nvim-lsp-installer" })
+  use({
+    "williamboman/mason.nvim",
+    requires = {
+      "williamboman/mason-lspconfig.nvim",
+      "neovim/nvim-lspconfig",
+    },
+    config = function()
+      require("config.mason-config")
+    end,
+  })
 
   use({
     "neovim/nvim-lspconfig",
     -- opt = true,
     -- event = "BufReadPre",
-    after = "nvim-lsp-installer",
+    after = "mason.nvim",
     config = function()
       require("lsp")
     end,
     requires = {
+      "williamboman/mason.nvim",
       "jose-elias-alvarez/null-ls.nvim",
-      "williamboman/nvim-lsp-installer",
       "folke/lua-dev.nvim",
       { "RRethy/vim-illuminate", event = "CursorMoved" },
       {
