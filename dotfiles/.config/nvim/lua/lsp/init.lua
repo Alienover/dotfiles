@@ -75,11 +75,7 @@ local lsp_formatting = function(client, bufnr)
 
   -- Set the document formatting to false only when the format option is false
   if lsp_opts ~= nil and lsp_opts.format == false then
-    if utils.has_nvim_08 then
-      client.server_capabilities.documentFormattingProvider = false
-    else
-      client.resolved_capabilities.document_formatting = false
-    end
+    client.server_capabilities.documentFormattingProvider = false
   else
     local formatGroup = vim.api.nvim_create_augroup("Format", { clear = true })
 
@@ -88,22 +84,14 @@ local lsp_formatting = function(client, bufnr)
       buffer = bufnr,
       group = formatGroup,
       callback = function()
-        if utils.has_nvim_08 then
-          vim.lsp.buf.format({ sync = true, timeout_ms = 2 * 1000 })
-        else
-          vim.lsp.buf.formatting_sync({}, 2 * 1000)
-        end
+        vim.lsp.buf.format({ sync = true, timeout_ms = 2 * 1000 })
       end,
     })
   end
 
   -- Alias
   vim.api.nvim_create_user_command("LspFormat", function()
-    if utils.has_nvim_08 then
-      vim.lsp.buf.format()
-    else
-      vim.lsp.buf.formatting({})
-    end
+    vim.lsp.buf.format()
   end, {})
 end
 

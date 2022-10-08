@@ -63,7 +63,7 @@ local config = {
   -- show symbols in winbar must nightly
   symbol_in_winbar = {
     in_custom = true,
-    enable = utils.has_nvim_08,
+    enable = true,
     separator = " " .. icons.ui.ChevronRight .. " ",
     show_file = false,
     click_support = false,

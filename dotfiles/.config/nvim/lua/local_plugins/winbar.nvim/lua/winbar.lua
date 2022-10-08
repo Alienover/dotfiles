@@ -126,7 +126,7 @@ function M.render_winbar(opts)
     end,
   })
 
-  if MM:is_excluded() or not utils.has_nvim_08 then
+  if MM:is_excluded() then
     set_winbar("")
     return
   end
