@@ -40,10 +40,6 @@ local global = {
   -- Disable tab key in copilot
   copilot_no_tab_map = true,
 
-  -- in millisecond, used for both CursorHold and CursorHoldI,
-  -- " use updatetime instead if not defined
-  cursorhold_updatetime = 1000,
-
   -- Python for neovim
   python_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py2",
   python3_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py3",
