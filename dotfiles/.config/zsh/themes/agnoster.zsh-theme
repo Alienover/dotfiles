@@ -118,11 +118,17 @@ prompt_bold_end() {
 ### Prompt components
 # Each component will draw itself, and hide itself if no information needs to be shown
 
-# Context: user@hostname (who am I and where am I)
+# Context: Public IP of the current machine
 prompt_context() {
-  # if [[ "$USERNAME" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
-  #   prompt_segment black default "%(!.%{%F{$GUI_YELLOW}%}.)%n@%m"
-  # fi
+  if [[ -n "$SSH_CLIENT" ]]; then
+    local IP="$(cat /tmp/.ip_address)"
+    if [[ -z "$IP" ]]; then
+      curl ifconfig.me > /tmp/.ip_address
+      IP="$(cat /tmp/.ip_address)"
+    fi
+
+    echo -n " $IP"
+  fi
 }
 
 # Git: branch/detached head, dirty status
@@ -238,6 +244,11 @@ prompt_hg() {
 prompt_dir() {
   # Abbreviate the $PWD
   local current_dir="$(perl -p -e "s|^${HOME}|\~|;s|(\.[^/])[^/]*/|$""1/|;s|([^./])[^/]*/|$""1/|g" <<<${PWD})"
+
+  local context="$(prompt_context)"
+  if [[ -n "$context" ]]; then
+    current_dir="$context#$current_dir"
+  fi
   # Font bold
   prompt_bold
   prompt_segment $GUI_ACTIVE_TAB_BACKGROUND $GUI_ACTIVE_TAB_FOREGROUND $current_dir
