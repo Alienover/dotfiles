@@ -12,6 +12,7 @@ local icons = constants.icons
 
 local installed_lsp = {
   ["null-ls"] = {
+    external = true,
     filename = "null-lsp",
     setup = function(config)
       config:setup({
@@ -26,6 +27,7 @@ local installed_lsp = {
   pyright = {},
   tailwindcss = {},
   flow = {
+    external = true,
     filename = "flow-lsp",
   },
   jsonls = {
@@ -51,8 +53,10 @@ local init_mason = function()
     ensure_installed = {},
   }
 
-  for key, _ in pairs(installed_lsp) do
-    table.insert(config.ensure_installed, key)
+  for key, server in pairs(installed_lsp) do
+    if not server.external then
+      table.insert(config.ensure_installed, key)
+    end
   end
 
   mason_lspconfig.setup(config)
@@ -167,7 +171,7 @@ end
 
 local extend_config = function(config)
   local custom_capabilities = function()
-    local capabilities = require("cmp_nvim_lsp").update_capabilities(
+    local capabilities = require("cmp_nvim_lsp").default_capabilities(
       vim.lsp.protocol.make_client_capabilities()
     )
     return capabilities

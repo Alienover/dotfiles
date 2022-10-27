@@ -322,7 +322,7 @@ local plugins = function(use)
     requires = {
       "williamboman/mason.nvim",
       "jose-elias-alvarez/null-ls.nvim",
-      "folke/lua-dev.nvim",
+      "folke/neodev.nvim",
       { "RRethy/vim-illuminate", event = "CursorMoved" },
       {
         "glepnir/lspsaga.nvim",
