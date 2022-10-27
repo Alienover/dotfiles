@@ -50,9 +50,6 @@ brew "perl"
 # Go support for Google's protocol buffers
 brew "protoc-gen-go"
 
-# Hook preloader
-brew "proxychains-ng"
-
 # Python version management
 brew "pyenv"
 
