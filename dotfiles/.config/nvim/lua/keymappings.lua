@@ -50,7 +50,6 @@ nmap("zo", function()
 end, {
   silent = true,
 })
-
 -- Smart toggling file finder by telescope or fzf
 nmap("<C-p>", function()
   if utils.find_git_ancestor() then
@@ -109,7 +108,4 @@ imap("<C-j>", function()
   end
 end, opts)
 
--- Delete buffer but keep the window
-nmap("<leader>bd", ":KWBufDel<CR>", opts)
-
-nmap("<leader>bD", ":KWBufDel force<CR>", opts)
+nmap("x", '"_x')

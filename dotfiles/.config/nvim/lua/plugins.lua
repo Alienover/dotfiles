@@ -226,10 +226,24 @@ local plugins = function(use)
     "RRethy/vim-illuminate",
     event = "CursorMoved",
     config = function()
-      require("illuminate").configure()
+      require('config.illuminate-config')
     end,
   })
 
+  use({
+    "folke/noice.nvim",
+    config = function()
+      require("config.noice-config")
+    end,
+    requires = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      "MunifTanjim/nui.nvim",
+      -- OPTIONAL:
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      "rcarriga/nvim-notify",
+    },
+  })
   -- }}}
 
   -- Theming {{{
@@ -268,10 +282,13 @@ local plugins = function(use)
 
   -- Git {{{
   use({
-    "tpope/vim-fugitive",
-    opt = true,
-    cmd = { "Git" },
+    "dinhhuy258/git.nvim",
+    cmd = { "GitBlame" },
+    config = function()
+      require("git").setup()
+    end,
   })
+
   use({
     "sindrets/diffview.nvim",
     opt = true,

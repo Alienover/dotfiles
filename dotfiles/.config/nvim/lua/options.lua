@@ -5,7 +5,7 @@ local cmd = utils.cmd
 
 cmd([[syntax on]])
 
-cmd([[filetype on]])
+-- cmd([[filetype on]])
 
 cmd([[filetype plugin indent on]])
 
@@ -34,6 +34,8 @@ local global = {
   -- Disble Perl support
   loaded_perl_provider = 0,
 
+  did_load_filetypes = 1,
+
   -- Leader key mapping
   mapleader = "\\",
 
@@ -43,15 +45,6 @@ local global = {
   -- Python for neovim
   python_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py2",
   python3_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py3",
-
-  -- Filetypes without illuminate
-  Illuminate_ftblacklist = {
-    "fugitiveblame",
-    "checkhealth",
-    "help",
-    "lspsagafinder",
-  },
-  Illuminate_highlightUnderCursor = 0,
 }
 
 local python_venv_bin = global.python_venv_home .. "/bin/python"

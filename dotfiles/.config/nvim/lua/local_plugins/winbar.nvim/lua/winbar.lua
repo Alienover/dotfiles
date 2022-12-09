@@ -17,6 +17,7 @@ local DEFAULT_OPTS = {
     "help",
     "packer",
     "rnvimr",
+    "noice"
   },
 }
 

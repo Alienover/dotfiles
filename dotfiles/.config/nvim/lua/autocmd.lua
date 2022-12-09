@@ -63,7 +63,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "httpResult",
     "startuptime",
     "null-ls-info",
-    "fugitiveblame",
+    "git.nvim",
   },
   callback = function() -- {{{
     nmap("q", function()

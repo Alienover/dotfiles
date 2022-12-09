@@ -123,17 +123,6 @@ local function toggle_diff()
   end
 end
 
-local function buffer_delete(force)
-  return function()
-    local kwdbi = require("local_plugins.kwdbi")
-    if force == true then
-      kwdbi:kill_buf()
-    else
-      kwdbi:kill_buf_safe()
-    end
-  end
-end
-
 o.timeoutlen = 500
 
 wk.setup({
@@ -194,8 +183,8 @@ local n_mappings = {
   v = { t("vsplit"), "Split vertically" },
   b = {
     name = "Buffers",
-    d = { buffer_delete(), "Delete" },
-    D = { buffer_delete(true), "Force Delete" },
+    d = { t("KWBufDel"), "Delete" },
+    D = { t("KWBufDel force"), "Force Delete" },
     f = { t("bfirst"), "First" },
     l = { t("blast"), "Last" },
     n = { t("bnext"), "Next" },
@@ -220,6 +209,7 @@ local n_mappings = {
     k = { gitsigns("prev_hunk"), "Previous hunk" },
     p = { gitsigns("preview_hunk"), "Preview hunk" },
     b = { gitsigns("blame_line"), "Blame line" },
+    B = { t("GitBlame"), "Blame file" },
     s = { gitsigns("select_hunk"), "Select hunk" },
   },
   f = {
