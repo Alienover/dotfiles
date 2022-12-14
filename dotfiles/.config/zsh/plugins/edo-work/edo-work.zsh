@@ -10,10 +10,8 @@ function __init_alias {
 }
 
 function __init_env {
-    local MY_WORK_DIR="$HOME/Documents/work"
-
     # Repo dir
-    export EDISON_REPO_DIR="$MY_WORK_DIR/agent8"
+    export EDISON_REPO_DIR="$WORK_DIR/agent8"
 
 }
 

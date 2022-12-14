@@ -12,10 +12,11 @@ __git_diff() {
     local _toplevel=`git rev-parse --show-toplevel`
     local _stat=`git diff --stat | tail -1`
     local _gitDiffFilename="echo {} | xargs echo |cut -d' ' -f2"
+    local _instructions=$'/ Enter: View the detail / CTRL-D: Scroll Down /  CTRL-U: Scroll Up /\n'
 
     git diff --name-status $@ | \
         fzf -i +s --reverse --height $height --tiebreak=index --no-mouse \
-        --header "$_stat" \
+        --header "$_instructions$_stat" \
         --prompt " > Changed Files: " \
         --preview "$_gitDiffFilename | xargs -I % git diff --color -- $_toplevel/% | diff-so-fancy" \
 	--preview-window "border-left" \
