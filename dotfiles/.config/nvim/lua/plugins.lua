@@ -184,9 +184,9 @@ local plugins = function(use)
         opt = true,
         event = "InsertEnter",
       },
+      { "hrsh7th/cmp-nvim-lua", ft = "lua" },
       "saadparwaiz1/cmp_luasnip",
       "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-nvim-lua",
       "ray-x/cmp-treesitter",
     },
   })
@@ -226,7 +226,7 @@ local plugins = function(use)
     "RRethy/vim-illuminate",
     event = "CursorMoved",
     config = function()
-      require('config.illuminate-config')
+      require("config.illuminate-config")
     end,
   })
 
