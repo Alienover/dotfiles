@@ -37,9 +37,9 @@ search_project() {
         "$PROJECT_POLARIS")
             PROJECT_NAME="$PROJECT_POLARIS"
             PROJECT_ROOT="$WORK_DIR/Polaris"
+            /* send-keys -t \"$PROJECT_NAME\" \"vim\" C-m \; */
             PROJECT_ARGS="tmux split-window -t \"$PROJECT_NAME\" \; \
-                new-window -t \"$PROJECT_NAME\" \; \
-                send-keys -t \"$PROJECT_NAME\" \"vim\" C-m \;
+                new-window -t \"$PROJECT_NAME\" \;
             "
             ;;
         "$PROJECT_VPN")
@@ -49,7 +49,7 @@ search_project() {
             PROJECT_ARGS="tmux split-window -t \"$PROJECT_NAME\" \; \
                 split-window -t \"$PROJECT_NAME\" \; \
                 select-layout -t \"$PROJECT_NAME\" tiled \; \
-                resize-pane -t \"$PROJECT_NAME\" -U 20
+                resize-pane -t \"$PROJECT_NAME\" -U 20\;
             "
             ;;
         "$PROJECT_TERM")
@@ -64,7 +64,7 @@ search_project() {
             ;;
         *)
             echo "Nothing found!"
-            exit 1
+            exit 0
             ;;
     esac
     if [ -n "$PROJECT_NAME" ]; then
@@ -140,7 +140,7 @@ if [ -n "$SELECTED_PROJECT" ]; then
     search_project "$SELECTED_PROJECT"
 else
     echo "No project selected!"
-    exit 1
+    exit 0
 fi
 
 # Check if the project is started
