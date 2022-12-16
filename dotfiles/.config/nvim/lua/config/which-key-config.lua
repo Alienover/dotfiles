@@ -189,7 +189,7 @@ local n_mappings = {
     l = { t("blast"), "Last" },
     n = { t("bnext"), "Next" },
     p = { t("bprevious"), "Previous" },
-    b = { telescope("buffers"), "Find buffers" },
+    b = { telescope("buffers", { previewer = false }), "Find buffers" },
   },
   t = {
     name = "Terminal",
