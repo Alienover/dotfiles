@@ -45,8 +45,8 @@
 [alias]
   ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
   pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
-  logs = "!tmux popup -h 60% -w 60$ -E 'TERM='$TERM'; cd '$PWD';__FZF_POPUP_HEIGHT=100% popup-logs'"
-  diffs = "!tmux popup -h 60% -w 60% -E 'TERM='$TERM'; cd '$PWD';__FZF_POPUP_HEIGHT=100% popup-diff'"
+  logs = "!tmux-popup popup-logs"
+  diffs = "!tmux-popup popup-diff"
 [safe]
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-cask
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-core
