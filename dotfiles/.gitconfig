@@ -47,6 +47,8 @@
   pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
   logs = "!tmux-popup popup-logs"
   diffs = "!tmux-popup popup-diff"
+  skip = "update-index --skip-worktree"
+  no-skip = "update-index --no-skip-worktree"
 [safe]
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-cask
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-core
