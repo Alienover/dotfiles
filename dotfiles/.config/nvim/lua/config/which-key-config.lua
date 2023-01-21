@@ -20,7 +20,7 @@ end
 local ft = function(input)
   return function()
     local options = { border = true }
-    local terminal = require("utils/floating_terminal")
+    local terminal = require("utils.floating_terminal")
 
     if input == nil then
       terminal:toggle()
@@ -170,12 +170,10 @@ local n_mappings = {
     c = { telescope("command"), "Commands" },
     k = { telescope("keymaps"), "key Maps" },
     h = { telescope("highlights"), "Highlight Groups" },
-    p = {
-      name = "Packer",
-      p = { t("PackerSync"), "Sync" },
-      s = { t("PackerStatus"), "Status" },
-      i = { t("PackerInstall"), "Install" },
-      c = { t("PackerCompile"), "Compile" },
+    l = {
+      name = "Lazy Manager",
+      S = { t("Lazy Sync"), "Sync" },
+      s = { t("Lazy show"), "Show" },
     },
   },
   e = workspaces(constants.files.workdirs),
@@ -239,7 +237,7 @@ local n_mappings = {
     N = { t("NullLsInfo"), "null-ls info" },
     f = { t("LspFormat"), "Format" },
     q = { telescope("quickfix"), "Quickfix" },
-    r = { lspsaga("rename"), "Rename" },
+    r = { ":IncRename ", "Rename" },
     s = { telescope("lsp_document_symbols"), "Document symbols" },
     D = {
       telescope("diagnostics"),
@@ -265,10 +263,6 @@ local n_mappings = {
 }
 
 local v_mappings = {
-  c = {
-    name = "Code",
-    a = { ":<C-U>Lspsaga range_code_action<CR>", "Range code action" },
-  },
   g = {
     name = "Git",
     s = { ":Gitsigns stage_hunk<CR>", "Stage hunk" },

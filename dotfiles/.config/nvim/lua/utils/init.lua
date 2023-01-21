@@ -99,10 +99,30 @@ M.get_window_sepc = function()
   }
 end
 
+M.get_window_default_spacing = function(width, height)
+  local l, t = 0.25, 0.25
+
+  if width <= 250 then
+    l = 0.1
+  end
+
+  if height <= 20 then
+    t = 0.1
+  end
+
+  return { l = l, t = t }
+end
+
 M.get_float_win_opts = function(args)
   args = args or {}
   local win_spec = M.get_window_sepc()
-  local l_offset, t_offset = args.l_offset or 0.25, args.t_offset or 0.25
+  local default_offset = M.get_window_default_spacing(
+    win_spec.columns,
+    win_spec.lines
+  )
+
+  local l_offset, t_offset =
+    args.l_offset or default_offset.l, args.t_offset or default_offset.t
 
   local border = args.border
   args.border = nil
@@ -125,6 +145,16 @@ M.get_float_win_opts = function(args)
       "│",
     },
   }, args)
+end
+
+M.get_float_win_sizing = function()
+  local spec = M.get_window_sepc()
+  local win_opts = M.get_float_win_opts()
+
+  return {
+    width = tonumber(string.format("%0.2f", win_opts.width / spec.columns)),
+    height = tonumber(string.format("%0.2f", win_opts.height / spec.lines)),
+  }
 end
 
 M.find_git_ancestor = function()
@@ -217,15 +247,6 @@ M.file_existed = function(path)
   return vim.fn.empty(vim.fn.glob(path)) == 0
 end
 
-M.require_lazy = function(pkg_name, module)
-  local pkg = package.loaded[module]
-  if pkg ~= nil then
-    return true, pkg
-  else
-    M.cmd("packadd " .. pkg_name)
-
-    return pcall(require, module)
-  end
-end
+M.has_0_9 = vim.fn.has("nvim-0.9") == 1
 
 return M

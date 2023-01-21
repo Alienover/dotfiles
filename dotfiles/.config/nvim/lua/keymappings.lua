@@ -1,4 +1,3 @@
-local ls = require("luasnip")
 local utils = require("utils")
 
 local w, o, cmd, expand = utils.w, utils.o, utils.cmd, utils.expand
@@ -6,6 +5,15 @@ local w, o, cmd, expand = utils.w, utils.o, utils.cmd, utils.expand
 local map, imap, nmap, vmap = utils.map, utils.imap, utils.nmap, utils.vmap
 
 local opts = { noremap = true, silent = true }
+
+local function luasnipWrapper(fn)
+  return function()
+    local success, ls = pcall(require, "luasnip")
+    if success then
+      fn(ls)
+    end
+  end
+end
 
 -- Modes
 -- * normal_mode	 = "n"
@@ -87,25 +95,77 @@ nmap("<leader>s", function()
 end, opts)
 
 -- Expand the current snippet or jump to the next item within the snippet
-map({ "i", "s" }, "<C-l>", function()
-  if ls.expand_or_jumpable() then
-    ls.expand_or_jump()
-  end
-end, opts)
+map(
+  { "i", "s" },
+  "<C-l>",
+  luasnipWrapper(function(ls)
+    if ls.expand_or_jumpable() then
+      ls.expand_or_jump()
+    end
+  end),
+  opts
+)
 
 -- Always move to the previous item within the snippet
-map({ "i", "s" }, "<C-h>", function()
-  if ls.jumpable(-1) then
-    ls.jump(-1)
-  end
-end, opts)
+map(
+  { "i", "s" },
+  "<C-h>",
+  luasnipWrapper(function(ls)
+    if ls.jumpable(-1) then
+      ls.jump(-1)
+    end
+  end),
+  opts
+)
 
 -- Selects within a list of options.
 -- Useful for choice node
-imap("<C-j>", function()
-  if ls.choice_active() then
-    ls.change_choice(1)
+imap(
+  "<C-j>",
+  luasnipWrapper(function(ls)
+    if ls.choice_active() then
+      ls.change_choice(1)
+    end
+  end),
+  opts
+)
+
+nmap("x", '"_x')
+
+-- URL handling
+-- Refer to https://sbulav.github.io/vim/neovim-opening-urls/
+nmap("gx", function()
+  local c = ""
+  if vim.fn.has("mac") == 1 then
+    c = 'call jobstart(["open", expand("<cfile>")], {"detach": v:true})'
+  elseif vim.fn.has("unix") == 1 then
+    c = 'call jobstart(["xdg-open", expand("<cfile>")], {"detach": v:true})'
+  else
+    vim.notify("Error: gx is not supported on this OS!", vim.log.levels.ERROR)
+    return
+  end
+
+  cmd(c)
+end, opts)
+
+-- Folding
+-- nmap("zR", function()
+--   require("ufo").openAllFolds()
+-- end, opts)
+-- nmap("zM", function()
+--   require("ufo").closeAllFolds()
+-- end)
+
+nmap("K", function()
+  local winid = require("ufo").peekFoldedLinesUnderCursor()
+  if not winid then
+    cmd("Lspsaga hover_doc")
   end
 end, opts)
 
-nmap("x", '"_x')
+nmap("fn", function()
+  require("ufo").goNextClosedFold()
+end, opts)
+nmap("fp", function()
+  require("ufo").goPreviousClosedFold()
+end, opts)

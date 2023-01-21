@@ -1,20 +1,12 @@
 local M = {}
 
-local LOCAL_PLUGINS_FOLDER = os.getenv("XDG_CONFIG_HOME")
-  .. "/nvim/lua/local_plugins"
+M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/lua/local_plugins"
 
 M.local_plugins = {
-  gps = os.getenv("HOME") .. "/src/nvim-gps",
-  kwbdi = LOCAL_PLUGINS_FOLDER .. "/kwbdi.nvim",
-  winbar = LOCAL_PLUGINS_FOLDER .. "/winbar.nvim",
-  fzf = LOCAL_PLUGINS_FOLDER .. "/fzf-finder.nvim",
-  marks = LOCAL_PLUGINS_FOLDER .. "/lsp-marks.nvim",
-  lspsaga = os.getenv("HOME") .. "/src/lspsaga.nvim",
-}
-
-M.runtime_paths = {
-  -- Installed by Homebre
-  fzf = "/opt/homebrew/opt/fzf",
+  kwbdi = M.LOCAL_PLUGINS_FOLDER .. "/kwbdi.nvim",
+  winbar = M.LOCAL_PLUGINS_FOLDER .. "/winbar.nvim",
+  fzf = M.LOCAL_PLUGINS_FOLDER .. "/fzf-finder.nvim",
+  marks = M.LOCAL_PLUGINS_FOLDER .. "/lsp-marks.nvim",
 }
 
 M.files = {
@@ -161,6 +153,8 @@ M.icons = {
     Robot = "ﮧ",
     Watch = "",
     Squirrel = "",
+    Keyboard = "",
+    Command = "גּ",
   },
 }
 

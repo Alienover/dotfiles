@@ -2,6 +2,9 @@
 -- https://github.com/hrsh7th/nvim-cmp
 
 local cmp = require("cmp")
+local neogen = require("neogen")
+local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+
 local constants = require("utils.constants")
 
 local icons = constants.icons
@@ -10,14 +13,8 @@ local kind_icons = icons.kind
 local config = {
   snippet = {
     expand = function(args)
-      -- For `vsnip` user.
-      -- vim.fn["vsnip#anonymous"](args.body)
-
       -- For `luasnip` user.
       require("luasnip").lsp_expand(args.body)
-
-      -- For `ultisnips` user.
-      -- vim.fn["UltiSnips#Anon"](args.body)
     end,
   },
   mapping = cmp.mapping.preset.insert({
@@ -37,33 +34,27 @@ local config = {
     ["<Up>"] = cmp.mapping.select_prev_item({
       behavior = cmp.SelectBehavior.Select,
     }),
-    ["<Tab>"] = function(fallback)
-      if cmp.visible() then
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if neogen.jumpable() then
+        neogen.jump_next()
+      elseif cmp.visible() then
         cmp.select_next_item()
       else
         fallback()
       end
-    end,
-    ["<S-Tab>"] = function(fallback)
-      if cmp.visible() then
+    end, { "i", "s" }),
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if neogen.jumpable(true) then
+        neogen.jump_prev()
+      elseif cmp.visible() then
         cmp.select_prev_item()
       else
         fallback()
       end
-    end,
+    end, { "i", "s" }),
     -- Completion
     ["<C-e>"] = cmp.mapping.close(),
     ["<C-o>"] = cmp.mapping.complete(),
-    -- ["<C-l>"] = cmp.mapping(function(fallback)
-    --   if cmp.core.view:get_selected_entry() then
-    --     cmp.confirm()
-    --   else
-    --     fallback()
-    --   end
-    -- end, {
-    --   "i",
-    --   "s",
-    -- }),
     ["<CR>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
@@ -72,15 +63,12 @@ local config = {
   sources = cmp.config.sources({
     -- LSP
     { name = "nvim_lsp" },
+    { name = "nvim_lsp_signature_help" },
+
     { name = "treesitter" },
-    { name = "nvim_lua" },
-    -- For vsnip user.
-    -- { name = "vsnip" },
+
     -- For luasnip user.
     { name = "luasnip" },
-
-    -- For ultisnips user.
-    -- { name = 'ultisnips' },
 
     -- Utilities
     { name = "path" },
@@ -117,3 +105,5 @@ local config = {
 }
 
 cmp.setup(config)
+
+cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())

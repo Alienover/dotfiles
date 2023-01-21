@@ -22,7 +22,7 @@ require("tokyonight").setup({
   },
 
   -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
-  sidebars = { "qf", "terminal", "packer", "help" },
+  sidebars = { "qf", "terminal", "lazy", "help", "mason" },
 
   -- Adjusts the brightness of the colors of the **Day** style. Number between 0 and 1, from dull to vibrant colors
   day_brightness = 0.3,
@@ -36,7 +36,7 @@ require("tokyonight").setup({
   -- You can override specific color groups to use other groups or a hex color
   -- fucntion will be called with a ColorScheme table
   -- @param colors ColorScheme
-  on_colors = function(colors) end,
+  on_colors = function() end,
 
   -- You can override specific highlights to use other groups or a hex color
   -- fucntion will be called with a Highlights and ColorScheme table

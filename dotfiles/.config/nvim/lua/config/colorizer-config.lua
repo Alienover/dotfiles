@@ -5,4 +5,5 @@ require("colorizer").setup({
     css_fn = true,
   },
   "!notify",
+  "!lazy",
 })

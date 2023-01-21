@@ -28,6 +28,8 @@ vim.api.nvim_create_autocmd("TermEnter", {
     -- utils.cmd("hi TerminalBG guibg=" .. constants.colors.BLACK)
     -- utils.cmd("set winhighlight=Normal:TerminalBG")
 
+    -- vim.wo.statuscolumn = ""
+
     -- Keymaps
     local opts = { noremap = true, silent = true, buffer = bufnr }
     tmap("<ESC>", "<C-\\><C-n>", opts)
@@ -84,23 +86,6 @@ vim.api.nvim_create_autocmd("FileType", {
   -- }}}
 })
 
-vim.api.nvim_create_autocmd("BufReadPost", {
-  desc = "Setup folding method and marker for certain files",
-
-  group = groups.folding,
-  pattern = {
-    "kitty.conf",
-    "*/nvim/lua/plugins.lua",
-    "*/nvim/lua/autocmd.lua",
-  },
-  callback = function() -- {{{
-    vim.opt_local.foldenable = true
-    vim.opt_local.foldmethod = "marker"
-    vim.opt_local.foldmarker = " {{{, }}}"
-  end,
-  -- }}}
-})
-
 vim.api.nvim_create_autocmd("VimEnter", {
   desc = "Open Ranger once the current buffer is a directory",
 
@@ -135,7 +120,7 @@ local render_winbar = function()
     return
   end
 
-  winbar.render_winbar()
+  coroutine.wrap(winbar.render_winbar)()
 end
 
 vim.api.nvim_create_autocmd({ "CursorMoved", "BufWinEnter", "BufEnter" }, {

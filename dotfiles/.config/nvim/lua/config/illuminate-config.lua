@@ -4,6 +4,7 @@ require("illuminate").configure({
     "checkhealth",
     "help",
     "lspsagafinder",
+    "lazy",
   },
   under_cursor = false,
   modes_allowlist = { "n" },

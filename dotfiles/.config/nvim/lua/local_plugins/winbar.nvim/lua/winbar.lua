@@ -17,7 +17,7 @@ local DEFAULT_OPTS = {
     "help",
     "packer",
     "rnvimr",
-    "noice"
+    "noice",
   },
 }
 
@@ -109,7 +109,7 @@ function MM:get_symbol_node()
     return
   end
 
-  local symbol_node = winbar.get_symbol_node()
+  local symbol_node = winbar:get_winbar()
 
   if symbol_node ~= "" then
     table.insert(self.elements, symbol_node)
@@ -139,7 +139,7 @@ function M.render_winbar(opts)
   MM:get_symbol_node()
 
   if #MM.elements > 0 then
-    set_winbar(" " .. table.concat(MM.elements, MM:separator()))
+    set_winbar((" "):rep(3) .. table.concat(MM.elements, MM:separator()))
   else
     set_winbar("")
   end

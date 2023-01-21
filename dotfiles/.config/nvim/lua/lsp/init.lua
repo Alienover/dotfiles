@@ -2,7 +2,6 @@ local utils = require("utils")
 local constants = require("utils.constants")
 
 local lspconfig = require("lspconfig")
-local mason_lspconfig = require("mason-lspconfig")
 
 local marks = require("lsp-marks")
 
@@ -48,18 +47,16 @@ local installed_lsp = {
   },
 }
 
-local init_mason = function()
-  local config = {
-    ensure_installed = {},
-  }
+local setup_mason = function()
+  local ensure_installed = {}
 
   for key, server in pairs(installed_lsp) do
     if not server.external then
-      table.insert(config.ensure_installed, key)
+      table.insert(ensure_installed, key)
     end
   end
 
-  mason_lspconfig.setup(config)
+  require("config.mason-config").setup(ensure_installed)
 end
 
 -- Keymaps for LSP interfaces
@@ -189,17 +186,16 @@ local extend_config = function(config)
   return vim.tbl_deep_extend("force", DEFAULT_CONFIG, config)
 end
 
-local function init_lsp()
+local function setup_lsp()
   local function load_config(name)
     local config = {}
 
     if (name or "") ~= "" then
-      local config_filename = "lsp/" .. name
+      local config_filename = "lsp." .. name
 
-      if pcall(function()
-        require(config_filename)
-      end) then
-        config = require(config_filename)
+      local success, module = pcall(require, config_filename)
+      if success then
+        config = module
       end
     end
 
@@ -221,5 +217,5 @@ local function init_lsp()
   rewrite_lsp_icons()
 end
 
-init_mason()
-init_lsp()
+setup_mason()
+setup_lsp()

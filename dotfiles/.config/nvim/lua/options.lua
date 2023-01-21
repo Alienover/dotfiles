@@ -1,5 +1,4 @@
 local utils = require("utils")
-local constants = require("utils.constants")
 
 local cmd = utils.cmd
 
@@ -9,17 +8,30 @@ cmd([[syntax on]])
 
 cmd([[filetype plugin indent on]])
 
+-- Italic support
+cmd([[
+  let &t_ZH="\e[3m"
+  let &t_ZR="\e[23m"
+]])
+
 -- set updatetime=100
 -- FIXME: what's `vim.o.lsp`
 -- vim.o.lsp = 3
 
 -- Global variables
 local global = {
+  -- Disable the builtin vim plugins
   loaded_gzip = 1,
   loaded_tar = 1,
   loaded_tarPlugin = 1,
   loaded_zip = 1,
   loaded_zipPlugin = 1,
+
+  loaded_getscript = 1,
+  loaded_getscriptPlugin = 1,
+  loaded_vimball = 1,
+  loaded_vimballPlugin = 1,
+  loaded_2html_plugin = 1,
 
   -- Disable the builtin NetRW plugin
   loaded_netrw = 1,
@@ -30,6 +42,8 @@ local global = {
   -- Disable the builtin `matchit.vim`
   loaded_matchit = 1,
   loaded_matchparen = 1,
+  loaded_logiPat = 1,
+  loaded_rrhelper = 1,
 
   -- Disble Perl support
   loaded_perl_provider = 0,
@@ -85,10 +99,21 @@ local options = {
   compatible = false,
 
   -- Folding
-  foldenable = false,
-  -- NOTE: set the fold method on autocmd by filetypes or filenames
-  -- foldmethod = "expr",
-  -- foldexpr = "nvim_treesitter#foldexpr()",
+  foldenable = true,
+  foldcolumn = "1", -- '0' is not bad
+  foldlevel = 99, -- Using ufo provider need a large value, feel free to decrease the value
+  foldlevelstart = 99,
+  -- Folding indicators
+  -- Refer to https://github.com/kevinhwang91/nvim-ufo/issues/4#issuecomment-1379866474
+  statuscolumn = "%s%=%l %#FoldColumn#%{"
+    .. "foldlevel(v:lnum) > foldlevel(v:lnum - 1)"
+    .. "? foldclosed(v:lnum) == -1"
+    .. '? ""'
+    .. ': ""'
+    .. ": foldlevel(v:lnum) == 0"
+    .. '? " "'
+    .. ': " "'
+    .. "} ",
 
   --  Count for the items in the menu popup
   pumheight = 15,
@@ -127,8 +152,4 @@ end
 
 for k, v in pairs(global) do
   vim.g[k] = v
-end
-
-for _, v in pairs(constants.runtime_paths) do
-  cmd("set rtp+=" .. v)
 end

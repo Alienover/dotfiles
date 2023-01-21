@@ -1,7 +1,7 @@
 -- Reference
 -- https://github.com/folke/dot/blob/master/config/nvim/lua/config/bufferline.lua
 
-require("bufferline").setup({
+local config = {
   options = {
     theme = "tokyonight",
     -- mappings = true,
@@ -14,4 +14,6 @@ require("bufferline").setup({
       return "(" .. count .. ")"
     end,
   },
-})
+}
+
+require("bufferline").setup(config)

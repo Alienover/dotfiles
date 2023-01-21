@@ -73,13 +73,15 @@ M.fzf_files = function()
     "--preview-window=bottom",
   }, " ")
 
-  utils.cmd(string.format(
-    [[
-	call fzf#run(fzf#wrap({ "source": "%s", "options": "%s" }))
-    ]],
-    source,
-    options
-  ))
+  coroutine.wrap(function()
+    utils.cmd(string.format(
+      [[
+        call fzf#run(fzf#wrap({ "source": "%s", "options": "%s" }))
+      ]],
+      source,
+      options
+    ))
+  end)()
 end
 
 M.setup = function()
