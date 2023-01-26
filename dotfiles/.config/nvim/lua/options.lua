@@ -102,33 +102,13 @@ local options = {
 
   updatetime = 100,
 
+  scrolloff = 10,
+
   -- Folding
   foldenable = true,
   foldcolumn = "1", -- '0' is not bad
   foldlevel = 99, -- Using ufo provider need a large value, feel free to decrease the value
   foldlevelstart = 99,
-  -- Folding indicators
-  -- Refer to https://github.com/kevinhwang91/nvim-ufo/issues/4#issuecomment-1380649634
-  statuscolumn = "%= "
-    .. "%s" -- sign column
-    .. "%{%" -- evaluate this, and then evaluate what it returns
-    .. "&number ?"
-    .. 'printf("%"..len(line("$")).."s", v:relnum ? v:relnum : v:lnum)' -- add padding in case of shifting
-    .. ":"
-    .. '""'
-    .. " " -- space between lines and fold
-    .. "%}"
-    .. "%= "
-    .. "%#FoldColumn#" -- highlight group for fold
-    .. "%{" -- expression for showing fold expand/colapse
-    .. "foldlevel(v:lnum) > foldlevel(v:lnum - 1)" -- any folds?
-    .. "? (foldclosed(v:lnum) == -1" -- currently open?
-    .. '? ""' -- point down
-    .. ': ""' -- point to right
-    .. ")"
-    .. ': " "' -- blank for no fold, or inside fold
-    .. "}"
-    .. "%= ", -- spacing between end of column and start of text
 
   --  Count for the items in the menu popup
   pumheight = 15,
@@ -160,6 +140,32 @@ local options = {
   tabstop = 2,
   expandtab = true,
 }
+
+-- TODO: merge to options table when nvim v0.9 is released
+if utils.has_0_9 then
+  -- Folding indicators
+  -- Refer to https://github.com/kevinhwang91/nvim-ufo/issues/4#issuecomment-1380649634
+  options.statuscolumn = "%= "
+    .. "%s" -- sign column
+    .. "%{%" -- evaluate this, and then evaluate what it returns
+    .. "&number ?"
+    .. 'printf("%"..len(line("$")).."s", v:relnum ? v:relnum : v:lnum)' -- add padding in case of shifting
+    .. ":"
+    .. '""'
+    .. " " -- space between lines and fold
+    .. "%}"
+    .. "%= "
+    .. "%#FoldColumn#" -- highlight group for fold
+    .. "%{" -- expression for showing fold expand/colapse
+    .. "foldlevel(v:lnum) > foldlevel(v:lnum - 1)" -- any folds?
+    .. "? (foldclosed(v:lnum) == -1" -- currently open?
+    .. '? ""' -- point down
+    .. ': ""' -- point to right
+    .. ")"
+    .. ': " "' -- blank for no fold, or inside fold
+    .. "}"
+    .. "%= " -- spacing between end of column and start of text
+end
 
 for k, v in pairs(options) do
   vim.opt[k] = v
