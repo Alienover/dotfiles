@@ -1,4 +1,4 @@
-require("filetype").setup({
+local config = {
   -- overrides the filetype or function for filetype
   -- See https://github.com/nathom/filetype.nvim#customization
   overrides = {
@@ -17,4 +17,6 @@ require("filetype").setup({
       end,
     },
   },
-})
+}
+
+require("filetype").setup(config)

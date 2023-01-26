@@ -85,18 +85,25 @@ return {
   },
 
   {
+    "rcarriga/nvim-notify",
+    dependencies = {
+      "mrded/nvim-lsp-notify",
+    },
+  },
+
+  {
     "folke/noice.nvim",
-    lazy = false,
+    event = "VimEnter",
     config = function()
       require("config.noice-config")
     end,
     dependencies = {
       -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
       "MunifTanjim/nui.nvim",
-      -- OPTIONAL:
-      --   `nvim-notify` is only needed, if you want to use the notification view.
-      --   If not available, we use `mini` as the fallback
+
       "rcarriga/nvim-notify",
+
+      "nvim-treesitter/nvim-treesitter",
     },
   },
 
@@ -113,12 +120,6 @@ return {
     "danymat/neogen",
     cmd = { "Neogen" },
     dependencies = "nvim-treesitter/nvim-treesitter",
-    config = true,
-  },
-
-  {
-    "smjonas/inc-rename.nvim",
-    event = { "BufReadPost" },
     config = true,
   },
 }

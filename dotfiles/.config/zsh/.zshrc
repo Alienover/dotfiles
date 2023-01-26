@@ -1,5 +1,4 @@
 #! $SHELL
-
 export ZDOTDIR="$HOME/.config/zsh"
 
 source "$ZDOTDIR/zsh-functions.sh"
@@ -24,7 +23,6 @@ zsh_add_theme "agnoster"
 zsh_add_plugin "jeffreytse/zsh-vi-mode"
 zsh_add_plugin "zsh-users/zsh-autosuggestions"
 zsh_add_plugin "zdharma-continuum/fast-syntax-highlighting"
-# zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
 
 # Completions
 autoload -Uz compinit

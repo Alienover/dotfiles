@@ -14,7 +14,7 @@ vim.api.nvim_create_autocmd("TermEnter", {
   desc = "Remove the editor styling and define keymaps on entering terminal",
 
   group = groups.terminal,
-  callback = function() -- {{{
+  callback = function()
     local excluded_filetypes = { "rnvimr", "fzf", "LspsagaRename" }
     local bufnr = vim.api.nvim_get_current_buf()
     local curr_ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
@@ -23,12 +23,12 @@ vim.api.nvim_create_autocmd("TermEnter", {
       return
     end
 
-    utils.cmd("setlocal nocursorline nonumber norelativenumber")
+    utils.cmd.setlocal("nocursorline nonumber norelativenumber")
     -- Set darker background color
     -- utils.cmd("hi TerminalBG guibg=" .. constants.colors.BLACK)
     -- utils.cmd("set winhighlight=Normal:TerminalBG")
 
-    -- vim.wo.statuscolumn = ""
+    vim.wo.statuscolumn = ""
 
     -- Keymaps
     local opts = { noremap = true, silent = true, buffer = bufnr }
@@ -39,16 +39,14 @@ vim.api.nvim_create_autocmd("TermEnter", {
     tmap("<c-w>k", "<C-\\><C-n><C-w>k", opts)
     tmap("<c-w>l", "<C-\\><C-n><C-w>l", opts)
   end,
-  -- }}}
 })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight on yark",
 
-  callback = function() -- {{{
+  callback = function()
     vim.highlight.on_yank({})
   end,
-  -- }}}
 })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -67,12 +65,11 @@ vim.api.nvim_create_autocmd("FileType", {
     "null-ls-info",
     "git.nvim",
   },
-  callback = function() -- {{{
+  callback = function()
     nmap("q", function()
       utils.cmd("close")
     end, { silent = true, buffer = 0 })
   end,
-  -- }}}
 })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -80,20 +77,19 @@ vim.api.nvim_create_autocmd("FileType", {
 
   group = groups.filetype,
   pattern = { "make" },
-  callback = function() -- {{{
+  callback = function()
     vim.bo.expandtab = false
   end,
-  -- }}}
 })
 
 vim.api.nvim_create_autocmd("VimEnter", {
   desc = "Open Ranger once the current buffer is a directory",
 
   group = groups.directory,
-  callback = function() -- {{{
+  callback = function()
     local bufnr = vim.api.nvim_get_current_buf()
     if vim.fn.isdirectory(expand("%")) == 1 then
-      vim.cmd("RnvimrToggle")
+      vim.cmd.RnvimrToggle()
 
       vim.g.__RNVIMR_autocmd_id = vim.api.nvim_create_autocmd("TermLeave", {
         callback = function()
@@ -104,14 +100,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
           if bufnr ~= nil then
             vim.api.nvim_buf_call(bufnr, function()
-              vim.api.nvim_command("KWBufDel force")
+              vim.cmd.KWBufDel("force")
             end)
           end
         end,
       })
     end
   end,
-  -- }}}
 })
 
 local render_winbar = function()

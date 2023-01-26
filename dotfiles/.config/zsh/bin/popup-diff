@@ -9,20 +9,20 @@ TMP=`git diff --name-only`; [[ -z "$TMP" ]] && exit 0
 height=${__FZF_POPUP_HEIGHT:-30%}
 
 __git_diff() {
-    local _toplevel=`git rev-parse --show-toplevel`
-    local _stat=`git diff --stat | tail -1`
-    local _gitDiffFilename="echo {} | xargs echo |cut -d' ' -f2"
-    local _instructions=$'/ Enter: View the detail / CTRL-D: Scroll Down /  CTRL-U: Scroll Up /\n'
+  local _toplevel=`git rev-parse --show-toplevel`
+  local _stat=`git diff --stat | tail -1`
+  local _gitDiffFilename="echo {} | xargs echo |cut -d' ' -f2"
+  local _instructions=$'/ Enter: View the detail / CTRL-D: Scroll Down /  CTRL-U: Scroll Up /\n'
 
-    git diff --name-status $@ | \
-        fzf -i +s --reverse --height $height --tiebreak=index --no-mouse \
-        --header "$_instructions$_stat" \
-        --prompt " > Changed Files: " \
-        --preview "$_gitDiffFilename | xargs -I % git diff --color -- $_toplevel/% | diff-so-fancy" \
-	--preview-window "border-left" \
-        --bind "ctrl-d:preview-down" \
-        --bind 'ctrl-u:preview-up' \
-        --bind "enter:execute(git difftool -y -- $_toplevel/\`$_gitDiffFilename\`)"
+  git diff --name-status $@ | \
+    fzf -i +s --reverse --height $height --tiebreak=index --no-mouse \
+    --header "$_instructions$_stat" \
+    --prompt " > Changed Files: " \
+    --preview "$_gitDiffFilename | xargs -I % git diff --color -- $_toplevel/% | diff-so-fancy" \
+    --preview-window "border-left" \
+    --bind "ctrl-d:preview-down" \
+    --bind 'ctrl-u:preview-up' \
+    --bind "enter:execute(git difftool -y -- $_toplevel/\`$_gitDiffFilename\`)"
 }
 
 __git_diff $@

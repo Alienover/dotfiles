@@ -1,10 +1,11 @@
 return {
   {
-    "folke/tokyonight.nvim",
+    "catppuccin/nvim",
+    name = "catppuccin",
     lazy = false,
     priority = 1000,
     config = function()
-      require("config.theme-config")
+      require("config.catppuccin-config")
     end,
   },
 
@@ -27,7 +28,8 @@ return {
   },
   { -- Tabs
     "akinsho/bufferline.nvim",
-    lazy = false,
+    event = { "VimEnter" },
+    dependencies = { "catppuccin" },
     config = function()
       require("config.bufferline-config")
     end,

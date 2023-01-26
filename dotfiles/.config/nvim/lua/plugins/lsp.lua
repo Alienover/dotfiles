@@ -3,10 +3,17 @@ local consts = require("utils.constants")
 return {
   {
     "glepnir/lspsaga.nvim",
-    event = "BufReadPre",
+    event = "BufReadPost",
     config = function()
       require("config.saga-config")
     end,
+  },
+
+  {
+    "smjonas/inc-rename.nvim",
+    event = "BufReadPost",
+    config = true,
+    dependencies = { "neovim/nvim-lspconfig" },
   },
 
   {
@@ -19,16 +26,26 @@ return {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
       "jose-elias-alvarez/null-ls.nvim",
+
+      {
+        "j-hui/fidget.nvim",
+        config = function()
+          require("config.fidget-config")
+        end,
+      },
+
       {
         "folke/lsp-colors.nvim",
         opts = {},
       },
+
       { -- Provides the `go_def` and `go_back` with marks
         dir = consts.local_plugins.marks,
         config = true,
       },
     },
   },
+
   {
     "nvim-treesitter/playground",
     cmd = {
@@ -46,7 +63,13 @@ return {
     end,
     dependencies = {
       "windwp/nvim-ts-autotag",
-      { "andymass/vim-matchup", event = "CursorMoved" },
+      "nvim-treesitter/nvim-treesitter-refactor",
+      {
+        "andymass/vim-matchup",
+        config = function()
+          require("config.matchup-config")
+        end,
+      },
     },
   },
 }

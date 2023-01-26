@@ -1,8 +1,6 @@
 local utils = require("utils")
 local nls = require("null-ls")
 
-local g = utils.g
-
 local NODE_MODULES_LOCAL_BIN = vim.loop.cwd() .. "/node_modules/.bin"
 
 local config = {
@@ -45,13 +43,16 @@ local config = {
     }),
     -- Python
     -- Refer to: https://github.com/PyCQA/isort
-    nls.builtins.formatting.isort.with({
-      command = g.python3_venv_home .. "/bin/isort",
-    }),
+    nls.builtins.formatting.isort,
     -- Refer to: https://github.com/psf/black
     nls.builtins.formatting.black.with({
-      command = g.python3_venv_home .. "/bin/black",
       extra_args = { "--fast" },
+    }),
+
+    -- Shell
+    nls.builtins.diagnostics.zsh,
+    nls.builtins.formatting.beautysh.with({
+      extra_args = { "--indent-size", "2" },
     }),
   },
 }

@@ -115,9 +115,8 @@ end
 -- Re-write lsp handlers
 local rewrite_lsp_handlers = function()
   -- Automatically update diagnostics
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics,
-    {
+  vim.lsp.handlers["textDocument/publishDiagnostics"] =
+    vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
       virtual_text = {
         prefix = " ",
         spacing = 4,
@@ -126,8 +125,7 @@ local rewrite_lsp_handlers = function()
       underline = true,
       severity_sort = true,
       update_in_insert = false,
-    }
-  )
+    })
 
   vim.lsp.handlers["textDocument/definition"] = function(...)
     local status_ok, ts = pcall(require, "telescope.builtin")

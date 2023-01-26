@@ -1,4 +1,4 @@
-require("colorizer").setup({
+local config = {
   ["*"] = {
     RRGGBBAA = true,
     css = true,
@@ -6,4 +6,6 @@ require("colorizer").setup({
   },
   "!notify",
   "!lazy",
-})
+}
+
+require("colorizer").setup(config)

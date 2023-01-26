@@ -33,7 +33,7 @@ M.g = vim.g
 -- Tabpage-scipe variables
 M.t = vim.t
 -- Vim command
-M.cmd = vim.api.nvim_command
+M.cmd = vim.cmd
 
 M.expand = function(expr)
   ---@diagnostic disable-next-line: param-type-mismatch
@@ -116,10 +116,8 @@ end
 M.get_float_win_opts = function(args)
   args = args or {}
   local win_spec = M.get_window_sepc()
-  local default_offset = M.get_window_default_spacing(
-    win_spec.columns,
-    win_spec.lines
-  )
+  local default_offset =
+    M.get_window_default_spacing(win_spec.columns, win_spec.lines)
 
   local l_offset, t_offset =
     args.l_offset or default_offset.l, args.t_offset or default_offset.t
@@ -179,24 +177,19 @@ function M.highlight:has(name)
   return self.names[name] and true or false
 end
 
-function M.highlight:create(name, colors)
+function M.highlight:create(name, opts)
   local hl_name = "MyCustomHighlight_" .. name
-  local command = { "highlight", hl_name }
 
   if self:has(name) then
     return self:get(name)
   end
 
-  if type(colors) == "table" then
-    if colors.fg then
-      table.insert(command, "guifg=" .. colors.fg)
-    end
-
-    if colors.bg then
-      table.insert(command, "guibg=" .. colors.bg)
-    end
-
-    M.cmd(table.concat(command, " "))
+  if type(opts) == "table" then
+    vim.api.nvim_set_hl(
+      0,
+      hl_name,
+      { fg = opts.fg, bg = opts.bg, style = opts.style }
+    )
 
     self:set(name, hl_name)
   end
@@ -217,29 +210,6 @@ function M.highlight:format(args)
   else
     return ""
   end
-end
-
-M.float_terminal = function(args)
-  local cmd = args[1]
-  args[1] = nil
-
-  local buf = vim.api.nvim_create_buf(false, true)
-  local win = vim.api.nvim_open_win(
-    buf,
-    true,
-    M.get_float_win_opts(vim.tbl_deep_extend("force", {
-      border = true,
-    }, args))
-  )
-
-  vim.fn.termopen(cmd)
-  local autocmd = {
-    "autocmd! TermClose <buffer> lua",
-    string.format("vim.api.nvim_win_close(%d, {force = true});", win),
-    string.format("vim.api.nvim_buf_delete(%d, {force = true});", buf),
-  }
-  M.cmd(table.concat(autocmd, " "))
-  M.cmd([[startinsert]])
 end
 
 M.file_existed = function(path)

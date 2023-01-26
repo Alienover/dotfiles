@@ -44,6 +44,13 @@ vmap(">", ">gv", opts)
 -- Paste without losing the yanked content
 vmap("p", '"_dP', opts)
 
+-- Join lines without lossing the cursor position
+nmap("J", "mzJ`z", opts)
+
+-- Navigate to next/prev and keep the cursor center
+nmap("n", "nzzzv")
+nmap("N", "Nzzzv")
+
 -- Zoom in/out pane
 nmap("zo", function()
   if w.zoomed and w.zoom_winrestcmd then
@@ -58,6 +65,7 @@ nmap("zo", function()
 end, {
   silent = true,
 })
+
 -- Smart toggling file finder by telescope or fzf
 nmap("<C-p>", function()
   if utils.find_git_ancestor() then

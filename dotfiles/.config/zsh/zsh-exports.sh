@@ -1,6 +1,11 @@
 # Undercurl support
 # Refer to: https://github.com/kovidgoyal/kitty/issues/3235#issuecomment-758354252
-export TERM="xterm-kitty"
+
+if [[ -n "$TMUX" ]]; then
+  export TERM="tmux-256color"
+else
+  export TERM="xterm-kitty"
+fi
 
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
@@ -10,7 +15,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='nvim'
+  export EDITOR='vim'
 fi
 
 export LC_ALL=en_US.UTF-8
@@ -24,11 +29,11 @@ export HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zsh_history"
 export ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcompdump"
 
 __init_paths() {
-    local VS_CODE_BIN="$HOME/Applications/VSCodium.app/Contents/Resources/app/bin"
+  local VS_CODE_BIN="$HOME/Applications/VSCodium.app/Contents/Resources/app/bin"
 
-    local ZSH_BIN="$XDG_CONFIG_HOME/zsh/bin"
+  local ZSH_BIN="$XDG_CONFIG_HOME/zsh/bin"
 
-    export PATH="$VS_CODE_BIN:$ZSH_BIN:$PATH"
+  export PATH="$VS_CODE_BIN:$ZSH_BIN:$PATH"
 }
 
 __init_paths

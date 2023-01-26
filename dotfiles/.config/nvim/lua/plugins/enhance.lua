@@ -25,14 +25,6 @@ return {
   },
 
   {
-    "RRethy/vim-illuminate",
-    event = "CursorMoved",
-    config = function()
-      require("config.illuminate-config")
-    end,
-  },
-
-  {
     "echasnovski/mini.surround",
     keys = { "sa", "sd", "sr" },
     config = function()
@@ -52,5 +44,10 @@ return {
     config = function()
       require("config.colorizer-config")
     end,
+  },
+
+  {
+    "mbbill/undotree",
+    cmd = { "UndotreeToggle" },
   },
 }

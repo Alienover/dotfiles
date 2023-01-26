@@ -3,16 +3,14 @@ local constants = require("utils.constants")
 
 local nmap, imap = utils.nmap, utils.imap
 
-local icons, colors = constants.icons, constants.colors
+local icons = constants.icons
 
 local config = {
   ui = {
+    -- currently only round theme
+    colors = require("catppuccin.groups.integrations.lsp_saga").custom_colors(),
+    kind = require("catppuccin.groups.integrations.lsp_saga").custom_kind(),
     border = "rounded",
-    colors = {
-      normal_bg = colors.BG,
-      red = colors.RED,
-      green = colors.GREEN,
-    },
   },
   diagnostic = {
     show_code_action = false,

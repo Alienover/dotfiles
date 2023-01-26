@@ -170,11 +170,13 @@ local n_mappings = {
     c = { telescope("command"), "Commands" },
     k = { telescope("keymaps"), "key Maps" },
     h = { telescope("highlights"), "Highlight Groups" },
+    n = { telescope("noice"), "Noice history" },
     l = {
       name = "Lazy Manager",
       S = { t("Lazy Sync"), "Sync" },
       s = { t("Lazy show"), "Show" },
     },
+    u = { t("UndotreeToggle"), "Undo tree" },
   },
   e = workspaces(constants.files.workdirs),
   s = { t("split"), "Split" },
@@ -254,6 +256,7 @@ local n_mappings = {
     t = { telescope("lsp_type_definitions"), "Type definitions" },
     a = { lspsaga("code_action"), "Code action" },
     d = { lspsaga("preview_definition"), "Definition" },
+    m = { t("Mason"), "LSP servers" },
   },
   c = {
     name = "Commands",

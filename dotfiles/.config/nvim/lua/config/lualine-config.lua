@@ -87,10 +87,10 @@ local spaces = {
   separator = "",
 }
 
-require("lualine").setup({
+local config = {
   options = {
     -- Theme
-    theme = "tokyonight",
+    theme = "catppuccin",
 
     -- Icons
     icons_enabled = true,
@@ -141,4 +141,6 @@ require("lualine").setup({
       },
     },
   },
-})
+}
+
+require("lualine").setup(config)

@@ -13,7 +13,7 @@ local function reset()
 end
 
 -- Clear the floating terminal options and kill the window and buffer
-function _G.clear_float_term(win, buf, opts)
+local function clear_float_term(win, buf, opts)
   local force = type(opts) == "table" and opts.force or opts
 
   if M.is_toggle and not force then
@@ -42,14 +42,14 @@ local function open_window(buf, args)
     }, args))
   )
 
-  utils.cmd(
-    ("autocmd! TermClose <buffer> lua clear_float_term(%s, %s)"):format(
-      win,
-      buf
-    )
-  )
+  vim.api.nvim_create_autocmd("TermClose", {
+    buffer = buf,
+    callback = function()
+      clear_float_term(win, buf)
+    end,
+  })
 
-  utils.cmd([[startinsert]])
+  vim.cmd.startinsert()
 
   -- Save the opened buffer ID
   M.instance = buf

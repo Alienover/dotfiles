@@ -1,5 +1,6 @@
 require("nvim-treesitter.configs").setup({
   ensure_installed = {
+    "help",
     "bash",
     "css",
     "go",
@@ -39,9 +40,9 @@ require("nvim-treesitter.configs").setup({
   },
   refactor = {
     highlight_definitions = {
-      -- Replace it with vim-illuminate
-      enable = false,
+      enable = true,
     },
+    highlight_current_scope = { enable = true },
     smart_rename = {
       enable = false,
       keymaps = {

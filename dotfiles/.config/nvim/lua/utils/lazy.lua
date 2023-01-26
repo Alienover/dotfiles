@@ -35,7 +35,7 @@ function M.setup(plugins)
     },
     install = {
       -- try to load one of these colorschemes when starting an installation during startup
-      colorscheme = { "tokyonight" },
+      colorscheme = { "catppuccin-mocha" },
     },
     ui = {
       size = { width = sizing.width, height = sizing.height },

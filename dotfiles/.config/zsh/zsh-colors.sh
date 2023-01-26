@@ -1,12 +1,14 @@
+#! /bin/zsh
+
 # Load theme from kitty config
 function load_theme() {
-    local kitty_dir="$HOME/.config/kitty"
+  local kitty_dir="$HOME/.config/kitty"
 
-    if [[ ! -f "$kitty_dir/theme.sh" ]]; then
-	source "$kitty_dir/theme-gen.sh"
-    fi
+  if [[ ! -f "$kitty_dir/theme.sh" ]]; then
+    source "$kitty_dir/theme-gen.sh"
+  fi
 
-    source "$kitty_dir/theme.sh"
+  source "$kitty_dir/theme.sh"
 }
 
 load_theme
@@ -15,11 +17,11 @@ load_theme
 export LSCOLORS=Exfxcxdxbxegedabagacad
 
 export GUI_RED=$GUI_COLOR1 CTERM_RED=204 CTERM16_RED=1
-export GUI_DARK_RED=$GUI_COLOR17 CTERM_DARK_RED=196 CTERM16_DARK_RED=9
+export GUI_DARK_RED=${GUI_COLOR17:-#db4b4b} CTERM_DARK_RED=196 CTERM16_DARK_RED=9
 export GUI_GREEN=$GUI_COLOR2 CTERM_GREEN=114 CTERM16_GREEN=2
 export GUI_GOLD=#FFD700 CTERM_GOLD=220 CTERM16_GOLD=3
 export GUI_YELLOW=$GUI_COLOR3 CTERM_YELLOW=180 CTERM16_YELLOW=3
-export GUI_DARK_YELLOW=$GUI_COLOR16 CTERM_DARK_YELLOW=173 CTERM16_DARK_YELLOW=11
+export GUI_DARK_YELLOW=${GUI_COLOR16:-#ff9e64} CTERM_DARK_YELLOW=173 CTERM16_DARK_YELLOW=11
 export GUI_BLUE=$GUI_COLOR4 CTERM_BLUE=039 CTERM16_BLUE=2
 export GUI_PURPLE=$GUI_COLOR5 CTERM_PURPLE=170 CTERM16_PURPLE=5
 export GUI_CYAN=$GUI_COLOR6 CTERM_CYAN=038 CTERM16_CYAN=6
@@ -40,95 +42,95 @@ export GUI_SECONDARY=#3b4261
 
 
 print_segment() {
-    echo "%F{$1}$1%f %K{$1}($1)%k"
+  echo "%F{$1}$1%f %K{$1}($1)%k"
 }
 
 print_c() {
-    local GUI_C=""
-    local CTERM_C=""
-    local CTERM16_C=""
+  local GUI_C=""
+  local CTERM_C=""
+  local CTERM16_C=""
 
-    if [[ $# -gt 1 ]]; then
-	GUI_C=$(print_segment "$2")
-    fi
+  if [[ $# -gt 1 ]]; then
+    GUI_C=$(print_segment "$2")
+  fi
 
-    if [[ $# -gt 2 ]]; then
-	CTERM_C=$(print_segment "$3")
-    fi
+  if [[ $# -gt 2 ]]; then
+    CTERM_C=$(print_segment "$3")
+  fi
 
-    if [[ $# -gt 3 ]]; then
-	CTERM16_C=$(print_segment "$4")
-    fi
+  if [[ $# -gt 3 ]]; then
+    CTERM16_C=$(print_segment "$4")
+  fi
 
-    print -cP $1 "$GUI_C" "$CTERM_C" "$CTERM16_C"
+  print -cP $1 "$GUI_C" "$CTERM_C" "$CTERM16_C"
 }
 
 print_theme() {
-    echo "Theme                    GUI"
-    echo "============================================================"
-    print_c PRIMARY $GUI_PRIMARY
-    print_c SECONDARY $GUI_SECONDARY
-    print_c BACKGROUND $GUI_BACKGROUND
-    print_c FOREGROUND $GUI_FOREGROUND
-    print_c SELECTION_BACKGROUND $GUI_SELECTION_BACKGROUND
-    print_c SELECTION_FOREGOUND $GUI_SELECTION_FOREGROUND
-    print_c URL_COLOR $GUI_URL_COLOR
-    print_c CURSOR $GUI_CURSOR
-    print_c ACTIVE_TAB_BACKGROUND $GUI_ACTIVE_TAB_BACKGROUND
-    print_c ACTIVE_TAB_FOREGROUND $GUI_ACTIVE_TAB_FOREGROUND
-    print_c INACTIVE_TAB_BACKGROUND $GUI_INACTIVE_TAB_BACKGROUND
-    print_c INACTIVE_TAB_FOREGROUND $GUI_INACTIVE_TAB_FOREGROUND
+  echo "Theme                    GUI"
+  echo "============================================================"
+  print_c PRIMARY $GUI_PRIMARY
+  print_c SECONDARY $GUI_SECONDARY
+  print_c BACKGROUND $GUI_BACKGROUND
+  print_c FOREGROUND $GUI_FOREGROUND
+  print_c SELECTION_BACKGROUND $GUI_SELECTION_BACKGROUND
+  print_c SELECTION_FOREGOUND $GUI_SELECTION_FOREGROUND
+  print_c URL_COLOR $GUI_URL_COLOR
+  print_c CURSOR $GUI_CURSOR
+  print_c ACTIVE_TAB_BACKGROUND $GUI_ACTIVE_TAB_BACKGROUND
+  print_c ACTIVE_TAB_FOREGROUND $GUI_ACTIVE_TAB_FOREGROUND
+  print_c INACTIVE_TAB_BACKGROUND $GUI_INACTIVE_TAB_BACKGROUND
+  print_c INACTIVE_TAB_FOREGROUND $GUI_INACTIVE_TAB_FOREGROUND
 
-    echo "\nNormal"
-    echo "============================================================"
-    print_c COLOR0 $GUI_COLOR0
-    print_c COLOR1 $GUI_COLOR1
-    print_c COLOR2 $GUI_COLOR2
-    print_c COLOR3 $GUI_COLOR3
-    print_c COLOR4 $GUI_COLOR4
-    print_c COLOR5 $GUI_COLOR5
-    print_c COLOR6 $GUI_COLOR6
-    print_c COLOR7 $GUI_COLOR7
+  echo "\nNormal"
+  echo "============================================================"
+  print_c COLOR0 $GUI_COLOR0
+  print_c COLOR1 $GUI_COLOR1
+  print_c COLOR2 $GUI_COLOR2
+  print_c COLOR3 $GUI_COLOR3
+  print_c COLOR4 $GUI_COLOR4
+  print_c COLOR5 $GUI_COLOR5
+  print_c COLOR6 $GUI_COLOR6
+  print_c COLOR7 $GUI_COLOR7
 
-    echo "\nBright"
-    echo "============================================================"
-    print_c COLOR8 $GUI_COLOR8
-    print_c COLOR9 $GUI_COLOR9
-    print_c COLOR10 $GUI_COLOR10
-    print_c COLOR11 $GUI_COLOR11
-    print_c COLOR12 $GUI_COLOR12
-    print_c COLOR13 $GUI_COLOR13
-    print_c COLOR14 $GUI_COLOR14
-    print_c COLOR15 $GUI_COLOR15
+  echo "\nBright"
+  echo "============================================================"
+  print_c COLOR8 $GUI_COLOR8
+  print_c COLOR9 $GUI_COLOR9
+  print_c COLOR10 $GUI_COLOR10
+  print_c COLOR11 $GUI_COLOR11
+  print_c COLOR12 $GUI_COLOR12
+  print_c COLOR13 $GUI_COLOR13
+  print_c COLOR14 $GUI_COLOR14
+  print_c COLOR15 $GUI_COLOR15
 
-    echo "\nExtended colors"
-    echo "============================================================"
-    print_c COLOR16 $GUI_COLOR16
-    print_c COLOR17 $GUI_COLOR17
+  echo "\nExtended colors"
+  echo "============================================================"
+  print_c COLOR16 $GUI_COLOR16
+  print_c COLOR17 $GUI_COLOR17
 }
 
 print_colors() {
-    print_theme
-    echo "\nName                    GUI           CTERM          CTERM16"
-    echo "============================================================"
-    print_c RED $GUI_RED $CTERM_RED $CTERM16_RED
-    print_c DARK_RED $GUI_DARK_RED $CTERM_DARK_RED $CTERM16_DARK_RED
-    print_c GREEN $GUI_GREEN $CTERM_GREEN $CTERM16_GREEN
-    print_c GOLD $GUI_GOLD $CTERM_GOLD $CTERM16_GOLD
-    print_c YELLOW $GUI_YELLOW $CTERM_YELLOW $CTERM16_YELLOW
-    print_c DARK_YELLOW $GUI_DARK_YELLOW $CTERM_DARK_YELLOW $CTERM16_DARK_YELLOW
-    print_c BLUE $GUI_BLUE $CTERM_BLUE $CTERM16_BLUE
-    print_c PURPLE $GUI_PURPLE $CTERM_PURPLE $CTERM16_PURPLE
-    print_c CYAN $GUI_CYAN $CTERM_CYAN $CTERM16_CYAN
-    print_c WHITE $GUI_WHITE $CTERM_WHITE $CTERM16_WHITE
-    print_c BLACK $GUI_BLACK $CTERM_BLACK $CTERM16_BLACK
-    print_c BG_BLACK $GUI_BG_BLACK $CTERM_BG_BLACK $CTERM16_BG_BLACK
-    print_c COMMENT_GREY $GUI_COMMENT_GREY $CTERM_COMMENT_GREY $CTERM16_COMMENT_GREY
-    print_c GUTTER_FG_GREY $GUI_GUTTER_FG_GREY $CTERM_GUTTER_FG_GREY $CTERM16_GUTTER_FG_GREY
-    print_c CURSOR_GREY $GUI_CURSOR_GREY $CTERM_CURSOR_GREY $CTERM16_CURSOR_GREY
-    print_c VISUAL_GREY $GUI_VISUAL_GREY $CTERM_VISUAL_GREY $CTERM16_VISUAL_GREY
-    print_c MENU_GREY $GUI_MENU_GREY $CTERM_MENU_GREY $CTERM16_MENU_GREY
-    print_c SPECIAL_GREY $GUI_SPECIAL_GREY $CTERM_SPECIAL_GREY $CTERM16_SPECIAL_GREY
-    print_c VERTSPLIT $GUI_VERTSPLIT $CTERM_VERTSPLIT $CTERM16_VERTSPLIT
-    print_c VISUAL_BLACK $GUI_VISUAL_BLACK $CTERM_VISUAL_BLACK $CTERM16_VISUAL_BLACK
+  print_theme
+  echo "\nName                    GUI           CTERM          CTERM16"
+  echo "============================================================"
+  print_c RED $GUI_RED $CTERM_RED $CTERM16_RED
+  print_c DARK_RED $GUI_DARK_RED $CTERM_DARK_RED $CTERM16_DARK_RED
+  print_c GREEN $GUI_GREEN $CTERM_GREEN $CTERM16_GREEN
+  print_c GOLD $GUI_GOLD $CTERM_GOLD $CTERM16_GOLD
+  print_c YELLOW $GUI_YELLOW $CTERM_YELLOW $CTERM16_YELLOW
+  print_c DARK_YELLOW $GUI_DARK_YELLOW $CTERM_DARK_YELLOW $CTERM16_DARK_YELLOW
+  print_c BLUE $GUI_BLUE $CTERM_BLUE $CTERM16_BLUE
+  print_c PURPLE $GUI_PURPLE $CTERM_PURPLE $CTERM16_PURPLE
+  print_c CYAN $GUI_CYAN $CTERM_CYAN $CTERM16_CYAN
+  print_c WHITE $GUI_WHITE $CTERM_WHITE $CTERM16_WHITE
+  print_c BLACK $GUI_BLACK $CTERM_BLACK $CTERM16_BLACK
+  print_c BG_BLACK $GUI_BG_BLACK $CTERM_BG_BLACK $CTERM16_BG_BLACK
+  print_c COMMENT_GREY $GUI_COMMENT_GREY $CTERM_COMMENT_GREY $CTERM16_COMMENT_GREY
+  print_c GUTTER_FG_GREY $GUI_GUTTER_FG_GREY $CTERM_GUTTER_FG_GREY $CTERM16_GUTTER_FG_GREY
+  print_c CURSOR_GREY $GUI_CURSOR_GREY $CTERM_CURSOR_GREY $CTERM16_CURSOR_GREY
+  print_c VISUAL_GREY $GUI_VISUAL_GREY $CTERM_VISUAL_GREY $CTERM16_VISUAL_GREY
+  print_c MENU_GREY $GUI_MENU_GREY $CTERM_MENU_GREY $CTERM16_MENU_GREY
+  print_c SPECIAL_GREY $GUI_SPECIAL_GREY $CTERM_SPECIAL_GREY $CTERM16_SPECIAL_GREY
+  print_c VERTSPLIT $GUI_VERTSPLIT $CTERM_VERTSPLIT $CTERM16_VERTSPLIT
+  print_c VISUAL_BLACK $GUI_VISUAL_BLACK $CTERM_VISUAL_BLACK $CTERM16_VISUAL_BLACK
 }

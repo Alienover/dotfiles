@@ -5,7 +5,7 @@ local gs = require("gitsigns")
 
 local cmd, nmap, map = utils.cmd, utils.nmap, utils.map
 
-gs.setup({
+local config = {
   signs = {
     add = {
       hl = "GitSignsAdd",
@@ -50,7 +50,7 @@ gs.setup({
 
         vim.schedule(function()
           gs_fn()
-          cmd([[call feedkeys("zz")]])
+          cmd.call([[feedkeys("zz")]])
         end)
         return "<Ignore>"
       end
@@ -64,4 +64,6 @@ gs.setup({
     opts.expr = false
     map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", opts)
   end,
-})
+}
+
+gs.setup(config)

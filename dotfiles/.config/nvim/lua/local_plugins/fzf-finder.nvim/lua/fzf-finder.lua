@@ -9,19 +9,6 @@ local c = constants.colors
 local M = {}
 
 local default_opts = table.concat({
-  string.format(
-    "--color=%s,%s,%s,%s",
-    ("fg:%s,bg:%s"):format(c.FG, c.BG),
-    ("hl:%s"):format(c.PRIMARY),
-    ("fg+:%s,bg+:%s,hl+:%s"):format("15", c.BG, c.DARK_YELLOW),
-    ("info:%s,prompt:%s,spinner:%s,pointer:%s,marker:%s"):format(
-      c.PRIMARY,
-      c.PRIMARY,
-      c.PRIMARY,
-      c.PRIMARY,
-      c.DARK_YELLOW
-    )
-  ),
   "--layout=reverse",
   "--margin=1,2",
   "--prompt=' 🌈 '",

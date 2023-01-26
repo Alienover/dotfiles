@@ -31,13 +31,32 @@
 
 ### Segment drawing
 # A few utility functions to make it easy and re-usable to draw segmented prompts
-
 CURRENT_BG='NONE'
+CURRENT_FG="$GUI_FOREGROUND"
 
-case ${SOLARIZED_THEME:-dark} in
-    light) CURRENT_FG=$GUI_FOREGROUND;;
-    *)     CURRENT_FG=$GUI_BLACK;;
-esac
+# case ${SOLARIZED_THEME:-dark} in
+#     light) CURRENT_FG=$GUI_FOREGROUND;;
+#     *)     CURRENT_FG=$GUI_BLACK;;
+# esac
+
+### Colorschemes
+# Preset
+__THEME_LIGHT_FG="$GUI_FOREGROUND"
+__THEME_DARK_FG="$GUI_BG_BLACK"
+__THEME_LEFT_START_FG="$GUI_SECONDARY"
+__THEME_START_BG="$GUI_BG_BLACK"
+# Ultilities
+__THEME_GIT_DIRTY_BG="$GUI_DARK_YELLOW"
+__THEME_GIT_CLEAN_BG="$GUI_BLACK"
+__THEME_DIR_BG="$GUI_PRIMARY"
+__THEME_ENV_PY_BG="$GUI_SELECTION_BACKGROUND"
+__THEME_ENV_NODE_BG="$GUI_GREEN"
+__THEME_ENV_GO_BG="$GUI_CYAN"
+__THEME_STATUS_BG="$GUI_SECONDARY"
+__THEME_VI_BG="$GUI_PRIMARY"
+__THEME_VI_NORMAL_BG="$GUI_GREEN"
+__THEME_VI_VISUAL_BG="$GUI_ACTIVE_TAB_BACKGROUND"
+__THEME_RUNTIME_BG="$GUI_SECONDARY"
 
 # Special Powerline characters
 
@@ -90,7 +109,7 @@ prompt_segment_rev() {
 }
 
 prompt_start() {
-  CURRENT_BG=''
+  CURRENT_BG="$__THEME_START_BG"
 }
 
 # End the prompt, closing any open segments
@@ -144,14 +163,14 @@ prompt_git() {
   }
   local ref dirty mode repo_path
 
-   if [[ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]]; then
+  if [[ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]]; then
     repo_path=$(git rev-parse --git-dir 2>/dev/null)
     dirty=$(parse_git_dirty)
     ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
     if [[ -n $dirty ]]; then
-      prompt_segment $GUI_DARK_YELLOW $GUI_BLACK
+      prompt_segment $__THEME_GIT_DIRTY_BG $__THEME_DARK_FG
     else
-      prompt_segment $GUI_INACTIVE_TAB_BACKGROUND $GUI_FOREGROUND
+      prompt_segment $__THEME_GIT_CLEAN_BG $__THEME_LIGHT_FG
     fi
 
     if [[ -e "${repo_path}/BISECT_LOG" ]]; then
@@ -177,69 +196,6 @@ prompt_git() {
   fi
 }
 
-prompt_bzr() {
-  (( $+commands[bzr] )) || return
-
-  # Test if bzr repository in directory hierarchy
-  local dir="$PWD"
-  while [[ ! -d "$dir/.bzr" ]]; do
-    [[ "$dir" = "/" ]] && return
-    dir="${dir:h}"
-  done
-
-  local bzr_status status_mod status_all revision
-  if bzr_status=$(bzr status 2>&1); then
-    status_mod=$(echo -n "$bzr_status" | head -n1 | grep "modified" | wc -m)
-    status_all=$(echo -n "$bzr_status" | head -n1 | wc -m)
-    revision=$(bzr log -r-1 --log-format line | cut -d: -f1)
-    if [[ $status_mod -gt 0 ]] ; then
-      prompt_segment $GUI_YELLOW black "bzr@$revision ✚"
-    else
-      if [[ $status_all -gt 0 ]] ; then
-        prompt_segment $GUI_YELLOW black "bzr@$revision"
-      else
-        prompt_segment $GUI_GREEN black "bzr@$revision"
-      fi
-    fi
-  fi
-}
-
-prompt_hg() {
-  (( $+commands[hg] )) || return
-  local rev st branch
-  if $(hg id >/dev/null 2>&1); then
-    if $(hg prompt >/dev/null 2>&1); then
-      if [[ $(hg prompt "{status|unknown}") = "?" ]]; then
-        # if files are not added
-        prompt_segment $GUI_RED white
-        st='±'
-      elif [[ -n $(hg prompt "{status|modified}") ]]; then
-        # if any modification
-        prompt_segment $GUI_YELLOW black
-        st='±'
-      else
-        # if working copy is clean
-        prompt_segment $GUI_GREEN $CURRENT_FG
-      fi
-      echo -n $(hg prompt "☿ {rev}@{branch}") $st
-    else
-      st=""
-      rev=$(hg id -n 2>/dev/null | sed 's/[^-0-9]//g')
-      branch=$(hg id -b 2>/dev/null)
-      if `hg st | grep -q "^\?"`; then
-        prompt_segment $GUI_RED black
-        st='±'
-      elif `hg st | grep -q "^[MA]"`; then
-        prompt_segment $GUI_YELLOW black
-        st='±'
-      else
-        prompt_segment $GUI_GREEN $CURRENT_FG
-      fi
-      echo -n "☿ $rev@$branch" $st
-    fi
-  fi
-}
-
 # Dir: current working directory
 prompt_dir() {
   # Abbreviate the $PWD
@@ -251,26 +207,26 @@ prompt_dir() {
   fi
   # Font bold
   prompt_bold
-  prompt_segment $GUI_ACTIVE_TAB_BACKGROUND $GUI_ACTIVE_TAB_FOREGROUND $current_dir
+  prompt_segment $__THEME_DIR_BG $__THEME_DARK_FG $current_dir
   prompt_bold_end
 }
 
 # Virtualenv: current working virtualenv
 prompt_virtualenv() {
   prompt_bold
-  prompt_segment_rev $GUI_SELECTION_BACKGROUND $GUI_SELECTION_FOREGROUND "\ue73c `/usr/bin/basename $VIRTUAL_ENV`"
+  prompt_segment_rev $__THEME_ENV_PY_BG $__THEME_DARK_FG "\ue73c `/usr/bin/basename $VIRTUAL_ENV`"
   prompt_bold_end
 }
 
 prompt_node() {
   prompt_bold
-  prompt_segment_rev $GUI_GREEN $GUI_BLACK "\ue718 `node -v | sed 's/v//'`"
+  prompt_segment_rev $__THEME_ENV_NODE_BG $__THEME_DARK_FG "\ue718 `node -v | sed 's/v//'`"
   prompt_bold_end
 }
 
 prompt_go() {
-	prompt_bold
-  prompt_segment_rev $GUI_CYAN $GUI_BLACK "\ue724 `/usr/local/go/bin/go env GOVERSION | /usr/bin/sed 's/go//'`"
+  prompt_bold
+  prompt_segment_rev $__THEME_ENV_GO_BG $__THEME_DARK_FG "\ue724 `/usr/local/go/bin/go env GOVERSION | /usr/bin/sed 's/go//'`"
   prompt_bold_end
 }
 
@@ -288,118 +244,110 @@ prompt_status() {
   # Rainbow when all is well
   [[ -z "$symbols" ]] && symbols="🌈"
 
-  prompt_segment $GUI_SECONDARY default "$symbols"
-}
-
-#AWS Profile:
-# - display current AWS_PROFILE name
-# - displays $GUI_YELLOW on red if profile name contains 'production' or
-#   ends in '-prod'
-# - displays black on green otherwise
-prompt_aws() {
-  [[ -z "$AWS_PROFILE" || "$SHOW_AWS_PROMPT" = false ]] && return
-  case "$AWS_PROFILE" in
-    *-prod|*production*) prompt_segment red $GUI_YELLOW  "AWS: $AWS_PROFILE" ;;
-    *) prompt_segment $GUI_GREEN black "AWS: $AWS_PROFILE" ;;
-  esac
+  prompt_segment $__THEME_STATUS_BG $__THEME_DARK_FG "$symbols"
 }
 
 prompt_vi() {
   local mode=""
+  local bg="$__THEME_VI_BG"
 
   case $ZVM_MODE in
     $ZVM_MODE_NORMAL)
       mode="NORMAL"
+      bg="$__THEME_VI_NORMAL_BG"
       # Something you want to do...
-    ;;
+      ;;
     $ZVM_MODE_INSERT)
       mode="INSERT"
       # Something you want to do...
-    ;;
+      ;;
     $ZVM_MODE_VISUAL)
       mode="VISUAL"
+      bg="$__THEME_VI_VISUAL_BG"
       # Something you want to do...
-    ;;
+      ;;
     $ZVM_MODE_VISUAL_LINE)
       mode="V-LINE"
+      bg="$__THEME_VI_VISUAL_BG"
       # Something you want to do...
-    ;;
+      ;;
     $ZVM_MODE_REPLACE)
       mode="REPLACE"
+      bg="$__THEME_VI_VISUAL_BG"
       # Something you want to do...
-    ;;
+      ;;
   esac
 
   if [[ ! -z "$mode" ]]; then
     prompt_bold
-    prompt_segment_rev $GUI_ACTIVE_TAB_BACKGROUND $GUI_ACTIVE_TAB_FOREGROUND $mode
+    prompt_segment_rev $bg $__THEME_DARK_FG $mode
     prompt_bold_end
   fi
 }
 
 prompt_runtime() {
-	local function __runtime_format() {
-		local hours=$(printf '%u' $(($1 / 3600)))
-		local mins=$(printf '%u' $((($1 - hours * 3600) / 60)))
-		local secs=$(printf "%.2f" $(($1 - 60 * mins - 3600 * hours)))
-		if [[ ! "$hours" == "0" || ! "$mins" == "0" ]]; then
-			secs=$(printf "%u" $(($1 - 60 * mins - 3600 * hours)))
-		fi
+  local function __runtime_format() {
+    local hours=$(printf '%u' $(($1 / 3600)))
+    local mins=$(printf '%u' $((($1 - hours * 3600) / 60)))
+    local secs=$(printf "%.2f" $(($1 - 60 * mins - 3600 * hours)))
+    if [[ ! "$hours" == "0" || ! "$mins" == "0" ]]; then
+      secs=$(printf "%u" $(($1 - 60 * mins - 3600 * hours)))
+    fi
 
-		local output=""
-		local function append() {
-			if [[ ! "$1" == 0 ]]; then
-				[[ -n $output ]] && output+=" "
-				
-				output+="$1$2"
-			fi
-		}
+    local output=""
+    local function append() {
+      if [[ ! "$1" == 0 ]]; then
+        [[ -n $output ]] && output+=" "
 
-		append $hours "h"
-		append $mins "m"
-		append $secs "s"
+        output+="$1$2"
+      fi
+    }
 
-		echo "$output"
-	}
+    append $hours "h"
+    append $mins "m"
+    append $secs "s"
+
+    echo "$output"
+  }
 
   local cmd_duration=$CMD_DURATION
 
   if [[ -n $cmd_duration && $cmd_runtime -ge 0 ]]; then
-		local formatted=$(__runtime_format $cmd_duration)
-		prompt_segment_rev $GUI_DARK_YELLOW $GUI_BLACK "${formatted}"
+    local formatted=$(__runtime_format $cmd_duration)
+    prompt_segment_rev $__THEME_RUNTIME_BG $__THEME_LIGHT_FG "${formatted}"
   fi
 }
 
 prompt_env() {
-	local root=`git rev-parse --show-toplevel --quiet 2>/dev/null`
+  local root=`git rev-parse --show-toplevel --quiet 2>/dev/null`
 
-	if [[ -n $root ]]; then
-		if [[ -n `find $root -maxdepth 1 -type f -name "package.json"` ]]; then
-			prompt_node
-			return 0
-		fi
-	fi
+  if [[ -n $root ]]; then
+    if [[ -n `find $root -maxdepth 1 -type f -name "package.json"` ]]; then
+      prompt_node
+      return 0
+    fi
+  fi
 
-	if [[ -n $GO_PROJECTS_PATH ]]; then
-		for path in "$GO_PROJECTS_PATH[@]"; do
-			if [[ $PWD =~ $path ]]; then
-				prompt_go
-			fi
-		done
-	fi
+  if [[ -n $GO_PROJECTS_PATH ]]; then
+    for path in "$GO_PROJECTS_PATH[@]"; do
+      if [[ $PWD =~ $path ]]; then
+        prompt_go
+      fi
+    done
+  fi
 
-	local virtualenv_path="$VIRTUAL_ENV"
-	if [[ -n $virtualenv_path && -n $VIRTUAL_ENV_DISABLE_PROMPT ]]; then
-		prompt_virtualenv
-	fi
+  local virtualenv_path="$VIRTUAL_ENV"
+  if [[ -n $virtualenv_path && -n $VIRTUAL_ENV_DISABLE_PROMPT ]]; then
+    prompt_virtualenv
+  fi
 }
 
 prompt_prefix() {
-	echo -n "%{%K%F{$GUI_SECONDARY}%}%{%k%f%}"
+  echo -n "%{%K{$CURRENT_BG}%F{$__THEME_LEFT_START_FG}%}%{%k%f%}"
 }
 
 prompt_suffix() {
-	echo -n "%{%K%F{$CURRENT_BG}%}%{%k%f%}"
+  echo -n "%{%K%F{$CURRENT_BG}%}%{%k%f%}"
 }
 
 ## Main prompt

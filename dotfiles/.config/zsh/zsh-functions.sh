@@ -1,22 +1,25 @@
+#! /bin/zsh
+
 # Function to source files if they exist
 function zsh_add_file() {
   local file="$ZDOTDIR/$1"
+
   if [ -f "$file" ]; then
     source "$file"
-      else
+  else
     echo "$file not found"
   fi
 }
 
 function zsh_add_plugin() {
   PLUGIN_NAME=$(echo "$1" | cut -d "/" -f 2)
-  if [ -d "$ZDOTDIR/plugins/$PLUGIN_NAME" ]; then 
-      # For plugins
-      zsh_add_file "plugins/$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh" || \
+  if [ -d "$ZDOTDIR/plugins/$PLUGIN_NAME" ]; then
+    # For plugins
+    zsh_add_file "plugins/$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh" || \
       zsh_add_file "plugins/$PLUGIN_NAME/$PLUGIN_NAME.zsh"
   else
     if [[ $2 == false ]]; then
-        return 0
+      return 0
     else
       # Download the plugin automatically
       git clone "https://github.com/$1.git" "$ZDOTDIR/plugins/$PLUGIN_NAME"
@@ -39,11 +42,11 @@ function zsh_lazy_load() {
   local args=${@:2}
 
   local placeholder="
-    function $cmd {
-        unfunction \$0
-        $args
-        \$0 \$@
-    }
+  function $cmd {
+    unfunction \$0
+    $args
+    \$0 \$@
+  }
   "
 
   eval "$placeholder"
@@ -55,11 +58,11 @@ function zsh_lazy_load_completions() {
   local comp="comp_$cmd"
 
   eval "
-    function $comp {
-        compdef -d $cmd
+  function $comp {
+    compdef -d $cmd
 
-        $args
-    }
+    $args
+  }
   "
 
   compdef $comp $cmd
