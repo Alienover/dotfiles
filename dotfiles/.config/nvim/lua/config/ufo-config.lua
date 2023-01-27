@@ -30,7 +30,7 @@ local handler = function(virtText, lnum, endLnum, width, truncate)
     end
     curWidth = curWidth + chunkWidth
   end
-  table.insert(newVirtText, { suffix, "Italic" })
+  table.insert(newVirtText, { suffix, "FoldedVirtualText" })
   return newVirtText
 end
 

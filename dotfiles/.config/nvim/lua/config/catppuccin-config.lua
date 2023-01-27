@@ -23,6 +23,11 @@ local config = {
       information = { "italic" },
     },
   },
+  custom_highlights = function(colors)
+    return {
+      FoldedVirtualText = { fg = colors.overlay0, style = { "bold", "italic" } },
+    }
+  end,
   highlight_overrides = {
     all = function()
       return {
