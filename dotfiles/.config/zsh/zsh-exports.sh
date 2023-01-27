@@ -1,8 +1,8 @@
 # Undercurl support
 # Refer to: https://github.com/kovidgoyal/kitty/issues/3235#issuecomment-758354252
 
-if [[ -n "$TMUX" ]]; then
-  export TERM="tmux-256color"
+if [[ -n "$SSH" ]]; then
+  export TERM="xterm-245color"
 else
   export TERM="xterm-kitty"
 fi
