@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/zsh
 
 # Inspired by https://github.com/camspiers/tmuxinator-fzf-start/blob/master/tmuxinator-fzf-start.sh
 #
@@ -12,7 +12,7 @@
 # - fzf is on $PATH
 # - tmux is on $PATH
 
-PROJECT_POLARIS="🚀 polaris"
+PROJECT_POLARIS="🚀 Polaris"
 PROJECT_RIGEL="💌 Rigel"
 PROJECT_VPN="🌈 vpn"
 PROJECT_TERM="🦄 term"
@@ -113,7 +113,7 @@ attach_project() {
 }
 
 pick() {
-  SELECTED_PROJECT=$(echo -e "$PROJECTS" | fzf -f "$1")
+  SELECTED_PROJECT=$(printf "$PROJECTS" | fzf -f "$1")
 }
 
 C_FG=$GUI_FOREGROUND

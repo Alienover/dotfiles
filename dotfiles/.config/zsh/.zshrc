@@ -56,3 +56,5 @@ zsh_add_custom_plugin "perl"
 zsh_add_custom_plugin "pyenv"
 zsh_add_custom_plugin "tmux"
 zsh_add_custom_plugin "nvim"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

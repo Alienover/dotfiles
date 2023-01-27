@@ -4,6 +4,7 @@ local config = {
   overrides = {
     extensions = {
       json = "jsonc",
+      tmux = "tmux",
     },
     literal = {
       [".gitignore"] = "conf",

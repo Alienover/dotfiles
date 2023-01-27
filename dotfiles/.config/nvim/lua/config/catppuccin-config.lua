@@ -26,19 +26,13 @@ local config = {
   custom_highlights = function(colors)
     return {
       FoldedVirtualText = { fg = colors.overlay0, style = { "bold", "italic" } },
+      -- Replace the `underline` with `undercurl`
+      DiagnosticUnderlineError = { style = { "undercurl" } },
+      DiagnosticUnderlineWarn = { style = { "undercurl" } },
+      DiagnosticUnderlineInfo = { style = { "undercurl" } },
+      DiagnosticUnderlineHint = { style = { "undercurl" } },
     }
   end,
-  highlight_overrides = {
-    all = function()
-      return {
-        -- Replace the `underline` with `undercurl`
-        DiagnosticUnderlineError = { style = { "undercurl" } },
-        DiagnosticUnderlineWarn = { style = { "undercurl" } },
-        DiagnosticUnderlineInfo = { style = { "undercurl" } },
-        DiagnosticUnderlineHint = { style = { "undercurl" } },
-      }
-    end,
-  },
 }
 
 require("catppuccin").setup(config)

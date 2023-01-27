@@ -51,7 +51,7 @@ tm_session_name="#[bg=$__tm_theme_session_bg,fg=$__tm_theme_dark_fg,bold] #S #[b
 
 ## Right
 # Current playing track
-tm_tunes="#[fg=color3] #(osascript $HOME/.config/tmux/music.scpt) "
+tm_tunes="#[fg=color3] #(osascript $XDG_CONFIG_HOME/tmux/theming/music.scpt) "
 # tm_tunes="#[fg=$tm_color_music]#(osascript -l JavaScript ~/.config/tmux/tunes.js)"
 
 tm_date="#[bg=$__tm_theme_bg,fg=$__tm_theme_date_bg]$tm_separator_left_arrow#[bg=$__tm_theme_date_bg,fg=$__tm_theme_date_fg] %R %d %b"
