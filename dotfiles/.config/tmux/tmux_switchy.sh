@@ -113,7 +113,7 @@ attach_project() {
 }
 
 pick() {
-  SELECTED_PROJECT=$(echo "$PROJECTS" | fzf -f "$1")
+  SELECTED_PROJECT=$(echo -e "$PROJECTS" | fzf -f "$1")
 }
 
 C_FG=$GUI_FOREGROUND
