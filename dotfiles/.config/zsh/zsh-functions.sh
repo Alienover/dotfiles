@@ -1,8 +1,9 @@
-#! /bin/zsh
+#! /usr/bin/env zsh
 
 # Function to source files if they exist
 function zsh_add_file() {
-  local file="$ZDOTDIR/$1"
+  local dir=${2:-$ZDOTDIR}
+  local file="$dir/$1"
 
   if [ -f "$file" ]; then
     source "$file"
@@ -12,23 +13,20 @@ function zsh_add_file() {
 }
 
 function zsh_add_plugin() {
-  PLUGIN_NAME=$(echo "$1" | cut -d "/" -f 2)
-  if [ -d "$ZDOTDIR/plugins/$PLUGIN_NAME" ]; then
-    # For plugins
-    zsh_add_file "plugins/$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh" || \
-      zsh_add_file "plugins/$PLUGIN_NAME/$PLUGIN_NAME.zsh"
-  else
-    if [[ $2 == false ]]; then
-      return 0
-    else
-      # Download the plugin automatically
-      git clone "https://github.com/$1.git" "$ZDOTDIR/plugins/$PLUGIN_NAME"
-    fi
+  local name=$(echo "$1" | cut -d "/" -f 2)
+  local plugin_path="$HOME/.zsh_plugins/$name"
+  if [ ! -d "$plugin_path" ]; then
+    # Download the plugin automatically
+    git clone "https://github.com/$1.git" "$plugin_path"
   fi
+
+  zsh_add_file "$name.plugin.zsh" $plugin_path || \
+    zsh_add_file "$name.zsh" $plugin_path
 }
 
 function zsh_add_custom_plugin() {
-  zsh_add_plugin "custom/$1" false
+  zsh_add_file "plugins/$1/$1.plugin.zsh" || \
+    zsh_add_file "plugins/$1/$1.zsh"
 }
 
 function zsh_add_theme() {

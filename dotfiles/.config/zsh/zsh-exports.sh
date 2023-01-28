@@ -1,3 +1,5 @@
+#! /usr/bin/env zsh
+
 # Undercurl support
 # Refer to: https://github.com/kovidgoyal/kitty/issues/3235#issuecomment-758354252
 
