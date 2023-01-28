@@ -263,6 +263,10 @@ local n_mappings = {
     r = { t("RestExecute"), "Execute HTTP request" },
   },
   z = { t("ZenMode"), "Zen Mode" },
+  ["/"] = {
+    telescope("current_buffer_fuzzy_find"),
+    "Fuzzily search in current buffer",
+  },
 }
 
 local v_mappings = {

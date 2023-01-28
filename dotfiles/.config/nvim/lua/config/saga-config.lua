@@ -40,6 +40,15 @@ require("lspsaga").setup(config)
 
 local opts = { noremap = true }
 
+local function d(desc)
+  local o = vim.deepcopy(opts)
+  if desc then
+    o.desc = "LSP: " .. desc
+  end
+
+  return o
+end
+
 local function lspsaga(sub_cmd)
   return function()
     utils.cmd("Lspsaga " .. sub_cmd)
@@ -64,6 +73,6 @@ nmap(
 )
 -- Definition and references
 nmap("gh", lspsaga("lsp_finder"), opts)
-nmap("gp", lspsaga("peek_definition"), opts)
+nmap("gp", lspsaga("peek_definition"), d("[G]o [P]eek"))
 -- INFO: moving "K" to keymappings.lua
 -- nmap("K", lspsaga("hover_doc"), opts)

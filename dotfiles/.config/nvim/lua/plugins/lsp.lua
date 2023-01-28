@@ -55,7 +55,7 @@ return {
     dependencies = { "nvim-treesitter/nvim-treesitter" },
   },
 
-  {
+  { -- Highlight, edit, and navigate code
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
@@ -70,6 +70,14 @@ return {
           require("config.matchup-config")
         end,
       },
+    },
+  },
+
+  { -- Additional text objects via treesitter
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    event = "BufReadPost",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
     },
   },
 }

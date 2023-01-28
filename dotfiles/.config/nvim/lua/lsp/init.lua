@@ -61,13 +61,20 @@ end
 
 -- Keymaps for LSP interfaces
 local lsp_keymaps = function(_, bufnr)
-  local keymap_opts = { noremap = true, silent = true, buffer = bufnr }
+  local function map(keys, fnc, desc)
+    local opts = { noremap = true, silent = true, buffer = bufnr }
+    if desc then
+      opts.desc = "LSP: " .. desc
+    end
 
-  nmap("go", marks.go_back, keymap_opts)
-  nmap("gd", marks.go_def, keymap_opts)
-  nmap("gD", vim.lsp.buf.declaration, keymap_opts)
-  nmap("gi", vim.lsp.buf.implementation, keymap_opts)
-  nmap("gr", vim.lsp.buf.references, keymap_opts)
+    nmap(keys, fnc, opts)
+  end
+
+  map("go", marks.go_back, "[G]o [O]riginal")
+  map("gd", marks.go_def, "[G]o [D]efinition")
+  map("gD", vim.lsp.buf.declaration, "[G]o [D]eclaration")
+  map("gi", vim.lsp.buf.implementation, "[G]o [I]mplementation")
+  map("gr", vim.lsp.buf.references, "[G]o [R]eferences")
 end
 
 -- Formatting config

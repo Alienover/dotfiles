@@ -15,6 +15,15 @@ local function luasnipWrapper(fn)
   end
 end
 
+local function d(desc)
+  local res = vim.deepcopy(opts)
+  if desc then
+    res.desc = desc
+  end
+
+  return res
+end
+
 -- Modes
 -- * normal_mode	 = "n"
 -- * insert_mode	 = "i"
@@ -24,8 +33,8 @@ end
 -- * command_mode	 = "c"
 
 -- Buffers navigation
-nmap("<C-h>", ":bp<CR>", opts)
-nmap("<C-l>", ":bn<CR>", opts)
+nmap("<C-h>", ":bp<CR>", d("[B]uffer [P]revious"))
+nmap("<C-l>", ":bn<CR>", d("[B]uffer [N]next"))
 
 -- Open  nvim terminal in split or vertical split
 nmap("<C-t>", ":terminal<CR>i", opts)
@@ -51,6 +60,9 @@ nmap("J", "mzJ`z", opts)
 nmap("n", "nzzzv")
 nmap("N", "Nzzzv")
 
+nmap("k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+nmap("j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
 -- Zoom in/out pane
 nmap("zo", function()
   if w.zoomed and w.zoom_winrestcmd then
@@ -64,6 +76,7 @@ nmap("zo", function()
   end
 end, {
   silent = true,
+  desc = "[Z]oom [O]n",
 })
 
 -- Smart toggling file finder by telescope or fzf
@@ -138,7 +151,7 @@ imap(
   opts
 )
 
-nmap("x", '"_x')
+nmap("x", '"_x', opts)
 
 -- URL handling
 -- Refer to https://sbulav.github.io/vim/neovim-opening-urls/
@@ -157,13 +170,6 @@ nmap("gx", function()
 end, opts)
 
 -- Folding
--- nmap("zR", function()
---   require("ufo").openAllFolds()
--- end, opts)
--- nmap("zM", function()
---   require("ufo").closeAllFolds()
--- end)
-
 nmap("K", function()
   local winid = require("ufo").peekFoldedLinesUnderCursor()
   if not winid then
@@ -173,7 +179,7 @@ end, opts)
 
 nmap("fn", function()
   require("ufo").goNextClosedFold()
-end, opts)
+end, d("[F]old [N]ext"))
 nmap("fp", function()
   require("ufo").goPreviousClosedFold()
-end, opts)
+end, d("[F]old [P]revious"))
