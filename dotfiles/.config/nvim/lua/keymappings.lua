@@ -170,16 +170,32 @@ nmap("gx", function()
 end, opts)
 
 -- Folding
+local function ufoWrapper(fn)
+  local success, ufo = pcall(require, "ufo")
+  if not success then
+    return
+  end
+
+  return ufo[fn]()
+end
+
+nmap("zR", function()
+  ufoWrapper("openAllFolds")
+end, opts)
+nmap("zM", function()
+  ufoWrapper("closeAllFolds")
+end, opts)
+
 nmap("K", function()
-  local winid = require("ufo").peekFoldedLinesUnderCursor()
+  local winid = ufoWrapper("peekFoldedLinesUnderCursor")
   if not winid then
     cmd("Lspsaga hover_doc")
   end
 end, opts)
 
 nmap("fn", function()
-  require("ufo").goNextClosedFold()
+  ufoWrapper("goNextClosedFold")
 end, d("[F]old [N]ext"))
 nmap("fp", function()
-  require("ufo").goPreviousClosedFold()
+  ufoWrapper("goPreviousClosedFold")
 end, d("[F]old [P]revious"))
