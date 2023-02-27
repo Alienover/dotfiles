@@ -1,10 +1,10 @@
 #! /bin/bash
-## My custom spaces
+# My custom spaces
 yabai -m space 1 --label Anthing
 yabai -m space 2 --label Web
 yabai -m space 3 --label Code
 
-## float system preferences. Most of these just diable Yabai form resizing them.
+# float system preferences. Most of these just diable Yabai form resizing them.
 yabai -m rule --add app="^System Settings$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Finder$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Keka$" sticky=on layer=above manage=off
@@ -25,7 +25,7 @@ yabai -m rule --add app="^Numi$" manage=off
 yabai -m rule --add app="^Stats$" manage=off
 yabai -m rule --add app="^zoom.us$" manage=off
 
-## New window spawns to the right if vertical split, or bottom if horizontal split
+# New window spawns to the right if vertical split, or bottom if horizontal split
 yabai -m config window_placement second_child
 
 # floating windows are always on top (default: off)
@@ -39,22 +39,25 @@ yabai -m config window_opacity off
 # yabai -m config window_opacity_duration 0.00
 # yabai -m config active_window_opacity 1.0
 
-## set mouse interaction modifier key (default: fn)
+# set mouse interaction modifier key (default: fn)
 yabai -m config mouse_modifier ctrl
-## set modifier + left-click drag to resize window (default: move)
+# set modifier + left-click drag to resize window (default: move)
 yabai -m config mouse_action1 move
-## set modifier + right-click drag to resize window (default: resize)
+# set modifier + right-click drag to resize window (default: resize)
 yabai -m config mouse_action2 resize
 
-yabai -m config window_border off 
+# swap the window while drag and drop
+yabi -m config mouse_drop_action swap
+
+yabai -m config window_border off
 yabai -m config window_border_width 3
 yabai -m config active_window_border_color 0xFFFF9500
 yabai -m config normal_window_border_color 0x00FFFFFF
 yabai -m config insert_feedback_color      0xffd75f5f
 
-## Change how yabai looks
+# Change how yabai looks
 yabai -m config layout bsp
-## Override default layout for space 2 only
+# Override default layout for space 2 only
 yabai -m config --space 1 layout float
 
 # Set all padding and gaps to 12pt (default: 0)
@@ -67,9 +70,9 @@ yabai -m config window_gap 12
 # add 20 padding to the top and bottom of all spaces regardless of the display it belongs to
 # yabai -m config external_bar all:28:0
 
-## If I close the active window, focus on any other visible window.
+# If I close the active window, focus on any other visible window.
 yabai -m signal --add event=window_destroyed action="bash ~/.config/yabai/window-focus-on-destroy.sh"
 
 echo "yabai configuration loaded.."
 
-## END
+# END
