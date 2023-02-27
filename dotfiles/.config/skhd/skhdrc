@@ -18,7 +18,7 @@ ctrl + alt - f : yabai -m window --toggle zoom-fullscreen
 
 ## Focus display
 ctrl + alt - 1 : sh ~/.config/skhd/focus-display.sh 1
-ctrl + alt - 2 : sh ~/.config/skhd/focus-display.sh 2 
+ctrl + alt - 2 : sh ~/.config/skhd/focus-display.sh 2
 
 ## Focus window up/down in stack
 ctrl + alt - n : yabai -m window --focus stack.next || yabai -m window --focus stack.first
@@ -42,7 +42,7 @@ shift + alt - 4 : sh ~/.config/skhd/send-window-to-space.sh 4
 shift + alt - f : yabai -m space --layout float
 shift + alt - t : yabai -m space --layout bsp
 
-shift + alt - space : yabai -m window --toggle float
+shift + alt - space : yabai -m window --toggle float --grid 4:4:1:1:2:2
 shift + alt - s : yabai -m window --toggle split
 
 ## Rotate
