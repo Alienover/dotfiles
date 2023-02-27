@@ -31,6 +31,8 @@ local config = {
       DiagnosticUnderlineWarn = { style = { "undercurl" } },
       DiagnosticUnderlineInfo = { style = { "undercurl" } },
       DiagnosticUnderlineHint = { style = { "undercurl" } },
+
+      TabLineSel = { bg = colors.red },
     }
   end,
 }

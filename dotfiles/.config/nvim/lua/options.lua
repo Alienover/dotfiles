@@ -1,4 +1,5 @@
 local utils = require("utils")
+local consts = require("utils.constants")
 
 local cmd = utils.cmd
 
@@ -44,10 +45,12 @@ local global = {
   loaded_logiPat = 1,
   loaded_rrhelper = 1,
 
+  loaded_sql_completion = 1,
+
   -- Disble Perl support
   loaded_perl_provider = 0,
 
-  did_load_filetypes = 1,
+  -- did_load_filetypes = 1,
 
   -- Leader key mapping
   mapleader = "\\",
@@ -142,7 +145,7 @@ local options = {
 }
 
 -- TODO: merge to options table when nvim v0.9 is released
-if utils.has_0_9 then
+if consts.has_0_9 then
   -- Folding indicators
   -- Refer to https://github.com/kevinhwang91/nvim-ufo/issues/4#issuecomment-1380649634
   options.statuscolumn = "%= "
@@ -173,4 +176,17 @@ end
 
 for k, v in pairs(global) do
   vim.g[k] = v
+end
+
+if vim.filetype then
+  vim.filetype.add({
+    extension = {
+      json = "jsonc",
+      tmux = "tmux",
+    },
+    filename = {
+      [".gitignore"] = "conf",
+      Brewfile = "ruby",
+    },
+  })
 end

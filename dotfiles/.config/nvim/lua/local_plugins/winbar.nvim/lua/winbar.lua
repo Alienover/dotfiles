@@ -145,4 +145,28 @@ function M.render_winbar(opts)
   end
 end
 
+function M.setup()
+  local g_ui = vim.api.nvim_create_augroup("UI", { clear = true })
+
+  local render_winbar = function()
+    coroutine.wrap(M.render_winbar)()
+  end
+
+  vim.api.nvim_create_autocmd({ "CursorMoved", "BufWinEnter", "BufEnter" }, {
+    desc = "Winbar handler",
+
+    group = g_ui,
+    pattern = "*",
+    callback = render_winbar,
+  })
+
+  vim.api.nvim_create_autocmd("User", {
+    desc = "Update Winbar",
+
+    group = g_ui,
+    pattern = "LspsagaUpdateSymbol",
+    callback = render_winbar,
+  })
+end
+
 return M

@@ -161,6 +161,7 @@ M.icons = {
 M.filetype_mappings = setmetatable({
   jsonc = "JSON with comments",
   txt = "Plain Text",
+  sql = "SQL",
 }, {
   __index = function(_, key)
     if key == "" then
@@ -170,5 +171,16 @@ M.filetype_mappings = setmetatable({
     end
   end,
 })
+
+local os_name = vim.loop.os_uname().sysname
+
+M.os = {
+  is_mac = os_name == "Darwin",
+  is_linux = os_name == "Linux",
+  is_windows = os_name == "Windows_NT",
+  is_wsl = vim.fn.has("wsl") == 1,
+}
+
+M.has_0_9 = vim.fn.has("nvim-0.9") == 1
 
 return M

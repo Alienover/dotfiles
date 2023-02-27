@@ -41,9 +41,9 @@ local installed_lsp = {
   gopls = {
     filename = "go-lsp",
   },
-  sumneko_lua = {
+  ["lua_ls"] = {
     format = false,
-    filename = "sumneko-lsp",
+    filename = "lua-lsp",
   },
 }
 

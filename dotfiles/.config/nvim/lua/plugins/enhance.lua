@@ -1,15 +1,8 @@
-local utils = require("utils")
 local consts = require("utils.constants")
 
 return {
   { "nvim-lua/plenary.nvim" },
-  { -- speed up neovim!
-    "nathom/filetype.nvim",
-    lazy = false,
-    config = function()
-      require("config.filetype-config")
-    end,
-  },
+
   {
     dir = consts.local_plugins.kwbdi,
     cmd = { "KWBufDel" },
@@ -26,15 +19,30 @@ return {
 
   {
     "echasnovski/mini.surround",
-    keys = { "sa", "sd", "sr" },
+    keys = { "s", "ds", "cs" },
     config = function()
-      require("mini.surround").setup()
+      require("mini.surround").setup({
+        -- Module mappings. Use `''` (empty string) to disable one.
+        mappings = {
+          add = "s", -- Add surrounding in Normal and Visual modes
+          delete = "ds", -- Delete surrounding
+          replace = "cs", -- Replace surrounding
+
+          -- Disabled
+          find = "", -- Find surrounding (to the right)
+          find_left = "", -- Find surrounding (to the left)
+          highlight = "", -- Highlight surrounding
+          update_n_lines = "", -- Update `n_lines`
+          suffix_last = "", -- Suffix to search with "prev" method
+          suffix_next = "", -- Suffix to search with "next" method
+        },
+      })
     end,
   },
 
   { -- Handle `.editorconfig` settings
     "editorconfig/editorconfig-vim",
-    enabled = utils.has_0_9 ~= true,
+    enabled = consts.has_0_9 ~= true,
     event = "BufEnter",
   },
 
@@ -47,7 +55,6 @@ return {
   },
 
   {
-    "mbbill/undotree",
-    cmd = { "UndotreeToggle" },
+    "ggandor/leap.nvim",
   },
 }

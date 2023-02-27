@@ -176,7 +176,7 @@ local n_mappings = {
       S = { t("Lazy Sync"), "Sync" },
       s = { t("Lazy show"), "Show" },
     },
-    u = { t("UndotreeToggle"), "Undo tree" },
+    u = { telescope("undo"), "Undo tree" },
   },
   e = workspaces(constants.files.workdirs),
   s = { t("split"), "Split" },

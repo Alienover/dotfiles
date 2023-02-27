@@ -106,7 +106,7 @@ M.get_window_default_spacing = function(width, height)
     l = 0.1
   end
 
-  if height <= 20 then
+  if height <= 70 then
     t = 0.1
   end
 
@@ -216,7 +216,5 @@ M.file_existed = function(path)
   ---@diagnostic disable-next-line: missing-parameter
   return vim.fn.empty(vim.fn.glob(path)) == 0
 end
-
-M.has_0_9 = vim.fn.has("nvim-0.9") == 1
 
 return M

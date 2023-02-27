@@ -18,7 +18,7 @@ return {
 
   {
     "neovim/nvim-lspconfig",
-    event = "VimEnter",
+    event = "BufReadPre",
     config = function()
       require("lsp")
     end,

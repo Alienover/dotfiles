@@ -13,12 +13,12 @@ return {
   { -- Files browser
     "nvim-telescope/telescope.nvim",
     cmd = { "Telescope" },
-    -- event = "VimEnter",
     config = function()
       require("config.telescope-config")
     end,
     dependencies = {
       "nvim-lua/plenary.nvim",
+      "debugloop/telescope-undo.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
   },
@@ -82,6 +82,7 @@ return {
     dir = consts.local_plugins.winbar,
     event = { "BufReadPost" },
     dependencies = { "kyazdani42/nvim-web-devicons" },
+    config = true,
   },
 
   {
