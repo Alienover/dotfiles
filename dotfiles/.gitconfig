@@ -28,13 +28,13 @@
 [diff]
   tool = nvim
 [difftool "nvim"]
-  cmd = nvim -d $REMOTE $LOCAL
+  cmd = $(which nvim)-nightly -d $REMOTE $LOCAL
 [merge]
   tool = vimdiff
 [mergetool]
   keepBackup = false
 [mergetool "vimdiff"]
-  cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J' -c 'wincmd ='
+  cmd = $(which nvim)-nightly -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J' -c 'wincmd ='
 
 [filter "lfs"]
   clean = git-lfs clean -- %f
@@ -45,8 +45,8 @@
 [alias]
   ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
   pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
-  logs = "!tmux-popup popup-logs"
-  diffs = "!tmux-popup popup-diff"
+  logs = "!tmux-popup '__FZF_POPUP_HEIGHT=100% popup-logs'"
+  diffs = "!tmux-popup '__FZF_POPUP_HEIGHT=100% popup-diff'"
   skip = "update-index --skip-worktree"
   no-skip = "update-index --no-skip-worktree"
 [safe]
