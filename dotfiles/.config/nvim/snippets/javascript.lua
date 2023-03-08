@@ -4,7 +4,7 @@ local fmt = require("luasnip.extras.fmt").fmt
 
 local rep = require("luasnip.extras").rep
 
-local s, i = ls.snippet, ls.insert_node
+local s, i, f = ls.snippet, ls.insert_node, ls.function_node
 
 return {
   s(

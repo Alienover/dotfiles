@@ -113,7 +113,15 @@ nmap("<leader>s", function()
     -- List suggestions when hovering on word
     cmd("WhichKey z=")
   end
-end, opts)
+end, d("Smart [S]pell"))
+
+nmap("<leader>S", function()
+  if o.spell then
+    o.spell = false
+  else
+    o.spell = true
+  end
+end, d("Toggle [S]pell"))
 
 -- Expand the current snippet or jump to the next item within the snippet
 map(
@@ -167,7 +175,7 @@ nmap("gx", function()
   end
 
   cmd(c)
-end, opts)
+end, d("Browser link"))
 
 -- Folding
 local function ufoWrapper(fn)

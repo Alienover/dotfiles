@@ -8,6 +8,7 @@ local config = {
     noice = false,
     fidget = true,
     notify = true,
+    lsp_saga = true,
     gitsigns = true,
     which_key = true,
     telescope = true,

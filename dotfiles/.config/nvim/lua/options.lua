@@ -53,7 +53,7 @@ local global = {
   -- did_load_filetypes = 1,
 
   -- Leader key mapping
-  mapleader = "\\",
+  mapleader = ";",
 
   -- Disable tab key in copilot
   copilot_no_tab_map = true,
@@ -170,23 +170,20 @@ if consts.has_0_9 then
     .. "%= " -- spacing between end of column and start of text
 end
 
-for k, v in pairs(options) do
-  vim.opt[k] = v
-end
+-- Custom filetypes
+local filetypes = {
+  extension = {
+    json = "jsonc",
+    tmux = "tmux",
+  },
+  filename = {
+    [".gitignore"] = "conf",
+    Brewfile = "ruby",
+  },
+}
 
-for k, v in pairs(global) do
-  vim.g[k] = v
-end
+utils.setup_options(options)
 
-if vim.filetype then
-  vim.filetype.add({
-    extension = {
-      json = "jsonc",
-      tmux = "tmux",
-    },
-    filename = {
-      [".gitignore"] = "conf",
-      Brewfile = "ruby",
-    },
-  })
-end
+utils.setup_global(global)
+
+utils.setup_filetypes(filetypes)

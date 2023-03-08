@@ -9,6 +9,10 @@ local o, nmap = utils.o, utils.nmap
 
 local icons = constants.icons
 
+local excluded_filetypes = {
+  "norg",
+}
+
 local installed_lsp = {
   ["null-ls"] = {
     external = true,
@@ -79,6 +83,14 @@ end
 
 -- Formatting config
 local lsp_formatting = function(client, bufnr)
+  local curr_filetype = vim.bo.filetype
+  for _, excluded in ipairs(excluded_filetypes) do
+    -- Don't setup the lsp formatting for the exlucded filetypes
+    if curr_filetype == excluded then
+      return
+    end
+  end
+
   local lsp_opts = installed_lsp[client.name]
 
   -- Set the document formatting to false only when the format option is false
@@ -89,6 +101,7 @@ local lsp_formatting = function(client, bufnr)
 
     vim.api.nvim_create_autocmd("BufWritePre", {
       desc = "Format the buffer on save",
+
       buffer = bufnr,
       group = formatGroup,
       callback = function()

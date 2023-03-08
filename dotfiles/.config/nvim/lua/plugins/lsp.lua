@@ -11,9 +11,22 @@ return {
 
   {
     "smjonas/inc-rename.nvim",
-    event = "BufReadPost",
+    cmd = { "IncRename" },
     config = true,
     dependencies = { "neovim/nvim-lspconfig" },
+  },
+
+  {
+    "j-hui/fidget.nvim",
+    opts = {
+      text = {
+        spinner = "meter",
+      },
+      window = {
+        relative = "editor",
+        blend = 0,
+      },
+    },
   },
 
   {
@@ -26,13 +39,7 @@ return {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
       "jose-elias-alvarez/null-ls.nvim",
-
-      {
-        "j-hui/fidget.nvim",
-        config = function()
-          require("config.fidget-config")
-        end,
-      },
+      "j-hui/fidget.nvim",
 
       {
         "folke/lsp-colors.nvim",

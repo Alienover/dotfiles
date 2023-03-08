@@ -4,128 +4,7 @@ local wk = require("which-key")
 
 local o, g, cmd = utils.o, utils.g, utils.cmd
 
--- Populate the vim cmd prefix and suffix
-local t = function(str)
-  return function()
-    cmd(str)
-  end
-end
-
--- Populate the command for file to edit
-local e = function(filepath)
-  return t("e " .. filepath)
-end
-
--- Populate the floating terminal command with presets
-local ft = function(input)
-  return function()
-    local options = { border = true }
-    local terminal = require("utils.floating_terminal")
-
-    if input == nil then
-      terminal:toggle()
-    else
-      table.insert(options, 1, input)
-      terminal:open(options)
-    end
-  end
-end
-
-local function telescope(sub_cmd, opts)
-  return function()
-    local options = {}
-
-    for k, v in pairs(opts or {}) do
-      table.insert(options, ("%s=%s"):format(k, v))
-    end
-
-    local win_spec = utils.get_window_sepc()
-
-    if win_spec.columns < 200 then
-      table.insert(options, "theme=dropdown")
-    end
-
-    cmd(table.concat({
-      "Telescope",
-      sub_cmd,
-      table.concat(options, " "),
-    }, " "))
-  end
-end
-
-local function workspaces(base)
-  -- Scan the certain workspace
-  local plenary = require("plenary.scandir")
-  local dirs = plenary.scan_dir(base, { depth = 1, only_dirs = true })
-
-  -- Default config
-  local config = {
-    name = ("%s Edison"):format(constants.icons.ui.Email),
-    O = {
-      telescope("find_files", {
-        cwd = constants.files.work_config,
-        prompt_title = "Search\\ Config",
-      }),
-      "Search Config",
-    },
-  }
-
-  -- Set the first letter of the folder as the trigger key
-  for _, v in pairs(dirs) do
-    local dir = string.match(v, "/([^/]+)$")
-    local key = string.sub(dir, 1, 1)
-
-    if config[key] == nil then
-      key = string.lower(key)
-    end
-
-    config[key] = {
-      telescope("find_files", {
-        cwd = v,
-        no_ignore = true,
-        prompt_title = ("Search " .. dir):gsub(" ", "\\ "),
-      }),
-      "Search " .. dir,
-    }
-  end
-
-  return config
-end
-
-local function gitsigns(sub_cmd)
-  return t("Gitsigns " .. sub_cmd)
-end
-
-local function lspsaga(sub_cmd)
-  return t("Lspsaga " .. sub_cmd)
-end
-
-local function toggle_diffview()
-  if g.diffview_opened then
-    g.diffview_opened = false
-    cmd("DiffviewClose")
-  else
-    g.diffview_opened = true
-    cmd("DiffviewOpen")
-  end
-end
-
-local function toggle_diff()
-  -- Don't diff this under diff view
-  if g.diffview_opened then
-    return
-  end
-
-  if vim.api.nvim_win_get_option(0, "diff") then
-    cmd("close")
-  else
-    gitsigns("diffthis")()
-  end
-end
-
-o.timeoutlen = 500
-
-wk.setup({
+local config = {
   show_help = true,
   triggers = "auto",
   plugins = {
@@ -161,7 +40,134 @@ wk.setup({
     i = { "j", "k", "g" },
     v = { "j", "k", "g" },
   },
-})
+}
+
+o.timeoutlen = 500
+
+wk.setup(config)
+
+-- Populate the vim cmd prefix and suffix
+local t = function(str)
+  return function()
+    cmd(str)
+  end
+end
+
+-- Populate the command for file to edit
+local e = function(filepath)
+  return t("e " .. filepath)
+end
+
+-- Populate the floating terminal command with presets
+local ft = function(input)
+  return function()
+    local options = { border = true }
+    local terminal = require("utils.floating_terminal")
+
+    if input == nil then
+      terminal:toggle()
+    else
+      table.insert(options, 1, input)
+      terminal:open(options)
+    end
+  end
+end
+
+local telescope = function(sub_cmd, opts)
+  return function()
+    local options = {}
+
+    for k, v in pairs(opts or {}) do
+      table.insert(options, ("%s=%s"):format(k, v))
+    end
+
+    local win_spec = utils.get_window_sepc()
+
+    if win_spec.columns < 200 then
+      table.insert(options, "theme=dropdown")
+    end
+
+    cmd(table.concat({
+      "Telescope",
+      sub_cmd,
+      table.concat(options, " "),
+    }, " "))
+  end
+end
+
+local workspaces = function(base)
+  -- Scan the certain workspace
+  local plenary = require("plenary.scandir")
+  local dirs = plenary.scan_dir(base, { depth = 1, only_dirs = true })
+
+  -- Default config
+  local maps = {
+    name = ("%s Edison"):format(constants.icons.ui.Email),
+    O = {
+      telescope("find_files", {
+        cwd = constants.files.work_config,
+        prompt_title = "Search\\ Config",
+      }),
+      "Search Config",
+    },
+  }
+
+  -- Set the first letter of the folder as the trigger key
+  for _, v in pairs(dirs) do
+    local dir = string.match(v, "/([^/]+)$")
+    local key = string.sub(dir, 1, 1)
+
+    if maps[key] == nil then
+      key = string.lower(key)
+    end
+
+    maps[key] = {
+      telescope("find_files", {
+        cwd = v,
+        no_ignore = true,
+        prompt_title = ("Search " .. dir):gsub(" ", "\\ "),
+      }),
+      "Search " .. dir,
+    }
+  end
+
+  return maps
+end
+
+local gitsigns = function(sub_cmd)
+  return t("Gitsigns " .. sub_cmd)
+end
+
+local lspsaga = function(sub_cmd)
+  return t("Lspsaga " .. sub_cmd)
+end
+
+local neorg = function(sub_cmd)
+  return t("Neorg " .. sub_cmd)
+end
+
+local toggle_diffview = function()
+  if g.diffview_opened then
+    g.diffview_opened = false
+    cmd("DiffviewClose")
+  else
+    g.diffview_opened = true
+    cmd("DiffviewOpen")
+  end
+end
+
+local toggle_diff = function()
+  -- Don't diff this under diff view
+  if g.diffview_opened then
+    return
+  end
+
+  if vim.api.nvim_win_get_option(0, "diff") then
+    cmd("close")
+  else
+    gitsigns("diffthis")()
+  end
+end
 
 local n_mappings = {
   h = {
@@ -272,6 +278,16 @@ local n_mappings = {
   ["/"] = {
     telescope("current_buffer_fuzzy_find"),
     "Fuzzily search in current buffer",
+  },
+  n = {
+    name = "[N]eorg mode",
+    h = { neorg("workspace home"), "[H]ome" },
+    w = { neorg("workspace work"), "[W]ork" },
+    i = { neorg("inject-metadata"), "[I]nject Metadata" },
+    u = { neorg("update-metdata"), "[U]pdate Metadata" },
+    s = { neorg("sync-parsers"), "[S]ync Parsers" },
+    I = { neorg("index"), "back to [I]ndex" },
+    E = { neorg("return"), "[E]xit neorg mode" },
   },
 }
 

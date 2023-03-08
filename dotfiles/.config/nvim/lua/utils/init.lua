@@ -30,7 +30,7 @@ M.wo = vim.wo
 M.w = vim.w
 -- Global variables
 M.g = vim.g
--- Tabpage-scipe variables
+-- Tabpage-scope variables
 M.t = vim.t
 -- Vim command
 M.cmd = vim.cmd
@@ -215,6 +215,30 @@ end
 M.file_existed = function(path)
   ---@diagnostic disable-next-line: missing-parameter
   return vim.fn.empty(vim.fn.glob(path)) == 0
+end
+
+--- Setup vim options by given list
+---@param options table
+M.setup_options = function(options)
+  for k, v in pairs(options) do
+    vim.opt[k] = v
+  end
+end
+
+--- Setup vim global variables
+---@param global table
+M.setup_global = function(global)
+  for k, v in pairs(global) do
+    vim.g[k] = v
+  end
+end
+
+--- Setup custom filetyps
+---@param filetypes table
+M.setup_filetypes = function(filetypes)
+  if vim.filetype then
+    vim.filetype.add(filetypes)
+  end
 end
 
 return M

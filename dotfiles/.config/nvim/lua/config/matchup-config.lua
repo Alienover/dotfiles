@@ -1,3 +1,3 @@
-local cmd = vim.cmd
+local utils = require('utils')
 
-cmd("hi MatchParen gui=bold,italic")
+utils.cmd("hi MatchParen gui=bold,italic")

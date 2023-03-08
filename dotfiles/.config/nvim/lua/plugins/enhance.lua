@@ -40,12 +40,6 @@ return {
     end,
   },
 
-  { -- Handle `.editorconfig` settings
-    "editorconfig/editorconfig-vim",
-    enabled = consts.has_0_9 ~= true,
-    event = "BufEnter",
-  },
-
   {
     "norcalli/nvim-colorizer.lua",
     event = "BufReadPre",

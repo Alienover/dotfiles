@@ -3,6 +3,7 @@ local consts = require("utils.constants")
 return {
   {
     "folke/which-key.nvim",
+    lazy = false,
     keys = { "<space>" },
     cmd = { "WhichKey" },
     config = function()
@@ -122,5 +123,17 @@ return {
     cmd = { "Neogen" },
     dependencies = "nvim-treesitter/nvim-treesitter",
     config = true,
+  },
+
+  {
+    "nvim-neorg/neorg",
+    cmd = { "Neorg" },
+    build = ":Neorg sync-parsers",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    config = function()
+      require("config.neorg-config")
+    end,
   },
 }

@@ -75,6 +75,9 @@ local config = {
     { name = "calc" },
     { name = "emoji" },
     { name = "buffer", keyword_length = 5 },
+
+    -- Neorg support
+    { name = "neorg" },
   }),
   formatting = {
     format = function(entry, vim_item)
