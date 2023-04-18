@@ -67,8 +67,6 @@ shift + alt - right : sh ~/.config/skhd/window-action.sh stack east
 
 ## Services restart
 ## Yabai
-shift + ctrl + alt - y : /usr/bin/osascript <<< "display notification \"Restarting Yabai\" with title \"Yabai\""; \
-  brew services restartyabai
+shift + ctrl + alt - y : /usr/bin/osascript <<< "display notification \"TODO: Restart command is not working\" with title \"Yabai\"";
 ## skhd
-shift + ctrl + alt - s : /usr/bin/osascript <<< "display notification \"Restarting skhd\" with title \"skhd\""; \
-  brew services restart skhd
+shift + ctrl + alt - s : /usr/bin/osascript <<< "display notification \"TODO: Restart command is not working\" with title \"skhd\"";
