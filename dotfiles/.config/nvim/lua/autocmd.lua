@@ -63,6 +63,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "startuptime",
     "null-ls-info",
     "git.nvim",
+    "query",
   },
   callback = function()
     nmap("q", function()

@@ -1,5 +1,4 @@
 local utils = require("utils")
-local consts = require("utils.constants")
 
 local cmd = utils.cmd
 
@@ -142,13 +141,10 @@ local options = {
   shiftwidth = 2,
   tabstop = 2,
   expandtab = true,
-}
 
--- TODO: merge to options table when nvim v0.9 is released
-if consts.has_0_9 then
   -- Folding indicators
   -- Refer to https://github.com/kevinhwang91/nvim-ufo/issues/4#issuecomment-1380649634
-  options.statuscolumn = "%= "
+  statuscolumn = "%= "
     .. "%s" -- sign column
     .. "%{%" -- evaluate this, and then evaluate what it returns
     .. "&number ?"
@@ -167,8 +163,8 @@ if consts.has_0_9 then
     .. ")"
     .. ': " "' -- blank for no fold, or inside fold
     .. "}"
-    .. "%= " -- spacing between end of column and start of text
-end
+    .. "%= ", -- spacing between end of column and start of text
+}
 
 -- Custom filetypes
 local filetypes = {

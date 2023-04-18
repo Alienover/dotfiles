@@ -181,6 +181,4 @@ M.os = {
   is_wsl = vim.fn.has("wsl") == 1,
 }
 
-M.has_0_9 = vim.fn.has("nvim-0.9") == 1
-
 return M
