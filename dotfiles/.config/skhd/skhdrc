@@ -28,14 +28,15 @@ ctrl + alt - p : yabai -m window --focus stack.prev || yabai -m window --focus s
 # * Save current window ID as CUR_WIN
 # * Move the window to prev/next display
 # * Focus the window by given ID
-ctrl + alt - 0x21 : sh ~/.config/skhd/send-window-to-display.sh prev
-ctrl + alt - 0x1E : sh ~/.config/skhd/send-window-to-display.sh next
+ctrl + alt - 0x21 : sh ~/.config/skhd/send-window-to-display.sh prev # 0x21 = [
+ctrl + alt - 0x1E : sh ~/.config/skhd/send-window-to-display.sh next # 0x1E = ]
 
 ## Send window to space and follow focus
 shift + alt - 1 : sh ~/.config/skhd/send-window-to-space.sh 1
 shift + alt - 2 : sh ~/.config/skhd/send-window-to-space.sh 2
 shift + alt - 3 : sh ~/.config/skhd/send-window-to-space.sh 3
 shift + alt - 4 : sh ~/.config/skhd/send-window-to-space.sh 4
+shift + alt - 5 : sh ~/.config/skhd/send-window-to-space.sh 5
 
 
 ## Switch layout
