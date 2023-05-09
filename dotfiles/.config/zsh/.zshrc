@@ -57,5 +57,7 @@ zsh_add_custom_plugin "perl"
 zsh_add_custom_plugin "pyenv"
 zsh_add_custom_plugin "tmux"
 zsh_add_custom_plugin "nvim"
+# TODO: support transient-prompt
+# zsh_add_custom_plugin "transient-prompt"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

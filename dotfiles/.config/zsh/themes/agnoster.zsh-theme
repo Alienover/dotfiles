@@ -58,6 +58,8 @@ __THEME_VI_NORMAL_BG="$GUI_GREEN"
 __THEME_VI_VISUAL_BG="$GUI_ACTIVE_TAB_BACKGROUND"
 __THEME_RUNTIME_BG="$GUI_SECONDARY"
 
+typeset -g __THEME_MY_PROMPT_CHAR="$ "
+
 # Special Powerline characters
 
 () {
@@ -199,7 +201,7 @@ prompt_git() {
 # Dir: current working directory
 prompt_dir() {
   # Abbreviate the $PWD
-  local current_dir="$(perl -p -e "s|^${HOME}|\~|;s|(\.[^/])[^/]*/|$""1/|;s|([^./])[^/]*/|$""1/|g" <<<${PWD})"
+  local current_dir="$(sed "s:\([^/\.]\)[^/]*/:\1/:g" <<< ${PWD/#$HOME/\~})"
 
   local context="$(prompt_context)"
   if [[ -n "$context" ]]; then
@@ -350,8 +352,39 @@ prompt_suffix() {
   echo -n "%{%K%F{$CURRENT_BG}%}%{%k%f%}"
 }
 
+__my_prompt_length() {
+  emulate -L zsh
+  local -i COLUMNS=${2:-COLUMNS}
+  local -i x y=${#1} m
+  if (( y )); then
+    while (( ${${(%):-$1%$y(l.1.0)}[-1]} )); do
+      x=y
+      (( y *= 2 ))
+    done
+    while (( y > x + 1 )); do
+      (( m = x + (y - x) / 2 ))
+      (( ${${(%):-$1%$m(l.x.y)}[-1]} = m ))
+    done
+  fi
+  echo -n $x
+}
+
+__my_fill_line() {
+  emulate -L zsh
+  local -i left_len=$(__my_prompt_length $1)
+  local -i right_len=$(__my_prompt_length $2 9999)
+  local -i pad_len=$((COLUMNS - left_len - right_len - ${ZLE_RPROMPT_INDENT:-1}))
+  if (( pad_len < 1 )); then
+    # Not enough space for the right part. Drop it.
+    echo -n $1
+  else
+    local pad=${(pl.$pad_len+1.. .)}  # pad_len spaces
+    echo ${1}${pad}${2}
+  fi
+}
+
 ## Main prompt
-build_prompt() {
+__build_left_prompt() {
   RETVAL=$?
   prompt_prefix
   prompt_status
@@ -360,7 +393,7 @@ build_prompt() {
   prompt_end
 }
 
-build_rprompt() {
+__build_right_prompt() {
   prompt_start
   prompt_runtime
   prompt_env
@@ -368,5 +401,10 @@ build_rprompt() {
   prompt_suffix
 }
 
-PROMPT='%{%f%b%k%}$(build_prompt) '
-RPROMPT=' %{%f%b%k%}$(build_rprompt)'
+__build_bottom_left_prompt() {
+  echo "%{%F{$GUI_GREEN}%}$__THEME_MY_PROMPT_CHAR%{%f%}"
+}
+
+PROMPT='$(__my_fill_line "$(__build_left_prompt)" "$(__build_right_prompt)")$(__build_bottom_left_prompt)'
+
+# build_prompt
