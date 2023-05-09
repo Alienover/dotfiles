@@ -22,12 +22,6 @@ bind s split-window -v -c "#{pane_current_path}"
 # synchronize all panes in a window
 bind y setw synchronize-panes
 
-# pane movement shortcuts
-bind h select-pane -L
-bind j select-pane -D
-bind k select-pane -U
-bind l select-pane -R
-
 bind -r C-h select-window -t :-
 bind -r C-l select-window -t :+
 
@@ -57,3 +51,9 @@ bind p run "tmux-popup -w 70 -h 16 -y 0 -s popup \"sh $__TM_TMUX_HOME/switchy.sh
 # tmux floating terminal
 unbind T
 bind T run "tmux-popup \"source $__TM_TMUX_HOME/floatterm.sh\" -s popup -t"
+
+# smart pane switching with awareness of vim splits
+bind h run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-w\ h) || tmux select-pane -L"
+bind j run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-w\ j) || tmux select-pane -D"
+bind k run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-w\ k) || tmux select-pane -U"
+bind l run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-w\ l) || tmux select-pane -R"
