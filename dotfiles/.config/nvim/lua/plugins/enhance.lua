@@ -56,4 +56,11 @@ return {
     "christoomey/vim-tmux-navigator",
     lazy = false,
   },
+
+  {
+    "nvimdev/hlsearch.nvim",
+    event = { "BufReadPost" },
+    config = true,
+  },
+
 }
