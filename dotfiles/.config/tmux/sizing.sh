@@ -16,7 +16,7 @@ get_window_height() {
   local scale="50%"
   local window_height=$(tmux display-message -p "#{window_height}")
 
-  if [[ $window_height -lt 70 ]]; then
+  if [[ $window_height -lt 65 ]]; then
     scale="80%"
   fi
 
