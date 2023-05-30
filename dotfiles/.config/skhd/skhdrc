@@ -65,8 +65,11 @@ shift + alt - down : sh ~/.config/skhd/window-action.sh stack south
 shift + alt - up : sh ~/.config/skhd/window-action.sh stack north
 shift + alt - right : sh ~/.config/skhd/window-action.sh stack east
 
+## Toggle the border to all the windows
+shift + ctrl + alt - space : sh ~/.config/skhd/toggle-window-border.sh
+
 ## Services restart
 ## Yabai
-shift + ctrl + alt - y : /usr/bin/osascript <<< "display notification \"TODO: Restart command is not working\" with title \"Yabai\"";
+shift + ctrl + alt - y : sh ~/.config/skhd/restart-service.sh yabai
 ## skhd
-shift + ctrl + alt - s : /usr/bin/osascript <<< "display notification \"TODO: Restart command is not working\" with title \"skhd\"";
+shift + ctrl + alt - s : sh ~/.config/skhd/restart-service.sh skhd
