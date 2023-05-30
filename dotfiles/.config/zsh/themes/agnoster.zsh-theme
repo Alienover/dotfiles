@@ -239,9 +239,9 @@ prompt_go() {
 prompt_status() {
   local -a symbols
 
-  [[ $RETVAL -ne 0 ]] && symbols+="%{%F{$GUI_RED}%}✖ "
-  [[ $UID -eq 0 ]] && symbols+="%{%F{$GUI_YELLOW}%}⚡"
-  [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}⚙"
+  [[ -n $VIM ]] && symbols="%{%F{$GUI_GREEN}%} %{%f%}"
+  [[ $RETVAL -ne 0 ]] && symbols="%{%F{$GUI_RED}%}✖ %{%f%}"
+  # [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}⚙"
 
   # Rainbow when all is well
   [[ -z "$symbols" ]] && symbols="🌈"
@@ -249,7 +249,13 @@ prompt_status() {
   prompt_segment $__THEME_STATUS_BG $__THEME_DARK_FG "$symbols"
 }
 
-prompt_vi() {
+prompt_jobs() {
+  if [[ $(jobs -l | wc -l) -gt 0 ]]; then
+    echo -n " %{%F{$GUI_CYAN}%}%{%f%} "
+  fi
+}
+
+prompt_vi_mode() {
   local mode=""
   local bg="$__THEME_VI_BG"
 
@@ -394,10 +400,11 @@ __build_left_prompt() {
 }
 
 __build_right_prompt() {
+  prompt_jobs
   prompt_start
   prompt_runtime
   prompt_env
-  prompt_vi
+  prompt_vi_mode
   prompt_suffix
 }
 
