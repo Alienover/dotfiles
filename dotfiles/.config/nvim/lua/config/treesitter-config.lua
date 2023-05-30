@@ -1,4 +1,3 @@
-local wk = require("which-key")
 local consts = require("utils.constants")
 
 -- INFO: get the `gcc-12` by homebrew and make sure to set it as the default compiler
@@ -102,20 +101,3 @@ require("nvim-treesitter.configs").setup({
     },
   },
 })
-
-wk.register({
-  a = { "Swap next param" },
-  A = { "Swap previous param" },
-}, {
-  prefix = "<leader>",
-})
-
-wk.register({
-  m = { "[M]ove to start of next func" },
-  M = { "[M]ove to end of next func" },
-}, { prefix = "]" })
-
-wk.register({
-  m = { "[M]ove to start of previous func" },
-  M = { "[M]ove to end of previous func" },
-}, { prefix = "[" })

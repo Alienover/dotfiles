@@ -169,6 +169,18 @@ local toggle_diff = function()
   end
 end
 
+--- @param curr_file boolean|nil
+---@return function
+local toggle_file_diff = function(curr_file)
+  return function()
+    if vim.bo.filetype == "DiffviewFileHistory" then
+      cmd("tabclose")
+    else
+      cmd("DiffviewFileHistory" .. (curr_file == true and " %" or ""))
+    end
+  end
+end
+
 local n_mappings = {
   h = {
     name = "Help",
@@ -213,16 +225,18 @@ local n_mappings = {
   },
   g = {
     name = "Git",
-    D = { toggle_diffview, "Toggle diffview" },
-    d = { toggle_diff, "Diff this" },
-    c = { telescope("git_commits"), "Git commits" },
-    f = { telescope("git_files"), "Git files" },
+    D = { toggle_diffview, "Toggle [D]iffview" },
+    d = { toggle_diff, "[D]iff this" },
+    c = { telescope("git_commits"), "Git [C]ommits" },
+    f = { telescope("git_files"), "Git [F]iles" },
     j = { gitsigns("next_hunk"), "Next hunk" },
     k = { gitsigns("prev_hunk"), "Previous hunk" },
     p = { gitsigns("preview_hunk"), "Preview hunk" },
-    b = { gitsigns("blame_line"), "Blame line" },
-    B = { t("GitBlame"), "Blame file" },
-    s = { gitsigns("select_hunk"), "Select hunk" },
+    b = { gitsigns("blame_line"), "[B]lame line" },
+    B = { t("GitBlame"), "[B]lame file" },
+    s = { gitsigns("select_hunk"), "[S]elect hunk" },
+    h = { toggle_file_diff(true), "Current File [H]istory" },
+    H = { toggle_file_diff(), "File [H]istory" },
   },
   f = {
     name = "Files",
@@ -294,9 +308,41 @@ local n_mappings = {
 local v_mappings = {
   g = {
     name = "Git",
-    s = { ":Gitsigns stage_hunk<CR>", "Stage hunk" },
+    s = { ":Gitsigns stage_hunk<CR>", "[S]tage hunk" },
   },
 }
 
 wk.register(n_mappings, { prefix = "<space>" })
 wk.register(v_mappings, { prefix = "<space>", mode = "v" })
+
+-- Treesitter keymaps
+wk.register({
+  a = { "Swap next param" },
+  A = { "Swap previous param" },
+}, {
+  prefix = "<leader>",
+})
+
+wk.register({
+  m = { "[M]ove to start of next func" },
+  M = { "[M]ove to end of next func" },
+}, { prefix = "]" })
+
+wk.register({
+  m = { "[M]ove to start of previous func" },
+  M = { "[M]ove to end of previous func" },
+}, { prefix = "[" })
+
+-- Neorg GTD keymaps
+wk.register({
+  t = {
+    name = "GTD",
+    d = "Mark task as [D]one",
+    u = "Mark task as [U]ndone",
+    p = "Mark task as [P]ending",
+    c = "Mark task as [C]ancel",
+    i = "Mark task as [I]mportant",
+    h = "Mark task as on [H]old",
+    r = "Mark task as [R]ecurring",
+  },
+}, { prefix = "g" })
