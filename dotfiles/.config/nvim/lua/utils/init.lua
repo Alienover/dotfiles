@@ -106,7 +106,7 @@ M.get_window_default_spacing = function(width, height)
     l = 0.1
   end
 
-  if height <= 70 then
+  if height <= 65 then
     t = 0.1
   end
 
