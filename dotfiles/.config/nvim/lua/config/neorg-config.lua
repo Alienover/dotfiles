@@ -4,13 +4,18 @@ local NEORG_BASE_DIR = "~/.neorg"
 local config = {
   load = {
     ["core.defaults"] = {}, -- Loads default behaviour
-    ["core.norg.esupports.metagen"] = {
+    ["core.esupports.metagen"] = {
       config = {
         type = "auto",
       },
     },
-    ["core.norg.concealer"] = {}, -- Adds pretty icons to your documents
-    ["core.norg.dirman"] = { -- Manages Neorg workspaces
+    ["core.keybinds"] = {
+      config = {
+        neorg_leader = "g",
+      },
+    },
+    ["core.concealer"] = {}, -- Adds pretty icons to your documents
+    ["core.dirman"] = { -- Manages Neorg workspaces
       config = {
         workspaces = {
           work = NEORG_BASE_DIR .. "/work",
@@ -19,11 +24,12 @@ local config = {
         default_workspace = "home",
       },
     },
-    ["core.norg.completion"] = {
+    ["core.completion"] = {
       config = {
         engine = "nvim-cmp",
       },
     },
+    ["core.upgrade"] = {},
   },
 }
 
