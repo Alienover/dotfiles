@@ -51,4 +51,9 @@ return {
   {
     "ggandor/leap.nvim",
   },
+
+  {
+    "christoomey/vim-tmux-navigator",
+    lazy = false,
+  },
 }

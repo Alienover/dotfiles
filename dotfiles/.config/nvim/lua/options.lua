@@ -49,6 +49,8 @@ local global = {
   -- Disble Perl support
   loaded_perl_provider = 0,
 
+  tmux_navigator_no_mappings = 1,
+
   -- did_load_filetypes = 1,
 
   -- Leader key mapping
