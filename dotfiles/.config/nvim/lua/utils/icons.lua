@@ -1,0 +1,128 @@
+local icons = {
+  ui = {
+    Bug = "",
+    Code = "",
+    Fire = "",
+    Gear = "",
+    List = "",
+    Lock = "",
+    Note = "󰎚",
+    Check = "󰄬",
+    Close = "󰅖",
+    Email = "󰇮",
+    Table = "",
+    Circle = "",
+    Pencil = "󰏫",
+    Search = "",
+    SignIn = "",
+    Comment = "󰅺",
+    History = "󰋚",
+    NewFile = "",
+    Package = "",
+    Project = "",
+    SignOut = "",
+    BookMark = "",
+    Calendar = "",
+    Language = "",
+    ArrowOpen = "",
+    BigCircle = "",
+    ChevronLeft = "<",
+    Dashboard = "",
+    EllipsisH = "",
+    Lightbulb = "󰌵",
+    Telescope = "",
+    ChevronRight = ">",
+    ArrowClosed = "",
+    TriangelLeft = "",
+    CloudDownload = "",
+    TriangleRight = "",
+    HalfCircleLeft = "",
+    HalfCircleRight = "",
+    BigUnfilledCircle = "",
+  },
+
+  kind = {
+    Text = "",
+    Method = "",
+    Function = "",
+    Constructor = "",
+    Field = "",
+    Variable = "",
+    Class = "",
+    Interface = "",
+    Module = "",
+    Property = "",
+    Unit = "",
+    Value = "",
+    Enum = "",
+    Keyword = "",
+    Snippet = "",
+    Color = "",
+    File = "",
+    Reference = "",
+    Folder = "",
+    EnumMember = "",
+    Constant = "",
+    Struct = "",
+    Event = "",
+    Operator = "",
+    TypeParameter = "",
+    String = "󰅳",
+    Boolean = "",
+    Array = "󰅨",
+    Number = "󰉻",
+  },
+
+  diagnostics = {
+    Hint = "",
+    Error = "",
+    Warning = "",
+    Question = "",
+    Information = "",
+  },
+
+  misc = {
+    Tag = "",
+    Robot = "󰚩",
+    Watch = "",
+    Squirrel = "",
+    Keyboard = "󰌌",
+    Command = "󰘳",
+  },
+
+  git = {
+    Add = "",
+    Mod = "",
+    Diff = "",
+    Repo = "",
+    Ignore = "",
+    Remove = "",
+    Rename = "",
+  },
+
+  documents = {
+    File = "",
+    Files = "",
+    Folder = "",
+    OpenFolder = "",
+  },
+}
+
+local mod = {
+  ERROR = icons.diagnostics.Error .. " ",
+  WARN = icons.diagnostics.Warning .. " ",
+  HINT = icons.diagnostics.Hint .. " ",
+  INFOR = icons.diagnostics.Information .. " ",
+
+  kind = setmetatable(icons.kind, {
+    __index = function()
+      return icons.kind.Text
+    end,
+  }),
+
+  ui = icons.ui,
+
+  diagnostics = icons.diagnostics,
+}
+
+return vim.tbl_deep_extend("force", icons, mod)

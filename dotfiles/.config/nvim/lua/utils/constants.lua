@@ -1,5 +1,7 @@
 local M = {}
 
+M.icons = require("utils.icons")
+
 M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/lua/local_plugins"
 
 M.local_plugins = {
@@ -46,129 +48,13 @@ M.colors = {
   SPECIAL_GREY = os.getenv("GUI_SPECIAL_GREY"),
 }
 
-M.icons = {
-  ERROR = "✖ ",
-  WARN = " ",
-  HINT = " ",
-  INFOR = " ",
-  kind = {
-    Enum = "",
-    File = "",
-    Text = "",
-    Unit = "",
-    Class = "",
-    Color = "",
-    Event = "",
-    Field = "",
-    Value = "",
-    Folder = "",
-    Method = "",
-    Module = "",
-    Struct = "",
-    Keyword = "",
-    Snippet = "",
-    Constant = "",
-    Function = "",
-    Operator = "",
-    Property = "",
-    Variable = "",
-    Interface = "",
-    Reference = "",
-    EnumMember = "",
-    Constructor = "",
-    TypeParameter = "",
-  },
-  type = {
-    Array = "",
-    Number = "",
-    Object = "",
-    String = "",
-    Boolean = "蘒",
-  },
-  documents = {
-    File = "",
-    Files = "",
-    Folder = "",
-    OpenFolder = "",
-  },
-  git = {
-    Add = "",
-    Mod = "",
-    Diff = "",
-    Repo = "",
-    Ignore = "",
-    Remove = "",
-    Rename = "",
-  },
-  ui = {
-    Bug = "",
-    Code = "",
-    Fire = "",
-    Gear = "",
-    List = "",
-    Lock = "",
-    Note = "",
-    Check = "",
-    Close = "",
-    Email = "",
-    Table = "",
-    Circle = "",
-    Pencil = "",
-    Search = "",
-    SignIn = "",
-    Comment = "",
-    History = "",
-    NewFile = "",
-    Package = "",
-    Project = "",
-    SignOut = "",
-    BookMark = "",
-    Calendar = "",
-    Language = "",
-    ArrowOpen = "",
-    BigCircle = "",
-    ChevronLeft = "<",
-    Dashboard = "",
-    EllipsisH = "",
-    Lightbulb = "",
-    Telescope = "",
-    ChevronRight = ">",
-    ArrowClosed = "",
-    TriangelLeft = "",
-    CloudDownload = "",
-    TriangleRight = "",
-    HalfCircleLeft = "",
-    HalfCircleRight = "",
-    BigUnfilledCircle = "",
-  },
-  diagnostics = {
-    Hint = "",
-    Error = "",
-    Warning = "",
-    Question = "",
-    Information = "",
-  },
-  misc = {
-    Tag = "",
-    Robot = "ﮧ",
-    Watch = "",
-    Squirrel = "",
-    Keyboard = "",
-    Command = "גּ",
-  },
-}
-
 M.filetype_mappings = setmetatable({
   jsonc = "JSON with comments",
   txt = "Plain Text",
   sql = "SQL",
 }, {
   __index = function(_, key)
-    if key == "" then
-      return key
-    else
-      return key:sub(1, 1):upper() .. key:sub(2)
-    end
+    return key
   end,
 })
 
