@@ -136,4 +136,13 @@ return {
       require("config.neorg-config")
     end,
   },
+
+  {
+    "iamcco/markdown-preview.nvim",
+    build = "cd app && yarn install",
+    ft = { "markdown" },
+    config = function()
+      require("config.markdown-config")
+    end,
+  },
 }
