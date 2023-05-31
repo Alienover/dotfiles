@@ -26,6 +26,7 @@ return {
       "nvim-tree/nvim-web-devicons",
     },
   },
+
   { -- Tabs
     "akinsho/bufferline.nvim",
     event = { "VimEnter" },

@@ -28,6 +28,7 @@ return {
       },
     },
   },
+
   { -- Git Gutter
     "lewis6991/gitsigns.nvim",
     event = "BufReadPost",

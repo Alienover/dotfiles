@@ -1,5 +1,5 @@
 return {
-  { -- Completions}
+  { -- Completions
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     config = function()
