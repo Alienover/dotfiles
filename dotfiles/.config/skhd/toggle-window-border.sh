@@ -1,4 +1,4 @@
-#1 /bin/sh
+#! /bin/sh
 
 if [[ "$(yabai -m query --windows | jq '.[]."has-border"' | uniq | sort | tail -n 1)" == "true" ]]; then
   yabai -m config window_border off
