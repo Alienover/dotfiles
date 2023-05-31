@@ -4,13 +4,6 @@ M.icons = require("utils.icons")
 
 M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/lua/local_plugins"
 
-M.local_plugins = {
-  kwbdi = M.LOCAL_PLUGINS_FOLDER .. "/kwbdi.nvim",
-  winbar = M.LOCAL_PLUGINS_FOLDER .. "/winbar.nvim",
-  fzf = M.LOCAL_PLUGINS_FOLDER .. "/fzf-finder.nvim",
-  marks = M.LOCAL_PLUGINS_FOLDER .. "/lsp-marks.nvim",
-}
-
 M.files = {
   vim = os.getenv("HOME") .. "/.vimrc",
   -- NeoVim initialization file

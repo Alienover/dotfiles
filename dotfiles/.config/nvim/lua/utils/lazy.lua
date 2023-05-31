@@ -39,6 +39,7 @@ function M.setup(plugins)
       },
       dev = {
         path = consts.LOCAL_PLUGINS_FOLDER,
+        patterns = { "@local" },
       },
       install = {
         -- try to load one of these colorschemes when starting an installation during startup

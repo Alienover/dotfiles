@@ -1,9 +1,6 @@
-local consts = require("utils.constants")
-
 return {
   {
     "folke/which-key.nvim",
-    lazy = false,
     keys = { "<space>" },
     cmd = { "WhichKey" },
     config = function()
@@ -59,7 +56,8 @@ return {
   },
 
   {
-    dir = consts.local_plugins.fzf,
+    "@local/fzf-finder.nvim",
+    dev = true,
     cmd = { "FZFFiles" },
     dependencies = { { "junegunn/fzf", build = "./install --all" } },
     config = true,
@@ -80,17 +78,11 @@ return {
   },
 
   {
-    dir = consts.local_plugins.winbar,
+    "@local/winbar.nvim",
+    dev = true,
     event = { "BufReadPost" },
-    dependencies = { "kyazdani42/nvim-web-devicons" },
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = true,
-  },
-
-  {
-    "rcarriga/nvim-notify",
-    dependencies = {
-      "mrded/nvim-lsp-notify",
-    },
   },
 
   {

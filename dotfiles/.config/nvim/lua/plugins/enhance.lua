@@ -1,10 +1,9 @@
-local consts = require("utils.constants")
-
 return {
   { "nvim-lua/plenary.nvim" },
 
   {
-    dir = consts.local_plugins.kwbdi,
+    "@local/kwbdi.nvim",
+    dev = true,
     cmd = { "KWBufDel" },
     config = true,
   },
@@ -63,4 +62,13 @@ return {
     config = true,
   },
 
+  -- Need to setup a payment method in OpenAI to access the API
+  {
+    "madox2/vim-ai",
+    enabled = false,
+    cmd = { "AI", "AIEdit", "AIChat" },
+    config = function()
+      require("config.ai-config")
+    end,
+  },
 }

@@ -10,7 +10,7 @@ return {
   },
 
   { -- Icons
-    "kyazdani42/nvim-web-devicons",
+    "nvim-tree/nvim-web-devicons",
     opts = {
       default = true,
     },
@@ -18,12 +18,12 @@ return {
 
   { -- Statusline
     "hoob3rt/lualine.nvim",
-    lazy = false,
+    event = { "BufReadPre" },
     config = function()
       require("config.lualine-config")
     end,
     dependencies = {
-      "kyazdani42/nvim-web-devicons",
+      "nvim-tree/nvim-web-devicons",
     },
   },
   { -- Tabs

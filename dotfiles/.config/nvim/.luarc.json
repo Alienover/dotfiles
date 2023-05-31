@@ -55,6 +55,7 @@
         "/Users/jiarong/.local/share/nvim/site/pack/packer/start/plenary.nvim",
         "/Users/jiarong/.local/share/nvim/site/pack/packer/start/telescope-fzf-native.nvim",
         "/Users/jiarong/.local/share/nvim/site/pack/packer/start/tokyonight.nvim",
-        "${3rd}/luassert/library"
+        "${3rd}/luassert/library",
+        "/Users/jiarong/.local/share/nvim/mason/packages/lua-language-server/libexec/meta/1684c845"
     ]
 }

@@ -1,12 +1,11 @@
-local consts = require("utils.constants")
-
 return {
   {
-    "glepnir/lspsaga.nvim",
+    "nvimdev/lspsaga.nvim",
     event = "BufReadPost",
     config = function()
       require("config.saga-config")
     end,
+    dependencies = { "nvim-tree/nvim-web-devicons" },
   },
 
   {
@@ -47,7 +46,8 @@ return {
       },
 
       { -- Provides the `go_def` and `go_back` with marks
-        dir = consts.local_plugins.marks,
+        "@local/lsp-marks.nvim",
+        dev = true,
         config = true,
       },
     },
