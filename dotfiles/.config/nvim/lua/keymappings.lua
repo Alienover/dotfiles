@@ -32,10 +32,10 @@ end
 -- * term_mode		 = "t"
 -- * command_mode	 = "c"
 
-nmap("<C-w>h", "<CMD> TmuxNavigateLeft<CR>", d("Window Left"))
-nmap("<C-w>l", "<CMD> TmuxNavigateRight<CR>", d("Window Right"))
-nmap("<C-w>j", "<CMD> TmuxNavigateDown<CR>", d("Window Down"))
-nmap("<C-w>k", "<CMD> TmuxNavigateUp<CR>", d("Window Up"))
+nmap("<C-w>h", ":TmuxNavigateLeft<CR>", d("Window Left"))
+nmap("<C-w>l", ":TmuxNavigateRight<CR>", d("Window Right"))
+nmap("<C-w>j", ":TmuxNavigateDown<CR>", d("Window Down"))
+nmap("<C-w>k", ":TmuxNavigateUp<CR>", d("Window Up"))
 
 -- Buffers navigation
 nmap("<C-h>", ":bp<CR>", d("[B]uffer [P]revious"))
