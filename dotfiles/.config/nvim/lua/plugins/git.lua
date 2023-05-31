@@ -1,8 +1,15 @@
 return {
   {
     "dinhhuy258/git.nvim",
-    cmd = { "GitBlame" },
-    config = true,
+    cmd = { "Git", "GitBlame" },
+    keys = { "<space>go", "<space>gP" },
+    opts = {
+      default_mappings = false,
+      keymaps = {
+        browse = "<space>go",
+        open_pull_request = "<space>gP",
+      },
+    },
   },
 
   {

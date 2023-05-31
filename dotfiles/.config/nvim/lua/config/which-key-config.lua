@@ -237,6 +237,8 @@ local n_mappings = {
     s = { gitsigns("select_hunk"), "[S]elect hunk" },
     h = { toggle_file_diff(true), "Current File [H]istory" },
     H = { toggle_file_diff(), "File [H]istory" },
+    o = { "[O]pen in browse" },
+    P = { "Open [P]ull request of current branch" },
   },
   f = {
     name = "Files",
@@ -309,6 +311,7 @@ local v_mappings = {
   g = {
     name = "Git",
     s = { ":Gitsigns stage_hunk<CR>", "[S]tage hunk" },
+    o = { "[O]pen in browse" },
   },
 }
 
