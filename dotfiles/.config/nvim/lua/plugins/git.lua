@@ -22,11 +22,9 @@ return {
       "DiffviewFileHistory",
     },
     dependencies = { "nvim-lua/plenary.nvim" },
-    opts = {
-      default_args = {
-        DiffviewOpen = { "--imply-local" },
-      },
-    },
+    config = function()
+      require("config.diffview-config")
+    end,
   },
 
   { -- Git Gutter
