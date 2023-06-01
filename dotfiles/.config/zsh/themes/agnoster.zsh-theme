@@ -148,7 +148,7 @@ prompt_context() {
       IP="$(cat /tmp/.ip_address)"
     fi
 
-    echo -n " $IP"
+    echo -n "$IP"
   fi
 }
 
