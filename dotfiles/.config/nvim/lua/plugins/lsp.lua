@@ -1,7 +1,7 @@
 return {
   {
     "nvimdev/lspsaga.nvim",
-    event = "BufReadPost",
+    event = "LspAttach",
     config = function()
       require("config.saga-config")
     end,
