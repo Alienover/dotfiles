@@ -57,7 +57,7 @@ yabai -m config insert_feedback_color      0xffd75f5f
 # Change how yabai looks
 yabai -m config layout bsp
 # Override default layout for space 2 only
-yabai -m config --space 1 layout float
+# yabai -m config --space 1 layout float
 
 # Set all padding and gaps to 12pt (default: 0)
 yabai -m config top_padding 12
