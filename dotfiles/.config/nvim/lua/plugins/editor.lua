@@ -87,7 +87,7 @@ return {
 
   {
     "folke/noice.nvim",
-    event = "VimEnter",
+    event = "VeryLazy",
     config = function()
       require("config.noice-config")
     end,

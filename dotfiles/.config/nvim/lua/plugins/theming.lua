@@ -16,9 +16,9 @@ return {
     },
   },
 
-  { -- Statusline
+  { -- Status Line
     "hoob3rt/lualine.nvim",
-    event = { "BufReadPre" },
+    event = "VeryLazy",
     config = function()
       require("config.lualine-config")
     end,
@@ -29,7 +29,7 @@ return {
 
   { -- Tabs
     "akinsho/bufferline.nvim",
-    event = { "VimEnter" },
+    event = "VeryLazy",
     dependencies = { "catppuccin" },
     config = function()
       require("config.bufferline-config")
