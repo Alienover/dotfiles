@@ -1,6 +1,5 @@
 tap "homebrew/cask", "https://mirrors.ustc.edu.cn/homebrew-cask.git"
 tap "homebrew/core", "https://mirrors.ustc.edu.cn/homebrew-core.git"
-tap "homebrew/cask-fonts"
 
 # set arguments for all 'brew install --cask' commands
 cask_args appdir: "~/Applications", require_sha: false
@@ -19,9 +18,6 @@ brew "fnm"
 
 # Simple, fast and user-friendly alternative to find
 brew "fd"
-
-# GitHub command-line tool
-brew "gh"
 
 # Distributed revision control system
 brew "git"
@@ -79,9 +75,6 @@ brew "koekeishiya/formulae/yabai"
 
 ## GUI application
 
-# Desktop automation application
-cask "hammerspoon"
-
 # QQ for mac
 cask "qq"
 
@@ -114,9 +107,3 @@ cask "keka"
 
 # System monitor for the menu bar
 cask "stats"
-
-# Victor Mono
-cask "font-victor-mono"
-
-# Nerf font patch for victor mono
-cask "font-victor-mono-nerd-font"
