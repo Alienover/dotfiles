@@ -1,5 +1,5 @@
 #! /bin/bash
-CHECK_MARK="\033[0;32m\033[0m"
+CHECK_MARK="\033[0;32m󰄬\033[0m"
 
 DOT_DIR="$PWD/dotfiles"
 TARGET_DIR="$HOME"
