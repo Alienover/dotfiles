@@ -34,6 +34,9 @@ local config = {
       DiagnosticUnderlineHint = { style = { "undercurl" } },
 
       TabLineSel = { bg = colors.red },
+
+      -- INFO: Work around https://github.com/neovim/neovim/issues/9800
+      CursorLine = { ctermfg = "White" },
     }
   end,
 }
