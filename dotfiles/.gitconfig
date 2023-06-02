@@ -3,7 +3,8 @@
   name = <name>
   signingkey = <signingkey>
 [credential]
-	helper = osxkeychain
+  helper = osxkeychain
+
 [color]
   branch = auto
   diff = auto
@@ -26,15 +27,17 @@
   editor = nvim
 
 [diff]
-  tool = nvim
-[difftool "nvim"]
-  cmd = $(which nvim)-nightly -d $REMOTE $LOCAL
+  tool = nvim-diff
+[difftool "nvim-diff"]
+  cmd = nvim -d $REMOTE $LOCAL
+
 [merge]
-  tool = vimdiff
+  tool = nvim-merge
 [mergetool]
   keepBackup = false
-[mergetool "vimdiff"]
-  cmd = $(which nvim)-nightly -c "DiffviewOpen"
+  prompt = false
+[mergetool "nvim-merge"]
+  cmd = nvim -c "DiffviewOpen"
 
 [filter "lfs"]
   clean = git-lfs clean -- %f
@@ -54,6 +57,6 @@
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-core
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-services
 [commit]
-	gpgsign = true
+  gpgsign = true
 [gpg]
   program = /opt/homebrew/bin/gpg
