@@ -27,7 +27,7 @@ local config = {
     },
   },
   symbol_in_winbar = {
-    enable = true,
+    enable = false,
     hide_keyword = true,
     show_file = false,
     click_support = false,

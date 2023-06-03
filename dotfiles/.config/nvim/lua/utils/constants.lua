@@ -60,4 +60,29 @@ M.os = {
   is_wsl = vim.fn.has("wsl") == 1,
 }
 
+M.special_filetypes = {
+  excluded_winbar = {
+    "git",
+    "help",
+    "packer",
+    "rnvimr",
+    "noice",
+    "DiffviewFiles",
+    "DiffviewFileHistory",
+  },
+  close_by_q = {
+    "qf",
+    "fzf",
+    "man",
+    "git",
+    "help",
+    "lspinfo",
+    "httpResult",
+    "startuptime",
+    "null-ls-info",
+    "git.nvim",
+    "query",
+  },
+}
+
 return M

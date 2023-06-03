@@ -1,4 +1,5 @@
 local utils = require("utils")
+local consts = require("utils.constants")
 
 local nmap, tmap, expand = utils.nmap, utils.tmap, utils.expand
 
@@ -52,19 +53,7 @@ vim.api.nvim_create_autocmd("FileType", {
   desc = "Close the listed window with `q`",
 
   group = groups.filetype,
-  pattern = {
-    "qf",
-    "fzf",
-    "man",
-    "git",
-    "help",
-    "lspinfo",
-    "httpResult",
-    "startuptime",
-    "null-ls-info",
-    "git.nvim",
-    "query",
-  },
+  pattern = consts.special_filetypes.close_by_q,
   callback = function()
     nmap("q", function()
       utils.cmd("close")

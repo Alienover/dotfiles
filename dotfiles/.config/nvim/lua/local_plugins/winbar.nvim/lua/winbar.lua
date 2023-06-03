@@ -6,25 +6,43 @@ local expand = utils.expand
 local icons = constants.icons
 
 local DEFAULT_OPTS = {
+  -- @string
+  -- Icon to separate the content for each section
   separator = icons.ui.ChevronRight,
+  -- @string
+  -- Highlight group for the separator
   separator_hl = "LineNr",
+  -- @string
+  -- Highlight group for the content
   text_hl = "CursorLineNr",
+  -- @number
+  -- Max depth of the upward path from current file to display
   max_path_depth = 3,
+  -- @boolean
+  -- Toggle the file path
   show_filepath = true,
+  -- @boolean
+  -- Toggle the symbol of the cursor word
   show_symbol = true,
-  excluded_filetypes = {
-    "git",
-    "help",
-    "packer",
-    "rnvimr",
-    "noice",
-  },
+  -- @function
+  -- Function to enable/disable the winbar
+  excluded_fn = function()
+    return false
+  end,
+  -- @table
+  -- Filetype list to disable the winbar
+  excluded_filetypes = {},
 }
 
 local M = {}
 local MM = {}
 
 function MM:is_excluded()
+  local success, excluded = pcall(self.opts.excluded_fn, nil)
+  if success and excluded then
+    return true
+  end
+
   local ft = vim.bo.filetype
   return ft == "" or vim.tbl_contains(self.opts.excluded_filetypes, ft)
 end
@@ -128,7 +146,6 @@ function M.render_winbar(opts)
   })
 
   if MM:is_excluded() then
-    set_winbar("")
     return
   end
 
@@ -140,16 +157,14 @@ function M.render_winbar(opts)
 
   if #MM.elements > 0 then
     set_winbar((" "):rep(3) .. table.concat(MM.elements, MM:separator()))
-  else
-    set_winbar("")
   end
 end
 
-function M.setup()
-  local g_ui = vim.api.nvim_create_augroup("UI", { clear = true })
+function M.setup(opts)
+  local g_ui = vim.api.nvim_create_augroup("WinbarUI", { clear = true })
 
   local render_winbar = function()
-    coroutine.wrap(M.render_winbar)()
+    coroutine.wrap(M.render_winbar)(opts)
   end
 
   vim.api.nvim_create_autocmd({ "CursorMoved", "BufWinEnter", "BufEnter" }, {
