@@ -17,6 +17,10 @@ local config = {
       require("luasnip").lsp_expand(args.body)
     end,
   },
+  window = {
+    -- completion = cmp.config.window.bordered(),
+    -- documentation = cmp.config.window.bordered(),
+  },
   mapping = cmp.mapping.preset.insert({
     -- Scrolling
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
@@ -63,7 +67,8 @@ local config = {
   sources = cmp.config.sources({
     -- LSP
     { name = "nvim_lsp" },
-    { name = "nvim_lsp_signature_help" },
+    -- INFO: use the signature help popup from noice.nvim
+    -- { name = "nvim_lsp_signature_help" },
 
     { name = "treesitter" },
 
