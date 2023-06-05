@@ -105,14 +105,14 @@ local lsp_formatting = function(client, bufnr)
       buffer = bufnr,
       group = formatGroup,
       callback = function()
-        vim.lsp.buf.format({ sync = true, timeout_ms = 2 * 1000 })
+        vim.F.npcall(vim.lsp.buf.format, { sync = true, timeout_ms = 2 * 1000 })
       end,
     })
   end
 
   -- Alias
   vim.api.nvim_create_user_command("LspFormat", function()
-    vim.lsp.buf.format()
+    vim.F.npcall(vim.lsp.buf.format, nil)
   end, {})
 end
 

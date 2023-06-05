@@ -47,9 +47,16 @@ o.timeoutlen = 500
 wk.setup(config)
 
 -- Populate the vim cmd prefix and suffix
-local t = function(str)
+---@param str string
+---@param opts table|nil
+local t = function(str, opts)
   return function()
-    cmd(str)
+    local silent = (opts and opts.silent) or false
+    if silent then
+      vim.F.npcall(cmd, str)
+    else
+      cmd(str)
+    end
   end
 end
 
@@ -265,7 +272,7 @@ local n_mappings = {
     I = { t("LspInfo"), "Info" },
     R = { t("LspRestart"), "Restart" },
     N = { t("NullLsInfo"), "null-ls info" },
-    f = { t("LspFormat"), "Format" },
+    f = { t("LspFormat", { silent = true }), "Format" },
     q = { telescope("quickfix"), "Quickfix" },
     r = { ":IncRename ", "Rename" },
     s = { telescope("lsp_document_symbols"), "Document symbols" },
