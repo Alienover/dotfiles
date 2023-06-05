@@ -50,8 +50,13 @@
   pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
   logs = "!tmux-popup '__FZF_POPUP_HEIGHT=100% popup-logs'"
   diffs = "!tmux-popup '__FZF_POPUP_HEIGHT=100% popup-diff'"
-  skip = "update-index --skip-worktree"
-  no-skip = "update-index --no-skip-worktree"
+
+  skip = update-index --assume-unchanged
+  unskip = update-index --no-assume-unchanged
+
+  purge ="!git branch --merged | grep -Ev 'master|release|production' | grep -v '*' | xargs -r -n 1 git branch -d"
+  f = fetch -ptf
+  u = "!git f && git pl && git purge"
 [safe]
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-cask
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-core
@@ -60,3 +65,5 @@
   gpgsign = true
 [gpg]
   program = /opt/homebrew/bin/gpg
+[init]
+	defaultBranch = main
