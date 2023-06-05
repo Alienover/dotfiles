@@ -39,6 +39,8 @@ return {
       "williamboman/mason-lspconfig.nvim",
       "jose-elias-alvarez/null-ls.nvim",
       "j-hui/fidget.nvim",
+      -- INFO: Lua setup for neovim
+      "folke/neodev.nvim",
 
       {
         "folke/lsp-colors.nvim",
