@@ -185,19 +185,6 @@ local toggle_diffview = function()
   end
 end
 
-local toggle_diff = function()
-  -- Don't diff this under diff view
-  if g.diffview_opened then
-    return
-  end
-
-  if vim.api.nvim_win_get_option(0, "diff") then
-    cmd("close")
-  else
-    gitsigns("diffthis")()
-  end
-end
-
 --- @param curr_file boolean|nil
 ---@return function
 local toggle_file_diff = function(curr_file)
@@ -254,8 +241,7 @@ local n_mappings = {
   },
   g = {
     name = "Git",
-    D = { toggle_diffview, "Toggle [D]iffview" },
-    d = { toggle_diff, "[D]iff this" },
+    d = { toggle_diffview, "Toggle [D]iffview" },
     c = { telescope("git_commits"), "Git [C]ommits" },
     f = { telescope("git_files"), "Git [F]iles" },
     j = { gitsigns("next_hunk"), "Next hunk" },

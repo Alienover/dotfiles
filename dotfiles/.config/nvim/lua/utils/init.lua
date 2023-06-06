@@ -35,9 +35,15 @@ M.t = vim.t
 -- Vim command
 M.cmd = vim.cmd
 
+---@param expr string
 M.expand = function(expr)
   ---@diagnostic disable-next-line: param-type-mismatch
-  return vim.fn.expand(expr, nil, nil)
+  local resp = vim.fn.expand(expr, false, false)
+  if type(resp) == "table" then
+    return resp[1]
+  else
+    return resp
+  end
 end
 
 M.map = function(mode, key, cmd, opts)
