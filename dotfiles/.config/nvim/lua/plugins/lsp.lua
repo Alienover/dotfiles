@@ -39,13 +39,15 @@ return {
       "williamboman/mason-lspconfig.nvim",
       "jose-elias-alvarez/null-ls.nvim",
       "j-hui/fidget.nvim",
+
       -- INFO: Lua setup for neovim
       "folke/neodev.nvim",
 
-      {
-        "folke/lsp-colors.nvim",
-        opts = {},
-      },
+      -- FIXME: remove it after few weeks monitoring
+      -- {
+      --   "folke/lsp-colors.nvim",
+      --   opts = {},
+      -- },
 
       { -- Provides the `go_def` and `go_back` with marks
         "@local/lsp-marks.nvim",
