@@ -155,8 +155,30 @@ end
 
 local toggle_diffview = function()
   if g.diffview_opened then
-    g.diffview_opened = false
-    cmd("DiffviewClose")
+    local curr_tabid = vim.api.nvim_get_current_tabpage()
+    local tabidx, tabid = nil, nil
+
+    -- INFO: Find the tab id and index with buffer whose name is starting with "diffview://"
+    for i, tab in ipairs(vim.api.nvim_list_tabpages()) do
+      for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
+        local bufnr = vim.api.nvim_win_get_buf(win)
+        local name = vim.api.nvim_buf_get_name(bufnr)
+
+        if string.match(name, "^diffview://") ~= nil then
+          tabidx = i
+          tabid = tab
+          break
+        end
+      end
+    end
+
+    if tabid ~= nil and curr_tabid ~= tabid then
+      -- INFO: Focus back when the current tab is not the one with diff view
+      cmd("tabnext " .. tabidx)
+    else
+      g.diffview_opened = false
+      cmd("DiffviewClose")
+    end
   else
     g.diffview_opened = true
     cmd("DiffviewOpen")
