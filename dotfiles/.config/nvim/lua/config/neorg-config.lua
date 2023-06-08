@@ -1,3 +1,5 @@
+local icons = require("utils.icons")
+
 -- iCloud
 local NEORG_BASE_DIR = "~/.neorg"
 
@@ -6,15 +8,60 @@ local config = {
     ["core.defaults"] = {}, -- Loads default behaviour
     ["core.esupports.metagen"] = {
       config = {
+        tab = "  ",
         type = "auto",
       },
     },
     ["core.keybinds"] = {
       config = {
         neorg_leader = "g",
+        hook = function(keybinds)
+          keybinds.unmap("norg", "n", "gf")
+          keybinds.unmap("norg", "n", "gF")
+
+          keybinds.remap_event(
+            "norg",
+            "n",
+            "ge",
+            "core.looking-glass.magnify-code-block"
+          )
+
+          keybinds.remap_event(
+            "norg",
+            "n",
+            "<C-s>",
+            "core.integrations.telescope.find_linkable"
+          )
+          keybinds.remap_event(
+            "norg",
+            "i",
+            "<C-l>",
+            "core.integrations.telescope.insert_link"
+          )
+
+          keybinds.remap_event(
+            "norg",
+            "i",
+            "<C-f>",
+            "core.integrations.telescope.insert_file_link"
+          )
+        end,
       },
     },
-    ["core.concealer"] = {}, -- Adds pretty icons to your documents
+    ["core.concealer"] = {
+      config = {
+        icons = {
+          todo = {
+            pending = {
+              icon = icons.ui.Minus,
+            },
+            undone = {
+              icon = icons.ui.Close,
+            },
+          },
+        },
+      },
+    }, -- Adds pretty icons to your documents
     ["core.dirman"] = { -- Manages Neorg workspaces
       config = {
         workspaces = {
@@ -30,6 +77,7 @@ local config = {
       },
     },
     ["core.upgrade"] = {},
+    ["core.integrations.telescope"] = {},
   },
 }
 
