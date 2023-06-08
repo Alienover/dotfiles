@@ -67,7 +67,7 @@ M.go_back = function()
     -- Pop the mark
     table.remove(caches)
   else
-    cmd([[execute "normal \<C-O>"]])
+    pcall(vim.api.nvim_command, [[execute "normal \<C-O>"]])
   end
 end
 
