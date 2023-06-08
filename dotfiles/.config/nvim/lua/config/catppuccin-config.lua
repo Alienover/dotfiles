@@ -4,16 +4,18 @@ local config = {
   term_colors = true,
   integrations = {
     cmp = true,
-    mason = true,
-    noice = false,
     fidget = true,
-    notify = true,
-    lsp_saga = true,
     gitsigns = true,
-    which_key = true,
+    leap = true,
+    lsp_saga = true,
+    markdown = true,
+    mason = true,
+    noice = true,
+    notify = true,
     telescope = true,
     treesitter = true,
     treesitter_context = true,
+    which_key = true,
   },
   native_lsp = {
     enabled = true,
@@ -37,6 +39,8 @@ local config = {
 
       -- INFO: Work around https://github.com/neovim/neovim/issues/9800
       CursorLine = { ctermfg = "White" },
+
+      ["@neorg.tags.ranged_verbatim.code_block"] = { bg = colors.surface0 },
     }
   end,
 }
