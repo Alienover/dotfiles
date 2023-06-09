@@ -95,7 +95,7 @@ end, opts)
 
 -- File browser
 map({ "n", "i", "x", "t" }, "<C-f>", function()
-  utils.telescope("file_browser", { "path=%:p:h", "select_buffer=true" })
+  utils.telescope("file_browser", { path = "%:p:h", select_buffer = true })
 end, d("[F]ile browser"))
 
 -- Smart toggling the spell checking

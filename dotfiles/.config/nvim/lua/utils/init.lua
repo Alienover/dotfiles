@@ -272,18 +272,20 @@ M.setup_filetypes = function(filetypes)
 end
 
 M.telescope = function(cmd, opts)
+  local flags = {}
   opts = opts or {}
 
   local win_spec = M.get_window_sepc()
   if win_spec.columns < window_sizing.md.width then
     table.insert(opts, "theme=dropdown")
+    opts.theme = "dropdown"
   end
 
-  M.cmd(table.concat({
-    "Telescope",
-    cmd,
-    table.concat(opts, " "),
-  }, " "))
+  for k, v in pairs(opts) do
+    table.insert(flags, string.format("%s=%s", k, v))
+  end
+
+  M.cmd(string.format("%s %s %s", "Telescope", cmd, table.concat(flags, " ")))
 end
 
 return M
