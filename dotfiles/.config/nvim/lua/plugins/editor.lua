@@ -144,4 +144,6 @@ return {
       require("config.markdown-config")
     end,
   },
+
+  { "junegunn/fzf", build = "./install --all" },
 }
