@@ -162,9 +162,45 @@ M.get_float_win_sizing = function()
 end
 
 M.find_git_ancestor = function()
-  local pwd = os.getenv("PWD")
+  local lsp_util = vim.F.npcall(require, "lspconfig.util")
 
-  return require("lspconfig.util").find_git_ancestor(pwd)
+  if lsp_util then
+    local pwd = os.getenv("PWD")
+
+    return lsp_util.find_git_ancestor(pwd)
+  else
+    return nil
+  end
+end
+
+---@param dry_run boolean
+---@return string
+---@overload fun(): string
+M.change_cwd = function(dry_run)
+  local head = vim.fn.expand("%:p")
+  local cwd = head
+
+  local lsp_util = vim.F.npcall(require, "lspconfig.util")
+  if lsp_util then
+    local root = lsp_util.find_git_ancestor(head)
+
+    if root then
+      cwd = root
+    end
+  end
+
+  if not dry_run then
+    vim.cmd("lcd " .. cwd)
+
+    local formatted, home = cwd, os.getenv("HOME")
+    if home then
+      formatted = string.gsub(cwd, home, "~")
+    end
+
+    vim.notify("Set the current working directory to " .. formatted)
+  end
+
+  return cwd
 end
 
 M.highlight = {

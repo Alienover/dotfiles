@@ -243,6 +243,7 @@ local n_mappings = {
     name = "Git",
     d = { toggle_diffview, "Toggle [D]iffview" },
     c = { telescope("git_commits"), "Git [C]ommits" },
+    C = { utils.change_cwd, "[C]hange Current Working Dir" },
     f = { telescope("git_files"), "Git [F]iles" },
     j = { gitsigns("next_hunk"), "Next hunk" },
     k = { gitsigns("prev_hunk"), "Previous hunk" },
