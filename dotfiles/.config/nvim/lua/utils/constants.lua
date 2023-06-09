@@ -85,4 +85,11 @@ M.special_filetypes = {
   },
 }
 
+M.window_sizing = {
+  md = {
+    width = 250,
+    height = 65,
+  },
+}
+
 return M

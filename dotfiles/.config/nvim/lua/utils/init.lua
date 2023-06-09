@@ -1,3 +1,7 @@
+local consts = require("utils.constants")
+
+local window_sizing = consts.window_sizing
+
 local M = {}
 
 M.log = function(msg, level, name)
@@ -108,11 +112,11 @@ end
 M.get_window_default_spacing = function(width, height)
   local l, t = 0.25, 0.25
 
-  if width <= 250 then
+  if width <= window_sizing.md.width then
     l = 0.1
   end
 
-  if height <= 65 then
+  if height <= window_sizing.md.height then
     t = 0.1
   end
 
@@ -161,46 +165,30 @@ M.get_float_win_sizing = function()
   }
 end
 
-M.find_git_ancestor = function()
+M.find_git_ancestor = function(path)
   local lsp_util = vim.F.npcall(require, "lspconfig.util")
 
-  if lsp_util then
-    local pwd = os.getenv("PWD")
+  path = path or vim.fn.getcwd()
 
-    return lsp_util.find_git_ancestor(pwd)
-  else
-    return nil
+  if lsp_util then
+    return lsp_util.find_git_ancestor(path)
   end
+
+  return nil
 end
 
----@param dry_run boolean
----@return string
----@overload fun(): string
-M.change_cwd = function(dry_run)
-  local head = vim.fn.expand("%:p")
-  local cwd = head
+M.change_cwd = function()
+  local head = vim.fn.expand("%:p:h")
+  local cwd = M.find_git_ancestor(head) or head
 
-  local lsp_util = vim.F.npcall(require, "lspconfig.util")
-  if lsp_util then
-    local root = lsp_util.find_git_ancestor(head)
+  vim.cmd("lcd " .. cwd)
 
-    if root then
-      cwd = root
-    end
+  local formatted, home = cwd, os.getenv("HOME")
+  if home then
+    formatted = string.gsub(cwd, home, "~")
   end
 
-  if not dry_run then
-    vim.cmd("lcd " .. cwd)
-
-    local formatted, home = cwd, os.getenv("HOME")
-    if home then
-      formatted = string.gsub(cwd, home, "~")
-    end
-
-    vim.notify("Set the current working directory to " .. formatted)
-  end
-
-  return cwd
+  vim.notify("Set the current working directory to " .. formatted)
 end
 
 M.highlight = {
@@ -281,6 +269,21 @@ M.setup_filetypes = function(filetypes)
   if vim.filetype then
     vim.filetype.add(filetypes)
   end
+end
+
+M.telescope = function(cmd, opts)
+  opts = opts or {}
+
+  local win_spec = M.get_window_sepc()
+  if win_spec.columns < window_sizing.md.width then
+    table.insert(opts, "theme=dropdown")
+  end
+
+  M.cmd(table.concat({
+    "Telescope",
+    cmd,
+    table.concat(opts, " "),
+  }, " "))
 end
 
 return M
