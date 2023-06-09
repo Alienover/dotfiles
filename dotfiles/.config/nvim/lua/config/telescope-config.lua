@@ -57,6 +57,10 @@ telescope.setup({
           ["<A-d>"] = false,
           ["<C-r>"] = fb_actions.rename,
         },
+        ["n"] = {
+          ["d"] = false,
+          ["dd"] = fb_actions.remove,
+        },
       },
     },
   },
