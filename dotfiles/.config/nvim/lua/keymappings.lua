@@ -84,24 +84,19 @@ end, {
   desc = "[Z]oom [O]n",
 })
 
--- Smart toggling file finder by telescope or fzf
+-- Toggling file finder by telescope or fzf
 nmap("<C-p>", function()
+  local subcmd = "find_files"
   if utils.find_git_ancestor() then
-    local options = {}
-    local win_spec = utils.get_window_sepc()
-
-    if win_spec.columns < 200 then
-      table.insert(options, "theme=dropdown")
-    end
-
-    cmd(table.concat({
-      "Telescope find_files",
-      table.concat(options, " "),
-    }, " "))
-  else
-    cmd("FZFFiles")
+    subcmd = "git_files"
   end
+  utils.telescope(subcmd)
 end, opts)
+
+-- File browser
+map({ "n", "i", "x", "t" }, "<C-f>", function()
+  utils.telescope("file_browser", { "path=%:p:h", "select_buffer=true" })
+end, d("[F]ile browser"))
 
 -- Smart toggling the spell checking
 nmap("<leader>s", function()
@@ -220,11 +215,3 @@ end, d("[F]ind by leap"))
 nmap("F", function()
   require("leap").leap({ backward = true })
 end, d("[F]ind backward by leap"))
-
--- File browser
-map(
-  { "n", "i", "x", "t" },
-  "<C-f>",
-  "<CMD>Telescope file_browser path=%:p:h select_buffer=true<CR>",
-  d("[F]ile browser")
-)

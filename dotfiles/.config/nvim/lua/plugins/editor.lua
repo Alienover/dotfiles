@@ -63,14 +63,6 @@ return {
   },
 
   {
-    "@local/fzf-finder.nvim",
-    dev = true,
-    cmd = { "FZFFiles" },
-    dependencies = { { "junegunn/fzf", build = "./install --all" } },
-    config = true,
-  },
-
-  {
     "janko-m/vim-test",
     cmd = { "TestFile", "TestNearest" },
   },
