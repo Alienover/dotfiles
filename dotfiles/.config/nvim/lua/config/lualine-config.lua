@@ -123,13 +123,13 @@ local config = {
     },
     lualine_b = {
       "branch",
-      "diagnostics",
+      diff,
     },
     lualine_c = {
       spellcheck,
       filename,
     },
-    lualine_x = { diff, filetype },
+    lualine_x = { "diagnostics", filetype },
     lualine_y = { encoding, spaces },
     lualine_z = {
       {
