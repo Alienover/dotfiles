@@ -11,7 +11,7 @@ __tm_theme_inactive_window_bg="$GUI_BG_BLACK"
 __tm_theme_host_bg="$GUI_PRIMARY"
 __tm_theme_date_fg="$__tm_theme_host_bg"
 __tm_theme_date_bg="$GUI_BLACK"
-__tm_theme_border="$GUI_ACTIVE_TAB_FOREGROUND"
+__tm_theme_border="$GUI_BLACK"
 
 __tm_theme_window_mode_bg="$GUI_GREEN"
 __tm_theme_match_bg="#$GUI_SECONDARY"
@@ -79,4 +79,4 @@ set -gwF copy-mode-current-match-style fg=$__tm_theme_dark_fg,bg=$__tm_theme_cur
 
 ### Border
 set -gwF popup-border-lines rounded
-set -gwF popup-border-style fg=$__tm_theme_light_fg
+set -gwF popup-border-style fg=$__tm_theme_border

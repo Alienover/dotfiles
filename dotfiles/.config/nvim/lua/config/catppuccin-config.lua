@@ -42,6 +42,9 @@ local config = {
 
       ["@neorg.tags.ranged_verbatim.code_block"] = { bg = colors.surface0 },
 
+      SagaBorder = { fg = colors.surface1 },
+      FloatBorder = { fg = colors.surface1 },
+
       TelescopeSelection = { bg = colors.surface1 },
     }
   end,
