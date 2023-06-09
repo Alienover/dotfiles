@@ -24,13 +24,18 @@ return {
   },
 
   {
-    "kevinhwang91/rnvimr",
-    keys = { "<C-f>" },
-    cmd = { "RnvimrToggle" },
-    config = function()
-      require("config.rnvimr-config")
-    end,
+    "nvim-telescope/telescope-file-browser.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
   },
+
+  -- {
+  --   "kevinhwang91/rnvimr",
+  --   keys = { "<C-f>" },
+  --   cmd = { "RnvimrToggle" },
+  --   config = function()
+  --     require("config.rnvimr-config")
+  --   end,
+  -- },
 
   {
     "numToStr/Comment.nvim",

@@ -1,13 +1,12 @@
 local utils = require("utils")
 local consts = require("utils.constants")
 
-local nmap, tmap, expand = utils.nmap, utils.tmap, utils.expand
+local nmap, tmap = utils.nmap, utils.tmap
 
 local groups = {
   filetype = vim.api.nvim_create_augroup("FT", { clear = true }),
   folding = vim.api.nvim_create_augroup("Folding", { clear = true }),
   terminal = vim.api.nvim_create_augroup("Terminal", { clear = true }),
-  directory = vim.api.nvim_create_augroup("Directory", { clear = true }),
 }
 
 vim.api.nvim_create_autocmd("TermEnter", {
@@ -25,7 +24,7 @@ vim.api.nvim_create_autocmd("TermEnter", {
 
     utils.cmd.setlocal("nocursorline nonumber norelativenumber")
     -- Set darker background color
-    -- utils.cmd("hi TerminalBG guibg=" .. constants.colors.BLACK)
+    -- utils.cmd("hi TerminalBG guibg=" .. consts.colors.BLACK)
     -- utils.cmd("set winhighlight=Normal:TerminalBG")
 
     vim.wo.statuscolumn = ""
@@ -68,33 +67,6 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "make" },
   callback = function()
     vim.bo.expandtab = false
-  end,
-})
-
-vim.api.nvim_create_autocmd("VimEnter", {
-  desc = "Open Ranger once the current buffer is a directory",
-
-  group = groups.directory,
-  callback = function()
-    local bufnr = vim.api.nvim_get_current_buf()
-    if vim.fn.isdirectory(expand("%")) == 1 then
-      vim.cmd.RnvimrToggle()
-
-      vim.g.__RNVIMR_autocmd_id = vim.api.nvim_create_autocmd("TermLeave", {
-        callback = function()
-          local autocmd_id = vim.g.__RNVIMR_autocmd_id
-          if autocmd_id ~= nil then
-            vim.api.nvim_del_autocmd(vim.g.__RNVIMR_autocmd_id)
-          end
-
-          if bufnr ~= nil then
-            vim.api.nvim_buf_call(bufnr, function()
-              vim.cmd.KWBufDel("force")
-            end)
-          end
-        end,
-      })
-    end
   end,
 })
 

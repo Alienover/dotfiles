@@ -41,6 +41,8 @@ local config = {
       CursorLine = { ctermfg = "White" },
 
       ["@neorg.tags.ranged_verbatim.code_block"] = { bg = colors.surface0 },
+
+      TelescopeSelection = { bg = colors.surface1 },
     }
   end,
 }

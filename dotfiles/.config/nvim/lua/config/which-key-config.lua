@@ -211,6 +211,7 @@ local n_mappings = {
       s = { t("Lazy show"), "Show" },
     },
     u = { telescope("undo"), "Undo tree" },
+    ["?"] = { telescope("help_tags"), "Help doc" },
   },
   e = workspaces(constants.files.workdirs),
   s = { t("split"), "Split" },

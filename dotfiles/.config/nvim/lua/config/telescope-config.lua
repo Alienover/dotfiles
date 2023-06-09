@@ -1,9 +1,14 @@
 -- Reference
 -- https://github.com/nvim-telescope/telescope.nvim
 local actions = require("telescope.actions")
+local telescope = require("telescope")
+local fb_actions = require("telescope").extensions.file_browser.actions
 
-require("telescope").setup({
+telescope.setup({
   defaults = {
+    selection_caret = "  ",
+    entry_prefix = "  ",
+
     layout_config = {
       width = 0.5,
       height = 0.5,
@@ -39,9 +44,26 @@ require("telescope").setup({
         },
       },
     },
+    file_browser = {
+      -- disables netrw and use telescope-file-browser in its place
+      hijack_netrw = true,
+      hide_parent_dir = true,
+
+      mappings = {
+        ["i"] = {
+          ["<A-r>"] = false,
+          ["<A-m>"] = false,
+          ["<A-y>"] = false,
+          ["<A-d>"] = false,
+          ["<C-r>"] = fb_actions.rename,
+        },
+      },
+    },
   },
 })
 
-require("telescope").load_extension("fzf")
-require("telescope").load_extension("undo")
-require("telescope").load_extension("noice")
+local extensions = { "fzf", "undo", "noice", "file_browser" }
+
+for _, ext in ipairs(extensions) do
+  telescope.load_extension(ext)
+end

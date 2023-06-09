@@ -220,3 +220,11 @@ end, d("[F]ind by leap"))
 nmap("F", function()
   require("leap").leap({ backward = true })
 end, d("[F]ind backward by leap"))
+
+-- File browser
+map(
+  { "n", "i", "x", "t" },
+  "<C-f>",
+  "<CMD>Telescope file_browser path=%:p:h select_buffer=true<CR>",
+  d("[F]ile browser")
+)
