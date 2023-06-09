@@ -61,6 +61,7 @@ local t = function(str, opts)
 end
 
 -- Populate the command for file to edit
+---@param filepath string
 local e = function(filepath)
   return t("e " .. filepath)
 end
@@ -80,25 +81,12 @@ local ft = function(input)
   end
 end
 
+--- Telescope wrapper with theme flag based on the window sizing
+---@param sub_cmd string
+---@param opts table|nil
 local telescope = function(sub_cmd, opts)
   return function()
-    local options = {}
-
-    for k, v in pairs(opts or {}) do
-      table.insert(options, ("%s=%s"):format(k, v))
-    end
-
-    local win_spec = utils.get_window_sepc()
-
-    if win_spec.columns < 200 then
-      table.insert(options, "theme=dropdown")
-    end
-
-    cmd(table.concat({
-      "Telescope",
-      sub_cmd,
-      table.concat(options, " "),
-    }, " "))
+    utils.telescope(sub_cmd, opts)
   end
 end
 
@@ -115,17 +103,19 @@ local workspaces = function(base)
         cwd = constants.files.work_config,
         prompt_title = "Search\\ Config",
       }),
-      "Search Config",
+      "Search [O]ther Config",
     },
   }
 
   -- Set the first letter of the folder as the trigger key
   for _, v in pairs(dirs) do
     local dir = string.match(v, "/([^/]+)$")
-    local key = string.sub(dir, 1, 1)
+    local key, rest = string.sub(dir, 1, 1), string.sub(dir, 2)
 
     if maps[key] == nil then
       key = string.lower(key)
+    else
+      key = string.upper(key)
     end
 
     maps[key] = {
@@ -134,7 +124,7 @@ local workspaces = function(base)
         no_ignore = true,
         prompt_title = ("Search " .. dir):gsub(" ", "\\ "),
       }),
-      "Search " .. dir,
+      string.format("Search [%s]%s", string.upper(key), rest),
     }
   end
 
@@ -200,45 +190,39 @@ end
 local n_mappings = {
   h = {
     name = "Help",
-    t = { telescope("builtin"), "Telescope" },
-    c = { telescope("command"), "Commands" },
-    k = { telescope("keymaps"), "key Maps" },
-    h = { telescope("highlights"), "Highlight Groups" },
-    n = { telescope("noice"), "Noice history" },
+    t = { telescope("builtin"), "[T]elescope" },
+    c = { telescope("commands"), "[C]ommands" },
+    k = { telescope("keymaps"), "[K]ey Maps" },
+    h = { telescope("highlights"), "[H]ighlight Groups" },
+    n = { telescope("noice"), "[N]oice history" },
     l = {
       name = "Lazy Manager",
-      S = { t("Lazy Sync"), "Sync" },
-      s = { t("Lazy show"), "Show" },
+      S = { t("Lazy Sync"), "[S]ync Plugins" },
+      s = { t("Lazy show"), "[S]how Plugins" },
     },
-    u = { telescope("undo"), "Undo tree" },
+    u = { telescope("undo"), "[U[ndo tree" },
     ["?"] = { telescope("help_tags"), "Help doc" },
   },
   e = workspaces(constants.files.workdirs),
-  s = { t("split"), "Split" },
-  v = { t("vsplit"), "Split vertically" },
   b = {
     name = "Buffers",
-    d = { t("KWBufDel"), "Delete" },
-    D = { t("KWBufDel force"), "Force Delete" },
-    f = { t("bfirst"), "First" },
-    l = { t("blast"), "Last" },
-    n = { t("bnext"), "Next" },
-    p = { t("bprevious"), "Previous" },
+    d = { t("KWBufDel"), "[D]Delete" },
+    D = { t("KWBufDel force"), "Force [D]elete" },
     b = {
       telescope(
         "buffers",
         { previewer = false, sort_mru = true, ignore_current_buffer = true }
       ),
-      "Find buffers",
+      "Find [B]uffers",
     },
   },
   t = {
     name = "Terminal",
-    [";"] = { ft("zsh"), "terminal" },
-    h = { ft("htop"), "htop" },
-    p = { ft("python"), "python" },
-    n = { ft("node"), "node" },
-    t = { ft(), "Toggle" },
+    [";"] = { ft(os.getenv("SHELL") or "zsh"), "[T]erminal" },
+    h = { ft("htop"), "[H]top" },
+    p = { ft("python"), "[P]ython" },
+    n = { ft("node"), "[N]ode" },
+    t = { ft(), "[T]oggle" },
   },
   g = {
     name = "Git",
@@ -259,9 +243,9 @@ local n_mappings = {
   },
   f = {
     name = "Files",
-    r = { telescope("live_grep"), "Live grep" },
-    f = { telescope("find_files"), "Find files" },
-    o = { telescope("oldfiles"), "Recently opended" },
+    r = { telescope("live_grep"), "Live G[r]ep" },
+    f = { telescope("find_files"), "[F]ind files" },
+    o = { telescope("oldfiles"), "Recently [O]pend" },
   },
   o = {
     name = "Open",
@@ -279,35 +263,34 @@ local n_mappings = {
   },
   l = {
     name = "LSP",
-    I = { t("LspInfo"), "Info" },
-    R = { t("LspRestart"), "Restart" },
-    N = { t("NullLsInfo"), "null-ls info" },
-    f = { t("LspFormat", { silent = true }), "Format" },
-    q = { telescope("quickfix"), "Quickfix" },
-    r = { ":IncRename ", "Rename" },
-    s = { telescope("lsp_document_symbols"), "Document symbols" },
+    I = { t("LspInfo"), "[I]nfo" },
+    R = { t("LspRestart"), "[R]estart" },
+    N = { t("NullLsInfo"), "[N]ull-ls Info" },
+    f = { t("LspFormat", { silent = true }), "[F]ormat" },
+    r = { ":IncRename ", "[R]ename" },
+    s = { telescope("lsp_document_symbols"), "Document [S]ymbols" },
     D = {
       telescope("diagnostics"),
-      "Document diagnostic",
+      "Document [D]iagnostic",
     },
     n = {
       lspsaga("diagnostic_jump_next"),
-      "Next diagnostic",
+      "[N]ext diagnostic",
     },
     p = {
       lspsaga("diagnostic_jump_prev"),
-      "Previous diagnostic",
+      "[P]revious diagnostic",
     },
-    t = { telescope("lsp_type_definitions"), "Type definitions" },
-    a = { lspsaga("code_action"), "Code action" },
-    d = { lspsaga("preview_definition"), "Definition" },
-    m = { t("Mason"), "LSP servers" },
+    t = { telescope("lsp_type_definitions"), "[T]ype dDfinitions" },
+    a = { lspsaga("code_action"), "Code [A]ction" },
+    d = { lspsaga("peek_definition"), "[D]efinition" },
+    m = { t("Mason"), "[M]ason LSP Servers" },
   },
   c = {
     name = "Commands",
     r = { t("RestExecute"), "Execute HTTP request" },
   },
-  z = { t("ZenMode"), "Zen Mode" },
+  z = { t("ZenMode"), "[Z]en Mode" },
   ["/"] = {
     telescope("current_buffer_fuzzy_find"),
     "Fuzzily search in current buffer",
