@@ -165,6 +165,11 @@ M.get_float_win_sizing = function()
   }
 end
 
+M.is_inside_git_repo = function()
+  vim.fn.system("git rev-parse --is-inside-work-tree")
+  return vim.v.shell_error == 0
+end
+
 M.find_git_ancestor = function(path)
   local lsp_util = vim.F.npcall(require, "lspconfig.util")
 
@@ -277,8 +282,8 @@ M.telescope = function(cmd, opts)
 
   local win_spec = M.get_window_sepc()
   if win_spec.columns < window_sizing.md.width then
-    table.insert(opts, "theme=dropdown")
     opts.theme = "dropdown"
+    opts.previewer = false
   end
 
   for k, v in pairs(opts) do
@@ -286,6 +291,19 @@ M.telescope = function(cmd, opts)
   end
 
   M.cmd(string.format("%s %s %s", "Telescope", cmd, table.concat(flags, " ")))
+end
+
+M.buffer_is_big = function(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+  local max_filesize = 100 * 1024 -- 100 KB
+
+  local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(bufnr))
+  if ok and stats and stats.size > max_filesize then
+    return true
+  else
+    return false
+  end
 end
 
 return M
