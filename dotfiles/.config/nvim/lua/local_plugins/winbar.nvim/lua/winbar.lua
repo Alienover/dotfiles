@@ -1,7 +1,4 @@
-local utils = require("utils")
 local constants = require("utils.constants")
-
-local expand = utils.expand
 
 local icons = constants.icons
 
@@ -78,7 +75,7 @@ function MM:get_filepath()
     return
   end
 
-  local head = expand("%:h")
+  local head = vim.fn.expand("%:h")
 
   if head == "" or head == "." then
     return
@@ -101,7 +98,7 @@ function MM:get_filepath()
 end
 
 function MM:get_filename()
-  local name, ext = expand("%:t"), expand("%:e")
+  local name, ext = vim.fn.expand("%:t"), vim.fn.expand("%:e")
 
   if name == "" then
     return
