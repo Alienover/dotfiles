@@ -1,8 +1,24 @@
 -- Reference
 -- https://github.com/nvim-telescope/telescope.nvim
-local actions = require("telescope.actions")
 local telescope = require("telescope")
-local fb_actions = require("telescope").extensions.file_browser.actions
+local ts_actions = require("telescope.actions")
+
+local undo = function(method)
+  local undo_actions = vim.F.npcall(require, "telescope-undo.actions")
+  if undo_actions then
+    return undo_actions[method]
+  end
+end
+
+local file_browser = function(method)
+  local fb_actions = vim.F.npcall(function()
+    return require("telescope").extensions.file_browser.actions
+  end, nil)
+
+  if fb_actions then
+    return fb_actions[method]
+  end
+end
 
 telescope.setup({
   defaults = {
@@ -16,12 +32,12 @@ telescope.setup({
     prompt_prefix = " 🌈 ",
     mappings = {
       i = {
-        ["<C-j>"] = actions.move_selection_next,
-        ["<C-k>"] = actions.move_selection_previous,
-        ["<Esc>"] = actions.close,
+        ["<C-j>"] = ts_actions.move_selection_next,
+        ["<C-k>"] = ts_actions.move_selection_previous,
+        ["<Esc>"] = ts_actions.close,
       },
       n = {
-        q = actions.close,
+        q = ts_actions.close,
       },
     },
   },
@@ -40,7 +56,7 @@ telescope.setup({
     undo = {
       mappings = {
         i = {
-          ["<cr>"] = require("telescope-undo.actions").restore,
+          ["<cr>"] = undo("restore"),
         },
       },
     },
@@ -48,18 +64,40 @@ telescope.setup({
       -- disables netrw and use telescope-file-browser in its place
       hijack_netrw = true,
       hide_parent_dir = true,
+      grouped = true,
+      initial_mode = "normal",
 
       mappings = {
         ["i"] = {
-          ["<A-r>"] = false,
-          ["<A-m>"] = false,
-          ["<A-y>"] = false,
-          ["<A-d>"] = false,
-          ["<C-r>"] = fb_actions.rename,
+          ["<A-r>"] = false, -- fb_actions.rename, deprecated
+          ["<A-m>"] = false, -- fb_actions.move, deprecated
+          ["<A-y>"] = false, -- fb_actions.copy, deprecated
+          ["<A-d>"] = false, -- fb_actions.remove, deprecated
+          ["<C-r>"] = file_browser("rename"),
+          ["<Esc>"] = false,
         },
         ["n"] = {
-          ["d"] = false,
-          ["dd"] = fb_actions.remove,
+          ["d"] = false, -- fb_actions.remove, use "dd" instead
+          ["c"] = false, -- fb_actions.create, use "n" instead
+          ["g"] = false, -- fb_actions.goto_parent_dir, use "g" instead
+          ["m"] = false, -- fb_actions.move, use "p" instead
+          ["f"] = false, -- fb_actions.toggle_browser, deprecated
+          ["s"] = false, -- fb_actions.toggle_all, use "S" instead
+          ["t"] = false, -- fb_actions.change_cwd, use "<C-t>" instead
+          ["w"] = false, -- fb_actions.goto_cwd, use "<C-w>" instead
+          ["S"] = file_browser("toggle_all"),
+          ["p"] = file_browser("move"),
+          ["q"] = ts_actions.close,
+          ["h"] = file_browser("goto_parent_dir"),
+          ["H"] = file_browser("toggle_hidden"),
+          ["l"] = ts_actions.select_default,
+          ["n"] = file_browser("create"),
+          ["dd"] = file_browser("remove"),
+          ["<C-t>"] = file_browser("change_cwd"),
+          ["<C-w>"] = file_browser("goto_cwd"),
+          ["/"] = function()
+            vim.cmd("startinsert!")
+          end,
         },
       },
     },

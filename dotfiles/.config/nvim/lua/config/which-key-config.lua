@@ -190,7 +190,8 @@ end
 local n_mappings = {
   h = {
     name = "Help",
-    t = { telescope("builtin"), "[T]elescope" },
+    t = { telescope("todo-comments"), "[T]odo Comments" },
+    T = { telescope("builtin"), "[T]elescope" },
     c = { telescope("commands"), "[C]ommands" },
     k = { telescope("keymaps"), "[K]ey Maps" },
     h = { telescope("highlights"), "[H]ighlight Groups" },
