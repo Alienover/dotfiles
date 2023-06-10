@@ -37,9 +37,6 @@ local config = {
 
       TabLineSel = { bg = colors.red },
 
-      -- INFO: Work around https://github.com/neovim/neovim/issues/9800
-      CursorLine = { ctermfg = "White" },
-
       ["@neorg.tags.ranged_verbatim.code_block"] = { bg = colors.surface0 },
 
       SagaBorder = { fg = colors.surface1 },
