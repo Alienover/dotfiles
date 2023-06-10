@@ -86,10 +86,8 @@ end, {
 
 -- Toggling file finder by telescope or fzf
 nmap("<C-p>", function()
-  local subcmd = "find_files"
-  if utils.find_git_ancestor() then
-    subcmd = "git_files"
-  end
+  local subcmd = utils.is_inside_git_repo() and "git_files" or "find_files"
+
   utils.telescope(subcmd)
 end, opts)
 
