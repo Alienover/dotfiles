@@ -2,10 +2,10 @@ return {
   {
     "nvimdev/lspsaga.nvim",
     event = "LspAttach",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("config.saga-config")
     end,
-    dependencies = { "nvim-tree/nvim-web-devicons" },
   },
 
   {
@@ -31,55 +31,31 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = "BufReadPre",
-    config = function()
-      require("lsp")
-    end,
     dependencies = {
+      "jose-elias-alvarez/null-ls.nvim", -- Provides the linters and formatters
+
+      -- LSP server installer and manager
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
-      "jose-elias-alvarez/null-ls.nvim",
-      "j-hui/fidget.nvim",
 
-      -- INFO: Lua setup for neovim
-      "folke/neodev.nvim",
+      "j-hui/fidget.nvim", -- Provides LSP progress widget
 
-      -- FIXME: remove it after few weeks monitoring
-      -- {
-      --   "folke/lsp-colors.nvim",
-      --   opts = {},
-      -- },
+      "folke/neodev.nvim", -- Provides Lua setup for neovim
 
       { -- Provides the `go_def` and `go_back` with marks
         "@local/lsp-marks.nvim",
         dev = true,
         config = true,
       },
-    },
-  },
 
-  { -- Highlight, edit, and navigate code
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
+      -- FIXME: remove it after few weeks monitoring
+      -- {
+      --   "folke/lsp-colors.nvim",
+      --   opts = {},
+      -- },
+    },
     config = function()
-      require("config.treesitter-config")
+      require("lsp")
     end,
-    dependencies = {
-      "windwp/nvim-ts-autotag",
-      "nvim-treesitter/nvim-treesitter-refactor",
-      {
-        "andymass/vim-matchup",
-        config = function()
-          require("config.matchup-config")
-        end,
-      },
-    },
-  },
-
-  { -- Additional text objects via treesitter
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    event = "BufReadPost",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-    },
   },
 }

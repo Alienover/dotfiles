@@ -2,7 +2,7 @@ return {
   {
     "dinhhuy258/git.nvim",
     cmd = { "Git", "GitBlame" },
-    keys = { "<space>go", "<space>gP" },
+    keys = { { "<space>go", mode = { "n", "x" } }, "<space>gP" },
     opts = {
       default_mappings = false,
       keymaps = {

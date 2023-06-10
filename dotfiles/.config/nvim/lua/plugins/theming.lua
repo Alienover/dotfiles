@@ -19,12 +19,12 @@ return {
   { -- Status Line
     "hoob3rt/lualine.nvim",
     event = "VeryLazy",
-    config = function()
-      require("config.lualine-config")
-    end,
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
+    config = function()
+      require("config.lualine-config")
+    end,
   },
 
   { -- Tabs

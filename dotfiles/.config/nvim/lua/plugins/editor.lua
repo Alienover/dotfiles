@@ -13,29 +13,16 @@ return {
   { -- Files browser
     "nvim-telescope/telescope.nvim",
     cmd = { "Telescope" },
-    config = function()
-      require("config.telescope-config")
-    end,
     dependencies = {
       "nvim-lua/plenary.nvim",
       "debugloop/telescope-undo.nvim",
+      "nvim-telescope/telescope-file-browser.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
+    config = function()
+      require("config.telescope-config")
+    end,
   },
-
-  {
-    "nvim-telescope/telescope-file-browser.nvim",
-    dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
-  },
-
-  -- {
-  --   "kevinhwang91/rnvimr",
-  --   keys = { "<C-f>" },
-  --   cmd = { "RnvimrToggle" },
-  --   config = function()
-  --     require("config.rnvimr-config")
-  --   end,
-  -- },
 
   {
     "numToStr/Comment.nvim",
@@ -46,13 +33,13 @@ return {
     },
   },
 
-  {
+  { -- Highlight keywords like todo, fix, and info
     "folke/todo-comments.nvim",
     event = "BufReadPost",
+    dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       require("config.todo-config")
     end,
-    dependencies = { "nvim-lua/plenary.nvim" },
   },
 
   { -- Snippets
