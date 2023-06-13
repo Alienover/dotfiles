@@ -195,7 +195,7 @@ end, opts)
 nmap("K", function()
   local winid = ufoWrapper("peekFoldedLinesUnderCursor")
   if not winid then
-    cmd("Lspsaga hover_doc")
+    vim.lsp.buf.hover()
   end
 end, opts)
 
