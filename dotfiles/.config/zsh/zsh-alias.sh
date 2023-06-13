@@ -1,8 +1,21 @@
 #! /usr/bin/env zsh
 
-# Directories
-alias ls="ls --color=always"
-alias ll="ls -lh"
+init_ls_alias() {
+  if command -v exa > /dev/null; then
+    alias ls="exa"
+    alias ll="exa -alh"
+    alias tree="exa --tree"
+  else
+    alias ls="ls --color=always"
+    alias ll="ls -lh"
+  fi
+}
+
+init_cat_alias() {
+  if command -v bat > /dev/null; then
+    alias cat="bat"
+  fi
+}
 
 init_proxy_alias() {
   # Proxychains
@@ -19,4 +32,6 @@ init_config_alias() {
   alias sw="sh $MY_CONFIG_DIR/tmux/switchy.sh"
 }
 
+init_ls_alias
+init_cat_alias
 init_config_alias
