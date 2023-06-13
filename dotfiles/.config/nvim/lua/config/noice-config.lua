@@ -1,7 +1,3 @@
-require("notify").setup({
-  background_colour = "#00000000",
-})
-
 require("noice").setup({
   presets = { inc_rename = true, lsp_doc_border = true },
   lsp = {

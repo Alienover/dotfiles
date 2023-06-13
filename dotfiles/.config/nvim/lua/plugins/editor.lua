@@ -85,11 +85,15 @@ return {
     end,
     dependencies = {
       -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      "MunifTanjim/nui.nvim",
+      { "MunifTanjim/nui.nvim", module = "nui" },
 
-      "rcarriga/nvim-notify",
-
-      "nvim-treesitter/nvim-treesitter",
+      {
+        "rcarriga/nvim-notify",
+        module = "notify",
+        opts = {
+          background_colour = "#000000",
+        },
+      },
     },
   },
 
