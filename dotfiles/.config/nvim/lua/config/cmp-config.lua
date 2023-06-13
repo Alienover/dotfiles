@@ -139,7 +139,6 @@ cmp.setup({
       -- Utilities
       registery.path,
       registery.calc,
-      registery.emoji,
       registery.buffer:extend({ keyword_length = 5 }),
     }
   ),
@@ -156,7 +155,7 @@ cmp.setup({
   experimental = {
     native_menu = false,
     ghost_text = {
-      hl_group = "Comment"
+      hl_group = "Comment",
     },
   },
 })
@@ -192,7 +191,7 @@ cmp.setup.cmdline(":", {
 cmp.setup.filetype({ "norg" }, {
   sources = cmp.config.sources(
     { registery.neorg, registery.path },
-    { registery.buffer:extend({ keyword_length = 5 }) }
+    { registery.emoji, registery.buffer:extend({ keyword_length = 5 }) }
   ),
 })
 
