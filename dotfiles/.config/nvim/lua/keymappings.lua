@@ -162,17 +162,14 @@ nmap("x", '"_x', opts)
 -- URL handling
 -- Refer to https://sbulav.github.io/vim/neovim-opening-urls/
 nmap("gx", function()
-  local c = ""
   if vim.fn.has("mac") == 1 then
-    c = 'call jobstart(["open", expand("<cfile>")], {"detach": v:true})'
+    vim.fn.jobstart({ "open", vim.fn.expand("<cfile>") }, { detach = true })
   elseif vim.fn.has("unix") == 1 then
-    c = 'call jobstart(["xdg-open", expand("<cfile>")], {"detach": v:true})'
+    vim.fn.jobstart({ "xdg-open", vim.fn.expand("<cfile>") }, { detach = true })
   else
     vim.notify("Error: gx is not supported on this OS!", vim.log.levels.ERROR)
     return
   end
-
-  cmd(c)
 end, d("Browser link"))
 
 -- Folding
@@ -202,6 +199,7 @@ end, opts)
 nmap("fn", function()
   ufoWrapper("goNextClosedFold")
 end, d("[F]old [N]ext"))
+
 nmap("fp", function()
   ufoWrapper("goPreviousClosedFold")
 end, d("[F]old [P]revious"))
@@ -210,6 +208,7 @@ end, d("[F]old [P]revious"))
 nmap("f", function()
   require("leap").leap({})
 end, d("[F]ind by leap"))
+
 nmap("F", function()
   require("leap").leap({ backward = true })
 end, d("[F]ind backward by leap"))
