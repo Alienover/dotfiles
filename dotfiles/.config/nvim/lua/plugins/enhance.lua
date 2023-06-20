@@ -18,8 +18,8 @@ return {
       { "kk", mode = "i" },
     },
     opts = {
-      -- Press `jk`, `jj` to escape from insert mode
-      mapping = { "jk", "jj" },
+      -- Press `jk`, "kj",`jj`, "kk" to escape from insert mode
+      mapping = { "jk", "kj", "jj", "kk" },
     },
   },
 
