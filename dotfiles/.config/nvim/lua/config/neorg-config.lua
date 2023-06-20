@@ -5,6 +5,7 @@ local NEORG_BASE_DIR = "~/.neorg"
 
 local config = {
   load = {
+    -- INFO: Default modules
     ["core.defaults"] = {}, -- Loads default behaviour
     ["core.esupports.metagen"] = {
       config = {
@@ -48,7 +49,10 @@ local config = {
         end,
       },
     },
-    ["core.concealer"] = {
+    ["core.upgrade"] = {},
+
+    -- INFO: Other modules
+    ["core.concealer"] = { -- Adds pretty icons to your documents
       config = {
         icons = {
           todo = {
@@ -61,7 +65,12 @@ local config = {
           },
         },
       },
-    }, -- Adds pretty icons to your documents
+    },
+    ["core.completion"] = {
+      config = {
+        engine = "nvim-cmp",
+      },
+    },
     ["core.dirman"] = { -- Manages Neorg workspaces
       config = {
         workspaces = {
@@ -71,12 +80,9 @@ local config = {
         default_workspace = "home",
       },
     },
-    ["core.completion"] = {
-      config = {
-        engine = "nvim-cmp",
-      },
-    },
-    ["core.upgrade"] = {},
+    ["core.summary"] = {},
+
+    -- INFO: 3th-party modules
     ["core.integrations.telescope"] = {},
   },
 }
