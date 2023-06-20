@@ -86,9 +86,13 @@ end, {
 
 -- Toggling file finder by telescope or fzf
 nmap("<C-p>", function()
-  local subcmd = utils.is_inside_git_repo() and "git_files" or "find_files"
+  local subcmd, options = "find_files", {}
+  if utils.is_inside_git_repo() then
+    subcmd = "git_files"
+    options["show_untracked"] = true
+  end
 
-  utils.telescope(subcmd)
+  utils.telescope(subcmd, options)
 end, opts)
 
 -- File browser
