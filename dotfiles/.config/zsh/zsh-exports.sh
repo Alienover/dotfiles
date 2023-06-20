@@ -17,7 +17,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='vim'
+  export EDITOR='nvim'
 fi
 
 export LC_ALL=en_US.UTF-8
