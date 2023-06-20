@@ -125,8 +125,19 @@ C_FG=$GUI_FOREGROUND
 C_BG=$GUI_BACKGROUND
 C_PRIMARY=$GUI_BLUE
 C_YELLOW=$GUI_DARK_YELLOW
+C_BLACK=$GUI_BLACK
 
-FZF_OPTIONS="--color fg:$C_FG,bg:$C_BG,hl:$C_PRIMARY,fg+:$C_PRIMARY,bg+:$C_BG,hl+:$C_YELLOW,info:$C_PRIMARY,prompt:$C_PRIMARY,spinner:$C_PRIMARY,pointer:$C_PRIMARY,marker:$C_YELLOW --layout=reverse --margin=1,2 --no-info --height 100%"
+# Refer to https://github.com/junegunn/fzf/wiki/Color-schemes#color-configuration for more detail
+FZF_OPTIONS="
+--no-info
+--layout=reverse
+--margin=1,3
+--height=100%
+--color fg:$C_FG,bg:$C_BG,hl:$C_PRIMARY
+--color fg+:$C_PRIMARY,bg+:$C_BLACK,hl+:$C_YELLOW
+--color gutter:$C_BG,info:$C_PRIMARY,prompt:$C_PRIMARY
+--color spinner:$C_PRIMARY,pointer:$C_BLACK,marker:$C_YELLOW,border:$C_BLACK
+"
 
 if [ -n "$1" ]; then
   MATCHEDS=$(echo "$1" | grep -oE "^[^:]+")
