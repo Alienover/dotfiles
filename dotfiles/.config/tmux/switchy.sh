@@ -134,7 +134,7 @@ FZF_OPTIONS="
 --margin=1,3
 --height=100%
 --color fg:$C_FG,bg:$C_BG,hl:$C_PRIMARY
---color fg+:$C_PRIMARY,bg+:$C_BLACK,hl+:$C_YELLOW
+--color fg+:$C_FG,bg+:$C_BLACK,hl+:$C_YELLOW
 --color gutter:$C_BG,info:$C_PRIMARY,prompt:$C_PRIMARY
 --color spinner:$C_PRIMARY,pointer:$C_BLACK,marker:$C_YELLOW,border:$C_BLACK
 "
