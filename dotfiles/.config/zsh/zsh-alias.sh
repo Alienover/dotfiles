@@ -3,7 +3,7 @@
 init_ls_alias() {
   if command -v exa > /dev/null; then
     alias ls="exa"
-    alias ll="exa -alh"
+    alias ll="exa -alh --sort=newest"
     alias tree="exa --tree"
   else
     alias ls="ls --color=always"
