@@ -190,7 +190,7 @@ cmp.setup.cmdline(":", {
 -- Use neorg, path & buffer source for `.norg` file
 cmp.setup.filetype({ "norg" }, {
   sources = cmp.config.sources(
-    { registery.neorg, registery.path },
+    { registery.neorg, registery.luasnip, registery.path },
     { registery.emoji, registery.buffer:extend({ keyword_length = 5 }) }
   ),
 })
