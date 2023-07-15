@@ -1,7 +1,18 @@
 return {
   { "nvim-lua/plenary.nvim" },
 
-  { "ggandor/leap.nvim" },
+  {
+    "folke/flash.nvim",
+    config = function()
+      require("config.flash-config")
+    end,
+    keys = {
+      { "f", mode = { "n", "x", "o" } },
+      { "S", mode = { "o", "x" } },
+      { "r", mode = { "o" } },
+      { "R", mode = { "o", "x" } },
+    },
+  },
 
   { -- Keep Window on Buffer Delete - Improved - (lua ver.)
     "@local/kwbdi.nvim",
