@@ -7,7 +7,7 @@ return {
       require("config.flash-config")
     end,
     keys = {
-      { "f", mode = { "n", "x", "o" } },
+      "/",
       { "S", mode = { "o", "x" } },
       { "r", mode = { "o" } },
       { "R", mode = { "o", "x" } },

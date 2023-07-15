@@ -4,10 +4,8 @@ local flash = require("flash")
 local map = utils.map
 
 local config = {
-  modes = {
-    char = {
-      keys = { "t", "T" },
-    },
+  prompt = {
+    enabled = false,
   },
 }
 
@@ -21,16 +19,6 @@ local opts = function(desc)
   }
 end
 
-map({ "n", "x", "o" }, "f", function()
-  flash.jump({
-    search = {
-      mode = function(str)
-        return "\\<" .. str
-      end,
-    },
-  })
-end, opts("Flash"))
-
 map({ "o", "x" }, "S", function()
   flash.treesitter()
 end, opts("Flash Treesitter"))
@@ -42,3 +30,7 @@ end, opts("Remote Flash"))
 map({ "o", "x" }, "R", function()
   flash.treesitter_search()
 end, opts("Treesitter Search"))
+
+map({ "c" }, "<C-s>", function()
+  flash.toggle()
+end, opts("Toggle Flash Search"))

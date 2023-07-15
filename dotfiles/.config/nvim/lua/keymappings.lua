@@ -207,12 +207,3 @@ end, d("[F]old [N]ext"))
 nmap("fp", function()
   ufoWrapper("goPreviousClosedFold")
 end, d("[F]old [P]revious"))
-
--- Keymaps for leap.nvim
-nmap("f", function()
-  require("leap").leap({})
-end, d("[F]ind by leap"))
-
-nmap("F", function()
-  require("leap").leap({ backward = true })
-end, d("[F]ind backward by leap"))
