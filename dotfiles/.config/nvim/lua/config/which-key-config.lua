@@ -208,7 +208,7 @@ local n_mappings = {
   b = {
     name = "Buffers",
     d = { t("KWBufDel"), "[D]Delete" },
-    D = { t("KWBufDel force"), "Force [D]elete" },
+    D = { t("KWBufDel!"), "Force [D]elete" },
     b = {
       telescope(
         "buffers",

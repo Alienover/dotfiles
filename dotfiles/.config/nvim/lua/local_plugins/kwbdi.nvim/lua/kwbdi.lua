@@ -105,23 +105,13 @@ end
 
 M.setup = function()
   vim.api.nvim_create_user_command("KWBufDel", function(args)
-    local opts = default_opts or {}
-    for _, item in ipairs(args.fargs) do
-      local splited = vim.split(item, "=")
-      local k, v = splited[1], splited[#splited]
-
-      if k == "force" then
-        local arg_value = false
-        if v ~= "false" then
-          arg_value = true
-        end
-
-        opts[k] = arg_value
-      end
+    local force = args.bang or false
+    if "<bang>" == "!" then
+      force = true
     end
 
-    M:kill_buf(opts)
-  end, { nargs = "?" })
+    M:kill_buf({ force = force })
+  end, { bang = true, desc = "Kepp window on buffer delete" })
 end
 
 return M
