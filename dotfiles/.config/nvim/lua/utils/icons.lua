@@ -120,10 +120,6 @@ local mod = {
       return icons.kind.Text
     end,
   }),
-
-  ui = icons.ui,
-
-  diagnostics = icons.diagnostics,
 }
 
 return vim.tbl_deep_extend("force", icons, mod)
