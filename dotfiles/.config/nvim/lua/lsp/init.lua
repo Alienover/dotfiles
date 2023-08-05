@@ -116,20 +116,10 @@ local lsp_formatting = function(client, bufnr)
   end, {})
 end
 
-local lsp_highlight_document = function(client, _)
-  local status_ok, illuminate = pcall(require, "illuminate")
-  if not status_ok then
-    return
-  end
-
-  illuminate.on_attach(client)
-end
-
 -- Custom on_attach handler
 local on_attach = function(client, bufnr)
   lsp_keymaps(client, bufnr)
   lsp_formatting(client, bufnr)
-  lsp_highlight_document(client, bufnr)
 end
 
 -- Re-write lsp handlers
