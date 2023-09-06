@@ -95,6 +95,7 @@ telescope.setup({
           ["dd"] = file_browser("remove"),
           ["<C-t>"] = file_browser("change_cwd"),
           ["<C-w>"] = file_browser("goto_cwd"),
+          ["<bs>"] = file_browser("backspace"),
           ["/"] = function()
             vim.cmd("startinsert!")
           end,
