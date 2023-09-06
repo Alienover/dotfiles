@@ -10,8 +10,8 @@ function vim {
 
   NVIM_BIN_NIGHTLY="$NVIM_BIN-nightly"
   if [[ -f "$NVIM_BIN_NIGHTLY" ]]; then
-    eval "$NVIM_BIN_NIGHTLY $@"
+    $NVIM_BIN_NIGHTLY $@
   else
-    eval "$NVIM_BIN $@"
+    $NVIM_BIN $@
   fi
 }
