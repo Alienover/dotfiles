@@ -1,10 +1,10 @@
 #! /usr/bin/env zsh
 
 init_ls_alias() {
-  if command -v exa > /dev/null; then
-    alias ls="exa"
-    alias ll="exa -alh --sort=newest"
-    alias tree="exa --tree"
+  if command -v eza > /dev/null; then
+    alias ls="eza"
+    alias ll="eza -alh --sort=newest"
+    alias tree="eza --tree"
   else
     alias ls="ls --color=always"
     alias ll="ls -lh"
