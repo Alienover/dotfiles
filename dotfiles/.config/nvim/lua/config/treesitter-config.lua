@@ -1,12 +1,5 @@
-local consts = require("utils.constants")
-
--- INFO: get the `gcc-12` by homebrew and make sure to set it as the default compiler
--- Otherwise the neorg related parsers won't be able to install
-if consts.os.is_mac then
-  require("nvim-treesitter.install").compilers = { "gcc-12" }
-end
-
 require("nvim-treesitter.configs").setup({
+  modules = {}, -- Empty to remove the warning
   ensure_installed = {
     "vim",
     "help",
@@ -28,6 +21,9 @@ require("nvim-treesitter.configs").setup({
     "markdown_inline",
     "norg",
   },
+  auto_install = true,
+  sync_install = false,
+  ignore_install = {},
   highlight = {
     enable = true,
     use_languagetree = true,
