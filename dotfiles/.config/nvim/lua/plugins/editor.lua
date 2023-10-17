@@ -56,6 +56,9 @@ return {
 
   {
     "NTBBloodbath/rest.nvim",
+    -- INFO: latest commit breaks formatting
+    -- Refer to https://github.com/rest-nvim/rest.nvim/issues/246#issuecomment-1763417975
+    commit = "8b62563",
     ft = { "http" },
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
