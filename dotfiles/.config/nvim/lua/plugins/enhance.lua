@@ -74,7 +74,7 @@ return {
 
   { -- Highlight, edit, and navigate code
     "nvim-treesitter/nvim-treesitter",
-    event = "BufReadPost",
+    event = { "BufReadPost", "BufNewFile" },
     build = ":TSUpdate",
     dependencies = {
       "windwp/nvim-ts-autotag",
@@ -89,15 +89,6 @@ return {
     },
     config = function()
       require("config.treesitter-config")
-    end,
-  },
-
-  { -- FIXME: Need to setup a payment method in OpenAI to access the API
-    "madox2/vim-ai",
-    enabled = false,
-    cmd = { "AI", "AIEdit", "AIChat" },
-    config = function()
-      require("config.ai-config")
     end,
   },
 }

@@ -26,7 +26,7 @@ return {
 
   { -- Git Gutter
     "lewis6991/gitsigns.nvim",
-    event = "BufReadPost",
+    event = { "BufReadPost", "BufNewFile" },
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       require("config.gitsigns-config")
