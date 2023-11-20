@@ -207,6 +207,7 @@ local n_mappings = {
       ),
       "Find [B]uffers",
     },
+    n = { t("tabnew"), "[N]ew Tab" },
   },
   t = {
     name = "Terminal",

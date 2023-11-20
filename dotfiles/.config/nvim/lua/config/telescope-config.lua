@@ -79,6 +79,7 @@ telescope.setup({
           ["<A-y>"] = false, -- fb_actions.copy, deprecated
           ["<A-d>"] = false, -- fb_actions.remove, deprecated
           ["<C-r>"] = file_browser("rename"),
+          ["<C-t>"] = ts_actions.select_tab,
           ["<Esc>"] = false,
         },
         ["n"] = {
@@ -98,7 +99,7 @@ telescope.setup({
           ["l"] = ts_actions.select_default,
           ["n"] = file_browser("create"),
           ["dd"] = file_browser("remove"),
-          ["<C-t>"] = file_browser("change_cwd"),
+          ["<C-t>"] = ts_actions.select_tab,
           ["<C-w>"] = file_browser("goto_cwd"),
           ["<bs>"] = file_browser("backspace"),
           ["/"] = function()
