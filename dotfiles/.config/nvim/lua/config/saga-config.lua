@@ -5,12 +5,21 @@ local nmap, imap = utils.nmap, utils.imap
 
 local icons = constants.icons
 
+local window_specing = utils.get_window_default_spacing()
+
 local config = {
   ui = {
     -- currently only round theme
     colors = require("catppuccin.groups.integrations.lsp_saga").custom_colors(),
     kind = require("catppuccin.groups.integrations.lsp_saga").custom_kind(),
     border = "rounded",
+  },
+  finder = {
+    max_height = 0.2,
+    keys = {
+      vsplit = "v",
+      toggle_or_open = "<CR>",
+    },
   },
   diagnostic = {
     show_code_action = false,
@@ -19,6 +28,7 @@ local config = {
     enable = false,
   },
   code_action = {
+    extend_gitsigns = true,
     num_shortcut = false,
     keys = {
       -- string |table type
@@ -33,6 +43,10 @@ local config = {
     click_support = false,
     color_mode = true,
     separator = " " .. icons.ui.ChevronRight .. " ",
+  },
+  floaterm = {
+    height = window_specing.t * 2,
+    width = window_specing.l * 2,
   },
 }
 
@@ -72,7 +86,5 @@ nmap(
   opts
 )
 -- Definition and references
-nmap("gh", lspsaga("lsp_finder"), opts)
+nmap("gh", lspsaga("finder"), opts)
 nmap("gp", lspsaga("peek_definition"), d("[G]o [P]eek"))
--- INFO: moving "K" to keymappings.lua
--- nmap("K", lspsaga("hover_doc"), opts)

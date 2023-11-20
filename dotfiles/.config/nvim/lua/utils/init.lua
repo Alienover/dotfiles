@@ -111,6 +111,10 @@ end
 
 M.get_window_default_spacing = function(width, height)
   local l, t = 0.25, 0.25
+  local win_spec = M.get_window_sepc()
+
+  width = width or win_spec.columns
+  height = height or win_spec.lines
 
   if width <= window_sizing.md.width then
     l = 0.1

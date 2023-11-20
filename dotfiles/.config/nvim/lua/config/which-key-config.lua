@@ -66,21 +66,6 @@ local e = function(filepath)
   return t("e " .. filepath)
 end
 
--- Populate the floating terminal command with presets
-local ft = function(input)
-  return function()
-    local options = { border = true }
-    local terminal = require("utils.floating_terminal")
-
-    if input == nil then
-      terminal:toggle()
-    else
-      table.insert(options, 1, input)
-      terminal:open(options)
-    end
-  end
-end
-
 --- Telescope wrapper with theme flag based on the window sizing
 ---@param sub_cmd string
 ---@param opts table|nil
@@ -137,6 +122,11 @@ end
 
 local lspsaga = function(sub_cmd)
   return t("Lspsaga " .. sub_cmd)
+end
+
+-- Populate the floating terminal command with presets
+local terminal = function(input)
+  return lspsaga("term_toggle " .. (input or ""))
 end
 
 local neorg = function(sub_cmd)
@@ -219,11 +209,11 @@ local n_mappings = {
   },
   t = {
     name = "Terminal",
-    [";"] = { ft(os.getenv("SHELL") or "zsh"), "[T]erminal" },
-    h = { ft("htop"), "[H]top" },
-    p = { ft("python"), "[P]ython" },
-    n = { ft("node"), "[N]ode" },
-    t = { ft(), "[T]oggle" },
+    [";"] = { terminal(os.getenv("SHELL") or "zsh"), "[T]erminal" },
+    h = { terminal("htop"), "[H]top" },
+    p = { terminal("python"), "[P]ython" },
+    n = { terminal("node"), "[N]ode" },
+    t = { terminal(), "[T]oggle" },
   },
   g = {
     name = "Git",
