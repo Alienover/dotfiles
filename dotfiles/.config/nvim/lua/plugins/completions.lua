@@ -12,12 +12,6 @@ return {
       "hrsh7th/cmp-path",
       "ray-x/cmp-treesitter",
       { "saadparwaiz1/cmp_luasnip", dependencies = { "L3MON4D3/LuaSnip" } },
-      {
-        "windwp/nvim-autopairs",
-        config = function()
-          require("config.autopairs-config")
-        end,
-      },
     },
     config = function()
       require("config.cmp-config")

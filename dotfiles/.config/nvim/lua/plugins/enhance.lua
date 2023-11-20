@@ -28,6 +28,15 @@ return {
   },
 
   {
+    "echasnovski/mini.pairs",
+    event = { "InsertEnter" },
+    opts = {
+      modes = { insert = true, command = true },
+    },
+    config = true,
+  },
+
+  {
     "echasnovski/mini.surround",
     keys = {
       { "s", mode = { "n", "v" } },
