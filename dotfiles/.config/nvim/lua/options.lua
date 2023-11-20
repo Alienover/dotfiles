@@ -97,6 +97,9 @@ local options = {
   smartcase = true,
   ignorecase = true,
 
+  -- Confirm before quite
+  confirm = true,
+
   -- Number
   number = true,
   relativenumber = true,
