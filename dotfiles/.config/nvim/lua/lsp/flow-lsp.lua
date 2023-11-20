@@ -4,7 +4,7 @@
 local util = require("lspconfig/util")
 
 local M = {
-  cmd = { "yarn", "flow", "lsp" },
+  cmd = {'npx', '--no-install', 'flow', 'lsp'},
   filetypes = { "javascript", "javascriptreact", "javascript.jsx" },
   root_dir = util.root_pattern(".flowconfig"),
 }
