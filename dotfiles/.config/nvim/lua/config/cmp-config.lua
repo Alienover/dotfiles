@@ -2,13 +2,19 @@
 -- https://github.com/hrsh7th/nvim-cmp
 
 local cmp = require("cmp")
+local cmp_config = require("cmp.config")
 local neogen = require("neogen")
-local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 
 local utils = require("utils")
 local icons = require("utils.icons")
 
 local kind_icons = icons.kind
+
+---@param c table
+---@return cmp.ConfigSchema
+local extend_config = function(c)
+  return vim.tbl_extend("force", cmp_config.global, c)
+end
 
 ---Wrapper for cmp sources in configuring source structure, formating name
 local registery = setmetatable({
@@ -69,7 +75,7 @@ local simple_format = function(_, vim_item)
   return vim_item
 end
 
-cmp.setup({
+cmp.setup(extend_config({
   snippet = {
     expand = function(args)
       -- For `luasnip` user.
@@ -158,42 +164,49 @@ cmp.setup({
       hl_group = "Comment",
     },
   },
-})
-
-cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+}))
 
 -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline({ "/", "?" }, {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = {
-    registery.buffer,
-  },
-  formatting = {
-    format = simple_format,
-  },
-})
+cmp.setup.cmdline(
+  { "/", "?" },
+  extend_config({
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      registery.buffer,
+    },
+    formatting = {
+      format = simple_format,
+    },
+  })
+)
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(":", {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({ registery.path }, {
-    registery.cmdline:extend({
-      ignore_cmds = { "Man", "!" },
-      keyword_length = 2,
+cmp.setup.cmdline(
+  ":",
+  extend_config({
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({ registery.path }, {
+      registery.cmdline:extend({
+        ignore_cmds = { "Man", "!" },
+        keyword_length = 2,
+      }),
     }),
-  }),
-  formatting = {
-    format = simple_format,
-  },
-})
+    formatting = {
+      format = simple_format,
+    },
+  })
+)
 
 -- Use neorg, path & buffer source for `.norg` file
-cmp.setup.filetype({ "norg" }, {
-  sources = cmp.config.sources(
-    { registery.neorg, registery.luasnip, registery.path },
-    { registery.emoji, registery.buffer:extend({ keyword_length = 5 }) }
-  ),
-})
+cmp.setup.filetype(
+  { "norg" },
+  extend_config({
+    sources = cmp.config.sources(
+      { registery.neorg, registery.luasnip, registery.path },
+      { registery.emoji, registery.buffer:extend({ keyword_length = 5 }) }
+    ),
+  })
+)
 
 -- If a file is too large, I don't want to add to it's cmp sources treesitter, see:
 -- https://github.com/hrsh7th/nvim-cmp/issues/1522
@@ -207,9 +220,9 @@ vim.api.nvim_create_autocmd("BufReadPre", {
       if sources then
         sources[#sources + 1] = registery.treesitter
 
-        cmp.setup.buffer({
+        cmp.setup.buffer(extend_config({
           sources = sources,
-        })
+        }))
       end
     end
   end,
