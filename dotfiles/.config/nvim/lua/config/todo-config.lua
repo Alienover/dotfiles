@@ -27,7 +27,7 @@ local function get_pattern()
 end
 
 local function get_ignore_args()
-  local ignored = { "flow-typed" }
+  local ignored = { "flow-typed", "node_modules" }
 
   local args = {}
 
@@ -47,6 +47,7 @@ require("todo-comments").setup({
       "--with-filename",
       "--line-number",
       "--column",
+      "--hidden",
       get_ignore_args(),
     },
     -- regex that will be used to match keywords.
