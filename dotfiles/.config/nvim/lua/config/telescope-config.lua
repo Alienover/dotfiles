@@ -3,6 +3,8 @@
 local telescope = require("telescope")
 local ts_actions = require("telescope.actions")
 
+---@type function
+---@param method string
 local undo = function(method)
   local undo_actions = vim.F.npcall(require, "telescope-undo.actions")
   if undo_actions then
@@ -10,6 +12,8 @@ local undo = function(method)
   end
 end
 
+---@type function
+---@param method string
 local file_browser = function(method)
   local fb_actions = vim.F.npcall(function()
     return require("telescope").extensions.file_browser.actions
@@ -66,6 +70,7 @@ telescope.setup({
       hide_parent_dir = true,
       grouped = true,
       initial_mode = "normal",
+      respect_gitignore = false,
 
       mappings = {
         ["i"] = {
