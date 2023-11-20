@@ -82,38 +82,9 @@ local lsp_keymaps = function(_, bufnr)
 end
 
 -- Formatting config
-local lsp_formatting = function(client, bufnr)
-  local curr_filetype = vim.bo.filetype
-  for _, excluded in ipairs(excluded_filetypes) do
-    -- Don't setup the lsp formatting for the exlucded filetypes
-    if curr_filetype == excluded then
-      return
-    end
-  end
-
-  local lsp_opts = installed_lsp[client.name]
-
-  -- Set the document formatting to false only when the format option is false
-  if lsp_opts ~= nil and lsp_opts.format == false then
-    client.server_capabilities.documentFormattingProvider = false
-  else
-    local formatGroup = vim.api.nvim_create_augroup("Format", { clear = true })
-
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      desc = "Format the buffer on save",
-
-      buffer = bufnr,
-      group = formatGroup,
-      callback = function()
-        vim.F.npcall(vim.lsp.buf.format, { sync = true, timeout_ms = 2 * 1000 })
-      end,
-    })
-  end
-
-  -- Alias
-  vim.api.nvim_create_user_command("LspFormat", function()
-    vim.F.npcall(vim.lsp.buf.format, nil)
-  end, {})
+local lsp_formatting = function(client, _)
+  -- Disable the LSP format by default. Manage the formatter in "config.conform-config" instead
+  client.server_capabilities.documentFormattingProvider = false
 end
 
 -- Custom on_attach handler

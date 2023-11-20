@@ -32,6 +32,12 @@ end
 -- * term_mode		 = "t"
 -- * command_mode	 = "c"
 
+nmap("+", "<C-a>", d("Increment"))
+nmap("-", "<C-x>", d("Decrement"))
+
+nmap("<Tab>", ":BufferLineCycleNext<CR>", d("Next Tab"))
+nmap("<S-Tab>", ":BufferLineCyclePrev<CR>", d("Previous Tab"))
+
 nmap("<C-w>h", ":TmuxNavigateLeft<CR>", d("Window Left"))
 nmap("<C-w>l", ":TmuxNavigateRight<CR>", d("Window Right"))
 nmap("<C-w>j", ":TmuxNavigateDown<CR>", d("Window Down"))

@@ -30,6 +30,22 @@ return {
   },
 
   {
+    "stevearc/conform.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    cmd = { "ConformFormat" },
+    config = function()
+      require("config.conform-config")
+    end,
+  },
+
+  {
+    "mfussenegger/nvim-lint",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require("config.lint-config")
+    end,
+  },
+
     "neovim/nvim-lspconfig",
     event = "BufReadPre",
     dependencies = {
