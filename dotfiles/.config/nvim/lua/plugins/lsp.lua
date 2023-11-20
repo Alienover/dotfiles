@@ -46,14 +46,21 @@ return {
     end,
   },
 
-    "neovim/nvim-lspconfig",
-    event = "BufReadPre",
-    dependencies = {
-      "jose-elias-alvarez/null-ls.nvim", -- Provides the linters and formatters
+  {
+    "williamboman/mason.nvim",
+    cmd = { "Mason" },
+    event = "VeryLazy",
+    build = ":MasonUpdate",
+    config = function()
+      require("config.mason-config")
+    end,
+  },
 
-      -- LSP server installer and manager
+  {
+    "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
       "williamboman/mason.nvim",
-      "williamboman/mason-lspconfig.nvim",
 
       "j-hui/fidget.nvim", -- Provides LSP progress widget
 

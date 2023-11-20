@@ -8,6 +8,7 @@ local groups = {
   folding = vim.api.nvim_create_augroup("Folding", { clear = true }),
   terminal = vim.api.nvim_create_augroup("Terminal", { clear = true }),
   diffview = vim.api.nvim_create_augroup("DiffView", { clear = true }),
+  linting = vim.api.nvim_create_augroup("Linting", { clear = true }),
 }
 
 vim.api.nvim_create_autocmd("TermEnter", {
@@ -126,5 +127,14 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
       vim.g.__cursor_hl = nil
     end
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+  desc = "Trigger the linting",
+
+  group = groups.linting,
+  callback = function()
+    require("lint").try_lint()
   end,
 })

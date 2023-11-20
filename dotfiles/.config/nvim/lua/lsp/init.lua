@@ -8,60 +8,8 @@ local marks = require("lsp-marks")
 local o, nmap = utils.o, utils.nmap
 
 local icons = constants.icons
-
-local excluded_filetypes = {
-  "norg",
-}
-
-local installed_lsp = {
-  ["null-ls"] = {
-    external = true,
-    filename = "null-lsp",
-    setup = function(config)
-      config:setup({
-        on_attach = config.on_attach,
-      })
-    end,
-  },
-  html = { format = false },
-  cssls = {},
-  vimls = {},
-  bashls = {},
-  pyright = {},
-  tailwindcss = {},
-  flow = {
-    external = true,
-    filename = "flow-lsp",
-  },
-  jsonls = {
-    format = false,
-    filename = "json-lsp",
-  },
-  tsserver = {
-    format = false,
-    filename = "ts-lsp",
-  },
-  -- NOTE: `sudo` required
-  gopls = {
-    filename = "go-lsp",
-  },
-  ["lua_ls"] = {
-    format = false,
-    filename = "lua-lsp",
-  },
-}
-
-local setup_mason = function()
-  local ensure_installed = {}
-
-  for key, server in pairs(installed_lsp) do
-    if not server.external then
-      table.insert(ensure_installed, key)
-    end
-  end
-
-  require("config.mason-config").setup(ensure_installed)
-end
+local external_types = constants.external_types
+local ensure_externals = constants.ensure_externals
 
 -- Keymaps for LSP interfaces
 local lsp_keymaps = function(_, bufnr)
@@ -145,7 +93,20 @@ local rewrite_lsp_icons = function()
   end
 end
 
-local extend_config = function(config)
+---@param filename string
+---@return table
+local load_config = function(filename)
+  local config = {}
+
+  -- INFO: Load the config file if given
+  if (filename or "") ~= "" then
+    local success, module = pcall(require, filename)
+    if success then
+      config = module
+    end
+  end
+
+  -- INFO: Capabilities config for nvim-cmp
   local custom_capabilities = function()
     local capabilities = require("cmp_nvim_lsp").default_capabilities(
       vim.lsp.protocol.make_client_capabilities()
@@ -154,7 +115,9 @@ local extend_config = function(config)
   end
 
   local DEFAULT_CONFIG = {
+    -- INFO: disable on diff view by default
     autostart = o.diff == false,
+
     on_attach = on_attach,
     capabilities = custom_capabilities(),
     flags = {
@@ -166,28 +129,13 @@ local extend_config = function(config)
 end
 
 local function setup_lsp()
-  local function load_config(name)
-    local config = {}
-
-    if (name or "") ~= "" then
-      local config_filename = "lsp." .. name
-
-      local success, module = pcall(require, config_filename)
-      if success then
-        config = module
-      end
-    end
-
-    return extend_config(config)
-  end
-
   -- Setup the lsp for the one installed manually
-  for server, opts in pairs(installed_lsp) do
-    local config = load_config(opts.filename)
+  for server, opts in pairs(ensure_externals) do
+    local is_lsp = opts[external_types.lsp] or false
 
-    if opts.setup ~= nil then
-      opts.setup(config)
-    else
+    if is_lsp == true then
+      local config = load_config(opts.config_file)
+
       lspconfig[server].setup(config)
     end
   end
@@ -196,5 +144,4 @@ local function setup_lsp()
   rewrite_lsp_icons()
 end
 
-setup_mason()
 setup_lsp()

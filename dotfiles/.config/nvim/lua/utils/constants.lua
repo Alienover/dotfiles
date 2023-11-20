@@ -2,7 +2,7 @@ local M = {}
 
 M.icons = require("utils.icons")
 
-M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/lua/local_plugins"
+M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/my_plugins"
 
 M.files = {
   vim = os.getenv("HOME") .. "/.vimrc",
@@ -89,6 +89,96 @@ M.window_sizing = {
   md = {
     width = 250,
     height = 65,
+  },
+}
+
+---@type table<string, "LSP" | "FORMATTER" | "LINTER">
+M.external_types = {
+  lsp = "LSP",
+  formatter = "FORMATTER",
+  linter = "LINTER",
+}
+
+---@class External
+---@field LSP? boolean
+---@field FORMATTER? boolean
+---@field LINTER? boolean
+---@field mason? string
+---@field config_file? string
+--
+---@type table<string, External>
+M.ensure_externals = {
+  -- INFO: LSP
+  html = {
+    [M.external_types.lsp] = true,
+    mason = "html-lsp",
+  },
+  cssls = {
+    [M.external_types.lsp] = true,
+    mason = "css-lsp",
+  },
+  vimls = {
+    [M.external_types.lsp] = true,
+    mason = "vim-language-server",
+  },
+  bashls = {
+    [M.external_types.lsp] = true,
+    mason = "bash-language-server",
+  },
+  pyright = {
+    [M.external_types.lsp] = true,
+    mason = "pyright",
+  },
+  tailwindcss = {
+    [M.external_types.lsp] = true,
+    mason = "tailwindcss-language-server",
+  },
+  flow = {
+    [M.external_types.lsp] = true,
+    config_file = "lsp.flow-lsp",
+  },
+  jsonls = {
+    [M.external_types.lsp] = true,
+    mason = "json-lsp",
+    config_file = "lsp.json-lsp",
+  },
+  tsserver = {
+    [M.external_types.lsp] = true,
+    mason = "typescript-language-server",
+    config_file = "lsp.ts-lsp",
+  },
+  gopls = {
+    [M.external_types.lsp] = true,
+    mason = "gopls",
+    config_file = "lsp.go-lsp",
+  },
+  lua_ls = {
+    [M.external_types.lsp] = true,
+    mason = "lua-language-server",
+    config_file = "lsp.lua-lsp",
+  },
+
+  -- INFO: Formatters
+  stylua = {
+    [M.external_types.formatter] = true,
+    mason = "stylua",
+  },
+  isort = {
+    [M.external_types.formatter] = true,
+    mason = "isort",
+  },
+  black = {
+    [M.external_types.formatter] = true,
+    mason = "black",
+  },
+  prettier = {
+    [M.external_types.formatter] = true,
+    mason = "prettier",
+  },
+
+  -- INFO: Linters
+  eslint = {
+    [M.external_types.linter] = true,
   },
 }
 

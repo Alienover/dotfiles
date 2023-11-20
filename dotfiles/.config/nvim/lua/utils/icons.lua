@@ -115,6 +115,7 @@ local mod = {
   HINT = icons.diagnostics.Hint .. " ",
   INFOR = icons.diagnostics.Information .. " ",
 
+  ---@type table<string, string>
   kind = setmetatable(icons.kind, {
     __index = function()
       return icons.kind.Text
