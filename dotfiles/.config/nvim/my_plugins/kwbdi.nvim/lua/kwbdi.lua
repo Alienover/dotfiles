@@ -6,11 +6,8 @@
 --     * If there is not alternate buffer then must be showing the preious buffer.
 --     * If there is no alternate nor previous buffer (it is the only buffer) must show an empty buffer.
 
-local utils = require("utils")
-
-local cmd, expand, error = utils.cmd, utils.expand, utils.error
-
-local PLUGIN_NAME = "kwbdi"
+-- INFO: For consistence
+local cmd = vim.cmd
 
 local M = {
   bufnr = 0,
@@ -46,12 +43,17 @@ function M:kill_buf(opts)
   -- Check whehter to close the buffer without saving
   if not opts.force then
     if vim.api.nvim_buf_get_option(self.bufnr, "modified") then
-      local filename = expand("%:t")
-      error(
-        "No write since last change for file " .. filename,
-        string.format("[%s]", PLUGIN_NAME)
+      local choice = vim.fn.confirm(
+        ("Save changes to %q?"):format(vim.fn.bufname()),
+        "&Yes\n&No\n&Cancel"
       )
-      return
+      if choice == 1 then -- Yes
+        cmd.write()
+      elseif choice == 2 then -- No
+        -- Do nothing
+      else
+        return
+      end
     end
   end
 
@@ -79,7 +81,7 @@ function M:move()
     return
   end
 
-  local prevbuf = vim.fn.bufnr("#")
+  local prevbuf = vim.fn.bufnr()
 
   -- Only one buffer
   if self.buf_count <= 1 then

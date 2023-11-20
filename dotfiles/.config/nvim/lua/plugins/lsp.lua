@@ -66,17 +66,7 @@ return {
 
       "folke/neodev.nvim", -- Provides Lua setup for neovim
 
-      { -- Provides the `go_def` and `go_back` with marks
-        "@local/lsp-marks.nvim",
-        dev = true,
-        config = true,
-      },
-
-      -- FIXME: remove it after few weeks monitoring
-      -- {
-      --   "folke/lsp-colors.nvim",
-      --   opts = {},
-      -- },
+      "@local/lsp-marks.nvim", -- Provide the `go_def` and `go_back` with marks
     },
     config = function()
       require("lsp")

@@ -1,5 +1,3 @@
-local consts = require("utils.constants")
-
 return {
   {
     "folke/which-key.nvim",
@@ -64,20 +62,6 @@ return {
     config = function()
       require("config.rest-config")
     end,
-  },
-
-  {
-    "@local/winbar.nvim",
-    dev = true,
-    event = { "BufReadPost" },
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    opts = {
-      excluded_fn = function()
-        -- INFO: Display the winbar info from the diff plugin itself
-        return vim.opt.diff:get()
-      end,
-      excluded_filetypes = consts.special_filetypes.excluded_winbar,
-    },
   },
 
   {

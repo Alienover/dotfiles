@@ -119,12 +119,13 @@ function MM:get_filename()
 end
 
 function MM:get_symbol_node()
-  local status_ok, winbar = pcall(require, "lspsaga.symbolwinbar")
+  local status_ok, winbar = pcall(require, "lspsaga.symbol.winbar")
   if not status_ok or not self.opts.show_symbol then
     return
   end
 
-  local symbol_node = winbar:get_winbar()
+  -- INFO: Refer to: https://nvimdev.github.io/lspsaga/breadcrumbs/#use-in-custom-statusline-or-winbar
+  local symbol_node = winbar.get_bar()
 
   if symbol_node ~= "" then
     table.insert(self.elements, symbol_node)

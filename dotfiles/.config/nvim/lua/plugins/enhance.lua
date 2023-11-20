@@ -14,13 +14,6 @@ return {
     },
   },
 
-  { -- Keep Window on Buffer Delete - Improved - (lua ver.)
-    "@local/kwbdi.nvim",
-    dev = true,
-    cmd = { "KWBufDel" },
-    config = true,
-  },
-
   {
     "max397574/better-escape.nvim",
     keys = {
