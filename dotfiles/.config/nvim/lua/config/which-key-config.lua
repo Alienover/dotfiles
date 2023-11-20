@@ -186,12 +186,13 @@ local n_mappings = {
     k = { telescope("keymaps"), "[K]ey Maps" },
     h = { telescope("highlights"), "[H]ighlight Groups" },
     n = { telescope("noice"), "[N]oice history" },
+    m = { t("Mason"), "[M]ason Manager" },
     l = {
       name = "Lazy Manager",
       S = { t("Lazy Sync"), "[S]ync Plugins" },
       s = { t("Lazy show"), "[S]how Plugins" },
     },
-    u = { telescope("undo"), "[U[ndo tree" },
+    u = { telescope("undo"), "[U]ndo tree" },
     ["?"] = { telescope("help_tags"), "Help doc" },
   },
   e = workspaces(constants.files.workdirs),
@@ -226,7 +227,7 @@ local n_mappings = {
     p = { gitsigns("preview_hunk"), "Preview hunk" },
     b = { gitsigns("blame_line"), "[B]lame line" },
     B = { t("GitBlame"), "[B]lame file" },
-    s = { gitsigns("select_hunk"), "[S]elect hunk" },
+    s = { telescope("git_status"), "Git [S]tatus" },
     h = { toggle_file_diff(true), "Current File [H]istory" },
     H = { toggle_file_diff(), "File [H]istory" },
     o = { "[O]pen in browse" },
@@ -235,7 +236,10 @@ local n_mappings = {
   f = {
     name = "Files",
     r = { telescope("live_grep"), "Live G[r]ep" },
-    f = { telescope("find_files"), "[F]ind files" },
+    f = {
+      telescope("find_files", { no_ignore = false, hidden = true }),
+      "[F]ind files",
+    },
     o = { telescope("oldfiles"), "Recently [O]pend" },
   },
   o = {
@@ -257,7 +261,7 @@ local n_mappings = {
     I = { t("LspInfo"), "[I]nfo" },
     R = { t("LspRestart"), "[R]estart" },
     N = { t("NullLsInfo"), "[N]ull-ls Info" },
-    f = { t("LspFormat", { silent = true }), "[F]ormat" },
+    f = { t("ConformFormat", { silent = true }), "[F]ormat" },
     r = { ":IncRename ", "[R]ename" },
     s = { telescope("lsp_document_symbols"), "Document [S]ymbols" },
     D = {
@@ -275,7 +279,6 @@ local n_mappings = {
     t = { telescope("lsp_type_definitions"), "[T]ype dDfinitions" },
     a = { lspsaga("code_action"), "Code [A]ction" },
     d = { lspsaga("peek_definition"), "[D]efinition" },
-    m = { t("Mason"), "[M]ason LSP Servers" },
   },
   c = {
     name = "Commands",
@@ -301,7 +304,8 @@ local n_mappings = {
 local v_mappings = {
   g = {
     name = "Git",
-    s = { ":Gitsigns stage_hunk<CR>", "[S]tage hunk" },
+    s = { gitsigns("stage_hunk"), "[S]tage hunk" },
+    u = { gitsigns("undo_stage_hunk"), "[U]ndo staged hunk" },
     o = { "[O]pen in browse" },
   },
 }
