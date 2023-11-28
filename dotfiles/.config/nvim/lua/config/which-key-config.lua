@@ -189,7 +189,7 @@ local n_mappings = {
     m = { t("Mason"), "[M]ason Manager" },
     l = {
       name = "Lazy Manager",
-      S = { t("Lazy Sync"), "[S]ync Plugins" },
+      S = { t("Lazy sync"), "[S]ync Plugins" },
       s = { t("Lazy show"), "[S]how Plugins" },
     },
     u = { telescope("undo"), "[U]ndo tree" },
