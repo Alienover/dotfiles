@@ -17,14 +17,14 @@ return {
   { -- Descipline in cursor moving
     "@local/descipline.nvim",
     dev = true,
-    event = { "InsertEnter" },
+    event = { "CursorMoved" },
     config = true,
   },
 
   { -- Customized winbar with file path and document symbols
     "@local/winbar.nvim",
     dev = true,
-    event = { "BufReadPost", { "BufNewFile" } },
+    event = { "BufReadPost", "BufNewFile" },
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
       excluded_fn = function()
