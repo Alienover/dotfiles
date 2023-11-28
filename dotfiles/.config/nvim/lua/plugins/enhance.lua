@@ -29,7 +29,7 @@ return {
 
   {
     "echasnovski/mini.pairs",
-    event = { "InsertEnter" },
+    event = { "InsertEnter", "CmdlineEnter" },
     opts = {
       modes = { insert = true, command = true },
     },
