@@ -3,13 +3,9 @@ return {
     "dinhhuy258/git.nvim",
     cmd = { "Git", "GitBlame" },
     keys = { { "<space>go", mode = { "n", "x" } }, "<space>gP" },
-    opts = {
-      default_mappings = false,
-      keymaps = {
-        browse = "<space>go",
-        open_pull_request = "<space>gP",
-      },
-    },
+    config = function()
+      require("config.git-config")
+    end,
   },
 
   {
