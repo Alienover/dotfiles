@@ -1,9 +1,15 @@
-local M = {}
+local M = {
+  enabled = false,
+}
 
 -- INFO: keys to avoid pressing too frequently
 local descipline_keys = { "h", "j", "k", "l", "+", "-" }
 
-local function cowboy()
+local function enable_cowboy()
+  if M.enabled then
+    return
+  end
+
   ---@type table?
   local id
   local ok = true
@@ -41,10 +47,32 @@ local function cowboy()
       end
     end, { expr = true, silent = true })
   end
+
+  M.enabled = true
+end
+
+local function disable_cowboy()
+  if not M.enabled then
+    return
+  end
+
+  for _, key in ipairs(descipline_keys) do
+    vim.keymap.del("n", key)
+  end
+
+  M.enabled = false
 end
 
 M.setup = function()
-  cowboy()
+  enable_cowboy()
+
+  vim.api.nvim_create_user_command("CowboyEnable", function()
+    enable_cowboy()
+  end, {})
+
+  vim.api.nvim_create_user_command("CowboyDisable", function()
+    disable_cowboy()
+  end, {})
 end
 
 return M
