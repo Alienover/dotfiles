@@ -1,32 +1,36 @@
-local constants = require("utils.constants")
-
-local icons = constants.icons
-
 local DEFAULT_OPTS = {
-  -- @string
+  ---@type string
   -- Icon to separate the content for each section
-  separator = icons.ui.ChevronRight,
-  -- @string
+  separator = ">",
+  ---@type string
   -- Highlight group for the separator
   separator_hl = "LineNr",
-  -- @string
+
+  ---@type string
+  -- Icon for the indicator about modification
+  modified = "●",
+
+  ---@type string
   -- Highlight group for the content
   text_hl = "CursorLineNr",
-  -- @number
+
+  ---@type number
   -- Max depth of the upward path from current file to display
   max_path_depth = 3,
-  -- @boolean
+
+  ---@type boolean
   -- Toggle the file path
   show_filepath = true,
-  -- @boolean
+  ---@type boolean
   -- Toggle the symbol of the cursor word
   show_symbol = true,
-  -- @function
+
+  ---@type fun(): boolean
   -- Function to enable/disable the winbar
   excluded_fn = function()
     return false
   end,
-  -- @table
+  ---@type table<string>
   -- Filetype list to disable the winbar
   excluded_filetypes = {},
 }
@@ -88,7 +92,7 @@ function MM:get_filepath()
     if #paths < max_path_depth then
       table.insert(paths, 1, string.format("%%#%s#%s%%*", text_hl, splitted[i]))
     else
-      local prefix = string.format("%%#%s#%s%%*", text_hl, icons.ui.EllipsisH)
+      local prefix = string.format("%%#%s#%s%%*", text_hl, "")
       table.insert(paths, 1, prefix .. " ")
       break
     end
@@ -112,10 +116,19 @@ function MM:get_filename()
     icon, color = devicons.get_icon(name, ext, { default = true })
   end
 
-  icon = string.format("%%#%s#%s%%*", color, icon)
-  name = string.format("%%#%s#%s%%*", hl, name)
+  local name_items = {
+    string.format("%%#%s#%s%%*", color, icon),
+    string.format("%%#%s#%s%%*", hl, name),
+  }
 
-  table.insert(self.elements, icon .. " " .. name)
+  if vim.bo.modified then
+    table.insert(
+      name_items,
+      string.format("%%#%s#%s%%*", "WarningMsg", self.opts.modified)
+    )
+  end
+
+  table.insert(self.elements, table.concat(name_items, " "))
 end
 
 function MM:get_symbol_node()
@@ -165,13 +178,16 @@ function M.setup(opts)
     coroutine.wrap(M.render_winbar)(opts)
   end
 
-  vim.api.nvim_create_autocmd({ "CursorMoved", "BufWinEnter", "BufEnter" }, {
-    desc = "Winbar handler",
+  vim.api.nvim_create_autocmd(
+    { "CursorMoved", "BufWinEnter", "BufEnter", "BufWritePost" },
+    {
+      desc = "Winbar handler",
 
-    group = g_ui,
-    pattern = "*",
-    callback = render_winbar,
-  })
+      group = g_ui,
+      pattern = "*",
+      callback = render_winbar,
+    }
+  )
 
   vim.api.nvim_create_autocmd("User", {
     desc = "Update Winbar",
