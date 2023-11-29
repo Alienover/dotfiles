@@ -76,19 +76,23 @@ nmap("j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- Zoom in/out pane
 nmap("zo", function()
-  if w.zoomed and w.zoom_winrestcmd then
-    cmd([[ execute w:zoom_winrestcmd ]])
-    w.zoomed = false
+  local var_name = "zoom_winrestcmd"
+  local winnr = vim.api.nvim_get_current_win()
+
+  ---@type string?
+  local winrestcmd = vim.fn.getwinvar(winnr, var_name, "")
+
+  if winrestcmd and #winrestcmd > 0 then
+    cmd(winrestcmd)
+    vim.api.nvim_win_del_var(winnr, var_name)
   else
-    w.zoom_winrestcmd = vim.fn.winrestcmd()
+    vim.api.nvim_win_set_var(winnr, var_name, vim.fn.winrestcmd())
+
+    -- INFO: expand the current pane
     cmd([[resize]])
     cmd([[vertical resize]])
-    w.zoomed = true
   end
-end, {
-  silent = true,
-  desc = "[Z]oom [O]n",
-})
+end, d("[Z]oom [O]n"))
 
 -- Toggling file finder by telescope or fzf
 nmap("<C-p>", function()
