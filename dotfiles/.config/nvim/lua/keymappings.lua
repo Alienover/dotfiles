@@ -1,12 +1,13 @@
 local utils = require("utils")
 
-local w, o, cmd, expand = utils.w, utils.o, utils.cmd, utils.expand
+local o, cmd, expand = utils.o, utils.cmd, utils.expand
 
 local map, imap, nmap, vmap = utils.map, utils.imap, utils.nmap, utils.vmap
 
-local opts = { noremap = true, silent = true }
-
-local function luasnipWrapper(fn)
+--- LuaSnip plugin wrapper
+---@param fn fun(ls: table)
+---@return fun()
+local function withLuaSnip(fn)
   return function()
     local success, ls = pcall(require, "luasnip")
     if success then
@@ -14,6 +15,22 @@ local function luasnipWrapper(fn)
     end
   end
 end
+
+--- UFO plugin wrapper
+---@param fn fun(ufo: Ufo)
+---@return fun()
+local function withUFO(fn)
+  return function()
+    local success, ufo = pcall(require, "ufo")
+    if not success then
+      return
+    end
+
+    return fn(ufo)
+  end
+end
+
+local opts = { noremap = true, silent = true }
 
 local function d(desc)
   local res = vim.deepcopy(opts)
@@ -139,7 +156,7 @@ end, d("Toggle [S]pell"))
 map(
   { "i", "s" },
   "<C-l>",
-  luasnipWrapper(function(ls)
+  withLuaSnip(function(ls)
     if ls.expand_or_jumpable() then
       ls.expand_or_jump()
     end
@@ -151,7 +168,7 @@ map(
 map(
   { "i", "s" },
   "<C-h>",
-  luasnipWrapper(function(ls)
+  withLuaSnip(function(ls)
     if ls.jumpable(-1) then
       ls.jump(-1)
     end
@@ -163,7 +180,7 @@ map(
 -- Useful for choice node
 imap(
   "<C-j>",
-  luasnipWrapper(function(ls)
+  withLuaSnip(function(ls)
     if ls.choice_active() then
       ls.change_choice(1)
     end
@@ -187,33 +204,44 @@ nmap("gx", function()
 end, d("Browser link"))
 
 -- Folding
-local function ufoWrapper(fn)
-  local success, ufo = pcall(require, "ufo")
-  if not success then
-    return
-  end
+nmap(
+  "zR",
+  withUFO(function(ufo)
+    ufo.openAllFolds()
+  end),
+  d("Open All Folds")
+)
+nmap(
+  "zM",
+  withUFO(function(ufo)
+    ufo.closeAllFolds()
+  end),
+  d("Close All Folds")
+)
 
-  return ufo[fn]()
-end
+nmap(
+  "K",
+  withUFO(function(ufo)
+    local winid = ufo.peekFoldedLinesUnderCursor()
+    if not winid then
+      vim.lsp.buf.hover()
+    end
+  end),
+  d("Peak folded lines")
+)
 
-nmap("zR", function()
-  ufoWrapper("openAllFolds")
-end, opts)
-nmap("zM", function()
-  ufoWrapper("closeAllFolds")
-end, opts)
+nmap(
+  "fn",
+  withUFO(function(ufo)
+    ufo.goNextClosedFold()
+  end),
+  d("[F]old [N]ext")
+)
 
-nmap("K", function()
-  local winid = ufoWrapper("peekFoldedLinesUnderCursor")
-  if not winid then
-    vim.lsp.buf.hover()
-  end
-end, opts)
-
-nmap("fn", function()
-  ufoWrapper("goNextClosedFold")
-end, d("[F]old [N]ext"))
-
-nmap("fp", function()
-  ufoWrapper("goPreviousClosedFold")
-end, d("[F]old [P]revious"))
+nmap(
+  "fp",
+  withUFO(function(ufo)
+    ufo.goPreviousClosedFold()
+  end),
+  d("[F]old [P]revious")
+)
