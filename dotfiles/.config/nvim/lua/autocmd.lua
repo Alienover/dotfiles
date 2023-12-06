@@ -7,7 +7,6 @@ local groups = {
   filetype = vim.api.nvim_create_augroup("FT", { clear = true }),
   folding = vim.api.nvim_create_augroup("Folding", { clear = true }),
   terminal = vim.api.nvim_create_augroup("Terminal", { clear = true }),
-  diffview = vim.api.nvim_create_augroup("DiffView", { clear = true }),
   linting = vim.api.nvim_create_augroup("Linting", { clear = true }),
 }
 
@@ -18,7 +17,7 @@ vim.api.nvim_create_autocmd("TermEnter", {
   callback = function()
     local excluded_filetypes = { "rnvimr", "fzf", "LspsagaRename" }
     local bufnr = vim.api.nvim_get_current_buf()
-    local curr_ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
+    local curr_ft = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
 
     if vim.tbl_contains(excluded_filetypes, curr_ft) then
       return
@@ -79,54 +78,6 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "norg" },
   callback = function()
     vim.wo.conceallevel = 2
-  end,
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-  -- INFO: Work around https://github.com/neovim/neovim/issues/9800
-  desc = "Remove the underline in diff view",
-
-  group = groups.diffview,
-  pattern = "*",
-  callback = function()
-    local hl_name = "CursorLine"
-
-    local set_cursor_hl = function(cursor_hl, opts)
-      vim.F.npcall(
-        vim.api.nvim_set_hl,
-        0,
-        hl_name,
-        vim.tbl_deep_extend("force", cursor_hl or {}, opts or {})
-      )
-    end
-
-    local get_cursor_hl = function()
-      local rgb_hl = {}
-      local hl = vim.F.npcall(vim.api.nvim_get_hl, 0, { name = hl_name })
-
-      if hl then
-        for _, key in ipairs({ "fg", "bg" }) do
-          local color = hl[key]
-          rgb_hl[key] = color and string.format("#%06x", color) or nil
-        end
-      end
-
-      return rgb_hl
-    end
-
-    if vim.opt.diff:get() then
-      if not vim.g.__cursor_hl then
-        vim.g.__cursor_hl = get_cursor_hl()
-
-        set_cursor_hl(vim.g.__cursor_hl, { ctermfg = "white" })
-      end
-    else
-      if vim.g.__cursor_hl then
-        set_cursor_hl(vim.g.__cursor_hl)
-      end
-
-      vim.g.__cursor_hl = nil
-    end
   end,
 })
 
