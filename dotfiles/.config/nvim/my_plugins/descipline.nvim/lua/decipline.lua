@@ -3,7 +3,7 @@ local M = {
 }
 
 -- INFO: keys to avoid pressing too frequently
-local descipline_keys = { "h", "j", "k", "l", "+", "-" }
+local descipline_keys = { "h", "j", "k", "l" }
 
 local function enable_cowboy()
   if M.enabled then
