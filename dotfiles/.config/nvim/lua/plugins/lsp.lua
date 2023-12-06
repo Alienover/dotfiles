@@ -32,8 +32,8 @@ return {
 
   {
     "stevearc/conform.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    cmd = { "ConformFormat" },
+    event = { "BufWritePre" },
+    cmd = { "ConformFormat", "ConformToggle" },
     config = function()
       require("config.conform-config")
     end,
