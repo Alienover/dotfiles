@@ -45,46 +45,34 @@ local config = {
     separator = " " .. icons.ui.ChevronRight .. " ",
   },
   floaterm = {
-    height = window_specing.t * 2,
-    width = window_specing.l * 2,
+    height = (1 - window_specing.t * 2),
+    width = (1 - window_specing.l * 2),
   },
 }
 
 require("lspsaga").setup(config)
 
-local opts = { noremap = true }
-
-local function d(desc)
-  local o = vim.deepcopy(opts)
-  if desc then
-    o.desc = "LSP: " .. desc
-  end
-
-  return o
-end
-
-local function lspsaga(sub_cmd)
+local function lspsaga(sub_cmd, opts)
   return function()
-    utils.cmd("Lspsaga " .. sub_cmd)
+    local silent = (opts and opts.silent) or false
+
+    if silent then
+      vim.F.npcall(utils.cmd, "Lspsaga " .. sub_cmd)
+    else
+      utils.cmd("Lspsaga " .. sub_cmd)
+    end
   end
 end
 
 -- signature help in insert mode
-imap("<C-k>", lspsaga("signature_help"), opts)
+imap(
+  "<C-k>",
+  lspsaga("signature_help", { silent = true }),
+  "LspSaga: Signature Help"
+)
 -- Diagnostics navigation
-nmap("<C-k>", lspsaga("diagnostic_jump_prev"), opts)
-nmap("<C-j>", lspsaga("diagnostic_jump_next"), opts)
--- Scrolling
-nmap(
-  "<leader>[",
-  [[<CMD>lua require"lspsaga.action".smart_scroll_with_saga(1)<CR>]],
-  opts
-)
-nmap(
-  "<leader>]",
-  [[<CMD>lua require"lspsaga.action".smart_scroll_with_saga(-1)<CR>]],
-  opts
-)
+nmap("[d", lspsaga("diagnostic_jump_prev"), "LspSaga: Previous Diagnostic")
+nmap("]d", lspsaga("diagnostic_jump_next"), "LspSaga: Next Diagnostic")
 -- Definition and references
-nmap("gh", lspsaga("finder"), opts)
-nmap("gp", lspsaga("peek_definition"), d("[G]o [P]eek"))
+nmap("gh", lspsaga("finder"), "LspSaga: Finder")
+nmap("gp", lspsaga("peek_definition"), "LspSaga: [G]o [P]eek")

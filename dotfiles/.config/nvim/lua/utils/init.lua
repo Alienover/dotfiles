@@ -50,8 +50,17 @@ M.expand = function(expr)
   end
 end
 
+---@param mode string|table
+---@param key string
+---@param cmd string|function
+---@param opts string|table|nil
 M.map = function(mode, key, cmd, opts)
-  opts = vim.tbl_deep_extend("force", { silent = true }, opts or {})
+  if type(opts) == "string" then
+    opts = { desc = opts }
+  end
+
+  opts =
+    vim.tbl_deep_extend("force", { noremap = true, silent = true }, opts or {})
 
   vim.keymap.set(mode, key, cmd, opts)
 end
@@ -104,8 +113,8 @@ end
 
 M.get_window_sepc = function()
   return {
-    columns = vim.api.nvim_get_option("columns"),
-    lines = vim.api.nvim_get_option("lines"),
+    columns = vim.api.nvim_get_option_value("columns", {}),
+    lines = vim.api.nvim_get_option_value("lines", {}),
   }
 end
 
@@ -127,6 +136,8 @@ M.get_window_default_spacing = function(width, height)
   return { l = l, t = t }
 end
 
+---@param args ?table
+---@return table
 M.get_float_win_opts = function(args)
   args = args or {}
   local win_spec = M.get_window_sepc()
@@ -139,6 +150,7 @@ M.get_float_win_opts = function(args)
   local border = args.border
   args.border = nil
 
+  ---@diagnostic disable-next-line: return-type-mismatch
   return vim.tbl_deep_extend("force", {
     row = math.floor(t_offset * win_spec.lines),
     col = math.floor(l_offset * win_spec.columns),
@@ -174,6 +186,8 @@ M.is_inside_git_repo = function()
   return vim.v.shell_error == 0
 end
 
+---@param path string
+---@return string?
 M.find_git_ancestor = function(path)
   local lsp_util = vim.F.npcall(require, "lspconfig.util")
 
@@ -187,6 +201,8 @@ M.find_git_ancestor = function(path)
 end
 
 M.change_cwd = function()
+  ---@type string
+  ---@diagnostic disable-next-line: assign-type-mismatch
   local head = vim.fn.expand("%:p:h")
   local cwd = M.find_git_ancestor(head) or head
 

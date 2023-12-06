@@ -1,5 +1,4 @@
 local utils = require("utils")
-
 local o, cmd, expand = utils.o, utils.cmd, utils.expand
 
 local map, imap, nmap, vmap = utils.map, utils.imap, utils.nmap, utils.vmap
@@ -30,18 +29,7 @@ local function withUFO(fn)
   end
 end
 
-local opts = { noremap = true, silent = true }
-
-local function d(desc)
-  local res = vim.deepcopy(opts)
-  if desc then
-    res.desc = desc
-  end
-
-  return res
-end
-
--- Modes
+-- Modes, check `:h map-modes` for more detail
 -- * normal_mode	 = "n"
 -- * insert_mode	 = "i"
 -- * visual_mode	 = "v"
@@ -49,47 +37,47 @@ end
 -- * term_mode		 = "t"
 -- * command_mode	 = "c"
 
-nmap("+", "<C-a>", d("Increment"))
-nmap("-", "<C-x>", d("Decrement"))
+nmap("+", "<C-A>", "Increment")
+nmap("-", "<C-X>", "Decrement")
 
-nmap("<Tab>", ":BufferLineCycleNext<CR>", d("Next Tab"))
-nmap("<S-Tab>", ":BufferLineCyclePrev<CR>", d("Previous Tab"))
+nmap("<Tab>", ":BufferLineCycleNext<CR>", "Next Tab")
+nmap("<S-Tab>", ":BufferLineCyclePrev<CR>", "Previous Tab")
 
-nmap("<C-w>h", ":TmuxNavigateLeft<CR>", d("Window Left"))
-nmap("<C-w>l", ":TmuxNavigateRight<CR>", d("Window Right"))
-nmap("<C-w>j", ":TmuxNavigateDown<CR>", d("Window Down"))
-nmap("<C-w>k", ":TmuxNavigateUp<CR>", d("Window Up"))
+nmap("<C-w>h", ":TmuxNavigateLeft<CR>", "Window Left")
+nmap("<C-w>l", ":TmuxNavigateRight<CR>", "Window Right")
+nmap("<C-w>j", ":TmuxNavigateDown<CR>", "Window Down")
+nmap("<C-w>k", ":TmuxNavigateUp<CR>", "Window Up")
 
 -- Buffers navigation
-nmap("<C-h>", ":bp<CR>", d("[B]uffer [P]revious"))
-nmap("<C-l>", ":bn<CR>", d("[B]uffer [N]next"))
+nmap("[[", ":bp<CR>", "[B]uffer [P]revious")
+nmap("]]", ":bn<CR>", "[B]uffer [N]next")
 
 -- Open  nvim terminal in split or vertical split
-nmap("<C-t>", ":terminal<CR>i", opts)
+nmap("<C-t>", ":terminal<CR>i")
 
 -- Move lines in <Normal> and <Visual>
 -- ∆ for <Option-j> up and ˚ for <Option-k> down
-nmap("∆", ":m .+1<CR>==", opts)
-nmap("˚", ":m .-2<CR>==", opts)
-vmap("∆", ":m '>+1<CR>gv=gv", opts)
-vmap("˚", ":m '<-2<CR>gv=gv", opts)
+nmap("∆", ":m .+1<CR>==")
+nmap("˚", ":m .-2<CR>==")
+vmap("∆", ":m '>+1<CR>gv=gv")
+vmap("˚", ":m '<-2<CR>gv=gv")
 
 -- Increase/decrease indents without losing the selected
-vmap("<", "<gv", opts)
-vmap(">", ">gv", opts)
+vmap("<", "<gv")
+vmap(">", ">gv")
 
 -- Paste without losing the yanked content
-vmap("p", '"_dP', opts)
+vmap("p", '"_dP')
 
 -- Join lines without lossing the cursor position
-nmap("J", "mzJ`z", opts)
+nmap("J", "mzJ`z")
 
 -- Navigate to next/prev and keep the cursor center
 nmap("n", "nzzzv")
 nmap("N", "Nzzzv")
 
-nmap("k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-nmap("j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+nmap("k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
+nmap("j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
 
 -- Zoom in/out pane
 nmap("zo", function()
@@ -103,13 +91,13 @@ nmap("zo", function()
     cmd(winrestcmd)
     vim.api.nvim_win_del_var(winnr, var_name)
   else
-    vim.api.nvim_win_set_var(winnr, var_name, vim.fn.winrestcmd())
+    vim.api.nvim_win_set_var(winnr, var_name, vim.fn.winrestcm)
 
     -- INFO: expand the current pane
     cmd([[resize]])
     cmd([[vertical resize]])
   end
-end, d("[Z]oom [O]n"))
+end, "[Z]oom [O]n")
 
 -- Toggling file finder by telescope or fzf
 nmap("<C-p>", function()
@@ -120,12 +108,12 @@ nmap("<C-p>", function()
   end
 
   utils.telescope(subcmd, options)
-end, opts)
+end)
 
 -- File browser
 map({ "n", "i", "x", "t" }, "<C-f>", function()
   utils.telescope("file_browser", { path = "%:p:h", select_buffer = true })
-end, d("[F]ile browser"))
+end, "[F]ile browser")
 
 -- Smart toggling the spell checking
 nmap("<leader>s", function()
@@ -142,7 +130,7 @@ nmap("<leader>s", function()
     -- List suggestions when hovering on word
     cmd("WhichKey z=")
   end
-end, d("Smart [S]pell"))
+end, "Smart [S]pell")
 
 nmap("<leader>S", function()
   if o.spell then
@@ -150,7 +138,7 @@ nmap("<leader>S", function()
   else
     o.spell = true
   end
-end, d("Toggle [S]pell"))
+end, "Toggle [S]pell")
 
 -- Expand the current snippet or jump to the next item within the snippet
 map(
@@ -160,8 +148,7 @@ map(
     if ls.expand_or_jumpable() then
       ls.expand_or_jump()
     end
-  end),
-  opts
+  end)
 )
 
 -- Always move to the previous item within the snippet
@@ -172,8 +159,7 @@ map(
     if ls.jumpable(-1) then
       ls.jump(-1)
     end
-  end),
-  opts
+  end)
 )
 
 -- Selects within a list of options.
@@ -184,11 +170,10 @@ imap(
     if ls.choice_active() then
       ls.change_choice(1)
     end
-  end),
-  opts
+  end)
 )
 
-nmap("x", '"_x', opts)
+nmap("x", '"_x')
 
 -- URL handling
 -- Refer to https://sbulav.github.io/vim/neovim-opening-urls/
@@ -201,7 +186,7 @@ nmap("gx", function()
     vim.notify("Error: gx is not supported on this OS!", vim.log.levels.ERROR)
     return
   end
-end, d("Browser link"))
+end, "Browser link")
 
 -- Folding
 nmap(
@@ -209,14 +194,14 @@ nmap(
   withUFO(function(ufo)
     ufo.openAllFolds()
   end),
-  d("Open All Folds")
+  "Open All Folds"
 )
 nmap(
   "zM",
   withUFO(function(ufo)
     ufo.closeAllFolds()
   end),
-  d("Close All Folds")
+  "Close All Folds"
 )
 
 nmap(
@@ -227,7 +212,7 @@ nmap(
       vim.lsp.buf.hover()
     end
   end),
-  d("Peak folded lines")
+  "Peak folded lines"
 )
 
 nmap(
@@ -235,7 +220,7 @@ nmap(
   withUFO(function(ufo)
     ufo.goNextClosedFold()
   end),
-  d("[F]old [N]ext")
+  "[F]old [N]ext"
 )
 
 nmap(
@@ -243,5 +228,5 @@ nmap(
   withUFO(function(ufo)
     ufo.goPreviousClosedFold()
   end),
-  d("[F]old [P]revious")
+  "[F]old [P]revious"
 )

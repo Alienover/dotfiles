@@ -14,7 +14,7 @@ local ensure_externals = constants.ensure_externals
 -- Keymaps for LSP interfaces
 local lsp_keymaps = function(_, bufnr)
   local function map(keys, fnc, desc)
-    local opts = { noremap = true, silent = true, buffer = bufnr }
+    local opts = { buffer = bufnr }
     if desc then
       opts.desc = "LSP: " .. desc
     end
