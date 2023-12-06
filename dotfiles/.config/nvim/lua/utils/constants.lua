@@ -1,5 +1,7 @@
 local M = {}
 
+---@type table
+---@diagnostic disable-next-line: assign-type-mismatch
 M.icons = require("utils.icons")
 
 M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/my_plugins"

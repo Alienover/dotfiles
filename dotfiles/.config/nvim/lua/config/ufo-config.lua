@@ -44,6 +44,7 @@ local handler = function(virtText, lnum, endLnum, width, truncate)
   return newVirtText
 end
 
+---@diagnostic disable-next-line: missing-fields
 require("ufo").setup({
   fold_virt_text_handler = handler,
   -- @param {number} bufnr

@@ -80,12 +80,14 @@ local diff = {
   separator = "",
 }
 
-local spaces = {
-  function()
-    return "Spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
-  end,
-  separator = "",
-}
+local spaces =
+  {
+    function()
+      return "Spaces: "
+        .. vim.api.nvim_get_option_value("shiftwidth", { buf = 0 })
+    end,
+    separator = "",
+  }
 
 local config = {
   options = {
