@@ -206,14 +206,21 @@ M.change_cwd = function()
   local head = vim.fn.expand("%:p:h")
   local cwd = M.find_git_ancestor(head) or head
 
-  vim.cmd("lcd " .. cwd)
+  local ok, _ = pcall(vim.fn.execute, "lcd " .. cwd, true)
 
-  local formatted, home = cwd, os.getenv("HOME")
-  if home then
-    formatted = string.gsub(cwd, home, "~")
+  if ok then
+    local formatted, home = cwd, os.getenv("HOME")
+    if home then
+      formatted = string.gsub(cwd, home, "~")
+    end
+
+    vim.notify("Set the current working directory to " .. formatted)
+  else
+    vim.notify(
+      "Failed to set the current working directory",
+      vim.log.levels.WARN
+    )
   end
-
-  vim.notify("Set the current working directory to " .. formatted)
 end
 
 M.highlight = {
