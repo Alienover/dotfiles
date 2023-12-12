@@ -20,6 +20,7 @@ conform.setup({
   },
   format_on_save = function()
     -- Disable with a global or buffer-local variable
+    ---@type boolean
     local disabled = vim.F.npcall(vim.api.nvim_get_var, AUTOFORMAT) or false
 
     if disabled then
@@ -62,6 +63,7 @@ end, {
 })
 
 vim.api.nvim_create_user_command("ConformToggle", function()
+  ---@type boolean
   local disabled = vim.F.npcall(vim.api.nvim_get_var, AUTOFORMAT) or false
 
   vim.api.nvim_set_var(AUTOFORMAT, not disabled)
