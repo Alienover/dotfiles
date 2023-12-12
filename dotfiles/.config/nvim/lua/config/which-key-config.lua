@@ -238,7 +238,7 @@ local n_mappings = {
     name = "Files",
     r = { telescope("live_grep"), "Live G[r]ep" },
     f = {
-      telescope("find_files", { no_ignore = false, hidden = true }),
+      telescope("find_files", { no_ignore = true, hidden = true }),
       "[F]ind files",
     },
     o = { telescope("oldfiles"), "Recently [O]pend" },
