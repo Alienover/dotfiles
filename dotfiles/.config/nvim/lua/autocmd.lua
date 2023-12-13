@@ -67,7 +67,13 @@ vim.api.nvim_create_autocmd("FileType", {
   group = groups.filetype,
   pattern = { "make" },
   callback = function()
-    vim.bo.expandtab = false
+    vim.defer_fn(function()
+      vim.notify(
+        "Setting `expandtab` to false for Makefile...",
+        vim.log.levels.INFO
+      )
+      vim.opt_local.expandtab = false
+    end, 500)
   end,
 })
 
