@@ -6,4 +6,6 @@ lint.linters_by_ft = {
   typescript = { "eslint" },
   typescriptreact = { "eslint" },
   zsh = { "zsh" },
+  json = { "jsonlint" },
+  jsonc = { "jsonlint" },
 }

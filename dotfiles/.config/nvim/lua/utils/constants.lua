@@ -182,6 +182,10 @@ M.ensure_externals = {
   eslint = {
     [M.external_types.linter] = true,
   },
+  jsonlint = {
+    [M.external_types.linter] = true,
+    mason = "jsonlint",
+  },
 }
 
 return M

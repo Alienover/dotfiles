@@ -14,7 +14,8 @@ conform.setup({
     javascriptreact = { "prettier" },
     typescript = { "prettier" },
     typescriptreact = { "prettier" },
-    json = { "prettier" },
+    json = { { "jq", "prettier" } },
+    jsonc = { "jq", "prettier" },
     go = { "gofmt" },
     ["*"] = { "trim_whitespace" },
   },
@@ -35,7 +36,7 @@ conform.setup({
     },
     stylua = {
       prepend_args = function()
-        if not utils.file_existed(vim.loop.cwd() .. "/.stylua.toml") then
+        if not utils.file_existed(vim.fn.getcwd(0) .. "/.stylua.toml") then
           return {
             "--indent-width",
             "2",
