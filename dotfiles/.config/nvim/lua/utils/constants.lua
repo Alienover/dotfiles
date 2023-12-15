@@ -1,5 +1,13 @@
 local M = {}
 
+---@param var string
+---@param default? string
+---@return string
+local getenv = function(var, default)
+  default = default or ""
+  return os.getenv(var) or default or ""
+end
+
 ---@type table
 ---@diagnostic disable-next-line: assign-type-mismatch
 M.icons = require("utils.icons")
@@ -7,40 +15,40 @@ M.icons = require("utils.icons")
 M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/my_plugins"
 
 M.files = {
-  vim = os.getenv("HOME") .. "/.vimrc",
+  vim = getenv("HOME") .. "/.vimrc",
   -- NeoVim initialization file
-  nvim = os.getenv("XDG_CONFIG_HOME") .. "/nvim/init.lua",
+  nvim = getenv("XDG_CONFIG_HOME") .. "/nvim/init.lua",
   -- Folder saved snippets
-  snippets = os.getenv("XDG_CONFIG_HOME") .. "/nvim/snippets",
+  snippets = getenv("XDG_CONFIG_HOME") .. "/nvim/snippets",
   -- Tmux config
-  tmux = os.getenv("HOME") .. "/.tmux.conf",
+  tmux = getenv("HOME") .. "/.tmux.conf",
   -- Kitty config
-  kitty = os.getenv("XDG_CONFIG_HOME") .. "/kitty/kitty.conf",
+  kitty = getenv("XDG_CONFIG_HOME") .. "/kitty/kitty.conf",
   -- ZSH config
-  zsh = os.getenv("XDG_CONFIG_HOME") .. "/zsh/.zshrc",
+  zsh = getenv("XDG_CONFIG_HOME") .. "/zsh/.zshrc",
   -- Yabai config
-  yabai = os.getenv("XDG_CONFIG_HOME") .. "/yabai/yabairc",
+  yabai = getenv("XDG_CONFIG_HOME") .. "/yabai/yabairc",
   -- SKHD config
-  skhd = os.getenv("XDG_CONFIG_HOME") .. "/skhd/skhdrc",
+  skhd = getenv("XDG_CONFIG_HOME") .. "/skhd/skhdrc",
   -- Dotfiles folder
-  dotfiles = os.getenv("HOME") .. "/src/dotfiles",
+  dotfiles = getenv("HOME") .. "/src/dotfiles",
   -- Work relatives
-  work_config = os.getenv("EDISON_REPO_DIR") .. "/../others",
-  workdirs = os.getenv("EDISON_REPO_DIR"),
+  work_config = getenv("EDISON_REPO_DIR") .. "/../others",
+  workdirs = getenv("EDISON_REPO_DIR"),
 }
 
 M.colors = {
-  RED = os.getenv("GUI_RED"),
-  BLACK = os.getenv("GUI_BLACK"),
-  GREEN = os.getenv("GUI_GREEN"),
-  PRIMARY = os.getenv("GUI_BLUE"),
-  BG = os.getenv("GUI_BACKGROUND"),
-  FG = os.getenv("GUI_FOREGROUND"),
-  DARK_RED = os.getenv("GUI_DARK_RED"),
-  DARK_YELLOW = os.getenv("GUI_DARK_YELLOW"),
-  VISUAL_GREY = os.getenv("GUI_VISUAL_GREY"),
-  COMMENT_GREY = os.getenv("GUI_COMMENT_GREY"),
-  SPECIAL_GREY = os.getenv("GUI_SPECIAL_GREY"),
+  RED = getenv("GUI_RED"),
+  BLACK = getenv("GUI_BLACK"),
+  GREEN = getenv("GUI_GREEN"),
+  PRIMARY = getenv("GUI_BLUE"),
+  BG = getenv("GUI_BACKGROUND"),
+  FG = getenv("GUI_FOREGROUND"),
+  DARK_RED = getenv("GUI_DARK_RED"),
+  DARK_YELLOW = getenv("GUI_DARK_YELLOW"),
+  VISUAL_GREY = getenv("GUI_VISUAL_GREY"),
+  COMMENT_GREY = getenv("GUI_COMMENT_GREY"),
+  SPECIAL_GREY = getenv("GUI_SPECIAL_GREY"),
 }
 
 M.filetype_mappings = setmetatable({
