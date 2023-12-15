@@ -8,7 +8,7 @@ local has_kitty=`command -v kitty`
 if [[ -f $has_kitty ]]; then
   export TERM="xterm-kitty"
 else
-  export TERM="xterm-245color"
+  export TERM="xterm-256color"
 fi
 
 export XDG_CACHE_HOME="$HOME/.cache"
