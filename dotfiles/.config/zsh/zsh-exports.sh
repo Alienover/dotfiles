@@ -3,10 +3,12 @@
 # Undercurl support
 # Refer to: https://github.com/kovidgoyal/kitty/issues/3235#issuecomment-758354252
 
-if [[ -n "$SSH" ]]; then
-  export TERM="xterm-245color"
-else
+local has_kitty=`command -v kitty`
+
+if [[ -f $has_kitty ]]; then
   export TERM="xterm-kitty"
+else
+  export TERM="xterm-245color"
 fi
 
 export XDG_CACHE_HOME="$HOME/.cache"
