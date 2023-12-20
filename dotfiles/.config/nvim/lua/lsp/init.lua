@@ -65,6 +65,7 @@ local rewrite_lsp_handlers = function()
     return ts.lsp_definitions(...)
   end
 
+  ---@diagnostic disable-next-line: duplicate-set-field
   vim.lsp.handlers["textDocument/references"] = function()
     local status_ok, ts = pcall(require, "telescope.builtin")
     if not status_ok then
@@ -90,6 +91,25 @@ local rewrite_lsp_icons = function()
   for type, icon in pairs(signs) do
     local hl = "DiagnosticSign" .. type
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+  end
+end
+
+local rewrite_lsp_cmds = function()
+  local window = require("lspconfig.ui.windows")
+  local og_percentage_range_window = window.percentage_range_window
+
+  -- INFO: overwrite the function `percentage_range_window` from `nvim-lspconfig`
+  -- to create float window with customized config
+  ---@diagnostic disable-next-line: duplicate-set-field
+  window.percentage_range_window = function(col_range, row_range, options)
+    local win_info = og_percentage_range_window(col_range, row_range, options)
+
+    vim.api.nvim_win_set_config(
+      win_info.win_id,
+      utils.get_float_win_opts({ border = true })
+    )
+
+    return win_info
   end
 end
 
@@ -144,6 +164,7 @@ local function setup_lsp()
 
   rewrite_lsp_handlers()
   rewrite_lsp_icons()
+  rewrite_lsp_cmds()
 end
 
 setup_lsp()
