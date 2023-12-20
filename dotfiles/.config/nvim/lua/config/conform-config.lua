@@ -71,3 +71,20 @@ vim.api.nvim_create_user_command("ConformToggle", function()
 end, {
   desc = "Toggle autoformat on save",
 })
+
+-- INFO: overwrite the default `ConformInfo` command with customized window config
+vim.api.nvim_create_user_command("ConformInfo", function()
+  require("conform.health").show_window()
+
+  vim.defer_fn(function()
+    local winnr = vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_config(
+      winnr,
+      utils.get_float_win_opts({
+        border = true,
+        title = "Conform Formatters Info",
+        title_pos = "center",
+      })
+    )
+  end, 10)
+end, { desc = "Show information about Conform formatters" })
