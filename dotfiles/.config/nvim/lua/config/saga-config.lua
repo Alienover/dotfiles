@@ -1,7 +1,7 @@
 local utils = require("utils")
 local constants = require("utils.constants")
 
-local nmap, imap = utils.nmap, utils.imap
+local nmap = utils.nmap
 
 local icons = constants.icons
 
@@ -29,7 +29,7 @@ local config = {
   },
   code_action = {
     extend_gitsigns = true,
-    num_shortcut = false,
+    num_shortcut = true,
     keys = {
       -- string |table type
       quit = "q",
