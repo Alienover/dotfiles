@@ -64,12 +64,6 @@ local function lspsaga(sub_cmd, opts)
   end
 end
 
--- signature help in insert mode
-imap(
-  "<C-k>",
-  lspsaga("signature_help", { silent = true }),
-  "LspSaga: Signature Help"
-)
 -- Diagnostics navigation
 nmap("[d", lspsaga("diagnostic_jump_prev"), "LspSaga: Previous Diagnostic")
 nmap("]d", lspsaga("diagnostic_jump_next"), "LspSaga: Next Diagnostic")
