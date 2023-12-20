@@ -72,6 +72,8 @@ telescope.setup({
       initial_mode = "normal",
       respect_gitignore = false,
 
+      use_ui_input = false,
+
       mappings = {
         ["i"] = {
           ["<A-r>"] = false, -- fb_actions.rename, deprecated
