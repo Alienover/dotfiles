@@ -189,12 +189,11 @@ end
 ---@param path string
 ---@return string?
 M.find_git_ancestor = function(path)
-  local lsp_util = vim.F.npcall(require, "lspconfig.util")
+  local cmd = string.format("git -C %s rev-parse --show-toplevel", path)
 
-  path = path or vim.fn.getcwd()
-
-  if lsp_util then
-    return lsp_util.find_git_ancestor(path)
+  local result = vim.fn.system(cmd)
+  if vim.v.shell_error == 0 then
+    return result
   end
 
   return nil
@@ -204,7 +203,12 @@ M.change_cwd = function()
   ---@type string
   ---@diagnostic disable-next-line: assign-type-mismatch
   local head = vim.fn.expand("%:p:h")
-  local cwd = M.find_git_ancestor(head) or head
+  local git_ancestor = M.find_git_ancestor(head) or head
+  local cwd = vim.fn.getcwd()
+
+  if cwd ~= git_ancestor then
+    cwd = git_ancestor
+  end
 
   local ok, _ = pcall(vim.fn.execute, "lcd " .. cwd, true)
 

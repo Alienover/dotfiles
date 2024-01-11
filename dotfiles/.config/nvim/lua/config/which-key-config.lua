@@ -160,6 +160,8 @@ local toggle_diffview = function()
       cmd("DiffviewClose")
     end
   else
+    utils.change_cwd()
+
     g.diffview_opened = true
     cmd("DiffviewOpen")
   end
@@ -172,6 +174,7 @@ local toggle_file_diff = function(curr_file)
     if vim.bo.filetype == "DiffviewFileHistory" then
       cmd("tabclose")
     else
+      utils.change_cwd()
       cmd("DiffviewFileHistory" .. (curr_file == true and " %" or ""))
     end
   end
