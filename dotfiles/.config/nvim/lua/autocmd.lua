@@ -87,6 +87,16 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Hide the cursorline in Mason window",
+
+  group = groups.filetype,
+  pattern = { "mason" },
+  callback = function()
+    vim.o.cursorline = false
+  end,
+})
+
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
   desc = "Trigger the linting",
 
