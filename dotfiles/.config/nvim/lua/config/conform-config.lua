@@ -82,7 +82,7 @@ vim.api.nvim_create_user_command("ConformInfo", function()
       winnr,
       utils.get_float_win_opts({
         border = true,
-        title = "Conform Formatters Info",
+        title = " Conform Formatters Info ",
         title_pos = "center",
       })
     )
