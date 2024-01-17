@@ -1,0 +1,32 @@
+#! /bin/bash
+
+__prune() {
+
+  local _logDetail="git log --color=always --format='%C(blue)%ar%Creset - %C(bold yellow)%s%Creset %C(red)%d%Creset %C(dim white)[%ae]'"
+
+  local SELECTED=$(echo "git branch | grep -v '\*' | $( \
+      git branch -r | awk '{print $1}' | grep origin | \
+      sed 's/.*\/\(.*\)$/\1/' | \
+      xargs -I {} echo "grep -v \"{}$\"" | \
+      paste -sd '|' - \
+    )" | sh | fzf -i -e +s --height 100 --multi \
+    --prompt " > Gone Branches: " \
+    --header "/ CTRL-A: Select All / CTRL-T: Toggle Select / Enter: Prune /" \
+    --bind ctrl-a:select-all,ctrl-t:toggle-all \
+    --bind ctrl-d:preview-down,ctrl-u:preview-up \
+    --preview "echo {} | xargs $_logDetail"\
+    --preview-window "border-left"
+  )
+
+  if [ -z "$SELECTED" ]; then
+    exit 0
+  fi
+
+  for branch in ${SELECTED[@]}; do
+    git branch -D ${branch}
+  done
+
+  read -n 1 -p "[Process existed $?]"
+}
+
+__prune
