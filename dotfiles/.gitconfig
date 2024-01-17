@@ -59,6 +59,8 @@
   prune ="!git ob | xargs -r -n 1 git branch -D"
   f = fetch -ptf
   u = "!git f && git pl && git prune"
+
+  unstage = "reset HEAD --"
 [safe]
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-cask
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-core
