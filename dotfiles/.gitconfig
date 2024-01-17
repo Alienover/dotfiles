@@ -46,7 +46,7 @@
   required = true
 
 [alias]
-  ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
+  ps = push
   pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
   logs = "!tmux-popup '__FZF_POPUP_HEIGHT=100% popup-logs'"
   diffs = "!tmux-popup '__FZF_POPUP_HEIGHT=100% popup-diff'"
@@ -68,3 +68,5 @@
   program = /opt/homebrew/bin/gpg
 [init]
 	defaultBranch = main
+[push]
+	autoSetupRemote = true
