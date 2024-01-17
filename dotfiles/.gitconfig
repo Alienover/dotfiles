@@ -55,9 +55,10 @@
   unskip = update-index --no-assume-unchanged
 
   gone = "!tmux-popup prune-git-branches"
-  purge ="!git branch -v | grep -v '*' | awk '/[gone]/{print $1}' | xargs -r -n 1 git branch -D"
+  ob = "!git branch -v | grep -v '*' | awk '/\\[gone\\]/{print $1}'"
+  prune ="!git ob | xargs -r -n 1 git branch -D"
   f = fetch -ptf
-  u = "!git f && git pl && git purge"
+  u = "!git f && git pl && git prune"
 [safe]
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-cask
   directory = /opt/homebrew/Library/Taps/homebrew/homebrew-core
