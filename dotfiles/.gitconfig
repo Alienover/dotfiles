@@ -56,9 +56,9 @@
 
   gone = "!tmux-popup prune-git-branches"
   ob = "!git branch -v | grep -v '*' | awk '/\\[gone\\]/{print $1}'"
-  prune ="!git ob | xargs -r -n 1 git branch -D"
+  purge ="!git ob | xargs -r -n 1 git branch -D"
   f = fetch -ptf
-  u = "!git f && git pl && git prune"
+  u = "!git f && git pl && git purge"
 
   unstage = "reset HEAD --"
 [safe]
