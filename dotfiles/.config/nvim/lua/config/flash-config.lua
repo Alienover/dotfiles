@@ -8,6 +8,9 @@ local config = {
     enabled = false,
   },
   modes = {
+    char = {
+      jump_labels = true,
+    },
     search = {
       enabled = false,
     },
