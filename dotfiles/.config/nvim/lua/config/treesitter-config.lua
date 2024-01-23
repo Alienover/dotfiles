@@ -19,7 +19,6 @@ require("nvim-treesitter.configs").setup({
     "regex",
     "markdown",
     "markdown_inline",
-    "norg",
   },
   auto_install = true,
   sync_install = false,

@@ -102,20 +102,6 @@ return {
   },
 
   {
-    "nvim-neorg/neorg",
-    ft = { "norg" },
-    cmd = { "Neorg" },
-    build = ":Neorg sync-parsers",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-neorg/neorg-telescope",
-    },
-    config = function()
-      require("config.neorg-config")
-    end,
-  },
-
-  {
     "iamcco/markdown-preview.nvim",
     build = "cd app && yarn install",
     ft = { "markdown" },

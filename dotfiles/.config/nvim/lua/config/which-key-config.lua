@@ -129,10 +129,6 @@ local terminal = function(input)
   return lspsaga("term_toggle " .. (input or ""))
 end
 
-local neorg = function(sub_cmd)
-  return t("Neorg " .. sub_cmd)
-end
-
 local toggle_diffview = function()
   if g.diffview_opened then
     local curr_tabid = vim.api.nvim_get_current_tabpage()
@@ -293,16 +289,6 @@ local n_mappings = {
     telescope("current_buffer_fuzzy_find"),
     "Fuzzily search in current buffer",
   },
-  n = {
-    name = "[N]eorg mode",
-    h = { neorg("workspace home"), "[H]ome" },
-    w = { neorg("workspace work"), "[W]ork" },
-    i = { neorg("inject-metadata"), "[I]nject Metadata" },
-    u = { neorg("update-metadata"), "[U]pdate Metadata" },
-    s = { neorg("sync-parsers"), "[S]ync Parsers" },
-    I = { neorg("index"), "back to [I]ndex" },
-    E = { neorg("return"), "[E]xit neorg mode" },
-  },
 }
 
 local v_mappings = {
@@ -334,17 +320,3 @@ wk.register({
   m = { "[M]ove to start of previous func" },
   M = { "[M]ove to end of previous func" },
 }, { prefix = "[" })
-
--- Neorg GTD keymaps
-wk.register({
-  t = {
-    name = "GTD",
-    d = "Mark task as [D]one",
-    u = "Mark task as [U]ndone",
-    p = "Mark task as [P]ending",
-    c = "Mark task as [C]ancel",
-    i = "Mark task as [I]mportant",
-    h = "Mark task as on [H]old",
-    r = "Mark task as [R]ecurring",
-  },
-}, { prefix = "g" })
