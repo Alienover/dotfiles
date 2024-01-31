@@ -200,10 +200,7 @@ local n_mappings = {
     d = { t("KWBufDel"), "[D]Delete" },
     D = { t("KWBufDel!"), "Force [D]elete" },
     b = {
-      telescope(
-        "buffers",
-        { previewer = false, sort_mru = true, ignore_current_buffer = true }
-      ),
+      telescope("buffers", { previewer = false, sort_mru = true }),
       "Find [B]uffers",
     },
     n = { t("tabnew"), "[N]ew Tab" },
