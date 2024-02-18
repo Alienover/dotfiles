@@ -76,6 +76,10 @@ local telescope = function(sub_cmd, opts)
 end
 
 local workspaces = function(base)
+  if vim.fn.isdirectory(base) == 0 then
+    return {}
+  end
+
   -- Scan the certain workspace
   local plenary = require("plenary.scandir")
   local dirs = plenary.scan_dir(base, { depth = 1, only_dirs = true })
