@@ -39,13 +39,12 @@ if [ -z "$REPO" ]; then
   echo "Missing git repo... please include the git repo directory by --repo={{ repo path }}"
   exit 1
 else
-  existed=$(cd "$REPO"; git status > /dev/null 2>&1; echo $?)
+  existed=$(git -C $REPO status > /dev/null 2>&1; echo $?)
   if [ "$existed" != 0 ]; then
     echo "The specified directory is not a git repo."
     exit 1
   fi
 fi
-
 
 GPG_KEY=`gpg --list-keys | grep "$EMAIL" -C 1 | head -1 | xargs echo`
 
@@ -56,24 +55,20 @@ fi
 
 echo "Setting git config for username: [$USERNAME] email: [$EMAIL]\n"
 
-cd "$REPO"
-
 echo "Configuring $REPO\n"
 
 echo "Setting up user info"
-git config user.name "$USERNAME"
-git config user.email "$EMAIL"
+git -C $REPO config user.name "$USERNAME"
+git -C $REPO config user.email "$EMAIL"
 
 echo ""
 echo "Setting up GPG\n"
-git config gpg.program $(which gpg)
-git config user.signingkey $GPG_KEY
+git -C $REPO config gpg.program $(which gpg)
+git -C $REPO config user.signingkey $GPG_KEY
 git config --global commit.gpgsign true
 
 echo "Git config info"
-git config --local -l | grep 'user'
+git -C $REPO config --local -l | grep 'user'
 
 echo ""
 echo "Finished $REPO"
-
-cd - > /dev/null
