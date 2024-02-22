@@ -21,7 +21,7 @@ return {
     tag = "legacy",
     opts = {
       text = {
-        spinner = "meter",
+        spinner = "dots",
       },
       window = {
         relative = "editor",
