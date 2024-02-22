@@ -8,6 +8,8 @@ return {
     end,
     keys = {
       "/",
+      { "f", mode = { "n", "x" } },
+      { "F", mode = { "n", "x" } },
       { "S", mode = { "o", "x" } },
       { "r", mode = { "o" } },
       { "R", mode = { "o", "x" } },
