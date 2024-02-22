@@ -66,26 +66,6 @@ return {
   },
 
   {
-    "folke/noice.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("config.noice-config")
-    end,
-    dependencies = {
-      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      { "MunifTanjim/nui.nvim", module = "nui" },
-
-      {
-        "rcarriga/nvim-notify",
-        module = "notify",
-        opts = {
-          background_colour = "#000000",
-        },
-      },
-    },
-  },
-
-  {
     "kevinhwang91/nvim-ufo",
     event = { "BufReadPost" },
     dependencies = "kevinhwang91/promise-async",

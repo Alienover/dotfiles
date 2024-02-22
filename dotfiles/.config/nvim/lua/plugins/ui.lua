@@ -35,4 +35,24 @@ return {
       require("config.bufferline-config")
     end,
   },
+
+  { -- UI for messages, cmdline and the popupmenu
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("config.noice-config")
+    end,
+    dependencies = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      { "MunifTanjim/nui.nvim", module = "nui" },
+
+      {
+        "rcarriga/nvim-notify",
+        module = "notify",
+        opts = {
+          background_colour = "#000000",
+        },
+      },
+    },
+  },
 }
