@@ -335,17 +335,12 @@ wk.register(v_mappings, { prefix = "<space>", mode = "v" })
 -- Treesitter keymaps
 wk.register({
   a = { "Swap next param" },
-  A = { "Swap previous param" },
-}, {
-  prefix = "<leader>",
-})
-
-wk.register({
   m = { "[M]ove to start of next func" },
   M = { "[M]ove to end of next func" },
 }, { prefix = "]" })
 
 wk.register({
+  A = { "Swap previous param" },
   m = { "[M]ove to start of previous func" },
   M = { "[M]ove to end of previous func" },
 }, { prefix = "[" })
