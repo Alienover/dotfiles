@@ -113,7 +113,7 @@ telescope.setup({
   },
 })
 
-local extensions = { "fzf", "undo", "noice", "file_browser" }
+local extensions = { "fzf", "undo", "noice", "file_browser", "rest" }
 
 for _, ext in ipairs(extensions) do
   telescope.load_extension(ext)

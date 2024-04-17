@@ -80,14 +80,21 @@ local diff = {
   separator = "",
 }
 
-local spaces =
-  {
-    function()
-      return "Spaces: "
-        .. vim.api.nvim_get_option_value("shiftwidth", { buf = 0 })
-    end,
-    separator = "",
-  }
+local spaces = {
+  function()
+    return "Spaces: "
+      .. vim.api.nvim_get_option_value("shiftwidth", { buf = 0 })
+  end,
+  separator = "",
+}
+
+local function rest()
+  if vim.bo.filetype == "http" then
+    return "rest"
+  else
+    return ""
+  end
+end
 
 local config = {
   options = {
@@ -131,7 +138,7 @@ local config = {
       spellcheck,
       filename,
     },
-    lualine_x = { "diagnostics", filetype },
+    lualine_x = { rest(), "diagnostics", filetype },
     lualine_y = { encoding, spaces },
     lualine_z = {
       {

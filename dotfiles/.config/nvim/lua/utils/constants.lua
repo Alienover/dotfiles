@@ -79,6 +79,7 @@ M.special_filetypes = {
     "noice",
     "DiffviewFiles",
     "DiffviewFileHistory",
+    "httpResult",
   },
   close_by_q = {
     "qf",
@@ -87,7 +88,6 @@ M.special_filetypes = {
     "git",
     "help",
     "lspinfo",
-    "httpResult",
     "startuptime",
     "null-ls-info",
     "git.nvim",
