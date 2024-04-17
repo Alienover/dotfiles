@@ -10,6 +10,7 @@ conform.setup({
     html = { "prettier" },
     yaml = { "prettier" },
     css = { "prettier" },
+    scss = { "prettier" },
     javascript = { "prettier" },
     javascriptreact = { "prettier" },
     typescript = { "prettier" },
