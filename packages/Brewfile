@@ -1,5 +1,6 @@
-tap "homebrew/cask", "https://mirrors.ustc.edu.cn/homebrew-cask.git"
-tap "homebrew/core", "https://mirrors.ustc.edu.cn/homebrew-core.git"
+# Enable it when in China
+# tap "homebrew/cask", "https://mirrors.ustc.edu.cn/homebrew-cask.git"
+# tap "homebrew/core", "https://mirrors.ustc.edu.cn/homebrew-core.git"
 
 # set arguments for all 'brew install --cask' commands
 cask_args appdir: "~/Applications", require_sha: false
@@ -12,9 +13,6 @@ brew "cpanminus"
 
 # Fast and simple Node.js version manager
 brew "fnm"
-
-# Interpreted, interactive, object-oriented programming language
-# brew "python@3.9"
 
 # Simple, fast and user-friendly alternative to find
 brew "fd"
@@ -75,9 +73,6 @@ brew "koekeishiya/formulae/yabai"
 
 ## GUI application
 
-# QQ for mac
-cask "qq"
-
 # WeChat for mac
 cask "wechat"
 
@@ -90,14 +85,14 @@ cask "google-chrome"
 # Music streaming service
 cask "spotify"
 
-# Application launcher and productivity software
-cask "alfred"
-
 # GPU-based terminal emulator
 cask "kitty"
 
 # Multimedia player
 cask "vlc"
+
+# Free and open-source media player
+cask "iina"
 
 # Binary releases of VS Code without MS branding/telemetry/licensing
 cask "vscodium"
@@ -107,3 +102,9 @@ cask "keka"
 
 # System monitor for the menu bar
 cask "stats"
+
+# Tool to control external monitor brightness & volume
+cask "monitorcontrol"
+
+# Control your tools with a few keystrokes
+cask "raycast"
