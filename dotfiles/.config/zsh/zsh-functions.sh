@@ -1,5 +1,7 @@
 #! /usr/bin/env zsh
 
+__PLUGIN_FOLDER="$HOME/.zsh_plugins"
+
 # Function to source files if they exist
 function zsh_add_file() {
   local dir=${2:-$ZDOTDIR}
@@ -14,7 +16,7 @@ function zsh_add_file() {
 
 function zsh_add_plugin() {
   local name=$(echo "$1" | cut -d "/" -f 2)
-  local plugin_path="$HOME/.zsh_plugins/$name"
+  local plugin_path="$__PLUGIN_FOLDER/$name"
   if [ ! -d "$plugin_path" ]; then
     # Download the plugin automatically
     git clone "https://github.com/$1.git" "$plugin_path"
@@ -23,6 +25,7 @@ function zsh_add_plugin() {
   zsh_add_file "$name.plugin.zsh" $plugin_path || \
     zsh_add_file "$name.zsh" $plugin_path
 }
+
 
 function zsh_add_custom_plugin() {
   zsh_add_file "plugins/$1/$1.plugin.zsh" || \
@@ -65,3 +68,25 @@ function zsh_lazy_load_completions() {
 
   compdef $comp $cmd
 }
+
+
+function zsh_update_plugin() {
+  local name=$(echo "${1:-all}" | cut -d "/" -f 2)
+
+  if [ $name = 'all' ]; then
+    for plugin in $(ls $__PLUGIN_FOLDER); do
+      zsh_update_plugin $plugin
+    done
+  else
+    local plugin_path="$__PLUGIN_FOLDER/$name"
+
+    if [ -d "$plugin_path" ]; then
+      echo "Updating plugin \"$name\"..."
+      # pull updates
+      git -C $plugin_path pull
+    else
+      echo "Couldn't find plugin \"$name\""
+    fi
+  fi
+}
+
