@@ -5,9 +5,10 @@ git rev-parse --is-inside-work-tree >> /dev/null || exit 1
 height=${__FZF_POPUP_HEIGHT:-30%}
 
 __git_logs() {
-    local _gitLogLineToHash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
-    local _viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'"
-    local _instructions=$'/ CTRL-D: Scroll down / CTRL-U: Scroll up /\n/ Enter: View the detail / CTRL-Y: Copy the selected commit IDs /\n\n'
+    local _gitLogLineToHash="echo {+} | grep -o '[a-f0-9]\{7\}'"
+    local _gitLogFirstLineToHash="$_gitLogLineToHash | head -1"
+    local _viewGitLogLine="$_gitLogFirstLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'"
+    local _instructions=$'/ CTRL-D:\tScroll down\t/ CTRL-U:\tScroll up\t/\n/ Enter:\tView the detail\t/ CTRL-Y:\tCopy commit(s)\t/\n\n'
 
     git log --color=always \
         --format="%C(cyan)%h%Creset %C(blue)%ar%Creset - %C(bold yellow)%s%Creset %C(red)%d%Creset %C(dim white)[%ae]" "$@" | \
@@ -15,10 +16,10 @@ __git_logs() {
             --reverse --ansi --tiebreak=index \
             --header "$_instructions" \
             --prompt " > Git Logs: " \
-            --preview "$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'" \
+            --preview "$_gitLogFirstLineToHash | xargs -I % sh -c 'git show --color=always --name-status %'" \
             --preview-window "border-left" \
             --bind "ctrl-d:preview-down,ctrl-u:preview-up" \
-            --bind "ctrl-y:execute(echo \"{+}\" | grep -o '[a-f0-9]\{7\}' | tr '\n' ' ' | pbcopy)+deselect-all+accept" \
+            --bind "ctrl-y:execute($_gitLogLineToHash | tr '\n' ' ' | pbcopy)+deselect-all+accept" \
             --bind "enter:execute($_viewGitLogLine | less -R)" \
 }
 

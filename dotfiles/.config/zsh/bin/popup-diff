@@ -12,7 +12,7 @@ __git_diff() {
   local _toplevel=`git rev-parse --show-toplevel`
   local _stat=`git diff --stat | tail -1`
   local _gitDiffFilename="echo {} | xargs echo |cut -d' ' -f2"
-  local _instructions=$'/ Enter: View the detail / CTRL-D: Scroll Down /  CTRL-U: Scroll Up /\n'
+  local _instructions=$'/ CTRL-D:\tScroll Down\t/ CTRL-U: Scroll Up\t/\n/ Enter:\tView the detail\t/\n'
 
   git diff --name-status $@ | \
     fzf -i +s --reverse --height $height --tiebreak=index --no-mouse \
