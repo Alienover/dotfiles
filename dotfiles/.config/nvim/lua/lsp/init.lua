@@ -1,5 +1,6 @@
 local utils = require("utils")
 local constants = require("utils.constants")
+local nightly_features = require("utils.features")
 
 local lspconfig = require("lspconfig")
 
@@ -39,6 +40,12 @@ end
 local on_attach = function(client, bufnr)
   lsp_keymaps(client, bufnr)
   lsp_formatting(client, bufnr)
+
+  if nightly_features.inlay_hint then
+    if client.supports_method("textDocument/inlayHint") then
+      vim.lsp.inlay_hint.enable(bufnr, true)
+    end
+  end
 end
 
 -- Re-write lsp handlers

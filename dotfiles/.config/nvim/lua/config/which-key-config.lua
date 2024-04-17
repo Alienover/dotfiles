@@ -1,5 +1,7 @@
 local utils = require("utils")
 local constants = require("utils.constants")
+local nightly_features = require("utils.features")
+
 local wk = require("which-key")
 
 local o, g, cmd = utils.o, utils.g, utils.cmd
@@ -17,7 +19,7 @@ local config = {
   key_labels = { ["<space>"] = "» Quick Actions" },
   icons = {
     breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
-    separator = "➟", -- symbol used between a key and it's label
+    separator = "", -- symbol used between a key and it's label
     group = "＋", -- symbol prepended to a group
   },
   window = {
@@ -306,6 +308,7 @@ local n_mappings = {
     t = { telescope("lsp_type_definitions"), "[T]ype dDfinitions" },
     a = { lspsaga("code_action"), "Code [A]ction" },
     d = { lspsaga("peek_definition"), "[D]efinition" },
+    h = { toggle_inlay_hint, "Toggle Inlay [H]int" },
   },
   r = {
     name = "Rest Request",

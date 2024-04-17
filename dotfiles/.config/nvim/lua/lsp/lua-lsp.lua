@@ -13,6 +13,11 @@ local M = {
       completion = {
         callSnippet = "Replace",
       },
+      hint = {
+        enable = true,
+        arrayIndex = "Enable",
+        setType = true,
+      },
     },
   },
 }
