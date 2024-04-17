@@ -1,16 +1,34 @@
 #! /bin/zsh
 
-set-long-prompt() { PROMPT='%~%# ' }
-precmd_functions=(set-long-prompt)
+typeset -g __TP_NEWLINE=""
 
-set-short-prompt() {
-  if [[ $PROMPT != '%# ' ]]; then
-    PROMPT='%# '
+__TP_ORIGINAL_PROMPT="$PROMPT"
+
+__tp_set_original_prompt() {
+  PROMPT="${__TP_NEWLINE}${__TP_ORIGINAL_PROMPT}"
+}
+
+__tp_set_shorten_prompt() {
+  local icon=">"
+  local color="$GUI_GREEN"
+
+  if [[ $PROMPT != *$icon* ]]; then
+    PROMPT="${__TP_NEWLINE}%{%F{${color}}%}$icon %{%f%}"
     zle .reset-prompt
+
+    __TP_NEWLINE=$'\n'
   fi
 }
 
-zle-line-finish() { set-short-prompt }
+__tp_set_prompt_on_trap() {
+  __tp_set_shorten_prompt  # for last prompt
+  __tp_set_original_prompt # for current prompt
+}
+
+autoload -U add-zsh-hook
+add-zsh-hook precmd __tp_set_original_prompt
+
+zle-line-finish() { __tp_set_shorten_prompt }
 zle -N zle-line-finish
 
-trap 'set-short-prompt; return 130' INT
+trap '__tp_set_prompt_on_trap; return 130' INT
