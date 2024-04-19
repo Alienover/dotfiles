@@ -11,6 +11,9 @@ function __init_env {
   export PATH="$BREW_BIN:$BREW_SBIN:$PATH"
 
   export HOMEBREW_NO_INSTALL_FROM_API=1
+
+  # Specify your defaults in this environment variable
+  export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications --fontdir=/Library/Fonts"
 }
 
 # Brew

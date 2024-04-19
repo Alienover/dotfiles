@@ -2,9 +2,6 @@
 # tap "homebrew/cask", "https://mirrors.ustc.edu.cn/homebrew-cask.git"
 # tap "homebrew/core", "https://mirrors.ustc.edu.cn/homebrew-core.git"
 
-# set arguments for all 'brew install --cask' commands
-cask_args appdir: "~/Applications", require_sha: false
-
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 
