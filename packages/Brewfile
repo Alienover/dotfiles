@@ -71,6 +71,9 @@ brew "koekeishiya/formulae/skhd"
 # A tiling window manager for macOS based on binary space partitioning.
 brew "koekeishiya/formulae/yabai"
 
+# A window border system for macOS
+brew "felixkratz/formulae/borders"
+
 ## GUI application
 
 # WeChat for mac

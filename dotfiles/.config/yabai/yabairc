@@ -42,8 +42,8 @@ yabai -m config window_opacity off
 # yabai -m config active_window_opacity 1.0
 
 # Change how window looks
-yabai -m config window_border on
-yabai -m config window_border_width 3
+# !DEPRECIATED: yabai -m config window_border off
+# yabai -m config window_border_width 3
 yabai -m config active_window_border_color 0xFFFF9500
 yabai -m config normal_window_border_color 0x00FFFFFF
 yabai -m config insert_feedback_color      0xffd75f5f
