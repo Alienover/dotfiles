@@ -35,3 +35,5 @@ init_config_alias() {
 init_ls_alias
 init_cat_alias
 init_config_alias
+
+alias dot="cd $HOME/src/dotfiles"
