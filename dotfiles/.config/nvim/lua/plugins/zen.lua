@@ -2,20 +2,13 @@ return {
   {
     "folke/zen-mode.nvim",
     cmd = "ZenMode",
-    dependencies = { "folke/twilight.nvim" },
-    config = function()
-      require("zen-mode").setup({
-        plugins = {
-          gitsigns = true,
-          tmux = true,
-          kitty = { enabled = false, font = "+2" },
-        },
-      })
-
-      require("twilight").setup({
-        context = -1,
-        treesitter = true,
-      })
-    end,
+    opts = {
+      plugins = {
+        twilight = { enabled = false }, -- enable to start Twilight when zen mode opens
+        gitsigns = { enabled = false }, -- disables git signs
+        tmux = { enabled = false }, -- disables the tmux statusline
+        kitty = { enabled = false, font = "+2" },
+      },
+    },
   },
 }
