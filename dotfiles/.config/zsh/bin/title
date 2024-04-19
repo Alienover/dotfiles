@@ -1,0 +1,9 @@
+#! /usr/bin/env zsh
+
+title_converter() {
+  local title=$(tr '-' ' ' <<< "$1")
+  echo "${(C)${(j: :)${(s: :)title}}}"
+}
+
+title_converter "$1"
+

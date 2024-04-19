@@ -57,5 +57,6 @@ zsh_add_custom_plugin "tmux"
 zsh_add_custom_plugin "nvim"
 zsh_add_custom_plugin "vi-mode"
 zsh_add_custom_plugin "transient-prompt"
+zsh_add_custom_plugin "obsidian"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

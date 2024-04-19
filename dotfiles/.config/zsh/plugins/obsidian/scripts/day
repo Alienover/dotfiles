@@ -1,0 +1,29 @@
+#! /bin/zsh
+
+__OB_DATE_FORMAT="%Y-%m-%d"
+today=$(date +"$__OB_DATE_FORMAT")
+yesterday=$(date -v-1d +"$__OB_DATE_FORMAT")
+tomorrow=$(date -v+1d +"$__OB_DATE_FORMAT")
+
+file="$OBSIDIAN_VAULT/journals/daily-notes/$today.md"
+
+template=$(cat "$OBSIDIAN_VAULT/templates/daily-note.md")
+
+# template=$(echo "$template" | sed -E "s/{{ ?date ?}}/$today/")
+
+new_note() {
+  touch "$file"
+
+  echo "$template" | \
+    sed -r "s/<%.*now[^%]+%>/$today/" | \
+    sed -r "s/<%.*yesterday[^%]+%>/$yesterday/" | \
+    sed -r "s/<%.*tomorrow[^%]+%>/$tomorrow/" > "$file"
+}
+
+if [[ ! -f "$file" ]]; then
+  echo "File does not exist, creating new daily note."
+  new_note
+fi
+
+#
+nvim "$file" -c ":ZenMode"
