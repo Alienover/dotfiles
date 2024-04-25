@@ -136,7 +136,8 @@ local terminal = function(input)
 end
 
 local toggle_diffview = function()
-  if g.diffview_opened then
+  local is_opened = g.diffview_opened or vim.o.filetype == "DiffviewFiles"
+  if is_opened then
     local curr_tabid = vim.api.nvim_get_current_tabpage()
     local tabidx, tabid = nil, nil
 
@@ -199,7 +200,7 @@ local toggle_inlay_hint = function()
     local bufnr = vim.api.nvim_get_current_buf()
     local enabled = vim.lsp.inlay_hint.is_enabled(bufnr)
 
-    vim.lsp.inlay_hint.enable(bufnr, enabled == false)
+    vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
   else
     vim.notify(
       '"inlay_hint" is unavailable on current nvim.',
