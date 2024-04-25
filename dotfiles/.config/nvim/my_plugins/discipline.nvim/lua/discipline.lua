@@ -66,13 +66,13 @@ end
 M.setup = function()
   enable_cowboy()
 
-  vim.api.nvim_create_user_command("CowboyEnable", function()
-    enable_cowboy()
-  end, {})
-
-  vim.api.nvim_create_user_command("CowboyDisable", function()
-    disable_cowboy()
-  end, {})
+  vim.api.nvim_create_user_command("CowboyToggle", function()
+    if M.enabled then
+      disable_cowboy()
+    else
+      enable_cowboy()
+    end
+  end, { desc = "Toggle the cowboy discipline" })
 end
 
 return M

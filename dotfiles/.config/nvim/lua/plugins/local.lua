@@ -15,8 +15,9 @@ return {
   },
 
   { -- Descipline in cursor moving
-    "@local/descipline.nvim",
+    "@local/discipline.nvim",
     dev = true,
+    cmd = { "CowboyToggle" },
     event = { "CursorMoved" },
     config = true,
   },
