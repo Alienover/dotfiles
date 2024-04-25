@@ -197,17 +197,6 @@ cmp.setup.cmdline(
   })
 )
 
--- Use neorg, path & buffer source for `.norg` file
-cmp.setup.filetype(
-  { "norg" },
-  extend_config({
-    sources = cmp.config.sources(
-      { registery.neorg, registery.luasnip, registery.path },
-      { registery.emoji, registery.buffer:extend({ keyword_length = 5 }) }
-    ),
-  })
-)
-
 -- If a file is too large, I don't want to add to it's cmp sources treesitter, see:
 -- https://github.com/hrsh7th/nvim-cmp/issues/1522
 vim.api.nvim_create_autocmd("BufReadPre", {
