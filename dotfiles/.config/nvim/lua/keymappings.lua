@@ -91,7 +91,7 @@ nmap("zo", function()
     cmd(winrestcmd)
     vim.api.nvim_win_del_var(winnr, var_name)
   else
-    vim.api.nvim_win_set_var(winnr, var_name, vim.fn.winrestcm)
+    vim.api.nvim_win_set_var(winnr, var_name, vim.fn.winrestcmd())
 
     -- INFO: expand the current pane
     cmd([[resize]])
