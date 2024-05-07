@@ -1,6 +1,7 @@
 local utils = require("utils")
 
 require("git").setup({
+  winbar = true,
   default_mappings = false,
   keymaps = {
     browse = "<space>go",

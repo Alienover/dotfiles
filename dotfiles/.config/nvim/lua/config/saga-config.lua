@@ -48,6 +48,13 @@ local config = {
     height = (1 - window_specing.t * 2),
     width = (1 - window_specing.l * 2),
   },
+  definition = {
+    keys = {
+      edit = "o",
+      split = "s",
+      vsplit = "v",
+    },
+  },
 }
 
 require("lspsaga").setup(config)
