@@ -230,3 +230,13 @@ nmap(
   end),
   "[F]old [P]revious"
 )
+
+for _, key in ipairs({ "gd", "gf" }) do
+  for prefix, split in pairs({ s = "split", v = "vsplit" }) do
+    nmap(prefix .. key, function()
+      vim.cmd(split)
+
+      vim.api.nvim_feedkeys(key, "x", false)
+    end, ("%s and then %s"):format(split, key))
+  end
+end
