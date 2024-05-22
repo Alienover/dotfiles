@@ -45,7 +45,7 @@ shift + alt - t : yabai -m space --layout bsp
 # Center the float window
 shift + alt - c : yabai -m window --grid 4:4:1:1:2:2
 # Toggle the current window to float and center it
-shift + alt - space : yabai -m window --toggle float --grid 4:4:1:1:2:2
+shift + alt - space : yabai -m window --toggle float --grid 20:20:1:1:18:18
 # Split the current row
 shift + alt - s : yabai -m window --toggle split
 
