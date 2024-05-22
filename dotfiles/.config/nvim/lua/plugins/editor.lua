@@ -1,5 +1,3 @@
-local nightly_features = require("utils.features")
-
 return {
   {
     "folke/which-key.nvim",
@@ -24,16 +22,6 @@ return {
     end,
   },
 
-  {
-    "numToStr/Comment.nvim",
-    enabled = nightly_features.enhanced_comment == false,
-    keys = { "gcc", "gbc", { "gc", mode = "x" } },
-    opts = {
-      -- ignores empty lines
-      ignore = "^$",
-    },
-  },
-
   { -- Highlight keywords like todo, fix, and info
     "folke/todo-comments.nvim",
     event = "BufReadPost",
@@ -52,11 +40,6 @@ return {
     config = function()
       require("config.luasnip-config")
     end,
-  },
-
-  {
-    "janko-m/vim-test",
-    cmd = { "TestFile", "TestNearest" },
   },
 
   {
@@ -92,14 +75,5 @@ return {
     cmd = { "Neogen" },
     dependencies = "nvim-treesitter/nvim-treesitter",
     config = true,
-  },
-
-  {
-    "iamcco/markdown-preview.nvim",
-    build = "cd app && yarn install",
-    ft = { "markdown" },
-    config = function()
-      require("config.markdown-config")
-    end,
   },
 }

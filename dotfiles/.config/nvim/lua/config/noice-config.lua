@@ -11,7 +11,7 @@ require("noice").setup({
       ["cmp.entry.get_documentation"] = true,
     },
     progress = {
-      enabled = false,
+      enabled = true,
     },
     signature = {
       enabled = true,

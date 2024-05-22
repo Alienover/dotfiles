@@ -17,20 +17,6 @@ return {
   },
 
   {
-    "j-hui/fidget.nvim",
-    tag = "legacy",
-    opts = {
-      text = {
-        spinner = "dots",
-      },
-      window = {
-        relative = "editor",
-        blend = 0,
-      },
-    },
-  },
-
-  {
     "stevearc/conform.nvim",
     event = { "BufWritePre" },
     cmd = { "ConformFormat", "ConformToggle" },
@@ -62,8 +48,6 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       "williamboman/mason.nvim",
-
-      "j-hui/fidget.nvim", -- Provides LSP progress widget
 
       "folke/neodev.nvim", -- Provides Lua setup for neovim
 

@@ -144,7 +144,6 @@ cmp.setup(extend_config({
     {
       -- Utilities
       registery.path,
-      registery.calc,
       registery.buffer:extend({ keyword_length = 5 }),
     }
   ),
