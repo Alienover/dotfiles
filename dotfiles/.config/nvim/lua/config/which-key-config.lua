@@ -198,7 +198,9 @@ end
 local toggle_inlay_hint = function()
   if nightly_features.inlay_hint then
     local bufnr = vim.api.nvim_get_current_buf()
-    local enabled = vim.lsp.inlay_hint.is_enabled(bufnr)
+    local enabled = vim.lsp.inlay_hint.is_enabled({
+      bufnr = bufnr,
+    })
 
     vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
   else

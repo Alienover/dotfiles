@@ -48,6 +48,8 @@ local global = {
 
   -- Disble Perl support
   loaded_perl_provider = 0,
+  -- Disble Ruby support
+  loaded_ruby_provider = 0,
 
   tmux_navigator_no_mappings = 1,
 
@@ -172,6 +174,7 @@ local options = {
 }
 
 -- Custom filetypes
+--- @type vim.filetype.add.filetypes
 local filetypes = {
   extension = {
     json = "jsonc",

@@ -300,7 +300,7 @@ M.setup_global = function(global)
 end
 
 --- Setup custom filetyps
----@param filetypes table
+---@param filetypes vim.filetype.add.filetypes
 M.setup_filetypes = function(filetypes)
   if vim.filetype then
     vim.filetype.add(filetypes)
@@ -329,7 +329,7 @@ M.buffer_is_big = function(bufnr)
 
   local max_filesize = 100 * 1024 -- 100 KB
 
-  local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(bufnr))
+  local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(bufnr))
   if ok and stats and stats.size > max_filesize then
     return true
   else
