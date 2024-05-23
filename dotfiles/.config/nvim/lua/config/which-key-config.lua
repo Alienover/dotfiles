@@ -203,11 +203,6 @@ local toggle_inlay_hint = function()
     })
 
     vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
-  else
-    vim.notify(
-      '"inlay_hint" is unavailable on current nvim.',
-      vim.log.levels.INFO
-    )
   end
 end
 
