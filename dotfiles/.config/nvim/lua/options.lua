@@ -4,8 +4,6 @@ local cmd = utils.cmd
 
 cmd([[syntax on]])
 
--- cmd([[filetype on]])
-
 cmd([[filetype plugin indent on]])
 
 -- Italic support
