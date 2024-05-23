@@ -1,7 +1,7 @@
 local utils = require("utils")
 local consts = require("utils.constants")
 
-local nmap, tmap = utils.nmap, utils.tmap
+local nmap = utils.nmap
 
 local groups = {
   filetype = vim.api.nvim_create_augroup("FT", { clear = true }),
@@ -10,36 +10,19 @@ local groups = {
   linting = vim.api.nvim_create_augroup("Linting", { clear = true }),
 }
 
-vim.api.nvim_create_autocmd("TermEnter", {
-  desc = "Remove the editor styling and define keymaps on entering terminal",
-
-  group = groups.terminal,
-  callback = function()
-    local excluded_filetypes = { "rnvimr", "fzf", "LspsagaRename" }
-    local bufnr = vim.api.nvim_get_current_buf()
-    local curr_ft = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
-
-    if vim.tbl_contains(excluded_filetypes, curr_ft) then
-      return
-    end
-
-    utils.cmd.setlocal("nocursorline nonumber norelativenumber")
-    -- Set darker background color
-    -- utils.cmd("hi TerminalBG guibg=" .. consts.colors.BLACK)
-    -- utils.cmd("set winhighlight=Normal:TerminalBG")
-
-    vim.wo.statuscolumn = ""
-
-    -- Keymaps
-    local opts = { noremap = true, silent = true, buffer = bufnr }
-    tmap("<ESC>", "<C-\\><C-n>", opts)
-    tmap("jk", "<C-\\><C-n>", opts)
-    tmap("<c-w>h", "<C-\\><C-n><C-w>h", opts)
-    tmap("<c-w>j", "<C-\\><C-n><C-w>j", opts)
-    tmap("<c-w>k", "<C-\\><C-n><C-w>k", opts)
-    tmap("<c-w>l", "<C-\\><C-n><C-w>l", opts)
-  end,
-})
+-- vim.api.nvim_create_autocmd("TermEnter", {
+--   desc = "Set terminal filetype as default",
+--
+--   group = groups.terminal,
+--   callback = function()
+--     local bufnr = vim.api.nvim_get_current_buf()
+--     local curr_ft = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
+--
+--     if curr_ft == "" then
+--       vim.cmd.set("filetype=terminal")
+--     end
+--   end,
+-- })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight on yark",
@@ -58,42 +41,6 @@ vim.api.nvim_create_autocmd("FileType", {
     nmap("q", function()
       utils.cmd("close")
     end, { silent = true, buffer = 0 })
-  end,
-})
-
-vim.api.nvim_create_autocmd("FileType", {
-  desc = "Don't expand tab",
-
-  group = groups.filetype,
-  pattern = { "make" },
-  callback = function()
-    vim.defer_fn(function()
-      vim.notify(
-        "Setting `expandtab` to false for Makefile...",
-        vim.log.levels.INFO
-      )
-      vim.opt_local.expandtab = false
-    end, 500)
-  end,
-})
-
-vim.api.nvim_create_autocmd("FileType", {
-  desc = "Settings for norg files",
-
-  group = groups.filetype,
-  pattern = { "norg" },
-  callback = function()
-    vim.wo.conceallevel = 2
-  end,
-})
-
-vim.api.nvim_create_autocmd("FileType", {
-  desc = "Hide the cursorline in Mason window",
-
-  group = groups.filetype,
-  pattern = { "mason" },
-  callback = function()
-    vim.o.cursorline = false
   end,
 })
 

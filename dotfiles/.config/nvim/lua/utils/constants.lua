@@ -80,6 +80,7 @@ M.special_filetypes = {
     "DiffviewFiles",
     "DiffviewFileHistory",
     "httpResult",
+    "terminal",
   },
   close_by_q = {
     "qf",
