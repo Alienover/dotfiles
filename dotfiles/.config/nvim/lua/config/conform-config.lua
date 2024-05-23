@@ -20,7 +20,7 @@ conform.setup({
     go = { "gofmt" },
     ["*"] = { "trim_whitespace" },
   },
-  format_on_save = function()
+  format_after_save = function()
     -- Disable with a global or buffer-local variable
     ---@type boolean
     local disabled = vim.F.npcall(vim.api.nvim_get_var, AUTOFORMAT) or false
@@ -29,7 +29,7 @@ conform.setup({
       return
     end
 
-    return { timeout_ms = 500, lsp_fallback = true, async = false }
+    return { lsp_fallback = true }
   end,
   formatters = {
     black = {
