@@ -1,3 +1,5 @@
+local nightly_features = require("utils.features")
+
 return {
   {
     "folke/which-key.nvim",
@@ -22,6 +24,15 @@ return {
     end,
   },
 
+  {
+    "numToStr/Comment.nvim",
+    enabled = nightly_features.enhanced_comment == false,
+    keys = { "gcc", "gbc", { "gc", mode = "x" } },
+    opts = {
+      -- ignores empty lines
+      ignore = "^$",
+    },
+  },
   { -- Highlight keywords like todo, fix, and info
     "folke/todo-comments.nvim",
     event = "BufReadPost",
