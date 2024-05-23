@@ -16,7 +16,7 @@ __git_logs() {
             --reverse --ansi --tiebreak=index \
             --header "$_instructions" \
             --prompt " > Git Logs: " \
-            --preview "$_gitLogFirstLineToHash | xargs -I % sh -c 'git show --color=always --name-status %'" \
+            --preview "$_gitLogFirstLineToHash | xargs -I % sh -c 'git show --color=always --name-status --show-signature %'" \
             --preview-window "border-left" \
             --bind "ctrl-d:preview-down,ctrl-u:preview-up" \
             --bind "ctrl-y:execute($_gitLogLineToHash | tr '\n' ' ' | pbcopy)+deselect-all+accept" \
