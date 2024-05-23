@@ -16,7 +16,7 @@ local function enable_cowboy()
 
   for _, key in ipairs(descipline_keys) do
     local count = 0
-    local timer = assert(vim.uv.new_timer())
+    local timer = assert(vim.loop.new_timer())
     local map = key
 
     vim.keymap.set("n", key, function()
