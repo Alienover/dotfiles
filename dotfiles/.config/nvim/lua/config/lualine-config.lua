@@ -82,8 +82,27 @@ local diff = {
 
 local spaces = {
   function()
-    return "Spaces: "
-      .. vim.api.nvim_get_option_value("shiftwidth", { buf = 0 })
+    --- @type boolean
+    local expandTab =
+      vim.api.nvim_get_option_value("expandtab", { scope = "local" })
+
+    if expandTab then
+      local siftWidth =
+        vim.api.nvim_get_option_value("shiftwidth", { scope = "local" })
+
+      if siftWidth ~= 0 then
+        return "Spaces: " .. siftWidth
+      end
+    else
+      local tabStop =
+        vim.api.nvim_get_option_value("tabstop", { scope = "local" })
+
+      if tabStop ~= 0 then
+        return "Tabs: " .. tabStop
+      end
+    end
+
+    return " "
   end,
   separator = "",
 }
