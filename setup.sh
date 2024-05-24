@@ -16,6 +16,14 @@ function create_link() {
   local source_file=`echo $source | sed "s|$PWD|.|"`
   local target_file=`echo $target | sed "s|$TARGET_DIR|~|"`
 
+  local filename=$source:t
+
+  # Skip .gitconfig
+  if [[ "$filename" == ".gitconfig" ]]; then
+    echo "-  Skip .gitconfig. please link it manually"
+    return
+  fi
+
   echo "\033[0;90m\c"
 
   if [[ -e "$target" ]]; then
