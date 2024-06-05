@@ -11,7 +11,7 @@ __git_logs() {
     local _instructions=$'/ CTRL-D:\tScroll down\t/ CTRL-U:\tScroll up\t/\n/ Enter:\tView the detail\t/ CTRL-Y:\tCopy commit(s)\t/\n\n'
 
     git log --color=always \
-        --format="%C(cyan)%h%Creset %C(blue)%ar%Creset - %C(bold yellow)%s%Creset %C(red)%d%Creset %C(dim white)[%ae]" "$@" | \
+        --format="%C(cyan)%h%Creset %C(blue)%ar%Creset - %C(bold yellow)%s%Creset %C(red)%d%Creset %C(dim white)[%ae]" $@ | \
         fzf -i -e +s --height $height --multi \
             --reverse --ansi --tiebreak=index \
             --header "$_instructions" \
@@ -23,4 +23,4 @@ __git_logs() {
             --bind "enter:execute($_viewGitLogLine | less -R)" \
 }
 
-__git_logs
+__git_logs $@
