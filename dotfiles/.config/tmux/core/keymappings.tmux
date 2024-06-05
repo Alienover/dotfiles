@@ -52,6 +52,9 @@ bind p run "tmux-popup -w 80 -h 20 -s popup \"sh $__TM_TMUX_HOME/switchy.sh\""
 unbind T
 bind T run "tmux-popup \"source $__TM_TMUX_HOME/floatterm.sh\" -s popup -t"
 
+unbind F
+bind F run "tmux-yazi"
+
 # smart pane switching with awareness of vim splits
 bind h run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-w\ h) || tmux select-pane -L"
 bind j run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-w\ j) || tmux select-pane -D"
