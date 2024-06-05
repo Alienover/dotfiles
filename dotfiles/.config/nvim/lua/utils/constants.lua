@@ -168,6 +168,10 @@ M.ensure_externals = {
     mason = "lua-language-server",
     config_file = "lsp.lua-lsp",
   },
+  taplo = {
+    [M.external_types.lsp] = true,
+    mason = "taplo",
+  },
 
   -- INFO: Formatters
   stylua = {

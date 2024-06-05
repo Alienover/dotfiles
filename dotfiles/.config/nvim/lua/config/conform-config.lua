@@ -18,6 +18,7 @@ conform.setup({
     json = { { "jq", "prettier" } },
     jsonc = { "jq", "prettier" },
     go = { "gofmt" },
+    toml = { "taplo" },
     ["*"] = { "trim_whitespace" },
   },
   format_after_save = function()
@@ -34,6 +35,14 @@ conform.setup({
   formatters = {
     black = {
       prepend_args = { "--fast" },
+    },
+    taplo = {
+      args = {
+        "format",
+        "--option",
+        "column_width=120",
+        "-",
+      },
     },
     stylua = {
       prepend_args = function()
