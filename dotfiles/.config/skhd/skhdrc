@@ -75,6 +75,14 @@ shift + alt - right : sh ~/.config/skhd/window-action.sh stack east
 # INFO: window border is disabled
 # shift + ctrl + alt - space : sh ~/.config/skhd/toggle-window-border.sh
 
+## Switch spaces
+alt - 1 : sh ~/.config/skhd/focus-space.sh 1
+alt - 2 : sh ~/.config/skhd/focus-space.sh 2
+alt - 3 : sh ~/.config/skhd/focus-space.sh 3
+alt - 4 : sh ~/.config/skhd/focus-space.sh 4
+alt - 5 : sh ~/.config/skhd/focus-space.sh 5
+alt - 6 : sh ~/.config/skhd/focus-space.sh 6
+
 ## Services restart
 ## Yabai
 shift + ctrl + alt - y : sh ~/.config/skhd/restart-service.sh yabai
