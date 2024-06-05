@@ -51,6 +51,8 @@ local global = {
 
   tmux_navigator_no_mappings = 1,
 
+  editorconfig = false,
+
   -- did_load_filetypes = 1,
 
   -- Leader key mapping
