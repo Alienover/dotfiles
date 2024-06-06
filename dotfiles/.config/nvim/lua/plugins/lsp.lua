@@ -49,8 +49,6 @@ return {
     dependencies = {
       "williamboman/mason.nvim",
 
-      "folke/neodev.nvim", -- Provides Lua setup for neovim
-
       "@local/lsp-marks.nvim", -- Provide the `go_def` and `go_back` with marks
     },
     config = function()

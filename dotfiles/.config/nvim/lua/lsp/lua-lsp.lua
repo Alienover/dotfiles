@@ -1,15 +1,20 @@
-local neodev = vim.F.npcall(require, "neodev")
-if neodev then
-  -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
-  neodev.setup({
-    -- add any options here, or leave empty to use the default settings
-  })
-end
-
+-- config from https://github.com/neovim/neovim/issues/21686#issuecomment-1522446128
 local M = {
   settings = {
     Lua = {
-      workspace = { checkThirdParty = false },
+      runtime = {
+        -- Tell the language server which version of Lua you're using
+        -- (most likely LuaJIT in the case of Neovim)
+        version = "LuaJIT",
+      },
+      diagnostics = {
+        globals = { "vim" },
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files
+        library = vim.api.nvim_get_runtime_file("", true),
+        checkThirdParty = false,
+      },
       completion = {
         callSnippet = "Replace",
       },
