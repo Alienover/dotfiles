@@ -46,11 +46,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
-    dependencies = {
-      "williamboman/mason.nvim",
-
-      "@local/lsp-marks.nvim", -- Provide the `go_def` and `go_back` with marks
-    },
+    dependencies = { "williamboman/mason.nvim" },
     config = function()
       require("lsp")
     end,

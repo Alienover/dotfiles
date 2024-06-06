@@ -3,8 +3,6 @@ local constants = require("utils.constants")
 
 local lspconfig = require("lspconfig")
 
-local marks = require("lsp-marks")
-
 local o, nmap = utils.o, utils.nmap
 
 local icons = constants.icons
@@ -22,8 +20,8 @@ local lsp_keymaps = function(_, bufnr)
     nmap(keys, fnc, opts)
   end
 
-  map("go", marks.go_back, "[G]o [O]riginal")
-  map("gd", marks.go_def, "[G]o [D]efinition")
+  map("go", "<C-o>zz", "[G]o [O]riginal")
+  map("gd", vim.lsp.buf.definition, "[G]o [D]efinition")
   map("gD", vim.lsp.buf.declaration, "[G]o [D]eclaration")
   map("gi", vim.lsp.buf.implementation, "[G]o [I]mplementation")
   map("gr", vim.lsp.buf.references, "[G]o [R]eferences")
