@@ -61,7 +61,7 @@ M.filetype_mappings = setmetatable({
   end,
 })
 
-local os_name = vim.loop.os_uname().sysname
+local os_name = vim.uv.os_uname().sysname
 
 M.os = {
   is_mac = os_name == "Darwin",

@@ -10,7 +10,7 @@ local function get_pattern()
   local pattern = table.concat(
     utils.table_map_list(
       -- Flatten the table
-      vim.tbl_flatten(vim.tbl_values(ft_comments)),
+      vim.iter(vim.tbl_values(ft_comments)):flatten(),
       -- Suffix with the space
       function(value)
         return ("%s "):format(value)
