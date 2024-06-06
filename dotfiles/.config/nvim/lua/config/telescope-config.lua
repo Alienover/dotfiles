@@ -72,17 +72,13 @@ telescope.setup({
       initial_mode = "normal",
       respect_gitignore = false,
 
-      use_ui_input = false,
+      use_ui_input = true,
+
+      follow_symlinks = true,
 
       mappings = {
         ["i"] = {
-          ["<A-r>"] = false, -- fb_actions.rename, deprecated
-          ["<A-m>"] = false, -- fb_actions.move, deprecated
-          ["<A-y>"] = false, -- fb_actions.copy, deprecated
-          ["<A-d>"] = false, -- fb_actions.remove, deprecated
-          ["<C-r>"] = file_browser("rename"),
-          ["<C-t>"] = ts_actions.select_tab,
-          ["<Esc>"] = false,
+          -- INFO: Disable all the keymappings in insert mode
         },
         ["n"] = {
           ["d"] = false, -- fb_actions.remove, use "dd" instead
@@ -93,16 +89,18 @@ telescope.setup({
           ["s"] = false, -- fb_actions.toggle_all, use "S" instead
           ["t"] = false, -- fb_actions.change_cwd, use "<C-t>" instead
           ["w"] = false, -- fb_actions.goto_cwd, use "<C-w>" instead
-          ["S"] = file_browser("toggle_all"),
           ["p"] = file_browser("move"),
           ["q"] = ts_actions.close,
           ["h"] = file_browser("goto_parent_dir"),
-          ["H"] = file_browser("toggle_hidden"),
           ["l"] = ts_actions.select_default,
           ["n"] = file_browser("create"),
           ["dd"] = file_browser("remove"),
+          ["g."] = file_browser("toggle_hidden"),
+          -- Select all
+          ["<C-a>"] = file_browser("toggle_all"),
           ["<C-t>"] = ts_actions.select_tab,
           ["<C-w>"] = file_browser("goto_cwd"),
+          ["<C-k>"] = false,
           ["<bs>"] = file_browser("backspace"),
           ["/"] = function()
             vim.cmd("startinsert!")
