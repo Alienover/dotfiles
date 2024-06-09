@@ -28,7 +28,7 @@ function M:init()
   for _, i in pairs(vim.api.nvim_list_bufs()) do
     if
       vim.fn.buflisted(i) == 1
-      and vim.api.nvim_buf_get_option_value(i, "modifiable")
+      and vim.api.nvim_get_option_value("modifiable", { buf = i })
     then
       self.buf_count = self.buf_count + 1
     end
@@ -43,7 +43,7 @@ function M:kill_buf(opts)
 
   -- Check whehter to close the buffer without saving
   if not opts.force then
-    if vim.api.nvim_buf_get_option_value(self.bufnr, "modified") then
+    if vim.api.nvim_get_option_value("modified", { buf = self.bufnr }) then
       local choice = vim.fn.confirm(
         ("Save changes to %q?"):format(vim.fn.bufname()),
         "&Yes\n&No\n&Cancel"
