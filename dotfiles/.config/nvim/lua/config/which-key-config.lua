@@ -183,18 +183,6 @@ local toggle_file_diff = function(curr_file)
   end
 end
 
----@param sub_cmd string
-local custom_rest = function(sub_cmd)
-  if sub_cmd == "select_env" then
-    return function()
-      utils.change_cwd()
-      telescope("rest select_env")()
-    end
-  else
-    return t(string.format("Rest %s", sub_cmd))
-  end
-end
-
 local toggle_inlay_hint = function()
   if nightly_features.inlay_hint then
     local bufnr = vim.api.nvim_get_current_buf()
@@ -307,12 +295,6 @@ local n_mappings = {
     a = { lspsaga("code_action"), "Code [A]ction" },
     d = { lspsaga("peek_definition"), "[D]efinition" },
     h = { toggle_inlay_hint, "Toggle Inlay [H]int" },
-  },
-  r = {
-    name = "Rest Request",
-    e = { custom_rest("select_env"), "Browse .env files" },
-    r = { custom_rest("run"), "Send request under the cursor" },
-    l = { custom_rest("run last"), "Re-send the last request" },
   },
   z = { t("ZenMode"), "[Z]en Mode" },
   ["/"] = {

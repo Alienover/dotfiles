@@ -45,16 +45,9 @@ return {
   {
     "rest-nvim/rest.nvim",
     ft = { "http" },
+    tag = "v1.2.1",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      {
-        "vhyrro/luarocks.nvim",
-        branch = "go-away-python",
-        opts = {
-          rocks = { "lua-curl", "nvim-nio", "mimetypes", "xml2lua" }, -- Specify LuaRocks packages to install
-        },
-      },
     },
     config = function()
       require("config.rest-config")
