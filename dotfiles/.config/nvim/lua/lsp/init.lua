@@ -27,16 +27,9 @@ local lsp_keymaps = function(_, bufnr)
   map("gr", vim.lsp.buf.references, "[G]o [R]eferences")
 end
 
--- Formatting config
-local lsp_formatting = function(client, _)
-  -- Disable the LSP format by default. Manage the formatter in "config.conform-config" instead
-  client.server_capabilities.documentFormattingProvider = false
-end
-
 -- Custom on_attach handler
 local on_attach = function(client, bufnr)
   lsp_keymaps(client, bufnr)
-  lsp_formatting(client, bufnr)
 end
 
 ---@param filename string
@@ -91,6 +84,7 @@ local rewrite_lsp_handlers = function()
       update_in_insert = false,
     })
 
+  ---@diagnostic disable-next-line: duplicate-set-field
   vim.lsp.handlers["textDocument/definition"] = function(...)
     local status_ok, ts = pcall(require, "telescope.builtin")
     if not status_ok then
@@ -100,6 +94,7 @@ local rewrite_lsp_handlers = function()
     return ts.lsp_definitions(...)
   end
 
+  ---@diagnostic disable-next-line: duplicate-set-field
   vim.lsp.handlers["textDocument/references"] = function()
     local status_ok, ts = pcall(require, "telescope.builtin")
     if not status_ok then

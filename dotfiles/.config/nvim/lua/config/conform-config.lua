@@ -1,7 +1,7 @@
 local utils = require("utils")
 local conform = require("conform")
 
-local AUTOFORMAT = "disable_autoformat"
+local AUTO_FORMAT = "conform_autoformat"
 
 conform.setup({
   formatters_by_ft = {
@@ -19,18 +19,18 @@ conform.setup({
     jsonc = { "jq", "prettier" },
     go = { "gofmt" },
     toml = { "taplo" },
-    ["*"] = { "trim_whitespace" },
+    ["_"] = { "trim_whitespace" },
   },
-  format_after_save = function()
+  format_on_save = function()
     -- Disable with a global or buffer-local variable
     ---@type boolean
-    local disabled = vim.F.npcall(vim.api.nvim_get_var, AUTOFORMAT) or false
+    local enabled = vim.F.npcall(vim.api.nvim_get_var, AUTO_FORMAT) or true
 
-    if disabled then
+    if not enabled then
       return
     end
 
-    return { lsp_fallback = true }
+    return { timeout_ms = 500, lsp_format = "fallback" }
   end,
   formatters = {
     black = {
@@ -67,7 +67,7 @@ vim.api.nvim_create_user_command("ConformFormat", function()
   vim.F.npcall(conform.format, {
     async = false,
     timeout_ms = 500,
-    lsp_fallback = true,
+    lsp_format = "fallback",
   })
 end, {
   desc = "Trigger format",
@@ -75,9 +75,9 @@ end, {
 
 vim.api.nvim_create_user_command("ConformToggle", function()
   ---@type boolean
-  local disabled = vim.F.npcall(vim.api.nvim_get_var, AUTOFORMAT) or false
+  local enabled = vim.F.npcall(vim.api.nvim_get_var, AUTO_FORMAT) or true
 
-  vim.api.nvim_set_var(AUTOFORMAT, not disabled)
+  vim.api.nvim_set_var(AUTO_FORMAT, not enabled)
 end, {
   desc = "Toggle autoformat on save",
 })
@@ -86,7 +86,7 @@ end, {
 vim.api.nvim_create_user_command("ConformInfo", function()
   require("conform.health").show_window()
 
-  vim.defer_fn(function()
+  vim.schedule(function()
     local winnr = vim.api.nvim_get_current_win()
     vim.api.nvim_win_set_config(
       winnr,
@@ -96,5 +96,5 @@ vim.api.nvim_create_user_command("ConformInfo", function()
         title_pos = "center",
       })
     )
-  end, 10)
+  end)
 end, { desc = "Show information about Conform formatters" })
