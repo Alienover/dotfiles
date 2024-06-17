@@ -81,6 +81,7 @@ M.special_filetypes = {
     "DiffviewFileHistory",
     "httpResult",
     "terminal",
+    "blame",
   },
   close_by_q = {
     "qf",

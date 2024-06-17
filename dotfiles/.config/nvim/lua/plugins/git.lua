@@ -28,4 +28,11 @@ return {
       require("config.gitsigns-config")
     end,
   },
+  {
+    "Alienover/blame.nvim",
+    cmd = { "BlameToggle" },
+    opts = {
+      date_format = "%Y-%m-%d %H:%M",
+    },
+  },
 }
