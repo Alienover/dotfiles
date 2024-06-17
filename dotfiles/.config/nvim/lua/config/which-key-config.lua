@@ -277,7 +277,6 @@ local n_mappings = {
     R = { t("LspRestart"), "[R]estart" },
     N = { t("NullLsInfo"), "[N]ull-ls Info" },
     f = { t("ConformFormat", { silent = true }), "[F]ormat" },
-    r = { ":IncRename ", "[R]ename" },
     s = { telescope("lsp_document_symbols"), "Document [S]ymbols" },
     D = {
       telescope("diagnostics"),

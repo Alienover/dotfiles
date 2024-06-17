@@ -12,6 +12,16 @@ return {
   {
     "smjonas/inc-rename.nvim",
     event = "LspAttach",
+    keys = {
+      {
+        "<space>lr",
+        function()
+          return ":IncRename " .. vim.fn.expand("<cword>")
+        end,
+        desc = "Inc [R]ename",
+        expr = true,
+      },
+    },
     config = true,
     dependencies = { "neovim/nvim-lspconfig" },
   },
