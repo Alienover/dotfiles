@@ -4,18 +4,20 @@ local config = {
   term_colors = true,
   integrations = {
     cmp = true,
-    fidget = true,
     gitsigns = true,
-    leap = true,
     lsp_saga = true,
     markdown = true,
     mason = true,
     noice = true,
     notify = true,
-    telescope = true,
+    telescope = {
+      enabled = true,
+    },
     treesitter = true,
     treesitter_context = true,
     which_key = true,
+    diffview = true,
+    flash = true,
   },
   native_lsp = {
     enabled = true,
