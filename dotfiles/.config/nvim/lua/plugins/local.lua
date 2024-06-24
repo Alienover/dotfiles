@@ -5,7 +5,6 @@ return {
     -- FIXME: Deprecated
     "@local/lsp-marks.nvim",
     enabled = false,
-    dev = true,
     config = true,
   },
 
@@ -13,7 +12,6 @@ return {
     "@local/discipline.nvim",
     -- FIXME: key binding conflicts with the mapping for 'j', 'k' to 'gj', 'gk'
     enabled = false,
-    dev = true,
     cmd = { "CowboyToggle" },
     event = { "CursorMoved" },
     config = true,
@@ -21,14 +19,12 @@ return {
 
   { -- Keep Window on Buffer Delete - Improved - (lua ver.)
     "@local/kwbdi.nvim",
-    dev = true,
     cmd = { "KWBufDel" },
     config = true,
   },
 
   { -- Customized winbar with file path and document symbols
     "@local/winbar.nvim",
-    dev = true,
     event = { "BufReadPost", "BufNewFile" },
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
