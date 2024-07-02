@@ -1,21 +1,45 @@
-# Enable it when in China
-# tap "homebrew/cask", "https://mirrors.ustc.edu.cn/homebrew-cask.git"
-# tap "homebrew/core", "https://mirrors.ustc.edu.cn/homebrew-core.git"
+tap "felixkratz/formulae"
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/core"
+tap "homebrew/services", "git@github.com:Homebrew/homebrew-services.git"
+tap "koekeishiya/formulae"
 
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 
+# Powerful, enterprise-ready, open source web server with automatic HTTPS
+brew "caddy"
+
 # Get, unpack, build, and install modules from CPAN
 brew "cpanminus"
 
-# Fast and simple Node.js version manager
-brew "fnm"
+# Good-lookin' diffs with diff-highlight and more
+brew "diff-so-fancy"
+
+# Modern, maintained replacement for ls
+brew "eza"
 
 # Simple, fast and user-friendly alternative to find
 brew "fd"
 
+# Fast and simple Node.js version manager
+brew "fnm"
+
+# Command-line fuzzy finder written in Go
+brew "fzf"
+
+# Zstandard is a real-time compression algorithm
+brew "zstd"
+
+# GNU compiler collection
+brew "gcc"
+
 # Distributed revision control system
 brew "git"
+
+# GNU Pretty Good Privacy (PGP) package
+brew "gnupg"
 
 # Improved top (interactive process viewer)
 brew "htop"
@@ -23,26 +47,56 @@ brew "htop"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 
+# Powerful, lightweight programming language
+brew "lua"
+
+# Package manager for the Lua programming language
+brew "luarocks"
+
 # Open source relational database management system
-brew "mysql-client"
+brew "mysql-client", link: true
 
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 
-# SSL/TLS VPN implementing OSI layer 2 or 3 secure network extension
-brew "openvpn"
+# 7-Zip (high compression file archiver) implementation
+brew "p7zip"
+
+# Display directories as trees (with optional color/HTML output)
+brew "tree"
+
+# Password manager
+brew "pass"
+
+# Pass extension for managing one-time-password tokens
+brew "pass-otp"
 
 # Highly capable, feature-rich programming language
 brew "perl"
 
+# Pinentry for GPG on Mac
+brew "pinentry-mac"
+
+# Tool for managing OCI containers and pods
+brew "podman"
+
+# Protocol buffers (Google's data interchange format)
+brew "protobuf"
+
 # Go support for Google's protocol buffers
 brew "protoc-gen-go"
+
+# Seamless operability between C++11 and Python
+brew "pybind11"
 
 # Python version management
 brew "pyenv"
 
 # Alternative to pyenv for managing virtualenvs
 brew "pyenv-virtualenvwrapper"
+
+# Alternative to backtracking PCRE-style regular expression engines
+brew "re2"
 
 # Persistent key-value database, with built-in net interface
 brew "redis"
@@ -59,8 +113,14 @@ brew "transmission-cli"
 # Internet file retriever
 brew "wget"
 
+# Blazing fast terminal file manager written in Rust, based on async I/O
+brew "yazi"
+
 # UNIX shell (command interpreter)
 brew "zsh"
+
+# A window border system for macOS
+brew "felixkratz/formulae/borders"
 
 # Simple hotkey-daemon for macOS.
 brew "koekeishiya/formulae/skhd"
@@ -68,46 +128,50 @@ brew "koekeishiya/formulae/skhd"
 # A tiling window manager for macOS based on binary space partitioning.
 brew "koekeishiya/formulae/yabai"
 
-# A window border system for macOS
-brew "felixkratz/formulae/borders"
+# Transfer files from and to an Android smartphone
+cask "android-file-transfer"
 
-## GUI application
+# Chromium based browser
+cask "arc"
 
-# WeChat for mac
-cask "wechat"
-
-# Utility to hide menu bar items
-cask "hiddenbar"
+# Web browser
+cask "firefox"
 
 # Web browser
 cask "google-chrome"
 
-# Music streaming service
-cask "spotify"
-
-# GPU-based terminal emulator
-cask "kitty"
-
-# Multimedia player
-cask "vlc"
+# Utility to hide menu bar items
+cask "hiddenbar", args: { appdir: "~/Applications" }
 
 # Free and open-source media player
 cask "iina"
 
-# Binary releases of VS Code without MS branding/telemetry/licensing
-cask "vscodium"
-
 # File archiver
 cask "keka"
 
-# System monitor for the menu bar
-cask "stats"
+# GPU-based terminal emulator
+cask "kitty"
 
 # Tool to control external monitor brightness & volume
 cask "monitorcontrol"
 
-# Control your tools with a few keystrokes
-cask "raycast"
-
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
+
+# Client program for the OpenVPN Access Server
+cask "openvpn-connect"
+
+# Team communication and collaboration software
+cask "slack"
+
+# System monitor for the menu bar
+cask "stats", args: { appdir: "~/Applications" }
+
+# Multimedia player
+cask "vlc"
+
+# Free messaging and calling application
+cask "wechat"
+
+# Video communication and virtual meeting platform
+cask "zoom"
