@@ -1,11 +1,18 @@
 return {
   {
-    "alienover/git.nvim",
+    "dinhhuy258/git.nvim",
     cmd = { "Git", "GitBlame" },
     keys = { { "<space>go", mode = { "n", "x" } }, "<space>gP" },
     config = function()
       require("config.git-config")
     end,
+  },
+
+  {
+    "Alienover/blame.nvim",
+    opts = {
+      date_format = "%Y-%m-%d %H:%M",
+    },
   },
 
   {
@@ -27,12 +34,5 @@ return {
     config = function()
       require("config.gitsigns-config")
     end,
-  },
-  {
-    "Alienover/blame.nvim",
-    cmd = { "BlameToggle" },
-    opts = {
-      date_format = "%Y-%m-%d %H:%M",
-    },
   },
 }

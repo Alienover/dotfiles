@@ -61,6 +61,8 @@ local git_cmd = function(args)
 end
 
 -- INFO: overwrite the default `Git` command with cmd completion
+vim.api.nvim_del_user_command("Git")
+
 vim.api.nvim_create_user_command("Git", function(args)
   clear()
 
@@ -82,3 +84,14 @@ end, {
     end
   end,
 })
+
+-- INFO: overwrite the original blame command from `git.nvim` and `blame.nvim`
+vim.api.nvim_del_user_command("GitBlame")
+
+vim.api.nvim_create_user_command("GitBlame", function()
+  require("blame").blame()
+
+  if vim.fn.exists(":BlameToggle") > 0 then
+    vim.api.nvim_del_user_command("BlameToggle")
+  end
+end, { desc = "Rewrited `git blame` command with blame.nvim" })
