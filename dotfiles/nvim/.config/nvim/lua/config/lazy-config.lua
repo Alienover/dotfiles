@@ -29,6 +29,9 @@ if found then
     spec = {
       { import = "plugins" },
     },
+    defaults = {
+      lazy = true,
+    },
     dev = {
       path = consts.LOCAL_PLUGINS_FOLDER,
       patterns = { "@local" },
