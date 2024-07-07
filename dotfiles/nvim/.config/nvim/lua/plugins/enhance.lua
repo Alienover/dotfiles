@@ -17,17 +17,19 @@ return {
   },
 
   {
-    "max397574/better-escape.nvim",
-    tag = "v1.0.0",
-    keys = {
-      { "jk", mode = "i" },
-      { "jj", mode = "i" },
-      { "kk", mode = "i" },
+    "@local/better_hjkl.nvim",
+    event = { "CursorMoved" },
+    dependencies = {
+      {
+        "max397574/better-escape.nvim",
+        tag = "v1.0.0",
+        opts = {
+          -- Press `jk`, "kj",`jj`, "kk" to escape from insert mode
+          mapping = { "jk", "kj", "jj", "kk" },
+        },
+      },
     },
-    opts = {
-      -- Press `jk`, "kj",`jj`, "kk" to escape from insert mode
-      mapping = { "jk", "kj", "jj", "kk" },
-    },
+    config = true,
   },
 
   {

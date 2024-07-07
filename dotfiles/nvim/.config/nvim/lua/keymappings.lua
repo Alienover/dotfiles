@@ -76,9 +76,6 @@ nmap("J", "mzJ`z")
 nmap("n", "nzzzv")
 nmap("N", "Nzzzv")
 
-nmap("k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
-nmap("j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
-
 -- Zoom in/out pane
 nmap("zo", function()
   local var_name = "zoom_winrestcmd"
