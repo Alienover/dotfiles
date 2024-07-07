@@ -4,10 +4,14 @@ local PKG_NAME = "better_hjkl.nvim"
 
 --- @class HJKL_Config
 --- @field presets {better_escape: boolean, discipline: string[]}
+--- @field discipline {excluded_filetypes: string[]}
 local config = {
   presets = {
     better_escape = true,
     discipline = { "h", "j", "k", "l" },
+  },
+  discipline = {
+    excluded_filetypes = {},
   },
 }
 
@@ -27,11 +31,11 @@ local M = {
 
 function M.enable_escape()
   if M.config.presets.better_escape then
-    local ok, _ = pcall(vim.api.nvim_command, "Lazy load better_escape.nvim")
+    local ok = pcall(require, "better_escape")
 
     if not ok then
       vim.notify(
-        string.format("[%s] failed to enable better_escape.nvim", PKG_NAME),
+        string.format("[%s] failed to load better-escape.nvim", PKG_NAME),
         vim.log.levels.WARN
       )
     end
@@ -40,6 +44,15 @@ end
 
 function M.enable_cowboy()
   if #M.config.presets.discipline == 0 then
+    return
+  end
+
+  if
+    not vim.tbl_contains(
+      M.config.discipline.excluded_filetypes,
+      vim.bo.filetype
+    )
+  then
     return
   end
 
@@ -67,10 +80,11 @@ function M:enable()
       end
 
       -- INFO: remap `j` -> `gj`, `k` -> `gk` when in `Normal` or `Visual` mode
-      if key == "j" or key == "k" then
-        if mode == "n" or mode == "v" then
-          return "g" .. key
-        end
+      if
+        vim.tbl_contains({ "j", "k" }, key)
+        and vim.tbl_contains({ "n", "v" }, mode)
+      then
+        return "g" .. key
       end
 
       return key

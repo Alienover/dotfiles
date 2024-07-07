@@ -71,6 +71,11 @@ M.os = {
 }
 
 M.special_filetypes = {
+  excluded_cowboy = {
+    "lazy",
+    "mazon",
+    "blame",
+  },
   excluded_winbar = {
     "git",
     "help",

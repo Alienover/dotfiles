@@ -1,3 +1,5 @@
+local consts = require("utils.constants")
+
 return {
   { "nvim-lua/plenary.nvim" },
 
@@ -18,20 +20,23 @@ return {
 
   {
     "@local/better_hjkl.nvim",
-    event = { "CursorMoved" },
-    dependencies = {
-      {
-        "max397574/better-escape.nvim",
-        tag = "v1.0.0",
-        opts = {
-          -- Press `jk`, "kj",`jj`, "kk" to escape from insert mode
-          mapping = { "jk", "kj", "jj", "kk" },
-        },
+    event = { "VeryLazy" },
+    opts = {
+      discipline = {
+        excluded_filetypes = consts.special_filetypes.excluded_cowboy,
       },
     },
     config = true,
   },
 
+  {
+    "max397574/better-escape.nvim",
+    tag = "v1.0.0",
+    opts = {
+      -- Press `jk`, "kj",`jj`, "kk" to escape from insert mode
+      mapping = { "jk", "kj", "jj", "kk" },
+    },
+  },
   {
     "echasnovski/mini.pairs",
     event = { "InsertEnter", "CmdlineEnter" },
