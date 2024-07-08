@@ -9,11 +9,18 @@ local M = {}
 --- @param key string
 --- @return boolean
 function M:check(ctx, key)
-  -- INFO: bypass when it's not enabled or the key is un-registered
+  -- INFO: bypass when it's not enabled
   if not ctx.cowboy.enabled then
     return true
   end
 
+  --INFO: bypass when the filetype is excluded
+  local excluded_fts = ctx.config.discipline.excluded_filetypes
+  if vim.tbl_contains(excluded_fts, vim.bo.filetype) then
+    return true
+  end
+
+  --INFO: bypass when the key is un-registered
   if M[key] == nil then
     return true
   end
@@ -49,7 +56,7 @@ function M:check(ctx, key)
       icon = "🤯",
       replace = ctx.cowboy.notify_id,
       keep = function()
-        return count >= 10
+        return M[key].count >= 10
       end,
     })
 

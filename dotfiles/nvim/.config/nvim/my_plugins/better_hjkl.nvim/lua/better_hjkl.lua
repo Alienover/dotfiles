@@ -47,15 +47,6 @@ function M.enable_cowboy()
     return
   end
 
-  if
-    not vim.tbl_contains(
-      M.config.discipline.excluded_filetypes,
-      vim.bo.filetype
-    )
-  then
-    return
-  end
-
   M.cowboy.enabled = true
 
   for _, key in ipairs(M.config.presets.discipline) do
