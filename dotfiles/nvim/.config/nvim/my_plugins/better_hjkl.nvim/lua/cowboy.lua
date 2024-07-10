@@ -2,36 +2,44 @@
 ---@field count integer
 ---@field timer any
 
-local M = {}
+--- @class CowboyState
+--- @field enabled boolean
+--- @field notify table?
+--- @field config DisciplineConfig
+--- @field registered table<string, CowboyContext>
+local M = {
+  enabled = false,
+  notify = nil,
+  registered = {},
+}
 
---- comment
---- @param ctx HJKL_Context
+--- check whether the inpu is violating the discipline rules
 --- @param key string
 --- @return boolean
-function M:check(ctx, key)
+function M:check(key)
   -- INFO: bypass when it's not enabled
-  if not ctx.cowboy.enabled then
+  if not self.enabled then
     return true
   end
 
   --INFO: bypass when the filetype is excluded
-  local excluded_fts = ctx.config.discipline.excluded_filetypes
+  local excluded_fts = self.config.excluded_filetypes
   if vim.tbl_contains(excluded_fts, vim.bo.filetype) then
     return true
   end
 
   --INFO: bypass when the key is un-registered
-  if M[key] == nil then
+  if self.registered[key] == nil then
     return true
   end
 
   ---@type integer
-  local count = M[key].count
-  local timer = M[key].timer
+  local count = self.registered[key].count
+  local timer = self.registered[key].timer
 
   -- INFO: reset counter when doing hjkl with number prefix
   if vim.v.count > 0 then
-    M[key].count = 0
+    self.registered[key].count = 0
 
     timer:stop()
 
@@ -40,11 +48,11 @@ function M:check(ctx, key)
 
   if count < 10 then
     -- INFO: increase counter and set timer to reset it after 2 seconds
-    M[key].count = count + 1
+    self.registered[key].count = count + 1
 
     timer:stop()
     timer:start(2000, 0, function()
-      M[key].count = 0
+      self.registered[key].count = 0
 
       timer:stop()
     end)
@@ -54,39 +62,53 @@ function M:check(ctx, key)
     -- INFO: show notice
     local ok, id = pcall(vim.notify, "Hold it Cowboy!", vim.log.levels.WARN, {
       icon = "🤯",
-      replace = ctx.cowboy.notify_id,
+      replace = self.notify,
       keep = function()
-        return M[key].count >= 10
+        return self.registered[key].count >= 10
       end,
     })
 
-    if not ok then
-      ctx.cowboy.notify_id = nil
-      return true
-    else
-      ctx.cowboy.notify_id = id
-      return false
-    end
+    self.notify = ok and id or nil
+
+    return not ok
   end
 end
 
----comment
----@param ctx HJKL_Context
-function M:toggle(ctx)
-  ctx.cowboy = vim.tbl_extend("force", ctx.cowboy, {
-    enabled = not ctx.cowboy.enabled,
-    notify_id = nil,
-  })
+function M:toggle()
+  self.enabled = not self.enabled
+  self.notify = nil
 end
 
----comment
----@param key string
+--- register the key to follow the discipline rules
+--- @param key string
 function M:register(key)
   --- @type CowboyContext
-  self[key] = {
+  local ctx = {
     count = 0,
     timer = assert(vim.uv.new_timer()),
   }
+
+  self.registered[key] = ctx
+end
+
+--- initialize the cowboy
+--- @param ctx HJKL_Config
+function M:new(ctx)
+  local state = vim.tbl_extend("force", {}, M)
+  setmetatable(state, { __index = self })
+
+  if ctx.discipline.enabled and #ctx.discipline.keys > 0 then
+    state.enabled = true
+  end
+
+  state.config = ctx.discipline
+
+  for _, key in ipairs(ctx.discipline.keys) do
+    state:register(key)
+  end
+
+  --- @type CowboyState
+  return state
 end
 
 return M

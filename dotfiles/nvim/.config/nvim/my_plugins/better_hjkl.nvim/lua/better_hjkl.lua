@@ -1,39 +1,45 @@
-local cowboy = require("cowboy")
+local Cowboy = require("cowboy")
 
 local PKG_NAME = "better_hjkl.nvim"
 
+--- @class EscapeConfig
+--- @field enabled boolean
+--- @field mapping string[]
+
+--- @class DisciplineConfig
+--- @field enabled boolean
+--- @field keys string[]
+--- @field excluded_filetypes string[]
+
 --- @class HJKL_Config
---- @field presets {better_escape: boolean, discipline: string[]}
---- @field discipline {excluded_filetypes: string[]}
+--- @field escape EscapeConfig
+--- @field discipline DisciplineConfig
 local config = {
-  presets = {
-    better_escape = true,
-    discipline = { "h", "j", "k", "l" },
+  escape = {
+    enabled = true,
+    mapping = { "jk" },
   },
   discipline = {
+    enabled = true,
+    keys = { "h", "j", "k", "l" },
     excluded_filetypes = {},
   },
 }
 
---- @class CowboyState
---- @field enabled boolean
---- @field notify_id table?
-
 --- @class HJKL_Context
---- @field cowboy CowboyState
+--- @field cowboy CowboyState?
+--- @field config HJKL_Config
 local M = {
-  cowboy = {
-    enabled = true,
-    ---@type table?
-    notify_id = nil,
-  },
+  cowboy = nil,
 }
 
-function M.enable_escape()
-  if M.config.presets.better_escape then
-    local ok = pcall(require, "better_escape")
+function M:enable_escape()
+  if M.config.escape.enabled then
+    local ok, escape = pcall(require, "better_escape")
 
-    if not ok then
+    if ok then
+      escape.setup({ mapping = self.config.escape.mapping })
+    else
       vim.notify(
         string.format("[%s] failed to load better-escape.nvim", PKG_NAME),
         vim.log.levels.WARN
@@ -42,19 +48,11 @@ function M.enable_escape()
   end
 end
 
-function M.enable_cowboy()
-  if #M.config.presets.discipline == 0 then
-    return
-  end
-
-  M.cowboy.enabled = true
-
-  for _, key in ipairs(M.config.presets.discipline) do
-    cowboy:register(key)
-  end
+function M:enable_cowboy()
+  self.cowboy = Cowboy:new(self.config)
 
   vim.api.nvim_create_user_command("CowboyToggle", function()
-    cowboy:toggle(M)
+    self.cowboy:toggle()
   end, { desc = string.format("[%s] Toggle the Cowboy discipline", PKG_NAME) })
 end
 
@@ -65,7 +63,7 @@ function M:enable()
 
       -- INFO: check discipline when navigating in `Normal` mode
       if mode == "n" then
-        if not cowboy:check(self, key) then
+        if self.cowboy and not self.cowboy:check(key) then
           return ""
         end
       end
@@ -83,13 +81,13 @@ function M:enable()
   end
 end
 
----comment
----@param opts HJKL_Config
+--- comment
+--- @param opts HJKL_Config
 M.setup = function(opts)
   M.config = vim.tbl_deep_extend("force", config, opts or {})
 
-  M.enable_escape()
-  M.enable_cowboy()
+  M:enable_escape()
+  M:enable_cowboy()
 
   M:enable()
 end
