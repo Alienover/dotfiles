@@ -6,41 +6,70 @@ local wk = require("which-key")
 
 local o, g, cmd = utils.o, utils.g, utils.cmd
 
+local WK_DEFAULT_PREFIX = "<space>"
+
+--- @type wk.Opts
 local config = {
-  show_help = true,
-  triggers = "auto",
-  plugins = {
-    spelling = {
-      enabled = true,
-      suggestions = 10,
-    },
-    presets = false,
+  ---@type false | "classic" | "modern" | "helix"
+  preset = false,
+
+  ---@type wk.Win.opts
+  win = {
+    width = vim.o.columns > 200 and 0.4 or 0.6,
+    col = 0.5,
+    ---@type 'none' | 'rounded'
+    border = "none",
   },
-  key_labels = { ["<space>"] = "» Quick Actions" },
+  layout = {
+    width = { min = 20, max = 50 }, -- min and max width of the columns
+    spacing = 5, -- spacing between columns
+  },
+
+  plugins = {
+    marks = true, -- shows a list of your marks on ' and `
+    registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+    -- the presets plugin, adds help for a bunch of default keybindings in Neovim
+    -- No actual key bindings are created
+    spelling = {
+      enabled = true, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+      suggestions = 10, -- how many suggestions should be shown in the list?
+    },
+    presets = {
+      operators = true, -- adds help for operators like d, y, ...
+      motions = true, -- adds help for motions
+      text_objects = true, -- help for text objects triggered after entering an operator
+      windows = true, -- default bindings on <c-w>
+      nav = true, -- misc bindings to work with windows
+      z = true, -- bindings for folds, spelling and others prefixed with z
+      g = true, -- bindings for prefixed with g
+    },
+  },
   icons = {
     breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
     separator = "", -- symbol used between a key and it's label
     group = "＋", -- symbol prepended to a group
   },
-  window = {
-    border = "none", -- none, single, double, shadow
-    position = "bottom", -- bottom, top
-    margin = { 1, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
-    padding = { 1, 0, 1, 0 }, -- extra window padding [top, right, bottom, left]
-    winblend = 0,
-  },
-  layout = {
-    height = { min = 2, max = 15 }, -- min and max height of the columns
-    width = { min = 20, max = 50 }, -- min and max width of the columns
-    spacing = 5, -- spacing between columns
-    align = "center", -- align columns left, center or right
-  },
-  triggers_blacklist = {
-    -- list of mode / prefixes that should never be hooked by WhichKey
-    -- this is mostly relevant for key maps that start with a native binding
-    -- most people should not need to change this
-    i = { "j", "k", "g" },
-    v = { "j", "k", "g" },
+  show_help = true,
+  triggers = true,
+  disable = {
+    -- disable WhichKey for certain buf types and file types.
+    ft = {},
+    bt = {},
+    -- disable a trigger for a certain context by returning true
+    ---@type fun(ctx: { keys: string, mode: string, plugin?: string }):boolean?
+    trigger = function(ctx)
+      local blacklist = { "j", "k", "g" }
+      local modes = { "i", "v" }
+
+      if
+        vim.tbl_contains(modes, ctx.mode)
+        and vim.tbl_contains(blacklist, ctx.keys)
+      then
+        return true
+      end
+
+      return false
+    end,
   },
 }
 
@@ -86,15 +115,15 @@ local workspaces = function(base)
   local plenary = require("plenary.scandir")
   local dirs = plenary.scan_dir(base, { depth = 1, only_dirs = true })
 
-  -- Default config
+  local WORKSPACE_PREFIX = "e"
+
   local maps = {
-    name = ("%s Edison"):format(constants.icons.ui.Email),
     O = {
       telescope("find_files", {
         cwd = constants.files.work_config,
         prompt_title = "Search\\ Config",
       }),
-      "Search [O]ther Config",
+      desc = "Search [O]ther Config",
     },
   }
 
@@ -115,11 +144,27 @@ local workspaces = function(base)
         no_ignore = true,
         prompt_title = ("Search " .. dir):gsub(" ", "\\ "),
       }),
-      string.format("Search [%s]%s", string.upper(key), rest),
+      desc = string.format("Search [%s]%s", string.upper(key), rest),
     }
   end
 
-  return maps
+  --- @type wk.Spec
+  local output = {
+    { WORKSPACE_PREFIX, group = "Edison", icon = constants.icons.ui.Email },
+  }
+
+  for key, mapping in pairs(maps) do
+    table.insert(
+      output,
+      vim.tbl_extend(
+        "keep",
+        { WORKSPACE_PREFIX .. key, unpack(mapping) },
+        mapping
+      )
+    )
+  end
+
+  return output
 end
 
 local gitsigns = function(sub_cmd)
@@ -133,6 +178,16 @@ end
 -- Populate the floating terminal command with presets
 local terminal = function(input)
   return lspsaga("term_toggle " .. (input or ""))
+end
+
+---@param preview boolean?
+local http_rest = function(preview)
+  return function()
+    local ok, rest = pcall(require, "rest-nvim")
+    if ok then
+      rest.run(preview)
+    end
+  end
 end
 
 local toggle_diffview = function()
@@ -194,138 +249,185 @@ local toggle_inlay_hint = function()
   end
 end
 
-local n_mappings = {
-  h = {
-    name = "Help",
-    t = { telescope("todo-comments"), "[T]odo Comments" },
-    T = { telescope("builtin"), "[T]elescope" },
-    c = { telescope("commands"), "[C]ommands" },
-    k = { telescope("keymaps"), "[K]ey Maps" },
-    h = { telescope("highlights"), "[H]ighlight Groups" },
-    n = { telescope("notify"), "[N]otify history" },
-    m = { t("Mason"), "[M]ason Manager" },
-    l = {
+--- comment
+--- @param mappings wk.Spec
+--- @param trigger string?
+local function withTrigger(mappings, trigger)
+  trigger = trigger or WK_DEFAULT_PREFIX
+
+  for idx, mapping in ipairs(mappings) do
+    if idx == 1 and type(mapping) == "string" then
+      mappings[idx] = trigger .. mapping
+    elseif type(mapping) == "table" then
+      mappings[idx] = withTrigger(mapping, trigger)
+    else
+      mappings[idx] = mapping
+    end
+  end
+
+  return mappings
+end
+
+--- INFO: Help
+wk.add(withTrigger({
+  {
+    "h",
+    group = "Help",
+    { "ht", telescope("todo-comments"), desc = "[T]odo Comments" },
+    { "hT", telescope("builtin"), desc = "[T]elescope" },
+    { "hc", telescope("commands"), desc = "[C]ommands" },
+    { "hk", telescope("keymaps"), desc = "[K]ey Maps" },
+    { "hh", telescope("highlights"), desc = "[H]ighlight Groups" },
+    { "hn", telescope("notify"), desc = "[N]otify history" },
+    { "hm", t("Mason"), desc = "[M]ason Manager" },
+    {
+      "hl",
       name = "Lazy Manager",
-      S = { t("Lazy sync"), "[S]ync Plugins" },
-      s = { t("Lazy show"), "[S]how Plugins" },
+      { "hlS", t("Lazy sync"), desc = "[S]ync Plugins" },
+      { "hls", t("Lazy show"), desc = "[S]how Plugins" },
     },
-    u = { telescope("undo"), "[U]ndo tree" },
-    ["?"] = { telescope("help_tags"), "Help doc" },
+    { "hu", telescope("undo"), desc = "[U]ndo tree" },
+    { "h?", telescope("help_tags"), desc = "Help doc" },
   },
-  e = workspaces(constants.files.workdirs),
-  b = {
-    name = "Buffers",
-    d = { t("KWBufDel"), "[D]Delete" },
-    D = { t("KWBufDel!"), "Force [D]elete" },
-    b = {
-      telescope(
-        "buffers",
-        { previewer = false, sort_mru = true, ignore_current_buffer = true }
-      ),
-      "Find [B]uffers",
-    },
-    n = { t("tabnew"), "[N]ew Tab" },
-  },
-  t = {
-    name = "Terminal",
-    [";"] = { terminal(os.getenv("SHELL") or "zsh"), "[T]erminal" },
-    h = { terminal("htop"), "[H]top" },
-    p = { terminal("python"), "[P]ython" },
-    n = { terminal("node"), "[N]ode" },
-    t = { terminal(), "[T]oggle" },
-  },
-  g = {
-    name = "Git",
-    d = { toggle_diffview, "Toggle [D]iffview" },
-    c = { telescope("git_commits"), "Git [C]ommits" },
-    C = { utils.change_cwd, "[C]hange Current Working Dir" },
-    f = { telescope("git_files"), "Git [F]iles" },
-    j = { gitsigns("next_hunk"), "Next hunk" },
-    k = { gitsigns("prev_hunk"), "Previous hunk" },
-    p = { gitsigns("preview_hunk"), "Preview hunk" },
-    b = { gitsigns("blame_line"), "[B]lame line" },
-    B = { t("GitBlame"), "[B]lame file" },
-    s = { telescope("git_status"), "Git [S]tatus" },
-    h = { toggle_file_diff(true), "Current File [H]istory" },
-    H = { toggle_file_diff(), "File [H]istory" },
-    o = { "[O]pen in browse" },
-    P = { "Open [P]ull request of current branch" },
-  },
-  f = {
-    name = "Files",
-    r = { telescope("live_grep"), "Live G[r]ep" },
-    f = {
-      telescope("find_files", { no_ignore = true, hidden = true }),
-      "[F]ind files",
-    },
-    o = { telescope("oldfiles"), "Recently [O]pend" },
-  },
-  o = {
-    name = "Open",
-    d = {
-      telescope("git_files", { cwd = constants.files.dotfiles }),
-      "dotfiles",
-    },
-    v = { e(constants.files.vim), ".vimrc" },
-    z = { e(constants.files.zsh), ".zshrc" },
-    t = { e(constants.files.tmux), ".tmux.conf" },
-    n = { e(constants.files.nvim), "init.vim" },
-    k = { e(constants.files.kitty), "kitty.conf" },
-    y = { e(constants.files.yabai), "yabairc" },
-    s = { e(constants.files.skhd), "skhdrc" },
-  },
-  l = {
-    name = "LSP",
-    I = { t("LspInfo"), "[I]nfo" },
-    R = { t("LspRestart"), "[R]estart" },
-    N = { t("NullLsInfo"), "[N]ull-ls Info" },
-    f = { t("ConformFormat", { silent = true }), "[F]ormat" },
-    s = { telescope("lsp_document_symbols"), "Document [S]ymbols" },
-    D = {
-      telescope("diagnostics"),
-      "Document [D]iagnostic",
-    },
-    n = {
-      lspsaga("diagnostic_jump_next"),
-      "[N]ext diagnostic",
-    },
-    p = {
-      lspsaga("diagnostic_jump_prev"),
-      "[P]revious diagnostic",
-    },
-    t = { telescope("lsp_type_definitions"), "[T]ype dDfinitions" },
-    a = { lspsaga("code_action"), "Code [A]ction" },
-    d = { lspsaga("peek_definition"), "[D]efinition" },
-    h = { toggle_inlay_hint, "Toggle Inlay [H]int" },
-  },
-  z = { t("ZenMode"), "[Z]en Mode" },
-  ["/"] = {
+
+  { "z", t("ZenMode"), desc = "Zen Mode" },
+
+  {
+    "/",
     telescope("current_buffer_fuzzy_find"),
-    "Fuzzily search in current buffer",
+    desc = "Search",
   },
-}
+}))
 
-local v_mappings = {
-  g = {
-    name = "Git",
-    s = { gitsigns("stage_hunk"), "[S]tage hunk" },
-    u = { gitsigns("undo_stage_hunk"), "[U]ndo staged hunk" },
-    o = { "[O]pen in browse" },
+--- INFO: Buffer
+wk.add(withTrigger({
+  { "b", group = "Buffer" },
+  { "bd", t("KWBufDel"), desc = "[D]Delete" },
+  { "bD", t("KWBufDel!"), desc = "Force [D]elete" },
+  {
+    "bb",
+    telescope(
+      "buffers",
+      { previewer = false, sort_mru = true, ignore_current_buffer = true }
+    ),
+    desc = "Find [B]uffers",
   },
-}
+  { "bn", t("tabnew"), desc = "[N]ew Tab" },
+}))
 
-wk.register(n_mappings, { prefix = "<space>" })
-wk.register(v_mappings, { prefix = "<space>", mode = "v" })
+--- INFO: Terminal
+wk.add(withTrigger({
+  { "t", group = "Terminal" },
+  { "t;", terminal(os.getenv("SHELL") or "zsh"), desc = "[T]erminal" },
+  { "th", terminal("htop"), desc = "[H]top" },
+  { "tp", terminal("python"), desc = "[P]ython" },
+  { "tn", terminal("node"), desc = "[N]ode" },
+  { "tt", terminal(), desc = "[T]oggle" },
+}))
 
--- Treesitter keymaps
-wk.register({
-  a = { "Swap next param" },
-  m = { "[M]ove to start of next func" },
-  M = { "[M]ove to end of next func" },
-}, { prefix = "]" })
+--- INFO: Git
+wk.add(withTrigger({
+  {
+    "g",
+    group = "Git",
+    mode = "n",
+    { "gd", toggle_diffview, desc = "Toggle [D]iffview" },
+    { "gc", telescope("git_commits"), desc = "Git [C]ommits" },
+    { "gC", utils.change_cwd, desc = "[C]hange Current Working Dir" },
+    { "gf", telescope("git_files"), desc = "Git [F]iles" },
+    { "gj", gitsigns("next_hunk"), desc = "Next hunk" },
+    { "gk", gitsigns("prev_hunk"), desc = "Previous hunk" },
+    { "gp", gitsigns("preview_hunk"), desc = "Preview hunk" },
+    { "gb", gitsigns("blame_line"), desc = "[B]lame line" },
+    { "gB", t("GitBlame"), desc = "[B]lame file" },
+    { "gs", telescope("git_status"), desc = "Git [S]tatus" },
+    { "gh", toggle_file_diff(true), desc = "Current File [H]istory" },
+    { "gH", toggle_file_diff(), desc = "File [H]istory" },
+    { "go", desc = "[O]pen in browse" },
+    { "gP", desc = "Open [P]ull request of current branch" },
+  },
 
-wk.register({
-  A = { "Swap previous param" },
-  m = { "[M]ove to start of previous func" },
-  M = { "[M]ove to end of previous func" },
-}, { prefix = "[" })
+  {
+    "g",
+    group = "Git",
+    mode = "v",
+    { "gs", gitsigns("stage_hunk"), desc = "[S]tage hunk" },
+    { "gu", gitsigns("undo_stage_hunk"), desc = "[U]ndo staged hunk" },
+    { "go", desc = "[O]pen in browse" },
+  },
+}))
+
+--- INFO: Files Operation
+wk.add(withTrigger({
+  { "f", group = "Files" },
+  { "fr", telescope("live_grep"), desc = "Live G[r]ep" },
+  {
+    "ff",
+    telescope("find_files", { no_ignore = true, hidden = true }),
+    desc = "[F]ind files",
+  },
+  { "fo", telescope("oldfiles"), desc = "Recently [O]pend" },
+}))
+
+--- INFO: Open File
+wk.add(withTrigger({
+  { "o", group = "Open" },
+  {
+    "od",
+    telescope("git_files", { cwd = constants.files.dotfiles }),
+    desc = "dotfiles",
+  },
+  { "ov", e(constants.files.vim), desc = ".vimrc" },
+  { "oz", e(constants.files.zsh), desc = ".zshrc" },
+  { "ot", e(constants.files.tmux), desc = ".tmux.conf" },
+  { "on", e(constants.files.nvim), desc = "init.vim" },
+  { "ok", e(constants.files.kitty), desc = "kitty.conf" },
+  { "oy", e(constants.files.yabai), desc = "yabairc" },
+  { "os", e(constants.files.skhd), desc = "skhdrc" },
+}))
+
+--- INFO: LSP
+wk.add(withTrigger({
+  { "l", group = "LSP" },
+  { "lI", t("LspInfo"), desc = "[I]nfo" },
+  { "lR", t("LspRestart"), desc = "[R]estart" },
+  { "lN", t("NullLsInfo"), desc = "[N]ull-ls Info" },
+  { "lf", t("ConformFormat", { silent = true }), desc = "[F]ormat" },
+  { "ls", telescope("lsp_document_symbols"), desc = "Document [S]ymbols" },
+  { "lD", telescope("diagnostics"), desc = "Document [D]iagnostic" },
+  { "ln", lspsaga("diagnostic_jump_next"), desc = "[N]ext diagnostic" },
+  { "lp", lspsaga("diagnostic_jump_prev"), desc = "[P]revious diagnostic" },
+  { "lt", telescope("lsp_type_definitions"), desc = "[T]ype dDfinitions" },
+  { "la", lspsaga("code_action"), desc = "Code [A]ction" },
+  { "ld", lspsaga("peek_definition"), desc = "[D]efinition" },
+  { "lh", toggle_inlay_hint, desc = "Toggle Inlay [H]int" },
+}))
+
+--- INFO: Workspace
+wk.add(withTrigger(workspaces(constants.files.workdirs)))
+
+wk.add(withTrigger({
+  {
+    "r",
+    group = "HTTP Rest",
+    cond = function()
+      return vim.bo.filetype == "http"
+    end,
+    { "rr", http_rest(), desc = "Send request under the cursor" },
+    { "rp", http_rest(true), desc = "[P]review the CURL request" },
+    { "re", telescope("rest", { "select_env" }), desc = "Select ENV file" },
+  },
+}))
+
+--- INFO: Treesitter keymaps
+wk.add(withTrigger({
+  { "a", desc = "Swap next param" },
+  { "m", desc = "[M]ove to start of next func" },
+  { "M", desc = "[M]ove to end of next func" },
+}, "]"))
+
+wk.add(withTrigger({
+  { "a", desc = "Swap previous param" },
+  { "m", desc = "[M]ove to start of previous func" },
+  { "M", desc = "[M]ove to end of previous func" },
+}, "["))
