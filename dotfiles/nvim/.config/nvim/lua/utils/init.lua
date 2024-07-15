@@ -192,7 +192,10 @@ M.find_git_ancestor = function(path)
   local cmd = string.format("git -C %s rev-parse --show-toplevel", path)
 
   local result = vim.fn.system(cmd)
+
   if vim.v.shell_error == 0 then
+    ---INFO: remove tailing new-line
+    result = string.gsub(result, "\n$", "")
     return result
   end
 
