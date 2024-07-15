@@ -321,7 +321,10 @@ M.telescope = function(cmd, opts)
   end
 
   for k, v in pairs(opts) do
-    table.insert(flags, string.format("%s=%s", k, v))
+    table.insert(
+      flags,
+      type(k) == "number" and v or string.format("%s=%s", k, v)
+    )
   end
 
   M.cmd(string.format("%s %s %s", "Telescope", cmd, table.concat(flags, " ")))
