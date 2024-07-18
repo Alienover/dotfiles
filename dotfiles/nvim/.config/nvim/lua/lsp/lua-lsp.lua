@@ -1,3 +1,12 @@
+local plenary = require("plenary.scandir")
+
+local library = plenary.scan_dir(
+  vim.fn.stdpath("data") .. "/lazy",
+  { depth = 1, only_dirs = true }
+)
+
+table.insert(library, 1, vim.env.VIMRUNTIME)
+
 -- config from https://github.com/neovim/neovim/issues/21686#issuecomment-1522446128
 local M = {
   settings = {
@@ -12,7 +21,7 @@ local M = {
       },
       workspace = {
         -- Make the server aware of Neovim runtime files
-        library = vim.api.nvim_get_runtime_file("", true),
+        library = library,
         checkThirdParty = false,
       },
       completion = {
