@@ -50,26 +50,14 @@ local config = {
     group = "＋", -- symbol prepended to a group
   },
   show_help = true,
-  triggers = true,
   disable = {
     -- disable WhichKey for certain buf types and file types.
     ft = {},
     bt = {},
-    -- disable a trigger for a certain context by returning true
-    ---@type fun(ctx: { keys: string, mode: string, plugin?: string }):boolean?
-    trigger = function(ctx)
-      local blacklist = { "j", "k", "g" }
-      local modes = { "i", "v" }
-
-      if
-        vim.tbl_contains(modes, ctx.mode)
-        and vim.tbl_contains(blacklist, ctx.keys)
-      then
-        return true
-      end
-
-      return false
-    end,
+  },
+  triggers = {
+    { WK_DEFAULT_PREFIX, mode = { "n", "v" } },
+    { "<leader>", mode = { "n", "v" } },
   },
 }
 
