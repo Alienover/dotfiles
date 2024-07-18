@@ -101,6 +101,7 @@ M.special_filetypes = {
     "null-ls-info",
     "git.nvim",
     "query",
+    "notify",
   },
 }
 
@@ -111,100 +112,99 @@ M.window_sizing = {
   },
 }
 
----@type table<string, "LSP" | "FORMATTER" | "LINTER">
-M.external_types = {
+---@enum ExternalType
+M.external_type = {
   lsp = "LSP",
   formatter = "FORMATTER",
   linter = "LINTER",
 }
 
 ---@class External
----@field LSP? boolean
----@field FORMATTER? boolean
----@field LINTER? boolean
+---@field external_type ExternalType
 ---@field mason? string
 ---@field config_file? string
---
+---@field filetypes? string[]
+
 ---@type table<string, External>
 M.ensure_externals = {
   -- INFO: LSP
   html = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     mason = "html-lsp",
   },
   cssls = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     mason = "css-lsp",
   },
   vimls = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     mason = "vim-language-server",
   },
   bashls = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     mason = "bash-language-server",
   },
   pyright = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     mason = "pyright",
   },
   tailwindcss = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     mason = "tailwindcss-language-server",
   },
   flow = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     config_file = "lsp.flow-lsp",
   },
   jsonls = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     mason = "json-lsp",
     config_file = "lsp.json-lsp",
   },
   tsserver = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     mason = "typescript-language-server",
     config_file = "lsp.ts-lsp",
   },
   gopls = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     mason = "gopls",
     config_file = "lsp.go-lsp",
   },
   lua_ls = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     mason = "lua-language-server",
     config_file = "lsp.lua-lsp",
   },
   taplo = {
-    [M.external_types.lsp] = true,
+    external_type = M.external_type.lsp,
     mason = "taplo",
   },
 
   -- INFO: Formatters
   stylua = {
-    [M.external_types.formatter] = true,
+    external_type = M.external_type.formatter,
     mason = "stylua",
   },
   isort = {
-    [M.external_types.formatter] = true,
+    external_type = M.external_type.formatter,
     mason = "isort",
   },
   black = {
-    [M.external_types.formatter] = true,
+    external_type = M.external_type.formatter,
     mason = "black",
   },
   prettier = {
-    [M.external_types.formatter] = true,
+    external_type = M.external_type.formatter,
     mason = "prettier",
   },
 
   -- INFO: Linters
   eslint = {
-    [M.external_types.linter] = true,
+    external_type = M.external_type.linter,
   },
   jsonlint = {
-    [M.external_types.linter] = true,
+    external_type = M.external_type.linter,
     mason = "jsonlint",
   },
 }

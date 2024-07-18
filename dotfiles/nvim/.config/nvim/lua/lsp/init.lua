@@ -6,7 +6,7 @@ local lspconfig = require("lspconfig")
 local o, nmap = utils.o, utils.nmap
 
 local icons = constants.icons
-local external_types = constants.external_types
+local external_type = constants.external_type
 local ensure_externals = constants.ensure_externals
 
 -- Keymaps for LSP interfaces
@@ -146,7 +146,7 @@ end
 local function setup_lsp()
   -- Setup the lsp for the one installed manually
   for server, opts in pairs(ensure_externals) do
-    local is_lsp = opts[external_types.lsp] or false
+    local is_lsp = opts.external_type == external_type.lsp
 
     if is_lsp == true then
       local config = load_config(opts.config_file)
