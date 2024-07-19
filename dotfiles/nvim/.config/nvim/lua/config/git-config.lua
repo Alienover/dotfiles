@@ -7,6 +7,13 @@ require("git").setup({
     browse = "<space>go",
     open_pull_request = "<space>gP",
   },
+  functions = {
+    git = false,
+    blame = false,
+    diff = false,
+    revert = false,
+    pull_request = false,
+  },
 })
 
 local win, buf
@@ -35,19 +42,16 @@ local git_cmd = function(args)
   win = vim.api.nvim_open_win(
     buf,
     true,
-    utils.get_float_win_opts({
-      border = true,
-    })
+    utils.get_float_win_opts({ border = true })
   )
 
   vim.schedule(function()
     vim.api.nvim_win_call(win, function()
       vim.cmd.startinsert()
+
       local cmd = "git " .. table.concat(args, " ")
 
-      vim.fn.termopen(cmd, {
-        ["cwd"] = vim.fn.getcwd(),
-      })
+      vim.fn.termopen(cmd, { ["cwd"] = vim.fn.getcwd() })
 
       for _, key in ipairs({ "<CR>", "<ESC>" }) do
         vim.keymap.set({ "n", "i" }, key, clear, {
@@ -59,9 +63,6 @@ local git_cmd = function(args)
     end)
   end)
 end
-
--- INFO: overwrite the default `Git` command with cmd completion
-vim.api.nvim_del_user_command("Git")
 
 vim.api.nvim_create_user_command("Git", function(args)
   clear()
@@ -84,9 +85,6 @@ end, {
     end
   end,
 })
-
--- INFO: overwrite the original blame command from `git.nvim` and `blame.nvim`
-vim.api.nvim_del_user_command("GitBlame")
 
 vim.api.nvim_create_user_command("GitBlame", function()
   require("blame").blame()
