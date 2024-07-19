@@ -1,22 +1,6 @@
 local consts = require("utils.constants")
 
 return {
-  { -- Provides the `go_def` and `go_back` with marks
-    -- FIXME: Deprecated
-    "@local/lsp-marks.nvim",
-    enabled = false,
-    config = true,
-  },
-
-  { -- Descipline in cursor moving
-    "@local/discipline.nvim",
-    -- FIXME: key binding conflicts with the mapping for 'j', 'k' to 'gj', 'gk'
-    enabled = false,
-    cmd = { "CowboyToggle" },
-    event = { "CursorMoved" },
-    config = true,
-  },
-
   { -- Keep Window on Buffer Delete - Improved - (lua ver.)
     "@local/kwbdi.nvim",
     cmd = { "KWBufDel" },
