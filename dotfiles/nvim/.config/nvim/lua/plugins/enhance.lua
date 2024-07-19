@@ -20,7 +20,7 @@ return {
 
   {
     "@local/better_hjkl.nvim",
-    event = { "VeryLazy" },
+    event = { "CursorMoved" },
     opts = {
       escape = {
         -- Press `jk`, "kj",`jj`, "kk" to escape from insert mode
@@ -36,7 +36,6 @@ return {
   {
     "max397574/better-escape.nvim",
     tag = "v1.0.0",
-    config = false,
   },
 
   {
