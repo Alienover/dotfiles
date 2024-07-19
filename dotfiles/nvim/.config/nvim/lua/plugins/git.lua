@@ -1,6 +1,6 @@
 return {
   {
-    "dinhhuy258/git.nvim",
+    "Alienover/git.nvim",
     cmd = { "Git", "GitBlame" },
     keys = { { "<space>go", mode = { "n", "x" } }, "<space>gP" },
     config = function()
