@@ -9,7 +9,7 @@ return {
       require("config.flash-config")
     end,
     keys = {
-      "/",
+      { "<c-f>", mode = "c" },
       { "f", mode = { "n", "x" } },
       { "F", mode = { "n", "x" } },
       { "S", mode = { "o", "x" } },
