@@ -114,20 +114,15 @@ end, "[F]ile browser")
 
 -- Smart toggling the spell checking
 nmap("<leader>s", function()
-  local cursor_word = expand("<cword>")
-
-  if cursor_word == "" then
-    -- Toggle the spell check when hover on empty word
-    if o.spell then
-      o.spell = false
-    else
-      o.spell = true
-    end
-  else
-    -- List suggestions when hovering on word
-    cmd("WhichKey z=")
-  end
-end, "Smart [S]pell")
+  require("telescope.builtin").spell_suggest(
+    require("telescope.themes").get_cursor({
+      initial_mode = "normal",
+      layout_config = {
+        width = 40,
+      },
+    })
+  )
+end, "[S]pell Suggestions")
 
 nmap("<leader>S", function()
   if o.spell then
