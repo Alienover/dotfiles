@@ -142,11 +142,11 @@ prompt_bold_end() {
 # Context: Public IP of the current machine
 prompt_context() {
   if [[ -n "$SSH_CLIENT" ]]; then
-    local IP="$(cat /tmp/.ip_address)"
-    if [[ -z "$IP" ]]; then
-      curl ifconfig.me > /tmp/.ip_address
-      IP="$(cat /tmp/.ip_address)"
+    if [[ ! -f /tmp/.ip_address ]]; then
+      curl -s ifconfig.me > /tmp/.ip_address
     fi
+
+    local IP="$(cat /tmp/.ip_address)"
 
     echo -n "$IP"
   fi
