@@ -15,7 +15,7 @@ conform.setup({
     javascriptreact = { "prettier" },
     typescript = { "prettier" },
     typescriptreact = { "prettier" },
-    json = { { "jq", "prettier" } },
+    json = { "jq", "prettier", stop_after_first = true },
     jsonc = { "jq", "prettier" },
     go = { "gofmt" },
     toml = { "taplo" },
