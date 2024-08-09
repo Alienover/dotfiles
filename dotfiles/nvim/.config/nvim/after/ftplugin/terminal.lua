@@ -1,5 +1,3 @@
-vim.notify("entering terminal")
-
 local utils = require("utils")
 
 local tmap = utils.tmap
