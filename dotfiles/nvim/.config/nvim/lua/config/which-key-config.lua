@@ -367,10 +367,9 @@ wk.add(withTrigger({
   { "ov", e(constants.files.vim), desc = ".vimrc" },
   { "oz", e(constants.files.zsh), desc = ".zshrc" },
   { "ot", e(constants.files.tmux), desc = ".tmux.conf" },
-  { "on", e(constants.files.nvim), desc = "init.vim" },
+  { "on", e(constants.files.nvim), desc = "init.lua" },
   { "ok", e(constants.files.kitty), desc = "kitty.conf" },
-  { "oy", e(constants.files.yabai), desc = "yabairc" },
-  { "os", e(constants.files.skhd), desc = "skhdrc" },
+  { "oa", e(constants.files.aerospace), desc = "aerospace.toml" },
 }))
 
 --- INFO: LSP

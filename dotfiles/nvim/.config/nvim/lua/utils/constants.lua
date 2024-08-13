@@ -26,10 +26,8 @@ M.files = {
   kitty = getenv("XDG_CONFIG_HOME") .. "/kitty/kitty.conf",
   -- ZSH config
   zsh = getenv("XDG_CONFIG_HOME") .. "/zsh/.zshrc",
-  -- Yabai config
-  yabai = getenv("XDG_CONFIG_HOME") .. "/yabai/yabairc",
-  -- SKHD config
-  skhd = getenv("XDG_CONFIG_HOME") .. "/skhd/skhdrc",
+  -- Aerospace config
+  aerospace = getenv("XDG_CONFIG_HOME") .. "/aerospace/aerospace.toml",
   -- Dotfiles folder
   dotfiles = getenv("HOME") .. "/src/dotfiles",
   -- Work relatives
