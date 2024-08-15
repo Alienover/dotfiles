@@ -130,9 +130,6 @@ alt-r = 'workspace R'
 ctrl-alt-leftSquareBracket = 'workspace --wrap-around prev'
 ctrl-alt-rightSquareBracket = 'workspace --wrap-around next'
 
-# See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
-ctrl-alt-tab = 'workspace-back-and-forth'
-
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
 shift-alt-semicolon = 'mode service'
 
@@ -157,6 +154,9 @@ shift-alt-h = ['join-with left', 'mode main']
 shift-alt-j = ['join-with down', 'mode main']
 shift-alt-k = ['join-with up', 'mode main']
 shift-alt-l = ['join-with right', 'mode main']
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
+shift-alt-tab = ['move-node-to-monitor --wrap-around next', 'focus-monitor --wrap-around next', 'mode main']
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 # Move focused window to workspace
