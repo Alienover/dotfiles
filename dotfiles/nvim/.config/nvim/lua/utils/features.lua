@@ -9,9 +9,7 @@ local M = setmetatable({}, {
 })
 
 -- INFO: features in nightly version
-local version_features = {
-  ["nvim-0.10"] = { "inlay_hint", "enhanced_comment" },
-}
+local version_features = {}
 
 for version, features in pairs(version_features) do
   for _, feature in ipairs(features) do

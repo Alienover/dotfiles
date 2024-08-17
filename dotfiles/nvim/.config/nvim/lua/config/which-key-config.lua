@@ -1,6 +1,5 @@
 local utils = require("utils")
 local constants = require("utils.constants")
-local nightly_features = require("utils.features")
 
 local wk = require("which-key")
 
@@ -226,14 +225,12 @@ local toggle_file_diff = function(curr_file)
 end
 
 local toggle_inlay_hint = function()
-  if nightly_features.inlay_hint then
-    local bufnr = vim.api.nvim_get_current_buf()
-    local enabled = vim.lsp.inlay_hint.is_enabled({
-      bufnr = bufnr,
-    })
+  local bufnr = vim.api.nvim_get_current_buf()
+  local enabled = vim.lsp.inlay_hint.is_enabled({
+    bufnr = bufnr,
+  })
 
-    vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
-  end
+  vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
 end
 
 --- comment
