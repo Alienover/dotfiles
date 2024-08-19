@@ -1,5 +1,5 @@
 local utils = require("utils")
-local o, cmd, expand = utils.o, utils.cmd, utils.expand
+local o, cmd = utils.o, utils.cmd
 
 local map, imap, nmap, vmap = utils.map, utils.imap, utils.nmap, utils.vmap
 
@@ -42,11 +42,6 @@ nmap("-", "<C-X>", "Decrement")
 
 nmap("<Tab>", ":BufferLineCycleNext<CR>", "Next Tab")
 nmap("<S-Tab>", ":BufferLineCyclePrev<CR>", "Previous Tab")
-
-nmap("<C-w>h", ":TmuxNavigateLeft<CR>", "Window Left")
-nmap("<C-w>l", ":TmuxNavigateRight<CR>", "Window Right")
-nmap("<C-w>j", ":TmuxNavigateDown<CR>", "Window Down")
-nmap("<C-w>k", ":TmuxNavigateUp<CR>", "Window Up")
 
 -- Buffers navigation
 nmap("[[", ":bp<CR>", "[B]uffer [P]revious")

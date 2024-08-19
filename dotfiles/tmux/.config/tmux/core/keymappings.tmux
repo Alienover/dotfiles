@@ -10,9 +10,6 @@ bind-key a send-prefix
 unbind =
 bind = select-layout tiled
 
-# reload config file
-bind r source-file $HOME/.tmux.conf \; display "Config Reloaded!"
-
 # split window just like vim
 unbind v
 bind v split-window -h -c "#{pane_current_path}"
@@ -55,8 +52,14 @@ bind T run "tmux-popup \"source $__TM_TMUX_HOME/floatterm.sh\" -s popup -t"
 unbind F
 bind F run "tmux-yazi"
 
+is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
+
 # smart pane switching with awareness of vim splits
-bind h run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-w\ h) || tmux select-pane -L"
-bind j run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-w\ j) || tmux select-pane -D"
-bind k run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-w\ k) || tmux select-pane -U"
-bind l run "(tmux display-message -p '#{pane_current_command}' | grep -iq vim && tmux send-keys C-w\ l) || tmux select-pane -R"
+bind h if-shell "$is_vim" "send-keys C-w\ h" "select-pane -L"
+bind j if-shell "$is_vim" "send-keys C-w\ j" "select-pane -D"
+bind k if-shell "$is_vim" "send-keys C-w\ k" "select-pane -U"
+bind l if-shell "$is_vim" "send-keys C-w\ l" "select-pane -R"
+
+# reload config file
+bind r source-file $HOME/.tmux.conf \; display "Config Reloaded!"
+
