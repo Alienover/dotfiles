@@ -36,7 +36,7 @@ set-window-option -g window-status-format " #[fg=$__tm_theme_inactive_window_fg]
 
 # # active window title colors
 set-window-option -g window-status-current-style bg=$__tm_theme_active_window_bg
-set-window-option -g window-status-current-format "$tm_separator_right_arrow#[fg=$__tm_theme_active_window_fg,bold]  #W #[bg=$__tm_theme_bg,fg=$__tm_theme_active_window_bg]$tm_separator_right_arrow"
+set-window-option -g window-status-current-format "$tm_separator_right_arrow#[fg=$__tm_theme_active_window_fg,bold] > #W #[bg=$__tm_theme_bg,fg=$__tm_theme_active_window_bg]$tm_separator_right_arrow"
 
 ## pane border
 set-option -g pane-border-style fg=$__tm_theme_border
