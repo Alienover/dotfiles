@@ -4,14 +4,10 @@ tap "homebrew/cask"
 tap "homebrew/core"
 tap "homebrew/services", "git@github.com:Homebrew/homebrew-services.git"
 tap "nikitabobko/tap"
-# C library of Git core methods that is re-entrant and linkable
-brew "libgit2@1.7"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Powerful, enterprise-ready, open source web server with automatic HTTPS
 brew "caddy"
-# Get, unpack, build, and install modules from CPAN
-brew "cpanminus"
 # Good-lookin' diffs with diff-highlight and more
 brew "diff-so-fancy"
 # Modern, maintained replacement for ls
@@ -36,6 +32,8 @@ brew "htop"
 brew "jq"
 # Powerful, lightweight programming language
 brew "lua"
+# Powerful, lightweight programming language (v5.1.5)
+brew "lua@5.1"
 # Package manager for the Lua programming language
 brew "luarocks"
 # Open source relational database management system
@@ -50,8 +48,6 @@ brew "tree"
 brew "pass"
 # Pass extension for managing one-time-password tokens
 brew "pass-otp"
-# Highly capable, feature-rich programming language
-brew "perl"
 # Pinentry for GPG on Mac
 brew "pinentry-mac"
 # Tool for managing OCI containers and pods
@@ -68,8 +64,6 @@ brew "pyenv"
 brew "pyenv-virtualenvwrapper"
 # Alternative to backtracking PCRE-style regular expression engines
 brew "re2"
-# Persistent key-value database, with built-in net interface
-brew "redis"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
@@ -95,11 +89,9 @@ cask "android-file-transfer"
 # Chromium based browser
 cask "arc"
 # Web browser
-cask "firefox"
-# Web browser
 cask "google-chrome"
 # Utility to hide menu bar items
-cask "hiddenbar", args: { appdir: "~/Applications" }
+cask "hiddenbar"
 # Free and open-source media player
 cask "iina"
 # File archiver
