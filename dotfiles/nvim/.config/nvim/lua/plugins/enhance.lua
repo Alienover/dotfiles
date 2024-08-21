@@ -1,8 +1,6 @@
 local consts = require("utils.constants")
 
 return {
-  { "nvim-lua/plenary.nvim" },
-
   {
     "folke/flash.nvim",
     config = function()

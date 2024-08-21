@@ -21,7 +21,6 @@ return {
       "DiffviewOpen",
       "DiffviewFileHistory",
     },
-    dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       require("config.diffview-config")
     end,
