@@ -18,11 +18,16 @@ end
 local registery = setmetatable({
   __sources = {},
 
+  __group_index = {
+    lazydev = 0, -- set group index to 0 to skip loading LuaLS completions
+  },
+
   __display = setmetatable({
     nvim_lsp = "[LSP]",
     luasnip = "[LuaSnip]",
     nvim_lua = "[Lua]",
     cmdline = "[CMD]",
+    lazydev = "[LazyDev]",
   }, {
     __index = function(_, key)
       local first, rest = string.sub(key, 1, 1), string.sub(key, 2)
@@ -35,6 +40,11 @@ local registery = setmetatable({
 
     if not sources[name] then
       local tmp = { name = name }
+
+      local group_index = self.__group_index[name]
+      if group_index and type(group_index) == "number" then
+        tmp["group_index"] = group_index
+      end
 
       -- Formatter
       function tmp:format()
@@ -136,8 +146,11 @@ cmp.setup(extend_config({
     {
       registery.nvim_lsp, -- LSP
 
+      registery.lazydev,
+
       registery.luasnip, -- For luasnip user.
     },
+
     -- Group index: 2
     {
       -- Utilities

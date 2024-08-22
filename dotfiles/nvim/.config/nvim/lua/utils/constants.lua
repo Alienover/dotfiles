@@ -173,7 +173,6 @@ M.ensure_externals = {
   lua_ls = {
     external_type = M.external_type.lsp,
     mason = "lua-language-server",
-    config_file = "lsp.lua-lsp",
   },
   taplo = {
     external_type = M.external_type.lsp,
