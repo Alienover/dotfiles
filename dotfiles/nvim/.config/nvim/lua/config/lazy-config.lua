@@ -1,4 +1,5 @@
 local utils = require("utils")
+local icons = require("utils.icons")
 local consts = require("utils.constants")
 
 -- Bootstrap lazy.nvim
@@ -42,6 +43,9 @@ if found then
     ui = {
       size = { width = sizing.width, height = sizing.height },
       border = "rounded",
+      icons = {
+        cmd = icons.get("extended", "command"),
+      },
     },
   })
 else

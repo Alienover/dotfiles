@@ -7,8 +7,8 @@ local presets = {
     circle = { glyph = "" },
     close = { glyph = "󰅖" },
 
-    command = "󰘳",
-    ellipsisH = "",
+    command = { glyph = "󰘳" },
+    ellipsisH = { glyph = "" },
 
     halfCircleLeft = { glyph = "" },
     halfCircleRight = { glyph = "" },
