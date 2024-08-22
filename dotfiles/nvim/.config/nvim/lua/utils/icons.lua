@@ -47,7 +47,7 @@ local get_impl = setmetatable({}, {
 
 local M = {}
 
----@param category string | 'git' | 'extended' Supported Categories:
+---@param category  'git' | 'extended' | string Supported Categories:
 --- - `git` - icon data for Git status
 ---
 --- - `extended` - extended icons data for mini.icons
@@ -55,12 +55,15 @@ local M = {}
 --- and other categories from mini.icons
 --- See: https://github.com/echasnovski/mini.icons/blob/12e7b5d47bfc1b4c5ba4278fb49ec9100138df14/lua/mini/icons.lua#L334-L447
 ---@param name  string
----@return string, string, boolean
+---@return string?, string?, boolean
 M.get = function(category, name)
   local getter = get_impl[category]
 
   if getter == nil then
-    local MiniIcons = require("mini.icons")
+    local status_ok, MiniIcons = pcall(require, "mini.icons")
+    if not status_ok then
+      return nil, nil, false
+    end
 
     return MiniIcons.get(category, name)
   end
