@@ -24,7 +24,7 @@ local registery = setmetatable({
 
   __display = setmetatable({
     nvim_lsp = "[LSP]",
-    luasnip = "[LuaSnip]",
+    luasnip = "[Snippet]",
     nvim_lua = "[Lua]",
     cmdline = "[CMD]",
     lazydev = "[LazyDev]",
