@@ -179,6 +179,7 @@ local filetypes = {
   extension = {
     json = "jsonc",
     tmux = "tmux",
+    http = "http",
   },
   filename = {
     [".gitignore"] = "conf",

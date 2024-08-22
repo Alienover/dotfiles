@@ -171,12 +171,12 @@ local terminal = function(input)
   return lspsaga("term_toggle " .. (input or ""))
 end
 
----@param preview boolean?
-local http_rest = function(preview)
+---@param sub_cmd string
+local kulala = function(sub_cmd)
   return function()
-    local ok, rest = pcall(require, "rest-nvim")
+    local ok, plugin = pcall(require, "kulala")
     if ok then
-      rest.run(preview)
+      plugin[sub_cmd]()
     end
   end
 end
@@ -401,9 +401,10 @@ wk.add(withTrigger({
     cond = function()
       return vim.bo.filetype == "http"
     end,
-    { "rr", http_rest(), desc = "Send request under the cursor" },
-    { "rp", http_rest(true), desc = "[P]review the CURL request" },
-    { "re", telescope("rest", { "select_env" }), desc = "Select ENV file" },
+    { "rr", kulala("copy"), desc = "[C]opy the request as Curl command" },
+    { "rr", kulala("run"), desc = "Send request under the cursor" },
+    { "rp", kulala("inspect"), desc = "[P]review the request" },
+    { "re", kulala("set_selected_env"), desc = "Select ENV file" },
   },
 }))
 

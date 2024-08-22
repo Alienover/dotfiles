@@ -42,16 +42,12 @@ return {
     end,
   },
 
-  {
-    "rest-nvim/rest.nvim",
-    ft = { "http" },
-    tag = "v1.2.1",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
+  { -- HTTP REST-Client Interface
+    "mistweaverco/kulala.nvim",
+    opts = {
+      --- @type 'headers' | 'body'| 'headers_body'
+      default_view = "headers_body",
     },
-    config = function()
-      require("config.rest-config")
-    end,
   },
 
   {
