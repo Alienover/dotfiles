@@ -111,7 +111,7 @@ telescope.setup({
   },
 })
 
-local extensions = { "fzf", "undo", "noice", "file_browser" }
+local extensions = { "fzf", "file_browser" } -- "undo", "noice" would be lazy-loaded
 
 for _, ext in ipairs(extensions) do
   telescope.load_extension(ext)
