@@ -108,14 +108,6 @@ local spaces = {
   separator = "",
 }
 
-local function rest()
-  if vim.bo.filetype == "http" then
-    return "rest"
-  else
-    return ""
-  end
-end
-
 local config = {
   options = {
     -- Theme
@@ -158,7 +150,7 @@ local config = {
       spellcheck,
       filename,
     },
-    lualine_x = { rest(), "diagnostics", filetype },
+    lualine_x = { "diagnostics", filetype },
     lualine_y = { encoding, spaces },
     lualine_z = {
       {
