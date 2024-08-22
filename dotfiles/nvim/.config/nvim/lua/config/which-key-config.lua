@@ -268,6 +268,7 @@ wk.add(withTrigger({
     { "hk", telescope("keymaps"), desc = "[K]ey Maps" },
     { "hh", telescope("highlights"), desc = "[H]ighlight Groups" },
     { "hn", telescope("notify"), desc = "[N]otify history" },
+    { "hN", telescope("noice"), desc = "[N]oice history" },
     { "hm", t("Mason"), desc = "[M]ason Manager" },
     {
       "hl",

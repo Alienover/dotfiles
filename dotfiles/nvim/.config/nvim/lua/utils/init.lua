@@ -65,28 +65,11 @@ M.map = function(mode, key, cmd, opts)
   vim.keymap.set(mode, key, cmd, opts)
 end
 
-M.nmap = function(...)
-  M.map("n", ...)
-end
-
-M.imap = function(...)
-  M.map("i", ...)
-end
-
-M.tmap = function(...)
-  M.map("t", ...)
-end
-
-M.vmap = function(...)
-  M.map("v", ...)
-end
-
-M.smap = function(...)
-  M.map("s", ...)
-end
-
-M.xmap = function(...)
-  M.map("x", ...)
+--- Populate the mode-preseted map func for `nmap`, `imap`, `tmap`, `vmap`, `smap`, `xmap`
+for _, mode in ipairs({ "n", "i", "t", "v", "s", "x" }) do
+  M[mode .. "map"] = function(...)
+    M.map(mode, ...)
+  end
 end
 
 M.r_code = function(str)
@@ -340,6 +323,26 @@ M.buffer_is_big = function(bufnr)
     return true
   else
     return false
+  end
+end
+
+--- Zoom in/out the focused pane
+M.zoom = function()
+  local var_name = "zoom_winrestcmd"
+  local winnr = vim.api.nvim_get_current_win()
+
+  ---@type string?
+  local winrestcmd = vim.fn.getwinvar(winnr, var_name, "")
+
+  if winrestcmd and #winrestcmd > 0 then
+    M.cmd(winrestcmd)
+    vim.api.nvim_win_del_var(winnr, var_name)
+  else
+    vim.api.nvim_win_set_var(winnr, var_name, vim.fn.winrestcmd())
+
+    -- INFO: expand the current pane
+    M.cmd([[resize]])
+    M.cmd([[vertical resize]])
   end
 end
 

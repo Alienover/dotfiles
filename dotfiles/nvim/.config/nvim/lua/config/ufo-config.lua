@@ -1,3 +1,5 @@
+local ufo = require("ufo")
+local utils = require("utils")
 local icons = require("utils.icons")
 
 local handler = function(virtText, lnum, endLnum, width, truncate)
@@ -45,7 +47,7 @@ local handler = function(virtText, lnum, endLnum, width, truncate)
 end
 
 ---@diagnostic disable-next-line: missing-fields
-require("ufo").setup({
+ufo.setup({
   fold_virt_text_handler = handler,
   -- @param {number} bufnr
   -- @param {string} filetype
@@ -64,3 +66,31 @@ require("ufo").setup({
     },
   },
 })
+
+local keymaps = {
+  {
+    "zR",
+    ufo.closeAllFolds,
+    "Open All Folds",
+  },
+  {
+    "zM",
+    ufo.closeAllFolds,
+    "Close All Folds",
+  },
+  {
+    "fn",
+    ufo.goNextClosedFold,
+    "[F]old [N]ext",
+  },
+  {
+    "fp",
+    ufo.goPreviousClosedFold,
+    "[F]old [P]revious",
+  },
+}
+
+for _, preset in ipairs(keymaps) do
+  local lhs, rhs, opts = unpack(preset)
+  utils.nmap(lhs, rhs, opts)
+end
