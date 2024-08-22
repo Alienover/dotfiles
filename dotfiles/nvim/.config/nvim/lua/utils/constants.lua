@@ -53,6 +53,7 @@ M.filetype_mappings = setmetatable({
   jsonc = "JSON with comments",
   txt = "Plain Text",
   sql = "SQL",
+  lua = "Lua",
 }, {
   __index = function(_, key)
     return key

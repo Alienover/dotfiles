@@ -1,4 +1,5 @@
 local utils = require("utils")
+local icons = require("utils.icons")
 local constants = require("utils.constants")
 
 local wk = require("which-key")
@@ -136,7 +137,11 @@ local workspaces = function(base)
 
   --- @type wk.Spec
   local output = {
-    { WORKSPACE_PREFIX, group = "Edison", icon = constants.icons.ui.Email },
+    {
+      WORKSPACE_PREFIX,
+      group = "Edison",
+      icon = icons.get("filetype", "mail"),
+    },
   }
 
   for key, mapping in pairs(maps) do

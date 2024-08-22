@@ -8,8 +8,6 @@ local neogen = require("neogen")
 local utils = require("utils")
 local icons = require("utils.icons")
 
-local kind_icons = icons.kind
-
 ---@param c table
 ---@return cmp.ConfigSchema
 local extend_config = function(c)
@@ -150,7 +148,7 @@ cmp.setup(extend_config({
   formatting = {
     format = function(entry, vim_item)
       -- Kind icons
-      vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
+      vim_item.kind = string.format("%s", icons.get("lsp", vim_item.kind))
 
       vim_item.menu = registery[entry.source.name]:format()
 

@@ -1,8 +1,7 @@
 local utils = require("utils")
+local icons = require("utils.icons")
 local consts = require("utils.constants")
 local registry = require("mason-registry")
-
-local icons = consts.icons
 
 local ensure_externals = consts.ensure_externals
 
@@ -14,9 +13,9 @@ require("mason").setup({
     height = sizing.height,
     border = "rounded",
     icons = {
-      package_installed = icons.ui.Check,
-      package_pending = icons.ui.Circle,
-      package_uninstalled = icons.ui.Close,
+      package_installed = icons.get("extended", "check"),
+      package_pending = icons.get("extended", "circle"),
+      package_uninstalled = icons.get("extended", "close"),
     },
   },
 })

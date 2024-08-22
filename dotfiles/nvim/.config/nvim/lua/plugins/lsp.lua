@@ -3,7 +3,6 @@ return {
     "nvimdev/lspsaga.nvim",
     event = { "LspAttach" },
     cmd = { "Lspsaga" },
-    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("config.saga-config")
     end,

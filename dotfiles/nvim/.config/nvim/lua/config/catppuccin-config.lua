@@ -39,13 +39,12 @@ local config = {
 
       TabLineSel = { bg = colors.red },
 
-      ["@neorg.tags.ranged_verbatim.code_block"] = { bg = colors.surface0 },
-      ["@neorg.todo_items.on_hold.norg"] = { bg = nil },
-
       SagaBorder = { fg = colors.surface1 },
       FloatBorder = { fg = colors.surface1 },
 
       TelescopeSelection = { bg = colors.surface1 },
+
+      CmpItemMenu = { fg = colors.subtext0 },
     }
   end,
 }

@@ -1,11 +1,11 @@
-local consts = require("utils.constants")
+local icons = require("utils.icons")
 
 local handler = function(virtText, lnum, endLnum, width, truncate)
   local newVirtText = {}
   local foldedLines = endLnum - lnum
 
   local suffix = ("  %s  %s %s"):format(
-    consts.icons.ui.EllipsisH,
+    icons.get("extended", "ellipsisH"),
     foldedLines,
     "line" .. (foldedLines > 1 and "s" or "")
   )

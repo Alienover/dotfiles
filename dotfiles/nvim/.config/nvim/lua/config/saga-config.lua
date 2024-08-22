@@ -1,9 +1,7 @@
 local utils = require("utils")
-local constants = require("utils.constants")
+local icons = require("utils.icons")
 
 local nmap = utils.nmap
-
-local icons = constants.icons
 
 local window_specing = utils.get_window_default_spacing()
 
@@ -42,7 +40,7 @@ local config = {
     show_file = false,
     click_support = false,
     color_mode = true,
-    separator = " " .. icons.ui.ChevronRight .. " ",
+    separator = " " .. icons.get("extended", "arrowRight") .. " ",
   },
   floaterm = {
     height = (1 - window_specing.t * 2),

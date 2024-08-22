@@ -1,8 +1,6 @@
 local utils = require("utils")
 local consts = require("utils.constants")
 
-local icons = consts.icons
-
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 ---@diagnostic disable-next-line: undefined-field
@@ -44,19 +42,6 @@ if found then
     ui = {
       size = { width = sizing.width, height = sizing.height },
       border = "rounded",
-      icons = {
-        cmd = icons.misc.Command,
-        config = icons.ui.Gear,
-        event = icons.kind.Event,
-        ft = icons.ui.NewFile,
-        init = icons.ui.BigUnfilledCircle,
-        keys = icons.misc.Keyboard,
-        plugin = icons.kind.Function,
-        runtime = icons.misc.Watch,
-        source = icons.ui.Note,
-        start = icons.ui.Circle,
-        task = icons.ui.Comment,
-      },
     },
   })
 else

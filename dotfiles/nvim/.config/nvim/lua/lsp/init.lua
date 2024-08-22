@@ -1,11 +1,11 @@
 local utils = require("utils")
+local icons = require("utils.icons")
 local constants = require("utils.constants")
 
 local lspconfig = require("lspconfig")
 
 local o, nmap = utils.o, utils.nmap
 
-local icons = constants.icons
 local external_type = constants.external_type
 local ensure_externals = constants.ensure_externals
 
@@ -111,10 +111,10 @@ end
 -- Re-write lsp diagnostic icons
 local rewrite_lsp_icons = function()
   local signs = {
-    Error = icons.ERROR,
-    Warn = icons.WARN,
-    Hint = icons.HINT,
-    Info = icons.INFOR,
+    Error = icons.get("extended", "error"),
+    Warn = icons.get("extended", "warn"),
+    Hint = icons.get("extended", "hint"),
+    Info = icons.get("extended", "info"),
   }
 
   for type, icon in pairs(signs) do

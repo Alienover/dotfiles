@@ -102,18 +102,18 @@ function MM:get_filepath()
 end
 
 function MM:get_filename()
-  local name, ext = vim.fn.expand("%:t"), vim.fn.expand("%:e")
+  local name = vim.fn.expand("%:t")
 
   if name == "" then
     return
   end
 
-  local status_ok, devicons = pcall(require, "nvim-web-devicons")
+  local status_ok, MiniIcons = pcall(require, "mini.icons")
 
   local icon = nil
   local color, hl = "", self.opts.text_hl
   if status_ok then
-    icon, color = devicons.get_icon(name, ext, { default = true })
+    icon, color = MiniIcons.get("file", name)
   end
 
   local name_items = {

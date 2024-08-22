@@ -1,16 +1,17 @@
 -- Reference
 -- https://github.com/hoob3rt/lualine.nvim
 local utils = require("utils")
+local icons = require("utils.icons")
 local constants = require("utils.constants")
 
 local o, expand = utils.o, utils.expand
 
-local c, icons = constants.colors, constants.icons
+local c = constants.colors
 
 local spellcheck = {
   function()
     if o.spell then
-      return ("%s [%s]"):format(icons.ui.Language, o.spelllang)
+      return ("%s [%s]"):format(icons.get("extended", "spell"), o.spelllang)
     end
 
     return ""
@@ -18,21 +19,21 @@ local spellcheck = {
 }
 
 local function filename()
-  local status_ok, devicons = pcall(require, "nvim-web-devicons")
+  local status_ok, MiniIcons = pcall(require, "mini.icons")
   if not status_ok then
     return ""
   end
 
-  local name, ext = expand("%:t"), expand("%:e")
+  local name = expand("%:t")
 
   if name == "" then
     return ""
   end
 
-  local icon, color = devicons.get_icon(name, ext, { default = true })
+  local icon, hl = MiniIcons.get("file", name)
 
   return "%#"
-    .. color
+    .. hl
     .. "#"
     .. icon
     .. " "
@@ -43,17 +44,17 @@ local function filename()
 end
 
 local function filetype()
-  local status_ok, devicons = pcall(require, "nvim-web-devicons")
+  local status_ok, MiniIcons = pcall(require, "mini.icons")
   if not status_ok then
     return ""
   end
 
-  local name, ext = expand("%:t"), expand("%:e")
+  local ext = expand("%:e")
   if ext == "" then
     return ""
   end
 
-  local icon, color = devicons.get_icon(name, ext, { default = true })
+  local icon, color = MiniIcons.get("filetype", ext)
   icon = "%#" .. color .. "#" .. icon .. "%*"
 
   local ft = constants.filetype_mappings[vim.bo.filetype]
@@ -73,9 +74,9 @@ local diff = {
     removed = { fg = c.DARK_RED },
   },
   symbols = {
-    added = icons.git.Add .. " ",
-    modified = icons.git.Mod .. " ",
-    removed = icons.git.Remove .. " ",
+    added = icons.get("git", "add") .. " ",
+    modified = icons.get("git", "modified") .. " ",
+    removed = icons.get("git", "remove") .. " ",
   },
   separator = "",
 }
@@ -128,15 +129,15 @@ local config = {
 
     -- Symbols
     symbols = {
-      error = icons.ERROR,
-      warn = icons.WARN,
-      info = icons.INFOR,
-      hint = icons.HINT,
+      error = icons.get("extended", "error") .. " ",
+      warn = icons.get("extended", "warn") .. " ",
+      info = icons.get("extended", "info") .. " ",
+      hint = icons.get("extended", "hint") .. " ",
     },
     -- Separators
     component_separators = {
-      left = icons.ui.ChevronRight,
-      right = icons.ui.ChevronLeft,
+      left = icons.get("extended", "arrowRight"),
+      right = icons.get("extended", "arrowLeft"),
     },
   },
   sections = {
@@ -144,8 +145,8 @@ local config = {
       {
         "mode",
         separator = {
-          left = icons.ui.HalfCircleLeft,
-          right = icons.ui.TriangleRight,
+          left = icons.get("extended", "halfCircleLeft"),
+          right = icons.get("extended", "triangleRight"),
         },
       },
     },
@@ -163,8 +164,8 @@ local config = {
       {
         "location",
         separator = {
-          left = icons.ui.TriangelLeft,
-          right = icons.ui.HalfCircleRight,
+          left = icons.get("extended", "triangelLeft"),
+          right = icons.get("extended", "halfCircleRight"),
         },
       },
     },

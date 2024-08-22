@@ -1,7 +1,8 @@
 return {
   {
     "folke/which-key.nvim",
-    lazy = false,
+    keys = { "<space>" },
+    event = { "VeryLazy" },
     config = function()
       require("config.which-key-config")
     end,

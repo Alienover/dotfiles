@@ -1,126 +1,73 @@
-local icons = {
-  ui = {
-    ArrowClosed = "",
-    ArrowOpen = "",
-    BigCircle = "",
-    BigUnfilledCircle = "",
-    BookMark = "",
-    Bug = "",
-    Calendar = "",
-    Check = "󰄬",
-    ChevronLeft = "<",
-    ChevronRight = ">",
-    Circle = "",
-    Close = "󰅖",
-    CloudDownload = "",
-    Code = "",
-    Comment = "󰅺",
-    Dashboard = "",
-    EllipsisH = "",
-    Email = "󰇮",
-    Fire = "",
-    Gear = "",
-    HalfCircleLeft = "",
-    HalfCircleRight = "",
-    History = "󰋚",
-    Language = "",
-    Lightbulb = "󰌵",
-    List = "",
-    Lock = "",
-    Minus = "󰍴",
-    NewFile = "",
-    Note = "󰎚",
-    Package = "",
-    Pencil = "󰏫",
-    Project = "",
-    Search = "",
-    SignIn = "",
-    SignOut = "",
-    Table = "",
-    Telescope = "",
-    TriangelLeft = "",
-    TriangleRight = "",
-  },
+local presets = {
+  extended = {
+    arrowLeft = { glyph = "<" },
+    arrowRight = { glyph = ">" },
 
-  kind = {
-    Array = "󰅨",
-    Boolean = "",
-    Class = "",
-    Color = "",
-    Constant = "",
-    Constructor = "",
-    Enum = "",
-    EnumMember = "",
-    Event = "",
-    Field = "",
-    File = "",
-    Folder = "",
-    Function = "",
-    Interface = "",
-    Keyword = "",
-    Method = "",
-    Module = "",
-    Number = "󰉻",
-    Operator = "",
-    Property = "",
-    Reference = "",
-    Snippet = "",
-    String = "󰅳",
-    Struct = "",
-    Text = "",
-    TypeParameter = "",
-    Unit = "",
-    Value = "",
-    Variable = "",
-  },
+    check = { glyph = "󰄬" },
+    circle = { glyph = "" },
+    close = { glyph = "󰅖" },
 
-  diagnostics = {
-    Error = "",
-    Hint = "",
-    Information = "",
-    Question = "",
-    Warning = "",
-  },
+    command = "󰘳",
+    ellipsisH = "",
 
-  misc = {
-    Command = "󰘳",
-    Keyboard = "󰌌",
-    Robot = "󰚩",
-    Squirrel = "",
-    Tag = "",
-    Watch = "",
-  },
+    halfCircleLeft = { glyph = "" },
+    halfCircleRight = { glyph = "" },
 
+    spell = { glyph = "" },
+
+    triangelLeft = { glyph = "" },
+    triangleRight = { glyph = "" },
+
+    -- Diagnosing
+    error = { glyph = "" },
+    warn = { glyph = "" },
+    hint = { glyph = "" },
+    info = { glyph = "" },
+  },
   git = {
-    Add = "",
-    Diff = "",
-    Ignore = "",
-    Mod = "",
-    Remove = "",
-    Rename = "",
-    Repo = "",
-  },
-
-  documents = {
-    File = "",
-    Files = "",
-    Folder = "",
-    OpenFolder = "",
+    add = { glyph = "" },
+    modified = { glyph = "" },
+    remove = { glyph = "" },
   },
 }
 
-local mod = {
-  ERROR = icons.diagnostics.Error .. " ",
-  WARN = icons.diagnostics.Warning .. " ",
-  HINT = icons.diagnostics.Hint .. " ",
-  INFOR = icons.diagnostics.Information .. " ",
+local get_impl = setmetatable({}, {
+  __index = function(_, key)
+    local category = presets[key]
 
-  ---@type table<string, string>
-  kind = setmetatable(icons.kind, {
-    __index = function()
-      return icons.kind.Text
-    end,
-  }),
-}
+    if category then
+      return function(name)
+        return category[name]
+      end
+    end
 
-return vim.tbl_deep_extend("force", icons, mod)
+    return nil
+  end,
+})
+
+local M = {}
+
+---@param category string | 'git' | 'extended' Supported Categories:
+--- - `git` - icon data for Git status
+---
+--- - `extended` - extended icons data for mini.icons
+---
+--- and other categories from mini.icons
+--- See: https://github.com/echasnovski/mini.icons/blob/12e7b5d47bfc1b4c5ba4278fb49ec9100138df14/lua/mini/icons.lua#L334-L447
+---@param name  string
+---@return string, string, boolean
+M.get = function(category, name)
+  local getter = get_impl[category]
+
+  if getter == nil then
+    local MiniIcons = require("mini.icons")
+
+    return MiniIcons.get(category, name)
+  end
+
+  local icon = getter(name)
+
+  return icon.glyph, "", true
+end
+
+return M

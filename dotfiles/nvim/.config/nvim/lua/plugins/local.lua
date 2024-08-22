@@ -10,7 +10,7 @@ return {
   { -- Customized winbar with file path and document symbols
     "@local/winbar.nvim",
     event = { "BufReadPost", "BufNewFile" },
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = { "echasnovski/mini.icons" },
     opts = {
       excluded_fn = function()
         -- INFO: Display the winbar info from the diff plugin itself
