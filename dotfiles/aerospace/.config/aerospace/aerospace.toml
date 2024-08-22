@@ -15,12 +15,19 @@ after-login-command = []
 after-startup-command = [
   # Focus the main workspace
   'workspace 🦄',
+
   # Move windows by dragging any part of the window
   # See: https://nikitabobko.github.io/AeroSpace/goodness#move-by-dragging-any-part-of-the-window
   'exec-and-forget defaults write -g NSWindowShouldDragOnGesture YES',
+
   # Disable windows opening animations
   # See: https://nikitabobko.github.io/AeroSpace/goodness#disable-open-animations
   'exec-and-forget defaults write -g NSAutomaticWindowAnimationsEnabled -bool false',
+
+  # Enable Group windows by application setting. Or in System Settings:
+  # System Settings → Desktop & Dock → Group windows by application
+  # It would work after reboot or run `killall Dock` to make it work immediately 
+  'exec-and-forget defaults write com.apple.dock expose-group-apps -bool true',
 ]
 
 # Start AeroSpace at login
