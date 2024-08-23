@@ -98,10 +98,6 @@ local workspaces = function(base)
     return {}
   end
 
-  -- Scan the certain workspace
-  local plenary = require("plenary.scandir")
-  local dirs = plenary.scan_dir(base, { depth = 1, only_dirs = true })
-
   local WORKSPACE_PREFIX = "e"
 
   local maps = {
@@ -114,10 +110,28 @@ local workspaces = function(base)
     },
   }
 
+  -- Scan the certain workspace
+  local dirs = {}
+
+  local dir_getter = vim.fs.dir(base, { depth = 1 })
+  while true do
+    local dir, typ = dir_getter()
+
+    if not dir then
+      break
+    end
+
+    if typ == "directory" then
+      table.insert(dirs, dir)
+    end
+  end
+
   -- Set the first letter of the folder as the trigger key
   for _, v in pairs(dirs) do
-    local dir = string.match(v, "/([^/]+)$")
-    local key, rest = string.sub(dir, 1, 1), string.sub(dir, 2)
+    local dir =
+      vim.fs.normalize(vim.fs.joinpath(base, "." .. constants.os_sep .. v))
+
+    local key, rest = string.sub(v, 1, 1), string.sub(v, 2)
 
     if maps[key] == nil then
       key = string.lower(key)
@@ -127,9 +141,9 @@ local workspaces = function(base)
 
     maps[key] = {
       telescope("find_files", {
-        cwd = v,
+        cwd = dir,
         no_ignore = true,
-        prompt_title = ("Search " .. dir):gsub(" ", "\\ "),
+        prompt_title = ("Search " .. v):gsub(" ", "\\ "),
       }),
       desc = string.format("Search [%s]%s", string.upper(key), rest),
     }

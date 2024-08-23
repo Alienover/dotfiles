@@ -8,10 +8,6 @@ local getenv = function(var, default)
   return os.getenv(var) or default or ""
 end
 
----@type table
----@diagnostic disable-next-line: assign-type-mismatch
-M.icons = require("utils.icons")
-
 M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/my_plugins"
 
 M.files = {
@@ -68,6 +64,8 @@ M.os = {
   is_windows = os_name == "Windows_NT",
   is_wsl = vim.fn.has("wsl") == 1,
 }
+
+M.os_sep = M.os.is_windows and "\\" or "/"
 
 M.special_filetypes = {
   excluded_cowboy = {
