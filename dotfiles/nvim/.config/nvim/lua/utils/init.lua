@@ -346,4 +346,32 @@ M.zoom = function()
   end
 end
 
+---@generic T
+---@param module_name  string
+---@return `T`
+M.LazyRequire = function(module_name)
+  return setmetatable({
+    __module_name = module_name,
+    __module = false,
+  }, {
+    __index = function(ctx, key)
+      if not ctx.__module then
+        ---@type boolean, T
+        local status_ok, module = pcall(require, ctx.__module_name)
+        if not status_ok then
+          vim.notify(
+            string.format("Failed to load module: %s", ctx.__module_name),
+            vim.log.levels.ERROR
+          )
+          return nil
+        end
+
+        ctx.__module = module
+      end
+
+      return ctx.__module[key]
+    end,
+  })
+end
+
 return M

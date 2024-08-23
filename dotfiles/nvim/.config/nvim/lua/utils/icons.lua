@@ -1,3 +1,7 @@
+local utils = require("utils")
+
+local MiniIcons = utils.LazyRequire("mini.icons")
+
 local presets = {
   extended = {
     arrowLeft = { glyph = "<" },
@@ -60,11 +64,7 @@ M.get = function(category, name)
   local getter = get_impl[category]
 
   if getter == nil then
-    local status_ok, MiniIcons = pcall(require, "mini.icons")
-    if not status_ok then
-      return nil, nil, false
-    end
-
+    -- Fallback to mini.icons
     return MiniIcons.get(category, name)
   end
 
