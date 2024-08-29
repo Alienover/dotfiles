@@ -1,6 +1,15 @@
 #! /usr/bin/env zsh
 
+typeset -g zsh_required
+typeset -g zsh_theme
+typeset -g zsh_plugins
+
 __PLUGIN_FOLDER="$HOME/.zsh_plugins"
+
+function __error() {
+  local msg="$1"
+  >&2 printf "[%s][ERROR] %s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "$msg"
+}
 
 # Function to source files if they exist
 function zsh_add_file() {
@@ -10,7 +19,8 @@ function zsh_add_file() {
   if [ -f "$file" ]; then
     source "$file"
   else
-    echo "$file not found"
+    __error "Couldn't find $file"
+    return 1
   fi
 }
 
@@ -24,12 +34,17 @@ function zsh_add_plugin() {
 
   zsh_add_file "$name.plugin.zsh" $plugin_path || \
     zsh_add_file "$name.zsh" $plugin_path
+
+  return $?
 }
 
 
 function zsh_add_custom_plugin() {
-  zsh_add_file "plugins/$1/$1.plugin.zsh" || \
-    zsh_add_file "plugins/$1/$1.zsh"
+  local prefix="plugins/$1/$1"
+  zsh_add_file "$prefix.plugin.zsh" || \
+    zsh_add_file "$prefix.zsh"
+
+  return $?
 }
 
 function zsh_add_theme() {
@@ -74,8 +89,8 @@ function zsh_update_plugin() {
   local name=$(echo "${1:-all}" | cut -d "/" -f 2)
 
   if [ $name = 'all' ]; then
-    for plugin in $(ls $__PLUGIN_FOLDER); do
-      zsh_update_plugin $plugin
+    for plugin in $zsh_plugins;
+    do zsh_update_plugin $plugin
     done
   else
     local plugin_path="$__PLUGIN_FOLDER/$name"
@@ -85,8 +100,19 @@ function zsh_update_plugin() {
       # pull updates
       git -C $plugin_path pull
     else
-      echo "Couldn't find plugin \"$name\""
+      __error "Couldn't find plugin \"$name\""
     fi
   fi
 }
 
+function zsh_init() {
+  zsh_add_theme "${zsh_theme:-agnoster}"
+
+  for required in $zsh_required;
+  do zsh_add_file "$required.sh"
+  done
+
+  for plugin in $zsh_plugins;
+  do zsh_add_custom_plugin "$plugin" || zsh_add_plugin "$plugin"
+  done
+}

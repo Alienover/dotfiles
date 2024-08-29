@@ -1,14 +1,5 @@
 # Place your plugin content here
 
-# Lazy load fzf
-# source "$ZDOTDIR/zsh-functions.sh"
-#
-# function __load_fzf {
-#     [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-# }
-#
-# zsh_lazy_load fzf "__load_fzf"
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Options to fzf command
@@ -33,7 +24,7 @@ _fzf_comprun() {
   shift
 
   local default_preview_cmd="if file {} | grep -E 'json|text'
-    then 
+    then
       bat --color=always {}
     elif file {} | grep directory
     then

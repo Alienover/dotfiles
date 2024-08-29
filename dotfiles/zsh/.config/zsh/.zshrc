@@ -4,60 +4,48 @@ export ZDOTDIR="$HOME/.config/zsh"
 
 source "$ZDOTDIR/zsh-functions.sh"
 
-# Paths
-zsh_add_file "zsh-exports.sh"
+# INFO: Set terminal theme
+zsh_theme="agnoster"
 
-# User configuration
+# INFO: Set required scripts before initializing
+zsh_required=(
+  # Paths
+  zsh-exports # $ZDOTDIR/zsh-exports.sh
 
-# !! Attention
-# Place under omz initialization to overwrite the color definination
-# Load Customized color scheme
-zsh_add_file "zsh-colors.sh"
+  # Load Customized color scheme
+  zsh-colors # $ZDOTDIR/zsh-colors.sh
 
 # Load alias
-zsh_add_file "zsh-alias.sh"
+  zsh-alias # $ZDOTDIR/zsh-alias.sh
+)
 
-# Load theme
-zsh_add_theme "agnoster"
+# INFO: Plugins
+# - External  - load from $HOME/.zsh_plugins, otherwise download it from github.com
+# - Personal  - load from $ZDOTDIR/plugins
+# - Work      - load from $ZDOTDIR/plugins, for work preferences
+zsh_plugins=(
+  # External
+  zsh-users/zsh-autosuggestions
+  zsh-users/zsh-syntax-highlighting
 
-# From Web
-zsh_add_plugin "zsh-users/zsh-autosuggestions"
-zsh_add_plugin "zdharma-continuum/fast-syntax-highlighting"
+  # Personal - check $ZDOTDIR/plugins for more detail
+  brew
+  cmd-duration
+  completion
+  fnm
+  fzf
+  git
+  go
+  pyenv
+  tmux
+  nvim
+  vi-mode
+  transient-prompt
+  obsidian
+  yazi
 
-# Completions
-autoload -Uz compinit
+  # Work
+  edo-work
+)
 
-zstyle ':completion:*:*:*:*:*' menu select
-zstyle ':completion:*' list-colors ''
-# suggest case insensitive e.g.: cd docu -> cd Documents
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
-
-zstyle ':completion:*' use-cache yes
-zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcompcache"
-
-zmodload zsh/complist
-
-# Include hidden files
-_comp_options+=(globdots)
-
-compinit -d $ZSH_COMPDUMP
-
-# Load plugins
-# -- Work
-zsh_add_custom_plugin "edo-work"
-# -- Custom
-zsh_add_custom_plugin "brew"
-zsh_add_custom_plugin "cmd-duration"
-zsh_add_custom_plugin "fnm"
-zsh_add_custom_plugin "fzf"
-zsh_add_custom_plugin "git"
-zsh_add_custom_plugin "go"
-zsh_add_custom_plugin "pyenv"
-zsh_add_custom_plugin "tmux"
-zsh_add_custom_plugin "nvim"
-zsh_add_custom_plugin "vi-mode"
-zsh_add_custom_plugin "transient-prompt"
-zsh_add_custom_plugin "obsidian"
-zsh_add_custom_plugin "yazi"
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+zsh_init 2>> /tmp/zsh-error.$(date +%F).log

@@ -14,7 +14,7 @@ __tp_set_shorten_prompt() {
 
   if [[ $PROMPT != *$icon* ]]; then
     PROMPT="${__TP_NEWLINE}%{%F{${color}}%}$icon %{%f%}"
-    zle .reset-prompt
+    zle reset-prompt
 
     __TP_NEWLINE=$'\n'
   fi
