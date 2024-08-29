@@ -16,7 +16,7 @@ after-startup-command = [
   # Focus the main workspace
   'workspace 🦄',
 
-  # Move windows by dragging any part of the window
+  # Move windows by dragging any part of the window with pressing `cmd + ctrl`
   # See: https://nikitabobko.github.io/AeroSpace/goodness#move-by-dragging-any-part-of-the-window
   'exec-and-forget defaults write -g NSWindowShouldDragOnGesture YES',
 
