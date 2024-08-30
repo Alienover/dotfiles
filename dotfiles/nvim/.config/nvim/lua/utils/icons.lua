@@ -22,6 +22,8 @@ local presets = {
     triangelLeft = { glyph = "" },
     triangleRight = { glyph = "" },
 
+    recording = { glyph = "" },
+
     -- Diagnosing
     error = { glyph = "" },
     warn = { glyph = "" },
