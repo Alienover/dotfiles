@@ -65,17 +65,16 @@ return {
     dependencies = "nvim-treesitter/nvim-treesitter",
     config = true,
   },
+
   {
-    "OXY2DEV/markview.nvim",
-    ft = "markdown", -- If you decide to lazy-load anyway
-
+    "MeanderingProgrammer/render-markdown.nvim",
+    ft = { "markdown", "Avante" },
     dependencies = {
-      -- You will not need this if you installed the
-      -- parsers manually
-      -- Or if the parsers are in your $RUNTIMEPATH
       "nvim-treesitter/nvim-treesitter",
-
-      "nvim-tree/nvim-web-devicons",
+      "echasnovski/mini.icons",
     },
+    config = function()
+      require("config.markdown-config")
+    end,
   },
 }

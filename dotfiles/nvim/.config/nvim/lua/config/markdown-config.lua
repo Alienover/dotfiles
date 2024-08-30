@@ -1,23 +1,27 @@
-local utils = require("utils")
+require("render-markdown").setup({
+  file_types = { "markdown", "Avante" },
+  -- See: https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki/CodeBlocks
+  code = {
+    position = "right",
+    width = "block",
+    min_width = 80,
+    left_pad = 2,
+    language_pad = 2,
+  },
 
-local cmd, setup_global = utils.cmd, utils.setup_global
+  -- See: https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki/Checkboxes
+  checkbox = {
+    custom = {
+      important = {
+        raw = "[!]",
+        rendered = "󰓎 ",
+        highlight = "DiagnosticWarn",
+      },
+    },
+  },
 
--- FIXME: turn this to lua function
-cmd([[
-  function OpenMarkdownPreview (url)
-    execute "silent ! open -a Safari " . a:url
-  endfunction
-]])
+  -- See: https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki/Tables
+  pipe_table = { preset = "round" },
 
-local global = {
-  -- recognized filetypes
-  -- these filetypes will have MarkdownPreview... commands
-  mkdp_filetypes = { "markdown" },
-
-  -- a custom vim function name to open preview page
-  -- this function will receive url as param
-  -- default is empty
-  mkdp_browserfunc = "OpenMarkdownPreview",
-}
-
-setup_global(global)
+  sign = { enabled = false },
+})
