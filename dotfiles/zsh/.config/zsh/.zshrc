@@ -1,7 +1,5 @@
 #! /usr/bin/env zsh
 
-export ZDOTDIR="$HOME/.config/zsh"
-
 source "$ZDOTDIR/zsh-functions.sh"
 
 # INFO: Set terminal theme
