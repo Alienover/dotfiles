@@ -12,9 +12,6 @@ cmd([[
   let &t_ZR="\e[23m"
 ]])
 
--- FIXME: what's `vim.o.lsp`
--- vim.o.lsp = 3
-
 -- Global variables
 local global = {
   -- Disable the builtin vim plugins
@@ -49,11 +46,7 @@ local global = {
   -- Disble Ruby support
   loaded_ruby_provider = 0,
 
-  tmux_navigator_no_mappings = 1,
-
   editorconfig = false,
-
-  -- did_load_filetypes = 1,
 
   -- Leader key mapping
   mapleader = ";",
