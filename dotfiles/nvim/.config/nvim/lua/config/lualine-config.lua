@@ -8,6 +8,8 @@ local o, expand = utils.o, utils.expand
 
 local c = constants.colors
 
+local MiniIcons = utils.LazyRequire("mini.icons")
+
 local spellcheck = {
   function()
     if o.spell then
@@ -19,11 +21,6 @@ local spellcheck = {
 }
 
 local function filename()
-  local status_ok, MiniIcons = pcall(require, "mini.icons")
-  if not status_ok then
-    return ""
-  end
-
   local name = expand("%:t")
 
   if name == "" then
@@ -44,11 +41,6 @@ local function filename()
 end
 
 local function filetype()
-  local status_ok, MiniIcons = pcall(require, "mini.icons")
-  if not status_ok then
-    return ""
-  end
-
   local ext = expand("%:e")
   if ext == "" then
     return ""

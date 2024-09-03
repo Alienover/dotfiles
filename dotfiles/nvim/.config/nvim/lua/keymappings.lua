@@ -3,6 +3,8 @@ local o = utils.o
 
 local map, nmap, vmap = utils.map, utils.nmap, utils.vmap
 
+local ufo = utils.LazyRequire("ufo")
+
 -- Modes, check `:h map-modes` for more detail
 -- * normal_mode	 = "n"
 -- * insert_mode	 = "i"
@@ -83,12 +85,9 @@ nmap("<leader>s", function()
 end, "[S]pell Suggestions")
 
 nmap("K", function()
-  local status_ok, ufo = pcall(require, "ufo")
-  if status_ok then
-    local winid = ufo.peekFoldedLinesUnderCursor()
-    if winid then
-      return
-    end
+  local winid = ufo.peekFoldedLinesUnderCursor()
+  if winid then
+    return
   end
 
   vim.lsp.buf.hover()
