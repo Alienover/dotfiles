@@ -1,5 +1,4 @@
 local utils = require("utils")
-local consts = require("utils.constants")
 local o = utils.o
 
 local map, nmap, vmap = utils.map, utils.nmap, utils.vmap
@@ -82,34 +81,6 @@ nmap("<leader>s", function()
     })
   )
 end, "[S]pell Suggestions")
-
--- URL handling
--- Refer to https://sbulav.github.io/vim/neovim-opening-urls/
-nmap("gx", function()
-  local file = vim.fn.expand("<cfile>")
-  local open_cmd = nil
-  if consts.os.is_mac then
-    open_cmd = { "open", file }
-  elseif consts.os.is_linux then
-    open_cmd = { "xdg-open", file }
-  end
-
-  if open_cmd == nil then
-    vim.notify("Error: gx is not supported on this OS!", vim.log.levels.ERROR)
-    return
-  end
-
-  vim.system(open_cmd, { text = true }, function(out)
-    if out.code ~= 0 then
-      local err_msg = table.concat({
-        "Failed to open with the message:",
-        vim.trim(out.stdout),
-        vim.trim(out.stderr),
-      }, "\n")
-      vim.notify(err_msg, vim.log.levels.WARN)
-    end
-  end)
-end, "Browser link")
 
 nmap("K", function()
   local status_ok, ufo = pcall(require, "ufo")
