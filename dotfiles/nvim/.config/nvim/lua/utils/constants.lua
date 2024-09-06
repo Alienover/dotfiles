@@ -158,7 +158,7 @@ M.ensure_externals = {
     mason = "json-lsp",
     config_file = "lsp.json-lsp",
   },
-  tsserver = {
+  ts_ls = {
     external_type = M.external_type.lsp,
     mason = "typescript-language-server",
     config_file = "lsp.ts-lsp",
