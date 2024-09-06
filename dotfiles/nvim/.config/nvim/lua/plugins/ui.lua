@@ -57,6 +57,18 @@ return {
           background_colour = "#000000",
         },
       },
+
+      -- Progress UI for LSP and rest
+      {
+        "j-hui/fidget.nvim",
+        opts = {
+          notification = {
+            window = {
+              winblend = 0,
+            },
+          },
+        },
+      },
     },
   },
 }
