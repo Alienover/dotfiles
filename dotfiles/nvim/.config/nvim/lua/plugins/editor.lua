@@ -42,12 +42,12 @@ return {
     end,
   },
 
-  { -- HTTP REST-Client Interface
-    "mistweaverco/kulala.nvim",
-    opts = {
-      --- @type 'headers' | 'body'| 'headers_body'
-      default_view = "headers_body",
-    },
+  {
+    "rest-nvim/rest.nvim",
+    ft = { "http" },
+    config = function()
+      require("config.rest-config")
+    end,
   },
 
   {

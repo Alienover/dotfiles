@@ -416,10 +416,13 @@ wk.add(withTrigger({
     cond = function()
       return vim.bo.filetype == "http"
     end,
-    { "rr", kulala("copy"), desc = "[C]opy the request as Curl command" },
-    { "rr", kulala("run"), desc = "Send request under the cursor" },
-    { "rp", kulala("inspect"), desc = "[P]review the request" },
-    { "re", kulala("set_selected_env"), desc = "Select ENV file" },
+    { "rc", t("Rest curl copy"), desc = "[C]opy the request as Curl command" },
+    { "rr", t("Rest run"), desc = "Send request under the cursor" },
+    {
+      "re",
+      telescope("rest", { "select_env" }),
+      desc = "Select env or .env file",
+    },
   },
 }))
 

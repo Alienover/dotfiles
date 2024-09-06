@@ -74,6 +74,8 @@ M.special_filetypes = {
     "blame",
     "help",
     "noice",
+    "http",
+    "rest_nvim_result",
   },
   excluded_winbar = {
     "git",
@@ -86,6 +88,8 @@ M.special_filetypes = {
     "httpResult",
     "terminal",
     "blame",
+    "http",
+    "rest_nvim_result",
   },
   close_by_q = {
     "qf",

@@ -100,6 +100,29 @@ local spaces = {
   separator = "",
 }
 
+local rest = (function()
+  local rest_status = require("lualine.components.rest")
+
+  ---@diagnostic disable-next-line: duplicate-set-field
+  rest_status.update_status = function()
+    local current_filetype = vim.bo.filetype
+    local env_file = vim.b._rest_nvim_env_file
+    if current_filetype == "http" and env_file then
+      local s = {}
+      for x in string.gmatch(env_file, "([^#]+)") do
+        table.insert(s, x)
+      end
+
+      local file, env = unpack(s)
+
+      return env or file
+    end
+    return ""
+  end
+
+  return rest_status
+end)()
+
 local config = {
   options = {
     -- Theme
@@ -142,7 +165,7 @@ local config = {
       spellcheck,
       filename,
     },
-    lualine_x = { "diagnostics", filetype },
+    lualine_x = { rest, "diagnostics", filetype },
     lualine_y = { encoding, spaces },
     lualine_z = {
       {

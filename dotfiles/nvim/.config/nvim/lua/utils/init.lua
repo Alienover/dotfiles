@@ -374,4 +374,23 @@ M.LazyRequire = function(module_name)
   })
 end
 
+---
+---@param name string
+---@param mock_fun  fun(): table
+M.MockPackage = function(name, mock_fun)
+  package.preload[name] = function()
+    local mock_pkg = mock_fun()
+
+    if package.loaded[name] == nil then
+      package.preload[name] = function()
+        return mock_pkg
+      end
+    else
+      package.loaded[name] = mock_pkg
+    end
+
+    return mock_pkg
+  end
+end
+
 return M
