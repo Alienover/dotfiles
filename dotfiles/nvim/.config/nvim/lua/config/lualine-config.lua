@@ -101,26 +101,31 @@ local spaces = {
 }
 
 local rest = (function()
-  local rest_status = require("lualine.components.rest")
+  local current_filetype = vim.bo.filetype
 
-  ---@diagnostic disable-next-line: duplicate-set-field
-  rest_status.update_status = function()
-    local current_filetype = vim.bo.filetype
-    local env_file = vim.b._rest_nvim_env_file
-    if current_filetype == "http" and env_file then
-      local s = {}
-      for x in string.gmatch(env_file, "([^#]+)") do
-        table.insert(s, x)
+  if current_filetype == "http" then
+    local rest_status = require("lualine.components.rest")
+    ---@diagnostic disable-next-line: duplicate-set-field
+    rest_status.update_status = function()
+      local env_file = vim.b._rest_nvim_env_file
+      if env_file then
+        local s = {}
+        for x in string.gmatch(env_file, "([^#]+)") do
+          table.insert(s, x)
+        end
+
+        local file, env = unpack(s)
+
+        return env or file
       end
 
-      local file, env = unpack(s)
-
-      return env or file
+      return ""
     end
-    return ""
+
+    return rest_status
   end
 
-  return rest_status
+  return ""
 end)()
 
 local config = {
