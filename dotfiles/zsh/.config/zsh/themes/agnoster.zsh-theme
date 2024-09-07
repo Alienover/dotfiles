@@ -241,7 +241,7 @@ prompt_go() {
 prompt_status() {
   local -a symbols
 
-  [[ -n $VIM ]] && symbols="%{%F{$GUI_GREEN}%} %{%f%}"
+  [[ -n ${VIM:-$NVIM} ]] && symbols="%{%F{$GUI_GREEN}%} %{%f%}"
   [[ $RETVAL -ne 0 ]] && symbols="%{%F{$GUI_RED}%}✖ %{%f%}"
   # [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}⚙"
 
