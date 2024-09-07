@@ -1,5 +1,6 @@
 {
   "LuaSnip": { "branch": "master", "commit": "03c8e67eb7293c404845b3982db895d59c0d1538" },
+  "avante.nvim": { "branch": "main", "commit": "4a3b278a76e043935f4c6e8d66445f2f3a8a9d63" },
   "better-escape.nvim": { "branch": "master", "commit": "7e86edafb8c7e73699e0320f225464a298b96d12" },
   "blame.nvim": { "branch": "main", "commit": "07b375b2d825c658d5725a2d5a9cb3d860e05b04" },
   "bufferline.nvim": { "branch": "main", "commit": "0b2fd861eee7595015b6561dade52fb060be10c4" },
