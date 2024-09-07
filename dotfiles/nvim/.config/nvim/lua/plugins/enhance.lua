@@ -74,9 +74,15 @@ return {
   {
     "norcalli/nvim-colorizer.lua",
     event = "BufReadPre",
-    config = function()
-      require("config.colorizer-config")
-    end,
+    opts = {
+      ["*"] = {
+        RRGGBBAA = true,
+        css = true,
+        css_fn = true,
+      },
+      "!notify",
+      "!lazy",
+    },
   },
 
   {
@@ -103,16 +109,8 @@ return {
 
   {
     "windwp/nvim-ts-autotag",
-    ft = {
-      "html",
-      "javascript",
-      "javascriptreact",
-      "typescript",
-      "typescriptreact",
-    },
-    config = function()
-      require("config.autotag-config")
-    end,
+    event = "BufReadPre",
+    config = true,
   },
 
   { -- Highlight, edit, and navigate code

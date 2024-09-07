@@ -63,38 +63,50 @@ conform.setup({
   },
 })
 
-vim.api.nvim_create_user_command("ConformFormat", function()
-  vim.F.npcall(conform.format, {
-    async = false,
-    timeout_ms = 500,
-    lsp_format = "fallback",
-  })
-end, {
-  desc = "Trigger format",
-})
-
-vim.api.nvim_create_user_command("ConformToggle", function()
-  ---@type boolean
-  local enabled = vim.F.npcall(vim.api.nvim_get_var, AUTO_FORMAT) or true
-
-  vim.api.nvim_set_var(AUTO_FORMAT, not enabled)
-end, {
-  desc = "Toggle autoformat on save",
-})
-
--- INFO: overwrite the default `ConformInfo` command with customized window config
-vim.api.nvim_create_user_command("ConformInfo", function()
-  require("conform.health").show_window()
-
-  vim.schedule(function()
-    local winnr = vim.api.nvim_get_current_win()
-    vim.api.nvim_win_set_config(
-      winnr,
-      utils.get_float_win_opts({
-        border = true,
-        title = " Conform Formatters Info ",
-        title_pos = "center",
+utils.create_commands({
+  -- Format Trigger
+  {
+    "ConformFormat",
+    function()
+      vim.F.npcall(conform.format, {
+        async = false,
+        timeout_ms = 500,
+        lsp_format = "fallback",
       })
-    )
-  end)
-end, { desc = "Show information about Conform formatters" })
+    end,
+    desc = "Trigger format",
+  },
+
+  -- Toggle
+  {
+    "ConformToggle",
+    function()
+      ---@type boolean
+      local enabled = vim.F.npcall(vim.api.nvim_get_var, AUTO_FORMAT) or true
+
+      vim.api.nvim_set_var(AUTO_FORMAT, not enabled)
+    end,
+    desc = "Toggle autoformat on save",
+  },
+
+  -- Formatter Info
+  {
+    "ConformInfo",
+    function()
+      require("conform.health").show_window()
+
+      vim.schedule(function()
+        local winnr = vim.api.nvim_get_current_win()
+        vim.api.nvim_win_set_config(
+          winnr,
+          utils.get_float_win_opts({
+            border = true,
+            title = " Conform Formatters Info ",
+            title_pos = "center",
+          })
+        )
+      end)
+    end,
+    desc = "Show information about Conform formatters",
+  },
+})

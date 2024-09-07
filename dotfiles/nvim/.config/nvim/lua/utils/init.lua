@@ -4,6 +4,36 @@ local window_sizing = consts.window_sizing
 
 local M = {}
 
+---@alias KeymapMode string | string[]
+---@alias KeymapLHS string
+---@alias KeymapRHS string | fun(): nil
+---@alias KeymapOPTs string|table|nil
+---
+---@param keymaps {[1]: KeymapMode, [2]: KeymapLHS, [3]: KeymapRHS, [4]: KeymapOPTs}[]
+M.create_keymaps = function(keymaps)
+  for _, keymap in ipairs(keymaps) do
+    local modes, lhs, rhs, opts = unpack(keymap)
+
+    M.map(modes, lhs, rhs, opts)
+  end
+end
+
+---@alias CommandOPTName 'desc' | string
+---@param commands {[1]: string, [2]: ( fun(): nil ), [3]: table<CommandOPTName, any>|nil}[]
+M.create_commands = function(commands)
+  for _, command in ipairs(commands) do
+    local name, handler, opts = unpack(command)
+
+    vim.api.nvim_create_user_command(
+      name,
+      handler,
+      vim.tbl_extend("force", {
+        desc = "User Command: " .. name,
+      }, opts or {})
+    )
+  end
+end
+
 M.log = function(msg, level, name)
   name = name or "Neovim"
 
@@ -59,8 +89,11 @@ M.map = function(mode, key, cmd, opts)
     opts = { desc = opts }
   end
 
-  opts =
-    vim.tbl_deep_extend("force", { noremap = true, silent = true }, opts or {})
+  opts = vim.tbl_deep_extend(
+    "force",
+    { noremap = true, silent = true, desc = "User Keymap: " .. key },
+    opts or {}
+  )
 
   vim.keymap.set(mode, key, cmd, opts)
 end

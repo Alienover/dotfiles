@@ -1,7 +1,5 @@
 local utils = require("utils")
 
-local map = utils.map
-
 require("noice").setup({
   presets = { inc_rename = true, lsp_doc_border = true },
   lsp = {
@@ -49,14 +47,26 @@ require("noice").setup({
   },
 })
 
-map({ "n", "i", "s" }, "<c-d>", function()
-  if not require("noice.lsp").scroll(4) then
-    return "<c-d>"
-  end
-end, { expr = true })
+local make_mapping = function(lhs, rhs)
+  return {
+    { "n", "i", "s" },
+    lhs,
+    function()
+      if not rhs(require("noice.lsp")) then
+        return lhs
+      end
+    end,
+    { expr = true },
+  }
+end
 
-map({ "n", "i", "s" }, "<c-u>", function()
-  if not require("noice.lsp").scroll(-4) then
-    return "<c-u>"
-  end
-end, { expr = true })
+utils.create_keymaps({
+  -- Scroll down
+  make_mapping("<c-d>", function(noice_lsp)
+    return noice_lsp.scroll(4)
+  end),
+  -- Scroll up
+  make_mapping("<c-u>", function(noice_lsp)
+    return noice_lsp.scroll(-4)
+  end),
+})

@@ -3,7 +3,7 @@ local flash = require("flash")
 
 local map = utils.map
 
-local config = {
+flash.setup({
   prompt = {
     enabled = false,
   },
@@ -15,9 +15,7 @@ local config = {
       enabled = false,
     },
   },
-}
-
-flash.setup(config)
+})
 
 map({ "o", "x" }, "S", function()
   flash.treesitter()

@@ -3,8 +3,6 @@
 local utils = require("utils")
 local gs = require("gitsigns")
 
-local cmd, nmap, map = utils.cmd, utils.nmap, utils.map
-
 local config = {
   signs = {
     add = { text = "▍" },
@@ -20,8 +18,6 @@ local config = {
   },
 
   on_attach = function(bufnr)
-    local opts = { buffer = bufnr, silent = true, expr = true }
-
     local make_hunk_navigate = function(key, gs_fn)
       return function()
         if vim.wo.diff then
@@ -30,19 +26,34 @@ local config = {
 
         vim.schedule(function()
           gs_fn()
-          cmd.call([[feedkeys("zz")]])
+          vim.api.nvim_feedkeys("zz", "n", false)
         end)
         return "<Ignore>"
       end
     end
 
-    -- Navigation
-    nmap("]c", make_hunk_navigate("]c", gs.next_hunk), opts)
-    nmap("[c", make_hunk_navigate("[c", gs.prev_hunk), opts)
+    local make_opts = function(opts)
+      return vim.tbl_extend("force", { buffer = bufnr }, opts or {})
+    end
 
-    -- Text Objects
-    opts.expr = false
-    map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", opts)
+    utils.create_keymaps({
+      -- Hunk Navigation
+      {
+        "n",
+        "]c",
+        make_hunk_navigate("]c", gs.next_hunk),
+        make_opts({ expr = true }),
+      },
+      {
+        "n",
+        "[c",
+        make_hunk_navigate("[c", gs.prev_hunk),
+        make_opts({ expr = true }),
+      },
+
+      -- Text Objects
+      { { "o", "x" }, "ih", gs.select_hunk },
+    })
   end,
 }
 

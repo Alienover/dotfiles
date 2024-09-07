@@ -1,4 +1,4 @@
-local config = {
+require("mini.surround").setup({
   -- Whether to disable showing non-error feedback
   silent = true,
 
@@ -16,6 +16,4 @@ local config = {
     suffix_last = "", -- Suffix to search with "prev" method
     suffix_next = "", -- Suffix to search with "next" method
   },
-}
-
-require("mini.surround").setup(config)
+})
