@@ -19,10 +19,6 @@ nmap("-", "<C-X>", "Decrement")
 nmap("<Tab>", ":BufferLineCycleNext<CR>", "Next Tab")
 nmap("<S-Tab>", ":BufferLineCyclePrev<CR>", "Previous Tab")
 
--- Buffers navigation
-nmap("[[", ":bp<CR>", "[B]uffer [P]revious")
-nmap("]]", ":bn<CR>", "[B]uffer [N]next")
-
 -- Open  nvim terminal in split or vertical split
 nmap("<C-t>", ":terminal<CR>i")
 

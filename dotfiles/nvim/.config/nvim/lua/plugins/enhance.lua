@@ -57,6 +57,20 @@ return {
     end,
   },
 
+  -- Go forward/backward with square brackets
+  {
+    "echasnovski/mini.bracketed",
+    keys = { "[", "]" },
+    opts = {
+      comment = { suffix = "" },
+      file = { suffix = "" },
+      window = { suffix = "" },
+      quickfix = { suffix = "" },
+      yank = { suffix = "" },
+      treesitter = { suffix = "" },
+    },
+  },
+
   {
     "norcalli/nvim-colorizer.lua",
     event = "BufReadPre",
