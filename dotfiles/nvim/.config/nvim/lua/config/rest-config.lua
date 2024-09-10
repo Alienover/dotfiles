@@ -38,25 +38,29 @@ local env = setmetatable({
   __index = function(t, k)
     --- TODO: read `env_type` from buffer variable
     -- local _type = vim.b[0]._rest_nvim_env_type or env_type.dotenv
-    local _type = env_type.http_client
-    return t.__manager[_type][k]
+    local _type = t:get_env_type()
+
+    return function(...)
+      return t.__manager[_type][k](...)
+    end
   end,
 })
 
-function env:reset()
-  self.__context = {}
+---
+---@param _type envType
+---@param bufnr integer?
+function env:set_env_type(_type, bufnr)
+  vim.b[bufnr or 0]._rest_nvim_env_type = _type
 end
 
----@param key string
----@param value any
-function env:set_ctx(key, value)
-  self.__context[key] = value
-end
+---
+---@param bufnr integer?
+---@param default_env_type envType?
+---@return  envType
+function env:get_env_type(bufnr, default_env_type)
+  local _default = default_env_type or env_type.dotenv
 
----@param key string
----@return any
-function env:get_ctx(key)
-  return self.__context[key]
+  return vim.b[bufnr or 0]._rest_nvim_env_type or _default
 end
 
 --- @class envMethods
@@ -75,98 +79,121 @@ function env:register(_type, opts)
   end
 end
 
-env:register(env_type.http_client, {
-  parse = function(path, setter)
-    local vars
-    if setter == nil then
-      vars = {}
-      setter = function(name, value)
-        vars[name] = value
+-- INFO: register the env methods for `http-client.env.json` file
+env:register(
+  env_type.http_client,
+  (function()
+    local DEFAULT_ENV = "dev"
+
+    --- Context vars in selecting
+    local env_file = nil
+    local contents = {}
+
+    local M = {}
+
+    --- INFO: Parse `http_client.env.json` file and set the variables based on the given env
+    --- Apply `dev` as default env if non-specified
+    ---
+    --- @param path string
+    --- @param setter nil|fun(key: string, value: any): nil
+    --- @return boolean, table<string, any>
+    M.parse = function(path, setter)
+      local vars
+      if setter == nil then
+        vars = {}
+        setter = function(name, value)
+          vars[name] = value
+        end
       end
-    end
 
-    local s = {}
-    for x in string.gmatch(path, "([^#]+)") do
-      s[#s + 1] = x
-    end
-    local file, env_value = unpack(s)
-    env_value = env_value or "dev"
+      local s = {}
+      for x in string.gmatch(path, "([^#]+)") do
+        s[#s + 1] = x
+      end
+      local _, env_value = unpack(s)
+      env_value = env_value or DEFAULT_ENV
 
-    local contents = vim.fn.json_decode(vim.fn.readfile(file))
+      if contents._base then
+        for key, value in pairs(contents._base) do
+          if key ~= "DEFAULT_HEADERS" then
+            setter(key, value)
+          end
+        end
+      end
 
-    if contents._base then
-      for key, value in pairs(contents._base) do
-        if key ~= "DEFAULT_HEADERS" then
+      if contents[env_value] ~= nil then
+        for key, value in pairs(contents[env_value]) do
           setter(key, value)
         end
       end
+
+      return true, vars
     end
 
-    if contents[env_value] ~= nil then
-      for key, value in pairs(contents[env_value]) do
-        setter(key, value)
-      end
-    end
+    --- INFO: Find the nearest `http-client.env.json` file
+    ---
+    --- @return string[]
+    M.find = function()
+      local envs = {}
 
-    return true, vars
-  end,
+      local file = vim.fs.find("http-client.env.json", {
+        upward = true,
+        limit = 1,
+        path = vim.fn.expand("%:p:h"),
+      })[1]
 
-  find = function()
-    local envs = {}
+      if file ~= nil then
+        env_file = file
 
-    --- Reset env context before choosing a new one
-    env:reset()
-    local file = vim.fs.find("http-client.env.json", {
-      upward = true,
-      limit = 1,
-      path = vim.fn.expand("%:p:h"),
-    })[1]
+        ---@type table<string, any>
+        contents = vim.fn.json_decode(rutils.read_file(file))
 
-    if file ~= nil then
-      env:set_ctx("env_file", file)
-
-      ---@type table<string, any>
-      local contents = vim.fn.json_decode(rutils.read_file(file))
-
-      env:set_ctx("contents", contents)
-
-      for key, _ in pairs(contents) do
-        if key ~= "_base" then
-          table.insert(envs, key)
+        for key, _ in pairs(contents) do
+          if key ~= "_base" then
+            table.insert(envs, key)
+          end
         end
       end
+
+      return envs
     end
 
-    return envs
-  end,
+    M.previewer = function()
+      --- INFO: define the parser outside the previewer
+      --- to keep the correct buffer options
 
-  previewer = function()
-    return previewers.new_buffer_previewer({
-      title = "Variables",
-      define_preview = function(self, entry)
-        local ok, vars =
-          env.parse(env:get_ctx("env_file") .. "#" .. entry.value)
+      return previewers.new_buffer_previewer({
+        title = "Variables",
+        define_preview = function(self, entry)
+          local ok, vars = M.parse(env_file .. "#" .. entry.value)
 
-        if not ok then
-          return
-        end
+          if not ok then
+            return
+          end
 
-        local lines = {}
-        for key, value in pairs(vars) do
-          table.insert(lines, string.format("%s: %s", key, value))
-        end
+          local lines = {}
+          for key, value in pairs(vars) do
+            table.insert(lines, string.format("%s: %s", key, value))
+          end
 
-        vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, lines)
-        putils.ts_highlighter(self.state.bufnr, "sh")
-      end,
-    })
-  end,
+          vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, lines)
+          putils.ts_highlighter(self.state.bufnr, "sh")
+        end,
+      })
+    end
 
-  select = function(selection)
-    vim.b[0]._rest_nvim_env_file = env:get_ctx("env_file") .. "#" .. selection
-  end,
-})
+    --- INFO: register the env file and env value
+    M.select = function(selection)
+      vim.b[0]._rest_nvim_env_file = env_file .. "#" .. selection
 
+      vim.notify(string.format("Env '%s' has been registered"))
+    end
+
+    return M
+  end)()
+)
+
+-- INFO: register the env methods for `.env` file
 env:register(env_type.dotenv, {
   parse = rest_dotenv_parser.parse,
   find = dotenv.find_env_files,
@@ -174,46 +201,89 @@ env:register(env_type.dotenv, {
   select = dotenv.register_file,
 })
 
-local function select_env()
-  local opts = {}
-  opts.entry_maker = make_entry.gen_from_file(opts)
-
-  pickers
-    .new(opts, {
-      prompt_title = "Select env",
-
-      finder = finders.new_table({
-        results = env.find(),
-        entry_maker = make_entry.gen_from_file(),
-      }),
-
-      attach_mappings = function(prompt_bufnr, _)
-        actions.select_default:replace(function()
-          local selection = action_state.get_selected_entry()
-          actions.close(prompt_bufnr)
-          if selection == nil then
-            return
-          end
-
-          env.select(selection[1])
-        end)
-        return true
-      end,
-
-      previewer = env.previewer(opts),
-    })
-    :find()
-end
-
 utils.MockPackage("telescope._extensions.rest", function()
-  ---@diagnostic disable-next-line: duplicate-set-field
-  require("rest-nvim.parser.dotenv").parse = function(...)
-    return env.parse(...)
+  -- INFO: Choose the env type, which decides how to parse the env vars
+  -- * dotenv - Reading env vars from *.env file, one file for one env
+  -- * http_client - Reading env vars from http_client.env.json, apply `dev` as default env
+  --   http_client.env.json file sample
+  --   ```json
+  --    {
+  --      "_base": { ... },     // common variables
+  --      "dev": { ... },       // variables for env `dev`
+  --      "env_name": { ... }   // other env variables
+  --    }
+  --   ```
+  local function select_env_type()
+    local _types = {}
+
+    for _, _type in pairs(env_type) do
+      table.insert(_types, _type)
+    end
+
+    pickers
+      .new({}, {
+        prompt_title = "Select env Type",
+
+        finder = finders.new_table({
+          results = _types,
+          entry_maker = make_entry.gen_from_string(),
+        }),
+
+        attach_mappings = function(prompt_bufnr, _)
+          actions.select_default:replace(function()
+            local selection = action_state.get_selected_entry()
+            actions.close(prompt_bufnr)
+
+            if selection == nil then
+              return
+            end
+
+            env:set_env_type(selection[1])
+          end)
+
+          return true
+        end,
+      })
+      :find()
+  end
+
+  local function select_env()
+    local opts = {}
+    opts.entry_maker = make_entry.gen_from_file(opts)
+
+    local previewer = env.previewer(opts)
+
+    pickers
+      .new(opts, {
+        prompt_title = "Select env",
+
+        finder = finders.new_table({
+          results = env.find(),
+          entry_maker = make_entry.gen_from_file(),
+        }),
+
+        attach_mappings = function(prompt_bufnr, _)
+          actions.select_default:replace(function()
+            local selection = action_state.get_selected_entry()
+            actions.close(prompt_bufnr)
+            if selection == nil then
+              return
+            end
+
+            env.select(selection[1])
+          end)
+          return true
+        end,
+
+        previewer = previewer,
+      })
+      :find()
   end
 
   return telescope.register_extension({
     exports = {
       select_env = select_env,
+      select_env_type = select_env_type,
     },
   })
 end)
@@ -227,3 +297,8 @@ utils.MockPackage("rest-nvim.script.javascript", function()
 
   return M
 end)
+
+---@diagnostic disable-next-line: duplicate-set-field
+require("rest-nvim.parser.dotenv").parse = function(...)
+  return env.parse(...)
+end

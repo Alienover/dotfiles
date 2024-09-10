@@ -421,7 +421,12 @@ wk.add(withTrigger({
     {
       "re",
       telescope("rest", { "select_env" }),
-      desc = "Select env or .env file",
+      desc = "Select env",
+    },
+    {
+      "rE",
+      telescope("rest", { "select_env_type" }),
+      desc = "Select env_type (http-client or .env)",
     },
   },
 }))
