@@ -109,23 +109,26 @@ return {
 
   {
     "windwp/nvim-ts-autotag",
-    event = "BufReadPre",
+    event = "InsertEnter",
     config = true,
+  },
+
+  {
+    "andymass/vim-matchup",
+    event = "BufReadPre",
+    config = function()
+      require("config.matchup-config")
+    end,
   },
 
   { -- Highlight, edit, and navigate code
     "nvim-treesitter/nvim-treesitter",
-    event = { "BufReadPost", "BufNewFile" },
+    lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
+    event = { "VeryLazy" },
     build = ":TSUpdate",
     dependencies = {
       "nvim-treesitter/nvim-treesitter-refactor",
       "nvim-treesitter/nvim-treesitter-textobjects",
-      {
-        "andymass/vim-matchup",
-        config = function()
-          require("config.matchup-config")
-        end,
-      },
     },
     config = function()
       require("config.treesitter-config")
