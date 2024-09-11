@@ -76,6 +76,7 @@ M.special_filetypes = {
     "noice",
     "http",
     "rest_nvim_result",
+    "Avante",
   },
   excluded_winbar = {
     "git",

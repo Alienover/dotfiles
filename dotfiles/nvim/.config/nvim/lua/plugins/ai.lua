@@ -2,6 +2,8 @@ return {
   {
     "yetone/avante.nvim",
     cmd = { "AvanteAsk" },
+    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    build = "make",
     opts = {
       provider = "claude",
       claude = {
@@ -16,13 +18,6 @@ return {
         end,
         desc = "avante: ask",
         mode = { "n", "v" },
-      },
-      {
-        "<leader>at",
-        function()
-          require("avante.api").toggle()
-        end,
-        desc = "avante: toggle",
       },
       {
         "<leader>ar",
@@ -44,6 +39,7 @@ return {
       "stevearc/dressing.nvim",
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
+
       --- The below dependencies are optional,
       "echasnovski/mini.icons",
     },
