@@ -76,16 +76,30 @@ end
 -- Vim based Options
 local options = {
   -- Base
-  title = true,
+  -- Number of command-lines that are remembered
   history = 1000,
-  showcmd = true,
+
+  -- Show (partial) command in status line
+  showcmd = false,
+
+  -- Briefly jump to matching bracket if insert one
   showmatch = true,
+
+  -- Hide show current mode on status line
   showmode = false,
+
+  -- Use a swapfile for the buffer
   swapfile = false,
+
+  -- Copy the structure of the existing lines indent when autoindenting a new line
   copyindent = true,
-  shiftround = true,
+
+  -- Split a window will put the new window below the current one
   splitbelow = true,
+  -- split a window will put the new window right of the current one
   splitright = true,
+
+  -- Use visual bell instead of beeping
   visualbell = true,
 
   -- Search case matching
@@ -102,8 +116,10 @@ local options = {
   -- be iMproved, required
   compatible = false,
 
-  updatetime = 100,
+  -- Decrease update time
+  updatetime = 200,
 
+  -- Minimal number of screen lines to keep above and below the cursor
   scrolloff = 10,
 
   -- Folding
@@ -118,17 +134,21 @@ local options = {
   -- Cursor line
   cursorline = true,
 
-  -- Disable the native suggestion list
-  spellsuggest = { "0" },
+  -- Disable the native suggestion list, use `telescope.builtin.spell_suggest` instead
+  spellsuggest = { 0 },
 
   -- Undo
   undofile = true,
   undolevels = 1000,
 
-  encoding = "utf-8",
+  -- Use the clipboard register "*" for all yank, delete, change and put operations
   clipboard = { "unnamed" },
+
+  -- Influences the working of <BS>, <Del>, CTRL-W and CTRL-U in Insert mode
   backspace = { "indent", "eol", "start" },
-  wildignore = { "*.swp", "*.bak", "*.pyc" },
+
+  -- Ignore case when completing file names and directories
+  wildignorecase = true,
 
   -- Diff Mode
   fillchars = { diff = "╱" },
@@ -141,6 +161,9 @@ local options = {
   shiftwidth = 2,
   tabstop = 2,
   expandtab = true,
+
+  -- Round indent to multiple of `shiftwidth`
+  shiftround = true,
 
   -- Folding indicators
   -- Refer to https://github.com/kevinhwang91/nvim-ufo/issues/4#issuecomment-1380649634
