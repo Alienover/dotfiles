@@ -32,3 +32,11 @@ zle-line-finish() { __tp_set_shorten_prompt }
 zle -N zle-line-finish
 
 trap '__tp_set_prompt_on_trap; return 130' INT
+
+clear-screen() {
+  __TP_NEWLINE=""
+  __tp_set_original_prompt
+  zle .clear-screen
+}
+
+zle -N clear-screen
