@@ -4,12 +4,11 @@ local constants = require("utils.constants")
 
 local wk = require("which-key")
 
-local o, g, cmd = utils.o, utils.g, utils.cmd
+local g, cmd = utils.g, utils.cmd
 
 local WK_DEFAULT_PREFIX = "<space>"
 
---- @type wk.Opts
-local config = {
+wk.setup({
   ---@type false | "classic" | "modern" | "helix"
   preset = false,
 
@@ -57,12 +56,10 @@ local config = {
   triggers = {
     { WK_DEFAULT_PREFIX, mode = { "n", "v" } },
     { "<leader>", mode = { "n", "v" } },
+    { "[", mode = { "n" } },
+    { "]", mode = { "n" } },
   },
-}
-
-o.timeoutlen = 500
-
-wk.setup(config)
+})
 
 -- Populate the vim cmd prefix and suffix
 ---@param str string
@@ -183,16 +180,6 @@ end
 -- Populate the floating terminal command with presets
 local terminal = function(input)
   return lspsaga("term_toggle " .. (input or ""))
-end
-
----@param sub_cmd string
-local kulala = function(sub_cmd)
-  return function()
-    local ok, plugin = pcall(require, "kulala")
-    if ok then
-      plugin[sub_cmd]()
-    end
-  end
 end
 
 local toggle_diffview = function()
