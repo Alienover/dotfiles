@@ -7,6 +7,7 @@ local config = {
     gitsigns = true,
     lsp_saga = true,
     markdown = true,
+    render_markdown = true,
     mason = true,
     noice = true,
     notify = true,
