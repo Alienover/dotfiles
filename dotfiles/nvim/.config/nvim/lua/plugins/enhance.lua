@@ -134,10 +134,4 @@ return {
       require("config.treesitter-config")
     end,
   },
-
-  {
-    "tzachar/highlight-undo.nvim",
-    keys = { "u", "<C-r>" },
-    config = true,
-  },
 }
