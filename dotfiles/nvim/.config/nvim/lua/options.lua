@@ -1,13 +1,11 @@
-local utils = require("utils")
+local utils = require("custom.utils")
 
-local cmd = utils.cmd
+vim.cmd([[syntax on]])
 
-cmd([[syntax on]])
-
-cmd([[filetype plugin indent on]])
+vim.cmd([[filetype plugin indent on]])
 
 -- Italic support
-cmd([[
+vim.cmd([[
   let &t_ZH="\e[3m"
   let &t_ZR="\e[23m"
 ]])

@@ -1,4 +1,4 @@
-local config = {
+require("catppuccin").setup({
   flavour = "mocha", -- latte, frappe, macchiato, mocha
   transparent_background = true,
   term_colors = true,
@@ -40,17 +40,21 @@ local config = {
 
       TabLineSel = { bg = colors.red },
 
+      -- Mods for `lspsaga.nvim`
       SagaBorder = { fg = colors.surface1 },
       FloatBorder = { fg = colors.surface1 },
 
+      -- Mods for `telescope.nvim`
       TelescopeSelection = { bg = colors.surface1 },
 
+      -- Mods for `nvim-cmp`
       CmpItemMenu = { fg = colors.subtext0 },
+
+      -- Mods for `vim-matchup`
+      MatchParen = { style = { "bold", "italic" } },
     }
   end,
-}
-
-require("catppuccin").setup(config)
+})
 
 -- setup must be called before loading
 vim.cmd.colorscheme("catppuccin-mocha")

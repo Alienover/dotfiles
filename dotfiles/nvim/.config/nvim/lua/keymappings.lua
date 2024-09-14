@@ -1,8 +1,8 @@
-local utils = require("utils")
-local o = utils.o
+local utils = require("custom.utils")
 
 local map, nmap, vmap = utils.map, utils.nmap, utils.vmap
 
+---@module 'ufo'
 local ufo = utils.LazyRequire("ufo")
 
 -- Modes, check `:h map-modes` for more detail
@@ -46,7 +46,7 @@ nmap("N", "Nzzzv")
 nmap("x", '"_x')
 
 nmap("<leader>S", function()
-  o.spell = o.spell == false and true or false
+  vim.o.spell = vim.o.spell == false and true or false
 end, "Toggle [S]pell")
 
 -- Zoom in/out pane
@@ -55,7 +55,7 @@ nmap("zo", utils.zoom, "[Z]oom [O]n")
 -- Toggling file finder by telescope or fzf
 nmap("<C-p>", function()
   local subcmd, options = "find_files", {}
-  if utils.is_inside_git_repo() then
+  if vim.fs.root(vim.fn.expand("%:p"), ".git") then
     subcmd = "git_files"
     options["show_untracked"] = true
   end

@@ -1,6 +1,6 @@
-local utils = require("utils")
-local icons = require("utils.icons")
-local consts = require("utils.constants")
+local utils = require("custom.utils")
+local icons = require("custom.icons")
+local consts = require("custom.constants")
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"

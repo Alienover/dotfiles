@@ -1,6 +1,6 @@
 local ufo = require("ufo")
-local utils = require("utils")
-local icons = require("utils.icons")
+local utils = require("custom.utils")
+local icons = require("custom.icons")
 
 local handler = function(virtText, lnum, endLnum, width, truncate)
   local newVirtText = {}
@@ -70,7 +70,7 @@ ufo.setup({
 local keymaps = {
   {
     "zR",
-    ufo.closeAllFolds,
+    ufo.openAllFolds,
     "Open All Folds",
   },
   {

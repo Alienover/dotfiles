@@ -1,4 +1,4 @@
-local utils = require("utils")
+local utils = require("custom.utils")
 
 require("git").setup({
   winbar = true,

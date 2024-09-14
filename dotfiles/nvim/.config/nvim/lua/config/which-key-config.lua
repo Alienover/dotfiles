@@ -1,10 +1,8 @@
-local utils = require("utils")
-local icons = require("utils.icons")
-local constants = require("utils.constants")
+local utils = require("custom.utils")
+local icons = require("custom.icons")
+local constants = require("custom.constants")
 
 local wk = require("which-key")
-
-local g, cmd = utils.g, utils.cmd
 
 local WK_DEFAULT_PREFIX = "<space>"
 
@@ -68,9 +66,9 @@ local t = function(str, opts)
   return function()
     local silent = (opts and opts.silent) or false
     if silent then
-      vim.F.npcall(cmd, str)
+      vim.F.npcall(vim.cmd, str)
     else
-      cmd(str)
+      vim.cmd(str)
     end
   end
 end
@@ -183,7 +181,7 @@ local terminal = function(input)
 end
 
 local toggle_diffview = function()
-  local is_opened = g.diffview_opened or vim.o.filetype == "DiffviewFiles"
+  local is_opened = vim.g.diffview_opened or vim.o.filetype == "DiffviewFiles"
   if is_opened then
     local curr_tabid = vim.api.nvim_get_current_tabpage()
     local tabidx, tabid = nil, nil
@@ -204,16 +202,16 @@ local toggle_diffview = function()
 
     if tabid ~= nil and curr_tabid ~= tabid then
       -- INFO: Focus back when the current tab is not the one with diff view
-      cmd("tabnext " .. tabidx)
+      vim.cmd("tabnext " .. tabidx)
     else
-      g.diffview_opened = false
-      cmd("DiffviewClose")
+      vim.g.diffview_opened = false
+      vim.cmd("DiffviewClose")
     end
   else
     utils.change_cwd()
 
-    g.diffview_opened = true
-    cmd("DiffviewOpen")
+    vim.g.diffview_opened = true
+    vim.cmd("DiffviewOpen")
   end
 end
 
@@ -222,10 +220,10 @@ end
 local toggle_file_diff = function(curr_file)
   return function()
     if vim.bo.filetype == "DiffviewFileHistory" then
-      cmd("tabclose")
+      vim.cmd("tabclose")
     else
       utils.change_cwd()
-      cmd("DiffviewFileHistory" .. (curr_file == true and " %" or ""))
+      vim.cmd("DiffviewFileHistory" .. (curr_file == true and " %" or ""))
     end
   end
 end

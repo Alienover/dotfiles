@@ -1,4 +1,4 @@
-local consts = require("utils.constants")
+local consts = require("custom.constants")
 
 return {
   {
@@ -116,9 +116,6 @@ return {
   {
     "andymass/vim-matchup",
     event = "BufReadPre",
-    config = function()
-      require("config.matchup-config")
-    end,
   },
 
   { -- Highlight, edit, and navigate code

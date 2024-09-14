@@ -1,6 +1,6 @@
 -- Reference
 -- https://github.com/folke/dot/blob/master/config/nvim/lua/config/gitsigns.lua
-local utils = require("utils")
+local utils = require("custom.utils")
 local gs = require("gitsigns")
 
 local config = {

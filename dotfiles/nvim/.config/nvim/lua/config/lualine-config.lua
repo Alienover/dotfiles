@@ -1,19 +1,20 @@
 -- Reference
 -- https://github.com/hoob3rt/lualine.nvim
-local utils = require("utils")
-local icons = require("utils.icons")
-local constants = require("utils.constants")
+local utils = require("custom.utils")
+local icons = require("custom.icons")
+local constants = require("custom.constants")
 
-local o, expand = utils.o, utils.expand
+local expand = utils.expand
 
 local c = constants.colors
 
+---@module 'mini.icons'
 local MiniIcons = utils.LazyRequire("mini.icons")
 
 local spellcheck = {
   function()
-    if o.spell then
-      return ("%s [%s]"):format(icons.get("extended", "spell"), o.spelllang)
+    if vim.o.spell then
+      return ("%s [%s]"):format(icons.get("extended", "spell"), vim.o.spelllang)
     end
 
     return ""

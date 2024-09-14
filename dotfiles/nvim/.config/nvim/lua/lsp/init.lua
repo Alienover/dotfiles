@@ -1,10 +1,10 @@
-local utils = require("utils")
-local icons = require("utils.icons")
-local constants = require("utils.constants")
+local utils = require("custom.utils")
+local icons = require("custom.icons")
+local constants = require("custom.constants")
 
 local lspconfig = require("lspconfig")
 
-local o, nmap = utils.o, utils.nmap
+local nmap = utils.nmap
 
 local external_type = constants.external_type
 local ensure_externals = constants.ensure_externals
@@ -57,7 +57,7 @@ local load_config = function(filename)
 
   local DEFAULT_CONFIG = {
     -- INFO: disable on diff view by default
-    autostart = o.diff == false,
+    autostart = vim.o.diff == false,
 
     on_attach = on_attach,
     capabilities = custom_capabilities(),

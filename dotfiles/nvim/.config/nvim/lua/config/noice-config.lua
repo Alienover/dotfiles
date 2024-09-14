@@ -1,4 +1,4 @@
-local utils = require("utils")
+local utils = require("custom.utils")
 
 require("noice").setup({
   presets = { inc_rename = true, lsp_doc_border = true },

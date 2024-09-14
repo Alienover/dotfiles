@@ -1,4 +1,4 @@
-local utils = require("utils")
+local utils = require("custom.utils")
 
 local telescope = require("telescope")
 local actions = require("telescope.actions")

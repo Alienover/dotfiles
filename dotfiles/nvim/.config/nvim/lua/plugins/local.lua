@@ -1,4 +1,4 @@
-local consts = require("utils.constants")
+local consts = require("custom.constants")
 
 return {
   { -- Keep Window on Buffer Delete - Improved - (lua ver.)

@@ -4,9 +4,10 @@
 local cmp = require("cmp")
 local cmp_config = require("cmp.config")
 
-local utils = require("utils")
-local icons = require("utils.icons")
+local utils = require("custom.utils")
+local icons = require("custom.icons")
 
+---@module 'neogen'
 local neogen = utils.LazyRequire("neogen")
 
 ---@param c table

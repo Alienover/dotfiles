@@ -1,5 +1,6 @@
-local utils = require("utils")
+local utils = require("custom.utils")
 
+---@module 'mini.icons'
 local MiniIcons = utils.LazyRequire("mini.icons")
 
 local presets = {

@@ -1,6 +1,4 @@
-local consts = require("utils.constants")
-
-local window_sizing = consts.window_sizing
+local window_sizing = require("custom.constants").window_sizing
 
 local M = {}
 
@@ -33,41 +31,6 @@ M.create_commands = function(commands)
     )
   end
 end
-
-M.log = function(msg, level, name)
-  name = name or "Neovim"
-
-  local output = string.format("%s: %s", name, msg)
-  vim.notify(output, level)
-end
-
-M.warn = function(msg, name)
-  M.log(msg, vim.log.levels.WARN, name)
-end
-
-M.error = function(msg, name)
-  M.log(msg, vim.log.levels.ERROR, name)
-end
-
-M.info = function(msg, name)
-  M.log(msg, vim.log.levels.INFO, name)
-end
-
-M.o = vim.o
--- Local to buffer
-M.bo = vim.bo
--- Buffer-scoped variables
-M.b = vim.b
--- Local to window
-M.wo = vim.wo
--- Window-scoped variables
-M.w = vim.w
--- Global variables
-M.g = vim.g
--- Tabpage-scope variables
-M.t = vim.t
--- Vim command
-M.cmd = vim.cmd
 
 ---@param expr string
 M.expand = function(expr)
@@ -105,28 +68,7 @@ for _, mode in ipairs({ "n", "i", "t", "v", "s", "x" }) do
   end
 end
 
-M.r_code = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-M.table_map_values = function(input_table, func)
-  local new_table = {}
-  for key, value in pairs(input_table) do
-    new_table[key] = func(value, key)
-  end
-
-  return new_table
-end
-
-M.table_map_list = function(input_table, func)
-  local new_list = {}
-  for i, value in ipairs(input_table) do
-    new_list[i] = func(value, i)
-  end
-
-  return new_list
-end
-
+---@return {columns: integer, lines: integer}
 M.get_window_sepc = function()
   return {
     columns = vim.api.nvim_get_option_value("columns", {}),
@@ -134,6 +76,7 @@ M.get_window_sepc = function()
   }
 end
 
+---@return {l: number, t: number}
 M.get_window_default_spacing = function(width, height)
   local l, t = 0.25, 0.25
   local win_spec = M.get_window_sepc()
@@ -153,7 +96,7 @@ M.get_window_default_spacing = function(width, height)
 end
 
 ---@param args ?table
----@return table
+---@return vim.api.keyset.win_config
 M.get_float_win_opts = function(args)
   args = args or {}
   local win_spec = M.get_window_sepc()
@@ -187,6 +130,7 @@ M.get_float_win_opts = function(args)
   }, args)
 end
 
+---@return {width: number, height: number}
 M.get_float_win_sizing = function()
   local spec = M.get_window_sepc()
   local win_opts = M.get_float_win_opts()
@@ -197,32 +141,11 @@ M.get_float_win_sizing = function()
   }
 end
 
-M.is_inside_git_repo = function()
-  vim.fn.system("git rev-parse --is-inside-work-tree")
-  return vim.v.shell_error == 0
-end
-
----@param path string
----@return string?
-M.find_git_ancestor = function(path)
-  local cmd = string.format("git -C %s rev-parse --show-toplevel", path)
-
-  local result = vim.fn.system(cmd)
-
-  if vim.v.shell_error == 0 then
-    ---INFO: remove tailing new-line
-    result = string.gsub(result, "\n$", "")
-    return result
-  end
-
-  return nil
-end
-
 M.change_cwd = function()
   ---@type string
   ---@diagnostic disable-next-line: assign-type-mismatch
   local head = vim.fn.expand("%:p:h")
-  local git_ancestor = M.find_git_ancestor(head) or head
+  local git_ancestor = vim.fs.root(head, ".git") or head
   local cwd = vim.fn.getcwd()
 
   if cwd ~= git_ancestor then
@@ -243,57 +166,6 @@ M.change_cwd = function()
       "Failed to set the current working directory",
       vim.log.levels.WARN
     )
-  end
-end
-
-M.highlight = {
-  names = {},
-}
-
-function M.highlight:get(name)
-  return self.names[name]
-end
-
-function M.highlight:set(name, hl_name)
-  self.names[name] = hl_name
-end
-
-function M.highlight:has(name)
-  return self.names[name] and true or false
-end
-
-function M.highlight:create(name, opts)
-  local hl_name = "MyCustomHighlight_" .. name
-
-  if self:has(name) then
-    return self:get(name)
-  end
-
-  if type(opts) == "table" then
-    vim.api.nvim_set_hl(
-      0,
-      hl_name,
-      { fg = opts.fg, bg = opts.bg, style = opts.style }
-    )
-
-    self:set(name, hl_name)
-  end
-
-  return hl_name
-end
-
-function M.highlight:format(args)
-  local prefix = ""
-  if type(args) == "table" then
-    if args.name ~= nil and self:has(args.name) then
-      prefix = "%#" .. self:get(args.name) .. "#"
-    elseif args.hl_name ~= nil then
-      prefix = "%#" .. args.hl_name .. "#"
-    end
-
-    return prefix .. args[1]
-  else
-    return ""
   end
 end
 
@@ -343,7 +215,7 @@ M.telescope = function(cmd, opts)
     )
   end
 
-  M.cmd(string.format("%s %s %s", "Telescope", cmd, table.concat(flags, " ")))
+  vim.cmd(string.format("%s %s %s", "Telescope", cmd, table.concat(flags, " ")))
 end
 
 M.buffer_is_big = function(bufnr)
@@ -379,9 +251,7 @@ M.zoom = function()
   end
 end
 
----@generic T
----@param module_name  string
----@return `T`
+---@param module_name string
 M.LazyRequire = function(module_name)
   return setmetatable({
     __module_name = module_name,
@@ -389,7 +259,6 @@ M.LazyRequire = function(module_name)
   }, {
     __index = function(ctx, key)
       if not ctx.__module then
-        ---@type boolean, T
         local status_ok, module = pcall(require, ctx.__module_name)
         if not status_ok then
           vim.notify(

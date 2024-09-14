@@ -1,5 +1,5 @@
-local utils = require("utils")
-local icons = require("utils.icons")
+local utils = require("custom.utils")
+local icons = require("custom.icons")
 
 local nmap = utils.nmap
 
@@ -64,7 +64,7 @@ local function lspsaga(sub_cmd, opts)
     if silent then
       vim.F.npcall(utils.cmd, "Lspsaga " .. sub_cmd)
     else
-      utils.cmd("Lspsaga " .. sub_cmd)
+      vim.cmd("Lspsaga " .. sub_cmd)
     end
   end
 end

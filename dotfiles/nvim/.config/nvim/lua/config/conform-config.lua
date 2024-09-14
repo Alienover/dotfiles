@@ -1,4 +1,4 @@
-local utils = require("utils")
+local utils = require("custom.utils")
 local conform = require("conform")
 
 local AUTO_FORMAT = "conform_autoformat"

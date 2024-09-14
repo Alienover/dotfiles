@@ -1,7 +1,5 @@
-local utils = require("utils")
+local utils = require("custom.utils")
 local flash = require("flash")
-
-local map = utils.map
 
 flash.setup({
   prompt = {
@@ -17,18 +15,40 @@ flash.setup({
   },
 })
 
-map({ "o", "x" }, "S", function()
-  flash.treesitter()
-end, "Flash Treesitter")
+utils.create_keymaps({
+  {
+    { "o", "x" },
+    "S",
+    function()
+      flash.treesitter()
+    end,
+    "Flash Treesitter",
+  },
 
-map("o", "r", function()
-  flash.remote()
-end, "Remote Flash")
+  {
+    "o",
+    "r",
+    function()
+      flash.remote()
+    end,
+    "Remote Flash",
+  },
 
-map({ "o", "x" }, "R", function()
-  flash.treesitter_search()
-end, "Treesitter Search")
+  {
+    { "o", "x" },
+    "R",
+    function()
+      flash.treesitter_search()
+    end,
+    "Treesitter Search",
+  },
 
-map({ "c" }, "<C-f>", function()
-  flash.toggle()
-end, "Toggle Flash Search")
+  {
+    { "c" },
+    "<C-f>",
+    function()
+      flash.toggle()
+    end,
+    "Toggle Flash Search",
+  },
+})
