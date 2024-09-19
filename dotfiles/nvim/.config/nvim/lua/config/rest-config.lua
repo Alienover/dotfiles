@@ -87,7 +87,6 @@ env:register(
 
     --- Context vars in selecting
     local env_file = nil
-    local contents = {}
 
     local M = {}
 
@@ -110,8 +109,11 @@ env:register(
       for x in string.gmatch(path, "([^#]+)") do
         s[#s + 1] = x
       end
-      local _, env_value = unpack(s)
+      local file, env_value = unpack(s)
       env_value = env_value or DEFAULT_ENV
+
+      ---@type table<string, any>
+      local contents = vim.fn.json_decode(rutils.read_file(file))
 
       if contents._base then
         for key, value in pairs(contents._base) do
@@ -146,7 +148,7 @@ env:register(
         env_file = file
 
         ---@type table<string, any>
-        contents = vim.fn.json_decode(rutils.read_file(file))
+        local contents = vim.fn.json_decode(rutils.read_file(file))
 
         for key, _ in pairs(contents) do
           if key ~= "_base" then
@@ -184,9 +186,7 @@ env:register(
 
     --- INFO: register the env file and env value
     M.select = function(selection)
-      vim.b[0]._rest_nvim_env_file = env_file .. "#" .. selection
-
-      vim.notify(string.format("Env '%s' has been registered"))
+      dotenv.register_file(env_file .. "#" .. selection)
     end
 
     return M
