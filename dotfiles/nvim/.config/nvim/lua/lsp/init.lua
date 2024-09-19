@@ -131,8 +131,8 @@ local rewrite_lsp_cmds = function()
   -- INFO: overwrite the function `percentage_range_window` from `nvim-lspconfig`
   -- to create float window with customized config
   ---@diagnostic disable-next-line: duplicate-set-field
-  window.percentage_range_window = function(col_range, row_range, options)
-    local win_info = og_percentage_range_window(col_range, row_range, options)
+  window.percentage_range_window = function(...)
+    local win_info = og_percentage_range_window(...)
 
     vim.api.nvim_win_set_config(
       win_info.win_id,
