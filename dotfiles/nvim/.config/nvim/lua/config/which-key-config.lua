@@ -168,7 +168,7 @@ local workspaces = function(base)
 end
 
 local gitsigns = function(sub_cmd)
-  return t("Gitsigns " .. sub_cmd)
+  return string.format(":Gitsigns %s<CR>", sub_cmd)
 end
 
 local lspsaga = function(sub_cmd)
@@ -334,15 +334,18 @@ wk.add(withTrigger({
     { "gH", toggle_file_diff(), desc = "File [H]istory" },
     { "go", desc = "[O]pen in browse" },
     { "gP", desc = "Open [P]ull request of current branch" },
+    { "gr", gitsigns("reset_hunk"), desc = "[R]eset Hunk" },
+    { "gR", gitsigns("reset_buffer"), desc = "[R]eset buffer" },
   },
 
   {
     "g",
     group = "Git",
     mode = "v",
-    { "gs", gitsigns("stage_hunk"), desc = "[S]tage hunk" },
+    { "gs", gitsigns("stage_hunk"), desc = "[S]tage selected hunk" },
     { "gu", gitsigns("undo_stage_hunk"), desc = "[U]ndo staged hunk" },
     { "go", desc = "[O]pen in browse" },
+    { "gr", gitsigns("reset_hunk"), desc = "[R]eset selected hunk" },
   },
 }))
 
