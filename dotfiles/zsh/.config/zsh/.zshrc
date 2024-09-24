@@ -41,6 +41,7 @@ zsh_plugins=(
   transient-prompt
   obsidian
   yazi
+  ruby
 
   # Work
   edo-work

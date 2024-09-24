@@ -36,7 +36,7 @@ require("nvim-treesitter.configs").setup({
     use_languagetree = true,
     additional_vim_regex_highlighting = false,
   },
-  indent = { enable = true },
+  indent = { enable = true, disable = { "ruby" } },
   matchup = { enable = true },
   autopairs = { enable = true },
   playground = { enable = true },

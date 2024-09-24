@@ -181,6 +181,11 @@ M.ensure_externals = {
     external_type = M.external_type.lsp,
     mason = "taplo",
   },
+  solargraph = {
+    external_type = M.external_type.lsp,
+    mason = "solargraph",
+    config_file = "lsp.ruby-lsp",
+  },
 
   -- INFO: Formatters
   stylua = {
