@@ -6,5 +6,4 @@ require("lint").linters_by_ft = {
   zsh = { "zsh" },
   json = { "jsonlint" },
   jsonc = { "jsonlint" },
-  -- ruby = { "rubocop" },
 }
