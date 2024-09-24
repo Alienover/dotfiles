@@ -131,4 +131,14 @@ return {
       require("config.treesitter-config")
     end,
   },
+
+  --- Improved UI and workflow for the built-in quickfix
+  {
+    "stevearc/quicker.nvim",
+    ft = "qf",
+
+    config = function()
+      require("config.quicker-config")
+    end,
+  },
 }
