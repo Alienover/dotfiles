@@ -30,7 +30,7 @@ local config = {
     num_shortcut = true,
     keys = {
       -- string |table type
-      quit = "q",
+      quit = { "q", "<ESC>" },
       exec = "<CR>",
     },
   },
