@@ -295,10 +295,13 @@ wk.add(withTrigger({
   { "bD", t("KWBufDel!"), desc = "Force [D]elete" },
   {
     "bb",
-    telescope(
-      "buffers",
-      { previewer = false, sort_mru = true, ignore_current_buffer = true }
-    ),
+    telescope("buffers", {
+      previewer = false,
+      sort_mru = true,
+      sort_lastused = false,
+      initial_mode = "normal",
+      theme = "dropdown",
+    }),
     desc = "Find [B]uffers",
   },
   { "bn", t("tabnew"), desc = "[N]ew Tab" },
