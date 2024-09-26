@@ -77,6 +77,7 @@ M.special_filetypes = {
     "http",
     "rest_nvim_result",
     "Avante",
+    "oil",
   },
   excluded_winbar = {
     "git",
@@ -91,6 +92,7 @@ M.special_filetypes = {
     "blame",
     "http",
     "rest_nvim_result",
+    "oil",
   },
   close_by_q = {
     "qf",

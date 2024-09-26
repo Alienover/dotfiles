@@ -40,6 +40,26 @@ return {
     end,
   },
 
+  { -- Input/Select overrided
+    "stevearc/dressing.nvim",
+    event = "VeryLazy",
+    opts = {
+      input = {
+        enabled = false,
+      },
+      select = {
+        -- see :help dressing_get_config
+        get_config = function()
+          return {
+            telescope = require("telescope.themes").get_dropdown({
+              initial_mode = "normal",
+            }),
+          }
+        end,
+      },
+    },
+  },
+
   { -- UI for messages, cmdline and the popupmenu
     "folke/noice.nvim",
     event = "VeryLazy",

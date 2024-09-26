@@ -12,18 +12,6 @@ local undo = function(method)
   end
 end
 
----@type function
----@param method string
-local file_browser = function(method)
-  local fb_actions = vim.F.npcall(function()
-    return require("telescope").extensions.file_browser.actions
-  end, nil)
-
-  if fb_actions then
-    return fb_actions[method]
-  end
-end
-
 telescope.setup({
   defaults = {
     selection_caret = "  ",
@@ -64,54 +52,10 @@ telescope.setup({
         },
       },
     },
-    file_browser = {
-      -- disables netrw and use telescope-file-browser in its place
-      hijack_netrw = true,
-      hide_parent_dir = true,
-      grouped = true,
-      initial_mode = "normal",
-      respect_gitignore = false,
-
-      use_ui_input = true,
-
-      follow_symlinks = true,
-
-      mappings = {
-        ["i"] = {
-          -- INFO: Disable all the keymappings in insert mode
-        },
-        ["n"] = {
-          ["d"] = false, -- fb_actions.remove, use "dd" instead
-          ["c"] = false, -- fb_actions.create, use "n" instead
-          ["g"] = false, -- fb_actions.goto_parent_dir, use "g" instead
-          ["m"] = false, -- fb_actions.move, use "p" instead
-          ["f"] = false, -- fb_actions.toggle_browser, deprecated
-          ["s"] = false, -- fb_actions.toggle_all, use "S" instead
-          ["t"] = false, -- fb_actions.change_cwd, use "<C-t>" instead
-          ["w"] = false, -- fb_actions.goto_cwd, use "<C-w>" instead
-          ["p"] = file_browser("move"),
-          ["q"] = ts_actions.close,
-          ["h"] = file_browser("goto_parent_dir"),
-          ["l"] = ts_actions.select_default,
-          ["n"] = file_browser("create"),
-          ["dd"] = file_browser("remove"),
-          ["g."] = file_browser("toggle_hidden"),
-          -- Select all
-          ["<C-a>"] = file_browser("toggle_all"),
-          ["<C-t>"] = ts_actions.select_tab,
-          ["<C-w>"] = file_browser("goto_cwd"),
-          ["<C-k>"] = false,
-          ["<bs>"] = file_browser("backspace"),
-          ["/"] = function()
-            vim.cmd("startinsert!")
-          end,
-        },
-      },
-    },
   },
 })
 
-local extensions = { "fzf", "file_browser" } -- "undo", "noice" would be lazy-loaded
+local extensions = { "fzf" } -- "undo", "noice" would be lazy-loaded
 
 for _, ext in ipairs(extensions) do
   telescope.load_extension(ext)

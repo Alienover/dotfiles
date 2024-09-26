@@ -65,8 +65,14 @@ end)
 
 -- File browser
 map({ "n", "i", "x", "t" }, "<C-f>", function()
-  utils.telescope("file_browser", { path = "%:p:h", select_buffer = true })
-end, "[F]ile browser")
+  require("oil").toggle_float()
+
+  vim.defer_fn(function()
+    require("oil.util").run_after_load(0, function()
+      require("oil").open_preview()
+    end)
+  end, 200)
+end, "Toggle [F]ile browser")
 
 -- Smart toggling the spell checking
 nmap("<leader>s", function()

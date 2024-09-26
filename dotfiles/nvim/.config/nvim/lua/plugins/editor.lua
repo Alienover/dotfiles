@@ -14,7 +14,6 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "debugloop/telescope-undo.nvim",
-      "nvim-telescope/telescope-file-browser.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
     config = function()
@@ -75,6 +74,17 @@ return {
     },
     config = function()
       require("config.markdown-config")
+    end,
+  },
+
+  {
+    "stevearc/oil.nvim",
+    lazy = vim.fn.argc(-1) == 0, -- load oil early when opening a file from the cmdline
+    cmd = { "Oil" },
+    -- Optional dependencies
+    dependencies = { "echasnovski/mini.icons" },
+    config = function()
+      require("config.oil-config")
     end,
   },
 }
