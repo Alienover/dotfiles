@@ -185,7 +185,6 @@ M.ensure_externals = {
   },
   solargraph = {
     external_type = M.external_type.lsp,
-    mason = "solargraph",
     config_file = "lsp.ruby-lsp",
   },
 

@@ -27,6 +27,7 @@ require("nvim-treesitter.configs").setup({
     "typescript",
     "vim",
     "vimdoc",
+    "ruby",
   },
   auto_install = true,
   sync_install = false,
