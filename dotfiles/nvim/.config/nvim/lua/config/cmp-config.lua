@@ -2,19 +2,12 @@
 -- https://github.com/hrsh7th/nvim-cmp
 
 local cmp = require("cmp")
-local cmp_config = require("cmp.config")
 
 local utils = require("custom.utils")
 local icons = require("custom.icons")
 
 ---@module 'neogen'
 local neogen = utils.LazyRequire("neogen")
-
----@param c table
----@return cmp.ConfigSchema
-local extend_config = function(c)
-  return vim.tbl_extend("force", cmp_config.global, c)
-end
 
 ---Wrapper for cmp sources in configuring source structure, formating name
 local registery = setmetatable({
@@ -76,16 +69,34 @@ local registery = setmetatable({
   end,
 })
 
+--- @alias cmp.FormattingConfig.Format fun(cmp.Entry, vim.CompletedItem): vim.CompletedItem
+---
 --- Returns the CompletedItem only containing text without icon
---- @param _ cmp.Entry
---- @param vim_item vim.CompletedItem
---- @return vim.CompletedItem
+--- @type cmp.FormattingConfig.Format
 local simple_format = function(_, vim_item)
   vim_item.kind = nil
   return vim_item
 end
 
-cmp.setup(extend_config({
+---@param format_fn? cmp.FormattingConfig.Format
+---@return cmp.FormattingConfig
+local extend_formatting = function(format_fn)
+  local default = require("cmp.config.default")()
+  return vim.tbl_extend("force", default.formatting, {
+    format = format_fn or simple_format,
+  })
+end
+
+---@param comparators? cmp.Comparator[]
+---@return cmp.SortingConfig
+local extend_sorting = function(comparators)
+  local default = require("cmp.config.default")()
+  return vim.tbl_extend("force", default.sorting, {
+    comparators = comparators,
+  })
+end
+
+cmp.setup({
   snippet = {
     expand = function(args)
       -- For `luasnip` user.
@@ -96,10 +107,10 @@ cmp.setup(extend_config({
     -- completion = cmp.config.window.bordered(),
     -- documentation = cmp.config.window.bordered(),
   },
-  sorting = {
+  sorting = extend_sorting(
     -- INFO: Try use `recently-used` to sort the results
-    comparators = cmp.config.compare.recently_used,
-  },
+    cmp.config.compare.recently_used
+  ),
   mapping = cmp.mapping.preset.insert({
     -- Scrolling
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
@@ -160,54 +171,43 @@ cmp.setup(extend_config({
       registery.buffer:extend({ keyword_length = 5 }),
     }
   ),
-  formatting = {
-    format = function(entry, vim_item)
-      -- Kind icons
-      vim_item.kind = string.format("%s", icons.get("lsp", vim_item.kind))
+  formatting = extend_formatting(function(entry, vim_item)
+    -- Kind icons
+    vim_item.kind = string.format("%s", icons.get("lsp", vim_item.kind))
 
-      vim_item.menu = registery[entry.source.name]:format()
+    vim_item.menu = registery[entry.source.name]:format()
 
-      return vim_item
-    end,
-  },
+    return vim_item
+  end),
   experimental = {
-    native_menu = false,
     ghost_text = {
       hl_group = "Comment",
     },
   },
-}))
+})
 
 -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(
-  { "/", "?" },
-  extend_config({
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-      registery.buffer,
-    },
-    formatting = {
-      format = simple_format,
-    },
-  })
-)
+cmp.setup.cmdline({ "/", "?" }, {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    registery.buffer,
+  },
+  sorting = extend_sorting(),
+  formatting = extend_formatting(),
+})
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(
-  ":",
-  extend_config({
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({ registery.path }, {
-      registery.cmdline:extend({
-        ignore_cmds = { "Man", "!" },
-        keyword_length = 2,
-      }),
+cmp.setup.cmdline(":", {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({ registery.path }, {
+    registery.cmdline:extend({
+      ignore_cmds = { "Man", "!" },
+      keyword_length = 2,
     }),
-    formatting = {
-      format = simple_format,
-    },
-  })
-)
+  }),
+  sorting = extend_sorting(),
+  formatting = extend_formatting(),
+})
 
 -- If a file is too large, I don't want to add to it's cmp sources treesitter, see:
 -- https://github.com/hrsh7th/nvim-cmp/issues/1522
@@ -221,9 +221,9 @@ vim.api.nvim_create_autocmd("BufReadPre", {
       if sources then
         sources[#sources + 1] = registery.treesitter
 
-        cmp.setup.buffer(extend_config({
+        cmp.setup.buffer({
           sources = sources,
-        }))
+        })
       end
     end
   end,
