@@ -26,9 +26,6 @@ M.files = {
   aerospace = getenv("XDG_CONFIG_HOME") .. "/aerospace/aerospace.toml",
   -- Dotfiles folder
   dotfiles = getenv("HOME") .. "/src/dotfiles",
-  -- Work relatives
-  work_config = getenv("EDISON_REPO_DIR") .. "/../others",
-  workdirs = getenv("EDISON_REPO_DIR"),
 }
 
 M.colors = {

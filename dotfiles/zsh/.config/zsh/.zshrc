@@ -42,6 +42,7 @@ zsh_plugins=(
   obsidian
   yazi
   ruby
+  ghq
 
   # Work
   edo-work

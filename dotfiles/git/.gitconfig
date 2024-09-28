@@ -75,3 +75,7 @@
 	defaultBranch = main
 [push]
 	autoSetupRemote = true
+
+[ghq]
+	root = ~/Documents/repos
+

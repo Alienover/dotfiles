@@ -1,5 +1,4 @@
 local utils = require("custom.utils")
-local icons = require("custom.icons")
 local constants = require("custom.constants")
 
 local wk = require("which-key")
@@ -86,85 +85,6 @@ local telescope = function(sub_cmd, opts)
   return function()
     utils.telescope(sub_cmd, opts)
   end
-end
-
-local workspaces = function(base)
-  if vim.fn.isdirectory(base) == 0 then
-    return {}
-  end
-
-  local WORKSPACE_PREFIX = "e"
-
-  local maps = {
-    O = {
-      telescope("find_files", {
-        cwd = constants.files.work_config,
-        prompt_title = "Search\\ Config",
-      }),
-      desc = "Search [O]ther Config",
-    },
-  }
-
-  -- Scan the certain workspace
-  local dirs = {}
-
-  local dir_getter = vim.fs.dir(base, { depth = 1 })
-  while true do
-    local dir, typ = dir_getter()
-
-    if not dir then
-      break
-    end
-
-    if typ == "directory" then
-      table.insert(dirs, dir)
-    end
-  end
-
-  -- Set the first letter of the folder as the trigger key
-  for _, v in pairs(dirs) do
-    local dir =
-      vim.fs.normalize(vim.fs.joinpath(base, "." .. constants.os_sep .. v))
-
-    local key, rest = string.sub(v, 1, 1), string.sub(v, 2)
-
-    if maps[key] == nil then
-      key = string.lower(key)
-    else
-      key = string.upper(key)
-    end
-
-    maps[key] = {
-      telescope("find_files", {
-        cwd = dir,
-        no_ignore = true,
-        prompt_title = ("Search " .. v):gsub(" ", "\\ "),
-      }),
-      desc = string.format("Search [%s]%s", string.upper(key), rest),
-    }
-  end
-
-  --- @type wk.Spec
-  local output = {
-    {
-      WORKSPACE_PREFIX,
-      group = "Edison",
-      icon = icons.get("filetype", "mail"),
-    },
-  }
-
-  for key, mapping in pairs(maps) do
-    table.insert(
-      output,
-      vim.tbl_extend(
-        "keep",
-        { WORKSPACE_PREFIX .. key, unpack(mapping) },
-        mapping
-      )
-    )
-  end
-
-  return output
 end
 
 local gitsigns = function(sub_cmd)
@@ -396,9 +316,6 @@ wk.add(withTrigger({
   { "ld", lspsaga("peek_definition"), desc = "[D]efinition" },
   { "lh", toggle_inlay_hint, desc = "Toggle Inlay [H]int" },
 }))
-
---- INFO: Workspace
-wk.add(withTrigger(workspaces(constants.files.workdirs)))
 
 wk.add(withTrigger({
   {
