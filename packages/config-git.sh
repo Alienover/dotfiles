@@ -1,5 +1,15 @@
 #!/bin/bash
 
+usage="$(basename "$0") [-h] [-n -e -r] -- Setup the given username and email to the repository locally
+
+OPTIONS:
+\t --name, -n \t username
+\t --email, e \t email address
+\t --repo, -r \t repository location
+
+GLOBAL OPTIONS:
+\t --help, -h \t show help"
+
 USERNAME=""
 EMAIL=""
 REPO=""
@@ -18,6 +28,10 @@ for arg in "$@"; do
       REPO="${arg#*=}"
       shift
       ;;
+    -h|--help)
+      echo "$usage"
+      exit 1
+      ;;
   esac
 done
 
@@ -27,16 +41,19 @@ which gpg > /dev/null 2>&1|| exit 1
 
 if [ -z "$USERNAME" ]; then
   echo "Missing username... please include the username by --name={{ username }}"
+  echo "$usage"
   exit 1
 fi
 
 if [ -z "$EMAIL" ]; then
   echo "Missing email... please include the email by --email={{ email }}"
+  echo "$usage"
   exit 1
 fi
 
 if [ -z "$REPO" ]; then
   echo "Missing git repo... please include the git repo directory by --repo={{ repo path }}"
+  echo "$usag"e
   exit 1
 else
   existed=$(git -C $REPO status > /dev/null 2>&1; echo $?)
