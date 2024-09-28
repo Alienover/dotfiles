@@ -43,7 +43,7 @@ __TM_TMUX_HOME="$XDG_CONFIG_HOME/tmux"
 
 # tmux pupup required
 unbind p
-bind p run "tmux-popup -w 80 -h 20 -s popup \"sh $__TM_TMUX_HOME/switchy.sh\""
+bind p run "tmux-popup -w 80 -h 20 -s popup \"zsh $__TM_TMUX_HOME/switchy.sh\""
 
 # tmux floating terminal
 unbind T
