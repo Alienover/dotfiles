@@ -92,7 +92,7 @@ oil.setup(
 
     view_options = {
       is_hidden_file = function(name)
-        return vim.startswith(name, ".") and #name > 1 and name ~= ".."
+        return vim.startswith(name, ".")
       end,
     },
   }
