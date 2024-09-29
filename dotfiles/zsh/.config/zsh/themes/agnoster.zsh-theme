@@ -404,7 +404,6 @@ __build_right_prompt() {
   prompt_start
   prompt_runtime
   prompt_env
-  prompt_vi_mode
   prompt_suffix
 }
 

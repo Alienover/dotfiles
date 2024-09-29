@@ -37,7 +37,6 @@ zsh_plugins=(
   pyenv
   tmux
   nvim
-  vi-mode
   transient-prompt
   obsidian
   yazi
