@@ -46,7 +46,7 @@ nmap("N", "Nzzzv")
 nmap("x", '"_x')
 
 nmap("<leader>S", function()
-  vim.o.spell = vim.o.spell == false and true or false
+	vim.o.spell = vim.o.spell == false and true or false
 end, "Toggle [S]pell")
 
 -- Zoom in/out pane
@@ -54,50 +54,48 @@ nmap("zo", utils.zoom, "[Z]oom [O]n")
 
 -- Toggling file finder by telescope or fzf
 nmap("<C-p>", function()
-  local subcmd, options = "find_files", {}
-  if vim.fs.root(vim.fn.expand("%:p"), ".git") then
-    subcmd = "git_files"
-    options["show_untracked"] = true
-  end
+	local subcmd, options = "find_files", {}
+	if vim.fs.root(vim.fn.expand("%:p"), ".git") then
+		subcmd = "git_files"
+		options["show_untracked"] = true
+	end
 
-  utils.telescope(subcmd, options)
+	utils.telescope(subcmd, options)
 end)
 
 -- File browser
 map({ "n", "i", "x", "t" }, "<C-f>", function()
-  require("oil").toggle_float()
+	require("oil").toggle_float()
 end, "Toggle [F]ile browser")
 
 -- Smart toggling the spell checking
 nmap("<leader>s", function()
-  require("telescope.builtin").spell_suggest(
-    require("telescope.themes").get_cursor({
-      initial_mode = "normal",
-      layout_config = {
-        width = 40,
-      },
-    })
-  )
+	require("telescope.builtin").spell_suggest(require("telescope.themes").get_cursor({
+		initial_mode = "normal",
+		layout_config = {
+			width = 40,
+		},
+	}))
 end, "[S]pell Suggestions")
 
 nmap("K", function()
-  local winid = ufo.peekFoldedLinesUnderCursor()
-  if winid then
-    return
-  end
+	local winid = ufo.peekFoldedLinesUnderCursor()
+	if winid then
+		return
+	end
 
-  vim.lsp.buf.hover()
+	vim.lsp.buf.hover()
 end, "Peak lines if folded")
 
 -- Splitting Horizontal/Vertical after running the following cmds
 -- * gd - Go to definition
 -- * gf - Go to file
 for _, key in ipairs({ "gd", "gf" }) do
-  for prefix, split in pairs({ s = "split", v = "vsplit" }) do
-    nmap(prefix .. key, function()
-      vim.cmd(split)
+	for prefix, split in pairs({ s = "split", v = "vsplit" }) do
+		nmap(prefix .. key, function()
+			vim.cmd(split)
 
-      vim.api.nvim_feedkeys(key, "x", false)
-    end, ("%s and then %s"):format(split, key))
-  end
+			vim.api.nvim_feedkeys(key, "x", false)
+		end, ("%s and then %s"):format(split, key))
+	end
 end

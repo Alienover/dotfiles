@@ -4,52 +4,52 @@ local utils = require("custom.utils")
 local MiniIcons = utils.LazyRequire("mini.icons")
 
 local presets = {
-  extended = {
-    arrowLeft = { glyph = "<" },
-    arrowRight = { glyph = ">" },
+	extended = {
+		arrowLeft = { glyph = "<" },
+		arrowRight = { glyph = ">" },
 
-    check = { glyph = "󰄬" },
-    circle = { glyph = "" },
-    close = { glyph = "󰅖" },
+		check = { glyph = "󰄬" },
+		circle = { glyph = "" },
+		close = { glyph = "󰅖" },
 
-    command = { glyph = "󰘳" },
-    ellipsisH = { glyph = "" },
+		command = { glyph = "󰘳" },
+		ellipsisH = { glyph = "" },
 
-    halfCircleLeft = { glyph = "" },
-    halfCircleRight = { glyph = "" },
+		halfCircleLeft = { glyph = "" },
+		halfCircleRight = { glyph = "" },
 
-    spell = { glyph = "" },
+		spell = { glyph = "" },
 
-    triangelLeft = { glyph = "" },
-    triangleRight = { glyph = "" },
+		triangelLeft = { glyph = "" },
+		triangleRight = { glyph = "" },
 
-    recording = { glyph = "" },
+		recording = { glyph = "" },
 
-    -- Diagnosing
-    error = { glyph = "" },
-    warn = { glyph = "" },
-    hint = { glyph = "" },
-    info = { glyph = "" },
-  },
-  git = {
-    add = { glyph = "" },
-    modified = { glyph = "" },
-    remove = { glyph = "" },
-  },
+		-- Diagnosing
+		error = { glyph = "" },
+		warn = { glyph = "" },
+		hint = { glyph = "" },
+		info = { glyph = "" },
+	},
+	git = {
+		add = { glyph = "" },
+		modified = { glyph = "" },
+		remove = { glyph = "" },
+	},
 }
 
 local get_impl = setmetatable({}, {
-  __index = function(_, key)
-    local category = presets[key]
+	__index = function(_, key)
+		local category = presets[key]
 
-    if category then
-      return function(name)
-        return category[name]
-      end
-    end
+		if category then
+			return function(name)
+				return category[name]
+			end
+		end
 
-    return nil
-  end,
+		return nil
+	end,
 })
 
 local M = {}
@@ -64,16 +64,16 @@ local M = {}
 ---@param name  string
 ---@return string?, string?, boolean
 M.get = function(category, name)
-  local getter = get_impl[category]
+	local getter = get_impl[category]
 
-  if getter == nil then
-    -- Fallback to mini.icons
-    return MiniIcons.get(category, name)
-  end
+	if getter == nil then
+		-- Fallback to mini.icons
+		return MiniIcons.get(category, name)
+	end
 
-  local icon = getter(name)
+	local icon = getter(name)
 
-  return icon.glyph, "", true
+	return icon.glyph, "", true
 end
 
 return M

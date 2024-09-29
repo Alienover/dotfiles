@@ -1,6 +1,6 @@
 -- Enables the experimental Lua module loader
 if vim.loader then
-  vim.loader.enable()
+	vim.loader.enable()
 end
 
 require("options")

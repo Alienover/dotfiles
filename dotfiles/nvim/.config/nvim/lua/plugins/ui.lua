@@ -1,94 +1,94 @@
 return {
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require("config.catppuccin-config")
-    end,
-  },
+	{
+		"catppuccin/nvim",
+		name = "catppuccin",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("config.catppuccin-config")
+		end,
+	},
 
-  { -- Icons
-    "echasnovski/mini.icons",
-    config = true,
-    specs = {
-      { "nvim-tree/nvim-web-devicons", enabled = false, optional = true },
-    },
-    init = function()
-      package.preload["nvim-web-devicons"] = function()
-        require("mini.icons").mock_nvim_web_devicons()
-        return package.loaded["nvim-web-devicons"]
-      end
-    end,
-  },
+	{ -- Icons
+		"echasnovski/mini.icons",
+		config = true,
+		specs = {
+			{ "nvim-tree/nvim-web-devicons", enabled = false, optional = true },
+		},
+		init = function()
+			package.preload["nvim-web-devicons"] = function()
+				require("mini.icons").mock_nvim_web_devicons()
+				return package.loaded["nvim-web-devicons"]
+			end
+		end,
+	},
 
-  { -- Status Line
-    "hoob3rt/lualine.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("config.lualine-config")
-    end,
-  },
+	{ -- Status Line
+		"hoob3rt/lualine.nvim",
+		event = "VeryLazy",
+		config = function()
+			require("config.lualine-config")
+		end,
+	},
 
-  { -- Tabs
-    "akinsho/bufferline.nvim",
-    event = "VeryLazy",
-    dependencies = { "catppuccin" },
-    config = function()
-      require("config.bufferline-config")
-    end,
-  },
+	{ -- Tabs
+		"akinsho/bufferline.nvim",
+		event = "VeryLazy",
+		dependencies = { "catppuccin" },
+		config = function()
+			require("config.bufferline-config")
+		end,
+	},
 
-  { -- Input/Select overrided
-    "stevearc/dressing.nvim",
-    event = "VeryLazy",
-    opts = {
-      input = {
-        enabled = false,
-      },
-      select = {
-        -- see :help dressing_get_config
-        get_config = function()
-          return {
-            telescope = require("telescope.themes").get_dropdown({
-              initial_mode = "normal",
-            }),
-          }
-        end,
-      },
-    },
-  },
+	{ -- Input/Select overrided
+		"stevearc/dressing.nvim",
+		event = "VeryLazy",
+		opts = {
+			input = {
+				enabled = false,
+			},
+			select = {
+				-- see :help dressing_get_config
+				get_config = function()
+					return {
+						telescope = require("telescope.themes").get_dropdown({
+							initial_mode = "normal",
+						}),
+					}
+				end,
+			},
+		},
+	},
 
-  { -- UI for messages, cmdline and the popupmenu
-    "folke/noice.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("config.noice-config")
-    end,
-    dependencies = {
-      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      { "MunifTanjim/nui.nvim", module = "nui" },
+	{ -- UI for messages, cmdline and the popupmenu
+		"folke/noice.nvim",
+		event = "VeryLazy",
+		config = function()
+			require("config.noice-config")
+		end,
+		dependencies = {
+			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+			{ "MunifTanjim/nui.nvim", module = "nui" },
 
-      {
-        "rcarriga/nvim-notify",
-        module = "notify",
-        opts = {
-          background_colour = "#000000",
-        },
-      },
+			{
+				"rcarriga/nvim-notify",
+				module = "notify",
+				opts = {
+					background_colour = "#000000",
+				},
+			},
 
-      -- Progress UI for LSP and rest
-      {
-        "j-hui/fidget.nvim",
-        opts = {
-          notification = {
-            window = {
-              winblend = 0,
-            },
-          },
-        },
-      },
-    },
-  },
+			-- Progress UI for LSP and rest
+			{
+				"j-hui/fidget.nvim",
+				opts = {
+					notification = {
+						window = {
+							winblend = 0,
+						},
+					},
+				},
+			},
+		},
+	},
 }
