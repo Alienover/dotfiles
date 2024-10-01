@@ -1,3 +1,4 @@
+local autocmd = require("autocmd")
 local utils = require("custom.utils")
 local icons = require("custom.icons")
 local constants = require("custom.constants")
@@ -41,9 +42,26 @@ local lsp_keymaps = function(_, bufnr)
 	end, "Previous [D]iagnostic")
 end
 
+-- Autocmd when LSP attached
+local lsp_autocmds = function(client, bufnr)
+	-- Format on save
+	if client.supports_method("textDocument/formatting") then
+		vim.api.nvim_create_autocmd("BufWritePre", {
+			buffer = bufnr,
+			group = autocmd.formatting,
+			desc = "Auto format on save",
+
+			callback = function()
+				vim.lsp.buf.format({ bufnr = bufnr })
+			end,
+		})
+	end
+end
+
 -- Custom on_attach handler
 local on_attach = function(client, bufnr)
 	lsp_keymaps(client, bufnr)
+	lsp_autocmds(client, bufnr)
 end
 
 ---@param filename string
@@ -86,7 +104,7 @@ local rewrite_lsp_handlers = function()
 	-- Automatically update diagnostics
 	vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
 		virtual_text = {
-			prefix = " ",
+			prefix = "  ",
 			spacing = 4,
 		},
 		signs = true,

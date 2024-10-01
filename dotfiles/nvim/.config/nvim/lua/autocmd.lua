@@ -44,19 +44,6 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-	desc = "Trigger the formatting",
-
-	group = augroups.formatting,
-	callback = function(args)
-		if vim.bo.filetype == "oil" then
-			return
-		end
-
-		vim.lsp.buf.format({ bufnr = args.buf })
-	end,
-})
-
 vim.api.nvim_create_autocmd("RecordingEnter", {
 	desc = "Notify when recording starts",
 	group = augroups.recording,
@@ -96,3 +83,5 @@ vim.api.nvim_create_autocmd("RecordingLeave", {
 		vim.g.recording_notify_id = nil
 	end,
 })
+
+return augroups
