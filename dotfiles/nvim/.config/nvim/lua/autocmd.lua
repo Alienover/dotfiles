@@ -84,4 +84,23 @@ vim.api.nvim_create_autocmd("RecordingLeave", {
 	end,
 })
 
-return augroups
+vim.api.nvim_create_autocmd("BufWritePre", {
+	desc = "LSP auto-format on save",
+	group = augroups.formatting,
+
+	callback = function(args)
+		local clients = vim.lsp.get_clients({ bufnr = args.buf })
+
+		local run_format = false
+		for _, client in ipairs(clients) do
+			if client.supports_method("textDocument/formatting") then
+				run_format = true
+				break
+			end
+		end
+
+		if run_format then
+			vim.lsp.buf.format({ bufnr = args.buf })
+		end
+	end,
+})
