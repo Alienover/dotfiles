@@ -5,7 +5,7 @@ function __init_env {
   export PATH="$PATH:$TMUX_BIN"
 
   # Tmux switchy
-  alias sw="zsh $XDG_CONFIG_HOME/tmux/switchy.sh"
+  alias sw="sh $XDG_CONFIG_HOME/tmux/switchy.sh"
 }
 
 __init_env
