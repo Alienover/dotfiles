@@ -1,14 +1,7 @@
-local util = require("lspconfig.util")
+local mason_registry = require("mason-registry")
 
 local M = {
-	cmd = { "bundle", "exec", "solargraph", "stdio" },
-	root_dir = util.root_pattern("Gemfile", ".git", "."),
-	settings = {
-		solargraph = {
-			diagnostics = true,
-			formatting = true,
-		},
-	},
+	cmd = mason_registry.get_package("ruby-lsp"):get_install_path(),
 }
 
 return M

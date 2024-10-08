@@ -28,7 +28,6 @@ return {
 				excluded_filetypes = consts.special_filetypes.excluded_cowboy,
 			},
 		},
-		config = true,
 	},
 
 	{
@@ -57,8 +56,7 @@ return {
 		end,
 	},
 
-	-- Go forward/backward with square brackets
-	{
+	{ -- Go forward/backward with square brackets
 		"echasnovski/mini.bracketed",
 		keys = { "[", "]" },
 		opts = {
@@ -82,22 +80,6 @@ return {
 			},
 			"!notify",
 			"!lazy",
-		},
-	},
-
-	{
-		"alexghergh/nvim-tmux-navigation",
-		keys = {
-			{ "<C-w>h", "<CMD>NvimTmuxNavigateLeft<CR>", desc = "Focus Left Pane" },
-			{ "<C-w>l", "<CMD>NvimTmuxNavigateRight<CR>", desc = "Focus Right Pane" },
-			{ "<C-w>j", "<CMD>NvimTmuxNavigateDown<CR>", desc = "Focus Down Pane" },
-			{ "<C-w>k", "<CMD>NvimTmuxNavigateUp<CR>", desc = "Focus Up Pane" },
-		},
-		opts = {
-			keybindings = {
-				last_active = nil,
-				next = nil,
-			},
 		},
 	},
 
@@ -132,13 +114,31 @@ return {
 		end,
 	},
 
-	--- Improved UI and workflow for the built-in quickfix
-	{
+	{ -- Improved UI and workflow for the built-in quickfix
 		"stevearc/quicker.nvim",
 		ft = "qf",
 
 		config = function()
 			require("config.quicker-config")
 		end,
+	},
+
+	{ -- Keep Window on Buffer Delete - Improved - (lua ver.)
+		"@local/kwbdi.nvim",
+		cmd = { "KWBufDel" },
+		config = true,
+	},
+
+	{ -- Customized winbar with file path and document symbols
+		"@local/winbar.nvim",
+		event = { "BufReadPost", "BufNewFile" },
+		dependencies = { "echasnovski/mini.icons" },
+		opts = {
+			excluded_fn = function()
+				-- INFO: Display the winbar info from the diff plugin itself
+				return vim.opt.diff:get()
+			end,
+			excluded_filetypes = consts.special_filetypes.excluded_winbar,
+		},
 	},
 }

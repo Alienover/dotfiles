@@ -228,14 +228,14 @@ M.zoom = function()
 	local winrestcmd = vim.fn.getwinvar(winnr, var_name, "")
 
 	if winrestcmd and #winrestcmd > 0 then
-		M.cmd(winrestcmd)
+		vim.cmd(winrestcmd)
 		vim.api.nvim_win_del_var(winnr, var_name)
 	else
 		vim.api.nvim_win_set_var(winnr, var_name, vim.fn.winrestcmd())
 
 		-- INFO: expand the current pane
-		M.cmd([[resize]])
-		M.cmd([[vertical resize]])
+		vim.cmd([[resize]])
+		vim.cmd([[vertical resize]])
 	end
 end
 

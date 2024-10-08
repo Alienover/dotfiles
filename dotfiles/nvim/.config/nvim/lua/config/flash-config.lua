@@ -26,7 +26,7 @@ utils.create_keymaps({
 	},
 
 	{
-		"o",
+		{ "o" },
 		"r",
 		function()
 			flash.remote()

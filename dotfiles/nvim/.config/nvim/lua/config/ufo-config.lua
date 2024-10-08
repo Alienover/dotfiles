@@ -67,30 +67,13 @@ ufo.setup({
 	},
 })
 
-local keymaps = {
-	{
-		"zR",
-		ufo.openAllFolds,
-		"Open All Folds",
-	},
-	{
-		"zM",
-		ufo.closeAllFolds,
-		"Close All Folds",
-	},
-	{
-		"fn",
-		ufo.goNextClosedFold,
-		"[F]old [N]ext",
-	},
-	{
-		"fp",
-		ufo.goPreviousClosedFold,
-		"[F]old [P]revious",
-	},
-}
-
-for _, preset in ipairs(keymaps) do
+utils.create_keymaps(vim.tbl_map(function(preset)
 	local lhs, rhs, opts = unpack(preset)
-	utils.nmap(lhs, rhs, opts)
-end
+
+	return { "n", lhs, rhs, opts }
+end, {
+	{ "zR", ufo.openAllFolds, "Open All Folds" },
+	{ "zM", ufo.closeAllFolds, "Close All Folds" },
+	{ "zj", ufo.goNextClosedFold, "Goto [N]ext Fold" },
+	{ "zk", ufo.goPreviousClosedFold, "Goto [P]revious Fold" },
+}))

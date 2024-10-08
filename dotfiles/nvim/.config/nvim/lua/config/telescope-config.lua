@@ -1,16 +1,10 @@
--- Reference
--- https://github.com/nvim-telescope/telescope.nvim
+local utils = require("custom.utils")
+
 local telescope = require("telescope")
 local ts_actions = require("telescope.actions")
 
----@type function
----@param method string
-local undo = function(method)
-	local undo_actions = vim.F.npcall(require, "telescope-undo.actions")
-	if undo_actions then
-		return undo_actions[method]
-	end
-end
+---@module "telescope-undo.actions"
+local undo = utils.LazyRequire("telescope-undo.actions")
 
 telescope.setup({
 	defaults = {
@@ -48,7 +42,7 @@ telescope.setup({
 		undo = {
 			mappings = {
 				i = {
-					["<cr>"] = undo("restore"),
+					["<cr>"] = undo.restore,
 				},
 			},
 		},

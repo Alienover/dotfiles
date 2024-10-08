@@ -42,14 +42,6 @@ return {
 	},
 
 	{
-		"rest-nvim/rest.nvim",
-		ft = { "http" },
-		config = function()
-			require("config.rest-config")
-		end,
-	},
-
-	{
 		"kevinhwang91/nvim-ufo",
 		event = { "BufReadPost" },
 		dependencies = "kevinhwang91/promise-async",

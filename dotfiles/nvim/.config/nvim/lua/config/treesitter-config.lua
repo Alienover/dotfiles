@@ -92,15 +92,9 @@ require("nvim-treesitter.configs").setup({
 		},
 	},
 	refactor = {
-		highlight_definitions = {
-			enable = true,
-		},
+		highlight_definitions = { enable = true },
 		highlight_current_scope = { enable = true },
-		smart_rename = {
-			enable = false,
-		},
-		navigation = {
-			enable = false,
-		},
+		smart_rename = { enable = false },
+		navigation = { enable = false },
 	},
 })

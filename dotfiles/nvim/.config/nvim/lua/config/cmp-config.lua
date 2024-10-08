@@ -23,6 +23,7 @@ local registery = setmetatable({
 		nvim_lua = "[Lua]",
 		cmdline = "[CMD]",
 		lazydev = "[LazyDev]",
+		["cmp-dbee"] = "[DB]",
 	}, {
 		__index = function(_, key)
 			local first, rest = string.sub(key, 1, 1), string.sub(key, 2)
@@ -207,6 +208,13 @@ cmp.setup.cmdline(":", {
 	}),
 	sorting = extend_sorting(),
 	formatting = extend_formatting(),
+})
+
+cmp.setup.filetype({ "sql", "mysql", "plsql" }, {
+	sources = {
+		registery["cmp-dbee"],
+		registery.buffer,
+	},
 })
 
 -- If a file is too large, I don't want to add to it's cmp sources treesitter, see:

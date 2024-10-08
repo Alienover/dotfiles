@@ -47,6 +47,7 @@ M.filetype_mappings = setmetatable({
 	txt = "Plain Text",
 	sql = "SQL",
 	lua = "Lua",
+	typescript = "TypeScript",
 }, {
 	__index = function(_, key)
 		return key
@@ -181,9 +182,9 @@ M.ensure_externals = {
 		external_type = M.external_type.lsp,
 		mason = "taplo",
 	},
-	solargraph = {
+	ruby_lsp = {
 		external_type = M.external_type.lsp,
-		config_file = "lsp.ruby-lsp",
+		mason = "ruby-lsp",
 	},
 	eslint = {
 		external_type = M.external_type.lsp,

@@ -1,5 +1,4 @@
 local utils = require("custom.utils")
-local icons = require("custom.icons")
 
 local nmap = utils.nmap
 
@@ -33,11 +32,6 @@ local config = {
 	},
 	symbol_in_winbar = {
 		enable = false,
-		hide_keyword = true,
-		show_file = false,
-		click_support = false,
-		color_mode = true,
-		separator = " " .. icons.get("extended", "arrowRight") .. " ",
 	},
 	floaterm = {
 		height = (1 - window_specing.t * 2),

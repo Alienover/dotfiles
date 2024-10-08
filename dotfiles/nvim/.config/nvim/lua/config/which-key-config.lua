@@ -257,6 +257,7 @@ wk.add(withTrigger({
 		{ "gH", toggle_file_diff(), desc = "File [H]istory" },
 		{ "go", desc = "[O]pen in browse" },
 		{ "gP", desc = "Open [P]ull request of current branch" },
+		{ "gs", gitsigns("stage_hunk"), desc = "[S]tage hunk" },
 		{ "gr", gitsigns("reset_hunk"), desc = "[R]eset Hunk" },
 		{ "gR", gitsigns("reset_buffer"), desc = "[R]eset buffer" },
 	},
