@@ -38,7 +38,9 @@ export ZVM_CURSOR_STYLE_ENABLED=false
 __init_paths() {
   local ZSH_BIN="$XDG_CONFIG_HOME/zsh/bin"
 
-  export PATH="$ZSH_BIN:$PATH"
+  local PQ_BIN="/opt/homebrew/opt/libpq/bin"
+
+  export PATH="$ZSH_BIN:$PQ_BIN:$PATH"
 }
 
 __init_paths

@@ -1,6 +1,7 @@
 # Place your plugin content here
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# Override the `zvm` keybinds with fzf
+zvm_after_init_commands+=('[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh')
 
 # Options to fzf command
 export FZF_DEFAULT_OPTS="--height 30% --reverse \
