@@ -1,4 +1,5 @@
-set -g history-limit 2000
+# Increase scrollback buffer size from 2000 to 50000 lines
+set -g history-limit 50000
 
 # automatically renumber tmux windows
 set -g renumber-windows on
@@ -12,15 +13,15 @@ set -g visual-activity off
 # client connected to *that window*. Much more reasonable.
 setw -g aggressive-resize on
 
-# make delay shorter
+# Address vim mode switching delay (http://superuser.com/a/252717/65504)
 set -sg escape-time 0
 
-set-option -g set-titles on
-set-option -g set-titles-string "#T - #W"
+set -g set-titles on
+set -g set-titles-string "#T - #W"
 # set-window-option -g automatic-rename on
 
 # For compatity about neovim
-set-option -g focus-events on
+set -g focus-events on
 
 # make window/pane index start with 1
 set -g base-index 1
@@ -31,3 +32,6 @@ setw -g mouse on
 
 # set vi mode for copy mode
 setw -g mode-keys vi
+
+# Increase tmux messages display duration from 750ms to 4s
+set -g display-time 4000

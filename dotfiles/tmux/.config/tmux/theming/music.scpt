@@ -1,9 +1,25 @@
+on removeQuotes(inputString)
+    set cleanString to inputString
+
+    -- Check if the first and last characters are double quotes
+    if text 1 of inputString is "\"" then
+        set cleanString to text 2 thru -1 of cleanString
+    end if
+
+    if text -1 of inputString is "\"" then
+        set cleanString to text 1 thru -2 of cleanString 
+    end if
+
+    return cleanString
+end removeQuotes
+
 on output(input, prefix)
     if input is not "" then
         set strLength to the length of input
 
         if strLength is greater than 50 then
             set input to text from beginning to 50th character of input
+            set input to input & "..."
         end if
 
         return prefix & "  " & input
@@ -13,7 +29,7 @@ on output(input, prefix)
 end output
 
 on executeJavaScript(activeTab, code)
-  tell application "Google Chrome"
+  tell application "Arc"
     return execute activeTab javascript code
   end tell
 end executeJavaScript
@@ -44,11 +60,11 @@ on getYoutubeMusicSong(activeTab)
 	return ""
 end getYoutubeMusicSong
 
-on getGoogleChromeSong()
+on getArcBrowserSong()
     set prefix to ""
     set current to ""
 
-    tell application "Google Chrome"
+    tell application "Arc"
         repeat with theWindow in every window
             repeat with theTab in every tab of theWindow
                 if theTab's URL contains "spotify.com" and theTab's title does not contain "Spotify" then
@@ -67,10 +83,12 @@ on getGoogleChromeSong()
             end repeat
 
             if current is not "" then
-                    exit repeat
+                  exit repeat
             end if
         end repeat
     end tell
+
+    set current to removeQuotes(current)
     
     return {current, prefix}
 end getCurrentSong
@@ -118,8 +136,8 @@ if current is "" and application "Music" is running then
     set {current, prefix} to getAppleMusicSong() of me
 end if
 
-if current is "" and application "Google Chrome" is running then
-    set {current, prefix} to getGoogleChromeSong() of me
+if current is "" and application "Arc" is running then
+    set {current, prefix} to getArcBrowserSong() of me
 end if
 
 output(current, prefix)

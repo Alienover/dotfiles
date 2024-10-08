@@ -17,10 +17,11 @@ unbind s
 bind s split-window -v -c "#{pane_current_path}"
 
 # synchronize all panes in a window
-bind y setw synchronize-panes
+unbind S
+bind S setw synchronize-panes
 
-bind -r C-h select-window -t :-
-bind -r C-l select-window -t :+
+bind -r C-h previous-window
+bind -r C-l next-window
 
 # Resize pane shortcuts
 bind -r H resize-pane -L 10
@@ -29,21 +30,21 @@ bind -r K resize-pane -U 10
 bind -r L resize-pane -R 10
 
 # Go back to the last client
-bind b switch-client -l
+bind a switch-client -l
 
 # more settings to make copy-mode more vim-like
 unbind [
-bind Escape copy-mode
+bind Escape if -F '#{pane_in_mode}' 'send-keys q' 'copy-mode'
 
 # vim-like copy-paste keymappings
-bind -Tcopy-mode-vi 'v' send -X begin-selection
-bind -Tcopy-mode-vi 'y' send -X copy-pipe-and-cancel "tmux show-buffer | pbcopy"
+bind -T copy-mode-vi 'v' send -X begin-selection
+bind -T copy-mode-vi 'y' send -X copy-pipe-and-cancel "tmux show-buffer | pbcopy"
 
 __TM_TMUX_HOME="$XDG_CONFIG_HOME/tmux"
 
 # tmux pupup required
 unbind p
-bind p run "tmux-popup -w 80 -h 20 -s popup \"zsh $__TM_TMUX_HOME/switchy.sh\""
+bind p run "tmux-popup -w 100 -h 25 -s popup \"sh $__TM_TMUX_HOME/switchy.sh\""
 
 # tmux floating terminal
 unbind T
