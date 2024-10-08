@@ -194,6 +194,7 @@ local filetypes = {
 		json = "jsonc",
 		tmux = "tmux",
 		http = "http",
+		sql = "sql",
 	},
 	filename = {
 		[".gitignore"] = "conf",

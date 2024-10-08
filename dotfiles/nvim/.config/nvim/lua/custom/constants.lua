@@ -91,6 +91,7 @@ M.special_filetypes = {
 		"http",
 		"rest_nvim_result",
 		"oil",
+		"dbee",
 	},
 	close_by_q = {
 		"qf",
