@@ -58,18 +58,6 @@ return {
 	},
 
 	{
-		"MeanderingProgrammer/render-markdown.nvim",
-		ft = { "markdown", "Avante" },
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-			"echasnovski/mini.icons",
-		},
-		config = function()
-			require("config.markdown-config")
-		end,
-	},
-
-	{
 		"stevearc/oil.nvim",
 		lazy = vim.fn.argc(-1) == 0, -- load oil early when opening a file from the cmdline
 		cmd = { "Oil" },

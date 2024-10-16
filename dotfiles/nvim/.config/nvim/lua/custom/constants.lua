@@ -26,6 +26,8 @@ M.files = {
 	aerospace = getenv("XDG_CONFIG_HOME") .. "/aerospace/aerospace.toml",
 	-- Dotfiles folder
 	dotfiles = getenv("HOME") .. "/src/dotfiles",
+	-- Obsidian Vault
+	obsidian = getenv("OBSIDIAN_VAULT"),
 }
 
 M.colors = {
