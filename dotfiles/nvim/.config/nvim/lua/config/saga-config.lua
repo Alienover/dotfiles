@@ -32,6 +32,7 @@ local config = {
 	},
 	symbol_in_winbar = {
 		enable = false,
+		show_file = false,
 	},
 	floaterm = {
 		height = (1 - window_specing.t * 2),
