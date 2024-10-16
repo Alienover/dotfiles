@@ -12,6 +12,10 @@ null_ls.setup({
 		}),
 		null_ls.builtins.formatting.stylua,
 
+		null_ls.builtins.formatting.erb_format.with({
+			extra_args = { "--print-width", "120" },
+		}),
+
 		null_ls.builtins.code_actions.gitsigns,
 	},
 })
