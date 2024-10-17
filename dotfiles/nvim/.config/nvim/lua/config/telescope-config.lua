@@ -29,6 +29,7 @@ telescope.setup({
 	},
 	pickers = {
 		buffers = {
+			path_display = { "filename_first" },
 			sort_lastused = true,
 		},
 	},
