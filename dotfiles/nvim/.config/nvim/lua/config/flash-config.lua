@@ -26,15 +26,6 @@ utils.create_keymaps({
 	},
 
 	{
-		{ "o" },
-		"r",
-		function()
-			flash.remote()
-		end,
-		"Remote Flash",
-	},
-
-	{
 		{ "o", "x" },
 		"R",
 		function()
