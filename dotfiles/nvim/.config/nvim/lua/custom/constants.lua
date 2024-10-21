@@ -141,10 +141,6 @@ M.ensure_externals = {
 		external_type = M.external_type.lsp,
 		mason = "css-lsp",
 	},
-	vimls = {
-		external_type = M.external_type.lsp,
-		mason = "vim-language-server",
-	},
 	bashls = {
 		external_type = M.external_type.lsp,
 		mason = "bash-language-server",
