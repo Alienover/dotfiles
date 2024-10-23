@@ -80,6 +80,7 @@ return {
 			},
 			"!notify",
 			"!lazy",
+			"!markdown",
 		},
 	},
 
