@@ -41,14 +41,11 @@ local lsp_keymaps = function(_, bufnr)
 	end, "Previous [D]iagnostic")
 end
 
--- Custom on_attach handler
-local on_attach = function(client, bufnr)
-	lsp_keymaps(client, bufnr)
-end
-
----@param filename string
+---@param external External
 ---@return table
-local load_config = function(filename)
+local load_config = function(external)
+	local filename = external.config_file
+
 	local config = {}
 
 	-- INFO: Load the config file if given
@@ -57,6 +54,16 @@ local load_config = function(filename)
 		if success then
 			config = module
 		end
+	end
+
+	-- Custom on_attach handler
+	local on_attach = function(client, bufnr)
+		-- Disable LSP formatting
+		if external.formatting == false then
+			client.server_capabilities.documentFormattingProvider = false
+		end
+
+		lsp_keymaps(client, bufnr)
 	end
 
 	-- INFO: Capabilities config for nvim-cmp
@@ -157,7 +164,7 @@ local function setup_lsp()
 		local is_lsp = opts.external_type == external_type.lsp
 
 		if is_lsp == true then
-			local config = load_config(opts.config_file)
+			local config = load_config(opts)
 
 			lspconfig[server].setup(config)
 		end

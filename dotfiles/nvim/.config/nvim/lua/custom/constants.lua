@@ -129,6 +129,7 @@ M.external_type = {
 ---@field mason? string
 ---@field config_file? string
 ---@field filetypes? string[]
+---@field formatting? boolean
 
 ---@type table<string, External>
 M.ensure_externals = {
@@ -166,6 +167,7 @@ M.ensure_externals = {
 		external_type = M.external_type.lsp,
 		mason = "typescript-language-server",
 		config_file = "lsp.ts-lsp",
+		formatting = false,
 	},
 	gopls = {
 		external_type = M.external_type.lsp,
