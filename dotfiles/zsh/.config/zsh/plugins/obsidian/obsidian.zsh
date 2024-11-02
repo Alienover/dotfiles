@@ -1,4 +1,4 @@
-#! /bin/zsh
+#! /usr/bin/env zsh
 
 CURRENT_PATH="${0:A:h}"
 

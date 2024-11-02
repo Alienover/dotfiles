@@ -26,4 +26,4 @@ if [[ ! -f "$file" ]]; then
 fi
 
 #
-nvim "$file" -c ":ZenMode"
+nvim "$file" 

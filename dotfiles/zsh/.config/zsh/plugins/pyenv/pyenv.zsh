@@ -1,5 +1,5 @@
 # Place your plugin content here
-source "$ZDOTDIR/zsh-functions.sh"
+source "$ZDOTDIR/zsh-functions.zsh"
 
 export VIRTUALENVWRAPPER_HOOK_DIR="$HOME/.virtualenvs"
 
@@ -21,10 +21,6 @@ function __load_pyenv {
   fi
 }
 
-function __load_pyenv_completions {
-  source "$(brew --prefix)/opt/pyenv/completions/pyenv.zsh"
-}
-
 # virtualenv
 function __load_virtualenv {
   # For virtualenvwrapper
@@ -41,6 +37,3 @@ zsh_lazy_load pyenv "__load_pyenv"
 zsh_lazy_load workon "__load_virtualenv"
 zsh_lazy_load lsvirtualenv "__load_virtualenv"
 zsh_lazy_load allvirtualenv "__load_virtualenv"
-
-# Completions
-zsh_lazy_load_completions pyenv "__load_pyenv_completions"

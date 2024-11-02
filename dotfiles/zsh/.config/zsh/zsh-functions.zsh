@@ -1,7 +1,6 @@
 #! /usr/bin/env zsh
 
 typeset -g zsh_required
-typeset -g zsh_theme
 typeset -g zsh_plugins
 
 __PLUGIN_FOLDER="$HOME/.zsh_plugins"
@@ -23,21 +22,6 @@ function zsh_add_file() {
     return 1
   fi
 }
-
-function zsh_add_plugin() {
-  local name=$(echo "$1" | cut -d "/" -f 2)
-  local plugin_path="$__PLUGIN_FOLDER/$name"
-  if [ ! -d "$plugin_path" ]; then
-    # Download the plugin automatically
-    git clone "https://github.com/$1.git" "$plugin_path"
-  fi
-
-  zsh_add_file "$name.plugin.zsh" $plugin_path || \
-    zsh_add_file "$name.zsh" $plugin_path
-
-  return $?
-}
-
 
 function zsh_add_custom_plugin() {
   local prefix="plugins/$1/$1"
@@ -106,13 +90,11 @@ function zsh_update_plugin() {
 }
 
 function zsh_init() {
-  zsh_add_theme "${zsh_theme:-agnoster}"
-
   for required in $zsh_required;
-  do zsh_add_file "$required.sh"
+  do zsh_add_file "$required.zsh"
   done
 
   for plugin in $zsh_plugins;
-  do zsh_add_custom_plugin "$plugin" || zsh_add_plugin "$plugin"
+  do zsh_add_custom_plugin "$plugin" || zinit light "$plugin"
   done
 }

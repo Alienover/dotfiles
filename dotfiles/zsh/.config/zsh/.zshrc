@@ -1,11 +1,25 @@
-#! /usr/bin/env zsh
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
-source "$ZDOTDIR/zsh-functions.sh"
+# Set the directory we want to store zinit and plugins
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
-# INFO: Set terminal theme
-zsh_theme="agnoster"
+if [ ! -d "$ZINIT_HOME" ]; then
+  mkdir -p "$(dirname $ZINIT_HOME)"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
 
-# INFO: Set required scripts before initializing
+# Source/Load zinit
+source "${ZINIT_HOME}/zinit.zsh"
+source "${ZDOTDIR}/zsh-functions.zsh"
+
+# Add Powrlevel10k
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+
 zsh_required=(
   # Paths
   zsh-exports # $ZDOTDIR/zsh-exports.sh
@@ -17,19 +31,17 @@ zsh_required=(
   zsh-alias # $ZDOTDIR/zsh-alias.sh
 )
 
-# INFO: Plugins
-# - External  - load from $HOME/.zsh_plugins, otherwise download it from github.com
-# - Personal  - load from $ZDOTDIR/plugins
-# - Work      - load from $ZDOTDIR/plugins, for work preferences
 zsh_plugins=(
   # External
-  zsh-users/zsh-autosuggestions
   zsh-users/zsh-syntax-highlighting
+  zsh-users/zsh-autosuggestions
+  zsh-users/zsh-completions
+  Aloxaf/fzf-tab
 
   # Personal - check $ZDOTDIR/plugins for more detail
-  brew
-  cmd-duration
+  "history"
   completion
+  brew
   fnm
   fzf
   git
@@ -37,12 +49,11 @@ zsh_plugins=(
   pyenv
   tmux
   nvim
-  vi-mode
-  transient-prompt
   obsidian
   yazi
   ruby
   ghq
+  p10k
 
   # Work
   edo-work

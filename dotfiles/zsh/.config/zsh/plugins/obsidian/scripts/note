@@ -46,7 +46,7 @@ open_file() {
     echo "[[$today|Created at $today $(date +"%H:%M")]]"
   } > "$file"
 
-  nvim '+ normal ggzz2j' "$file" -c ":ZenMode"
+  nvim '+ normal ggzz2j' "$file"
 }
 
 if [[ -z "$filename" ]]; then

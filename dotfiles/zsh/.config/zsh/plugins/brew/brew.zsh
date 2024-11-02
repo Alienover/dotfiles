@@ -1,6 +1,6 @@
 #! /bin/zsh
 # Place your plugin content here
-source "$ZDOTDIR/zsh-functions.sh"
+source "$ZDOTDIR/zsh-functions.zsh"
 
 function __init_env {
   local BREW_PREFIX="/opt/homebrew"

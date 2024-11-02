@@ -2,8 +2,11 @@
 
 autoload -Uz compinit
 
-zstyle ':completion:*:*:*:*:*' menu select
-zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
 # suggest case insensitive e.g.: cd docu -> cd Documents
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
 
@@ -16,4 +19,3 @@ zmodload zsh/complist
 _comp_options+=(globdots)
 
 compinit -d $ZSH_COMPDUMP
-

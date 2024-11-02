@@ -1,6 +1,6 @@
 #! /bin/env zsh
 
-source "$ZDOTDIR/zsh-functions.sh"
+source "$ZDOTDIR/zsh-functions.zsh"
 
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 
