@@ -42,6 +42,7 @@ zsh_plugins=(
   "history"
   completion
   brew
+  asdf
   fnm
   fzf
   git
@@ -51,7 +52,6 @@ zsh_plugins=(
   nvim
   obsidian
   yazi
-  ruby
   ghq
   p10k
 
