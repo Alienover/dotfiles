@@ -50,7 +50,7 @@ oil.setup(
 				opts = { vertical = true },
 				desc = "Open the entry in a vertical split",
 			},
-			["<C-h>"] = {
+			["<C-v>"] = {
 				"actions.select",
 				opts = { horizontal = true },
 				desc = "Open the entry in a horizontal split",
