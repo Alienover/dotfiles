@@ -252,7 +252,6 @@ wk.add(withTrigger({
 		{ "gp", gitsigns("preview_hunk"), desc = "Preview hunk" },
 		{ "gb", gitsigns("blame_line"), desc = "[B]lame line" },
 		{ "gB", t("GitBlame"), desc = "[B]lame file" },
-		{ "gs", telescope("git_status"), desc = "Git [S]tatus" },
 		{ "gh", toggle_file_diff(true), desc = "Current File [H]istory" },
 		{ "gH", toggle_file_diff(), desc = "File [H]istory" },
 		{ "go", desc = "[O]pen in browse" },
