@@ -15,6 +15,12 @@ return {
 			"nvim-lua/plenary.nvim",
 			"debugloop/telescope-undo.nvim",
 			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+			{
+				"nvim-telescope/telescope-live-grep-args.nvim",
+				-- This will not install any breaking changes.
+				-- For major updates, this must be adjusted manually.
+				version = "^1.0.0",
+			},
 		},
 		config = function()
 			require("config.telescope-config")

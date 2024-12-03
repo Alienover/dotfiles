@@ -50,7 +50,7 @@ telescope.setup({
 	},
 })
 
-local extensions = { "fzf" } -- "undo", "noice" would be lazy-loaded
+local extensions = { "fzf", "live_grep_args" } -- "undo", "noice" would be lazy-loaded
 
 for _, ext in ipairs(extensions) do
 	telescope.load_extension(ext)

@@ -275,7 +275,7 @@ wk.add(withTrigger({
 --- INFO: Files Operation
 wk.add(withTrigger({
 	{ "f", group = "Files" },
-	{ "fr", telescope("live_grep"), desc = "Live G[r]ep" },
+	{ "fr", telescope("live_grep_args"), desc = "Live G[r]ep" },
 	{
 		"ff",
 		telescope("find_files", { no_ignore = true, hidden = true }),
