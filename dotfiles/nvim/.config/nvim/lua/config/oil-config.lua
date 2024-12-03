@@ -1,5 +1,4 @@
 local oil = require("oil")
-local oil_util = require("oil.util")
 
 local utils = require("custom.utils")
 
@@ -97,50 +96,3 @@ oil.setup(
 		},
 	}
 )
-
-local og_open_preview = oil.open_preview
-
----@diagnostic disable-next-line: duplicate-set-field
-oil.open_preview = function(opts, callback)
-	--- HACK: Modify method to show preview content
-	--- - detach the preview buffer from LSP, to avoid LSP
-	--- - disable the `winbar`
-	local modify_preview = function()
-		local preview_win = oil_util.get_preview_win()
-		if not preview_win then
-			return
-		end
-
-		--- INFO: Disable `winbar` to avoid error `not enough room`
-		vim.api.nvim_set_option_value("winbar", nil, { win = preview_win })
-
-		local entry = oil.get_cursor_entry()
-		if entry and entry.type == "file" then
-			local preview_buf = vim.api.nvim_win_get_buf(preview_win)
-
-			--- INFO: Refer to https://github.com/stevearc/oil.nvim/blob/1360be5fda9c67338331abfcd80de2afbb395bcd/lua/oil/init.lua#L538-L543
-			--- `oil_preview_buffer` is a mark for those new buffers which are created for preview only
-			local is_oil_preview_buf = vim.b[preview_buf].oil_preview_buffer or false
-
-			if is_oil_preview_buf then
-				--- INFO: Detach all the LSP clients related to the preview buffer
-				vim.schedule(function()
-					local clients = vim.lsp.get_clients({ bufnr = preview_buf })
-					for _, client in ipairs(clients) do
-						if client and client.attached_buffers[preview_buf] then
-							pcall(vim.lsp.buf_detach_client, preview_buf, client.id)
-						end
-					end
-				end)
-			end
-		end
-	end
-
-	og_open_preview(opts, function(...)
-		modify_preview()
-
-		if callback then
-			callback(...)
-		end
-	end)
-end
