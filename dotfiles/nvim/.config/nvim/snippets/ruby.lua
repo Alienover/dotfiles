@@ -11,11 +11,11 @@ local function startsWithHash(line_to_cursor)
 end
 
 return {
-	s({ trig = "frozen_string_literal", show_condition = startsWithHash }, t("frozen_string_literal: true")),
+	s({ trig = "frozen_string_literal", show_condition = startsWithHash }, t(" frozen_string_literal: true")),
 	s({
 		trig = "frozen_string_literal",
 		show_condition = function(...)
 			return not startsWithHash(...)
 		end,
-	}, t("# frozen_string_literal")),
+	}, t("# frozen_string_literal: true")),
 }
