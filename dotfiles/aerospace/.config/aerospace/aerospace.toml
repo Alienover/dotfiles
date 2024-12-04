@@ -28,6 +28,11 @@ after-startup-command = [
   # System Settings → Desktop & Dock → Group windows by application
   # It would work after reboot or run `killall Dock` to make it work immediately 
   'exec-and-forget defaults write com.apple.dock expose-group-apps -bool true',
+
+  # To speed up SMB file browsing, you can prevent macOS from reading .DS_Store files on SMB shares.
+  # This makes the Finder use only basic information to immediately display each folder's contents in alphanumeric order.
+  # check for more detail. https://support.apple.com/en-us/102064
+  'exec-and-forget defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE',
 ]
 
 # Start AeroSpace at login
