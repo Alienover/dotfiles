@@ -266,7 +266,6 @@ wk.add(withTrigger({
 		group = "Git",
 		mode = "v",
 		{ "gs", gitsigns("stage_hunk"), desc = "[S]tage selected hunk" },
-		{ "gu", gitsigns("undo_stage_hunk"), desc = "[U]ndo staged hunk" },
 		{ "go", desc = "[O]pen in browse" },
 		{ "gr", gitsigns("reset_hunk"), desc = "[R]eset selected hunk" },
 	},
