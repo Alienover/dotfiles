@@ -55,9 +55,14 @@ nmap("zo", utils.zoom, "[Z]oom [O]n")
 -- Toggling file finder by telescope or fzf
 nmap("<C-p>", function()
 	local subcmd, options = "find_files", {}
-	if vim.fs.root(vim.fn.expand("%:p"), ".git") then
+	local root = vim.fs.root(vim.fn.expand("%:p"), ".git")
+
+	if root then
 		subcmd = "git_files"
-		options["show_untracked"] = true
+		options = vim.tbl_extend("force", options, {
+			cwd = root,
+			show_untracked = true,
+		})
 	end
 
 	utils.telescope(subcmd, options)

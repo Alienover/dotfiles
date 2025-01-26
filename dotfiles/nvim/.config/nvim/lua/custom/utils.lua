@@ -193,11 +193,22 @@ M.telescope = function(cmd, opts)
 	local flags = {}
 	opts = opts or {}
 
+	local layout_config = {
+		width = 0.5,
+		height = 0.5,
+	}
+
 	local win_spec = M.get_window_sepc()
 	if win_spec.columns < window_sizing.md.width then
-		opts.theme = "dropdown"
-		opts.previewer = false
+		layout_config.width = 0.8
+		layout_config.height = 0.8
 	end
+
+	require("telescope").setup({
+		defaults = {
+			layout_config = layout_config,
+		},
+	})
 
 	for k, v in pairs(opts) do
 		table.insert(flags, type(k) == "number" and v or string.format("%s=%s", k, v))
