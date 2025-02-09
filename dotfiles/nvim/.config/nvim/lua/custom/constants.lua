@@ -185,7 +185,7 @@ M.ensure_externals = {
 	},
 	ruby_lsp = {
 		external_type = M.external_type.lsp,
-		mason = "ruby-lsp",
+		config_file = "lsp.ruby_lsp",
 	},
 	eslint = {
 		external_type = M.external_type.lsp,
