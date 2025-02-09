@@ -1,3 +1,7 @@
 #! /usr/bin/env zsh
 
-eval ". $(brew --prefix asdf)/libexec/asdf.sh"
+function __init_env() {
+  export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+}
+
+__init_env

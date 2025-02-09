@@ -25,8 +25,8 @@ function zsh_add_file() {
 
 function zsh_add_custom_plugin() {
   local prefix="plugins/$1/$1"
-  zsh_add_file "$prefix.plugin.zsh" || \
-    zsh_add_file "$prefix.zsh"
+  zsh_add_file "$prefix.zsh" || \
+    zsh_add_file "$prefix.plugin.zsh"
 
   return $?
 }
