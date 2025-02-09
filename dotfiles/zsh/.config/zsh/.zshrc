@@ -54,6 +54,7 @@ zsh_plugins=(
   yazi
   ghq
   p10k
+  vi-mode
 
   # Work
   edo-work

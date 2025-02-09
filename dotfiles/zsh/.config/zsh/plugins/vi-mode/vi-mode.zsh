@@ -18,4 +18,4 @@ ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
 ZVM_INIT_MODE=sourcing
 
 source "${0:A:h}/../../zsh-functions.zsh"
-zsh_add_plugin "jeffreytse/zsh-vi-mode"
+zinit light "jeffreytse/zsh-vi-mode"
