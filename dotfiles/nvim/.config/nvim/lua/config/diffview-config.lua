@@ -1,3 +1,5 @@
+local diffview = require("diffview")
+
 ---@overload fun(): nil
 ---@overload fun(reset: boolean): nil
 -- INFO: Inspired by https://github.com/neovim/neovim/issues/9800#issuecomment-1222229083
@@ -48,7 +50,11 @@ local function git_commit()
 
 					vim.notify(err_msg, vim.log.levels.ERROR, notify_opts)
 				else
-					vim.notify(vim.trim(results.stdout), vim.log.levels.INFO, notify_opts)
+					vim.defer_fn(function()
+						diffview.emit("refresh_files")
+
+						vim.notify(vim.trim(results.stdout), vim.log.levels.INFO, notify_opts)
+					end, 100)
 				end
 			end)
 		end)
