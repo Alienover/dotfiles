@@ -1,24 +1,10 @@
 SELECTED_SESSION=""
 
-attach() {
-  local existed="$(tmux list-sessions -F "#S" | grep -i "$SELECTED_SESSION")"
-
-  if [ -n "$existed" ]; then
-    if [ -z "$TMUX" ]; then
-      tmux -u attach-session -t "$existed"
-    else
-      tmux -u switch-client -t "$existed"
-    fi
-  else
-    tmuxinator start "$SELECTED_SESSION"
-  fi
-}
-
 pick() {
   if [ -z "$1" ]; then
     exit 0
   elif [ $(echo "$1" | wc -l) == 1 ]; then
-    SELECTED_SESSION=`for name in $(tmuxinator list | tail -n 1); do echo $name; done | fzf -i -f "$1" | head -n 1`
+    SELECTED_SESSION="$(tmuxifier ls | grep "$1")"
   else
     SELECTED_SESSION="$(echo "$1" | head -n 2 | tail -n 1)"
   fi
@@ -59,7 +45,7 @@ fi
 
 
 if [ -n "$SELECTED_SESSION" ]; then
-  attach
+  tmuxifier load-session $SELECTED_SESSION
 else
   echo "No project selected!"
 fi
