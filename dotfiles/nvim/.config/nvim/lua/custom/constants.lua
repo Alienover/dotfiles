@@ -17,7 +17,7 @@ M.files = {
 	-- Folder saved snippets
 	snippets = getenv("XDG_CONFIG_HOME") .. "/nvim/snippets",
 	-- Tmux config
-	tmux = getenv("HOME") .. "/.tmux.conf",
+	tmux = getenv("XDG_CONFIG_HOME") .. "/tmux/tmux.conf",
 	-- Kitty config
 	kitty = getenv("XDG_CONFIG_HOME") .. "/kitty/kitty.conf",
 	-- ZSH config
