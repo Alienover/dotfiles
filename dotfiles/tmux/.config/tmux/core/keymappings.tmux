@@ -62,5 +62,5 @@ bind k if-shell "$is_vim" "send-keys C-w\ k" "select-pane -U"
 bind l if-shell "$is_vim" "send-keys C-w\ l" "select-pane -R"
 
 # reload config file
-bind r source-file $HOME/.tmux.conf \; display "Config Reloaded!"
+bind r source-file $XDG_CONFIG_HOME/tmux/tmux.conf \; display "Config Reloaded!"
 
