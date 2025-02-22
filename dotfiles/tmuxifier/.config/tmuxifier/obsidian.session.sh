@@ -7,9 +7,9 @@ session_root "$OBSIDIAN_VAULT"
 if initialize_session "📚 Obsidian"; then
 
   # Create a new window inline within session layout definition.
-  new_window
-  run_cmd "day"
+  new_window "note"
 
+  run_cmd "day"
 fi
 
 # Finalize session creation and switch/attach to it.
