@@ -1,10 +1,5 @@
-local utils = require("custom.utils")
-
 local telescope = require("telescope")
 local ts_actions = require("telescope.actions")
-
----@module "telescope-undo.actions"
-local undo = utils.LazyRequire("telescope-undo.actions")
 
 telescope.setup({
 	defaults = {
@@ -39,13 +34,6 @@ telescope.setup({
 			override_generic_sorter = true, -- override the generic sorter
 			override_file_sorter = true, -- override the file sorter
 			case_mode = "smart_case", -- or "ignore_case" or "respect_case"
-		},
-		undo = {
-			mappings = {
-				i = {
-					["<cr>"] = undo.restore,
-				},
-			},
 		},
 	},
 })
