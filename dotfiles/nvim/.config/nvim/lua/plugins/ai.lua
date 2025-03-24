@@ -2,38 +2,16 @@ return {
 	{
 		"yetone/avante.nvim",
 		enabled = false,
-		cmd = { "AvanteAsk" },
+		event = "VeryLazy",
+		version = false, -- Never set this value to "*"! Never!
 		-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 		build = "make",
 		opts = {
-			provider = "claude",
-			claude = {
-				api_key_name = "cmd:pass show Anthropic/neovim-key",
-			},
-		},
-		keys = {
-			{
-				"<leader>aa",
-				function()
-					require("avante.api").ask()
-				end,
-				desc = "avante: ask",
-				mode = { "n", "v" },
-			},
-			{
-				"<leader>ar",
-				function()
-					require("avante.api").refresh()
-				end,
-				desc = "avante: refresh",
-			},
-			{
-				"<leader>ae",
-				function()
-					require("avante.api").edit()
-				end,
-				desc = "avante: edit",
-				mode = "v",
+			provider = "openai",
+			auto_suggestions_provider = "openai",
+			openai = {
+				max_completion_tokens = 4096, -- Max tokens for completion, adjust for reasoning
+				api_key_name = "cmd:pass show OpenAI/API-Key", -- Command to retrieve API key
 			},
 		},
 		dependencies = {
