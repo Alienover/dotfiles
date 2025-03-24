@@ -160,6 +160,9 @@ local rewrite_lsp_cmds = function()
 end
 
 local function setup_lsp()
+	-- Disable the log, set it to "debug" when necessary
+	vim.lsp.set_log_level("off")
+
 	-- Setup the lsp for the one installed manually
 	for server, opts in pairs(ensure_externals) do
 		local is_lsp = opts.external_type == external_type.lsp
