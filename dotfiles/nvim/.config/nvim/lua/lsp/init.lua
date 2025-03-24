@@ -68,9 +68,10 @@ local load_config = function(external)
 
 	-- INFO: Capabilities config for nvim-cmp
 	local custom_capabilities = function()
-		local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+		local capabilities = require("blink.cmp").get_lsp_capabilities()
 
 		capabilities.textDocument.completion.completionItem.snippetSupport = true
+
 		return capabilities
 	end
 
