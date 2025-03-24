@@ -1,9 +1,24 @@
 return {
+	-- add blink.compat
+	{
+		"saghen/blink.compat",
+		-- use the latest release, via version = '*', if you also use the latest release for blink.cmp
+		version = "*",
+		-- make sure to set opts so that lazy.nvim calls blink.compat's setup
+		opts = {},
+	},
 	{
 		"saghen/blink.cmp",
 		event = "InsertEnter",
 		-- optional: provides snippets for the snippet source
-		-- dependencies = { "rafamadriz/friendly-snippets" },
+		dependencies = {
+			"saghen/blink.compat",
+			{
+				"MattiasMTS/cmp-dbee",
+				ft = "sql", -- optional but good to have
+				opts = {}, -- needed
+			},
+		},
 
 		-- use a release tag to download pre-built binaries
 		version = "*",
@@ -47,11 +62,11 @@ return {
 
 				menu = {
 					draw = {
-						columns = { { "label", "label_description", gap = 1 }, { "kind_icon" }, { "source_name" } },
+						columns = { { "label" }, { "kind_icon" }, { "source_name" } },
 					},
 				},
 
-				ghost_text = { enabled = true, show_with_menu = true },
+				ghost_text = { enabled = true, show_without_menu = true },
 			},
 
 			cmdline = {
@@ -95,6 +110,11 @@ return {
 			-- elsewhere in your config, without redefining it, due to `opts_extend`
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer" },
+				per_filetype = { sql = { "dbee", "buffer" } },
+				providers = {
+					-- Refer to https://github.com/MattiasMTS/cmp-dbee/issues/29#issue-2783603343
+					dbee = { name = "DB", module = "blink.compat.source", opts = { cmp_name = "cmp-dbee" } },
+				},
 			},
 
 			-- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
