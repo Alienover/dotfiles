@@ -216,11 +216,10 @@ wk.add(withTrigger({
 	{
 		"bb",
 		telescope("buffers", {
-			previewer = false,
 			sort_mru = true,
 			sort_lastused = false,
 			initial_mode = "normal",
-			theme = "dropdown",
+			theme = "ivy",
 		}),
 		desc = "Find [B]uffers",
 	},
