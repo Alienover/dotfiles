@@ -2,6 +2,13 @@ local utils = require("custom.utils")
 
 require("noice").setup({
 	presets = { inc_rename = true, lsp_doc_border = true },
+	cmdline = {
+		format = {
+			cmdline = { pattern = "^:", icon = " ", lang = "vim" },
+			lua = false,
+		},
+	},
+	notify = { enabeled = false },
 	lsp = {
 		override = {
 			["vim.lsp.util.convert_input_to_markdown_lines"] = true,

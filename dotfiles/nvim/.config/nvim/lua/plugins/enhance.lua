@@ -124,12 +124,6 @@ return {
 		end,
 	},
 
-	{ -- Keep Window on Buffer Delete - Improved - (lua ver.)
-		"@local/kwbdi.nvim",
-		cmd = { "KWBufDel" },
-		config = true,
-	},
-
 	{ -- Customized winbar with file path and document symbols
 		"@local/winbar.nvim",
 		event = { "BufReadPost", "BufNewFile" },

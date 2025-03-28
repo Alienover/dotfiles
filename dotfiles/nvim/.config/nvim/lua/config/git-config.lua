@@ -1,20 +1,8 @@
-local utils = require("custom.utils")
-
-require("git").setup({
-	winbar = true,
-	default_mappings = false,
-	keymaps = {
-		browse = "<space>go",
-		open_pull_request = "<space>gP",
-	},
-	functions = {
-		git = false,
-		blame = false,
-		diff = false,
-		revert = false,
-		pull_request = false,
-	},
+require("blame").setup({
+	date_format = "%Y-%m-%d %H:%M",
 })
+
+local utils = require("custom.utils")
 
 local win, buf
 

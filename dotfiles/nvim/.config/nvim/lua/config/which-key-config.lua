@@ -186,7 +186,6 @@ wk.add(withTrigger({
 		{ "hc", telescope("commands"), desc = "[C]ommands" },
 		{ "hk", telescope("keymaps"), desc = "[K]ey Maps" },
 		{ "hh", telescope("highlights"), desc = "[H]ighlight Groups" },
-		{ "hn", telescope("notify"), desc = "[N]otify history" },
 		{ "hN", telescope("noice"), desc = "[N]oice history" },
 		{ "hm", t("Mason"), desc = "[M]ason Manager" },
 		{
@@ -199,8 +198,6 @@ wk.add(withTrigger({
 		{ "h?", telescope("help_tags"), desc = "Help doc" },
 	},
 
-	{ "z", t("ZenMode"), desc = "Zen Mode" },
-
 	{
 		"/",
 		telescope("current_buffer_fuzzy_find"),
@@ -211,8 +208,6 @@ wk.add(withTrigger({
 --- INFO: Buffer
 wk.add(withTrigger({
 	{ "b", group = "Buffer" },
-	{ "bd", t("KWBufDel"), desc = "[D]Delete" },
-	{ "bD", t("KWBufDel!"), desc = "Force [D]elete" },
 	{
 		"bb",
 		telescope("buffers", {
@@ -253,8 +248,6 @@ wk.add(withTrigger({
 		{ "gB", t("GitBlame"), desc = "[B]lame file" },
 		{ "gh", toggle_file_diff(true), desc = "Current File [H]istory" },
 		{ "gH", toggle_file_diff(), desc = "File [H]istory" },
-		{ "go", desc = "[O]pen in browse" },
-		{ "gP", desc = "Open [P]ull request of current branch" },
 		{ "gs", gitsigns("stage_hunk"), desc = "[S]tage hunk" },
 		{ "gr", gitsigns("reset_hunk"), desc = "[R]eset Hunk" },
 		{ "gR", gitsigns("reset_buffer"), desc = "[R]eset buffer" },

@@ -1,4 +1,5 @@
 local utils = require("custom.utils")
+local icons = require("custom.icons")
 
 vim.cmd([[syntax on]])
 
@@ -149,7 +150,7 @@ local options = {
 	wildignorecase = true,
 
 	-- Diff Mode
-	fillchars = { diff = "╱" },
+	fillchars = { diff = "╱", foldclose = icons.get("extended", "arrowRight") },
 
 	-- List Mode
 	list = true,
@@ -162,29 +163,6 @@ local options = {
 
 	-- Round indent to multiple of `shiftwidth`
 	shiftround = true,
-
-	-- Folding indicators
-	-- Refer to https://github.com/kevinhwang91/nvim-ufo/issues/4#issuecomment-1380649634
-	statuscolumn = "%= "
-		.. "%s" -- sign column
-		.. "%{%" -- evaluate this, and then evaluate what it returns
-		.. "&number ?"
-		.. 'printf("%"..len(line("$")).."s", v:relnum ? v:relnum : v:lnum)' -- add padding in case of shifting
-		.. ":"
-		.. '""'
-		.. " " -- space between lines and fold
-		.. "%}"
-		.. "%= "
-		.. "%#FoldColumn#" -- highlight group for fold
-		.. "%{" -- expression for showing fold expand/colapse
-		.. "foldlevel(v:lnum) > foldlevel(v:lnum - 1)" -- any folds?
-		.. "? (foldclosed(v:lnum) == -1" -- currently open?
-		.. '? ""' -- point down
-		.. ': ""' -- point to right
-		.. ")"
-		.. ': " "' -- blank for no fold, or inside fold
-		.. "}"
-		.. "%= ", -- spacing between end of column and start of text
 }
 
 -- Custom filetypes

@@ -1,18 +1,10 @@
 return {
 	{
-		"Alienover/git.nvim",
+		"Alienover/blame.nvim",
 		cmd = { "Git", "GitBlame" },
-		keys = { { "<space>go", mode = { "n", "x" } }, "<space>gP" },
 		config = function()
 			require("config.git-config")
 		end,
-	},
-
-	{
-		"Alienover/blame.nvim",
-		opts = {
-			date_format = "%Y-%m-%d %H:%M",
-		},
 	},
 
 	{

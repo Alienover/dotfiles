@@ -70,14 +70,6 @@ return {
 			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 			{ "MunifTanjim/nui.nvim", module = "nui" },
 
-			{
-				"rcarriga/nvim-notify",
-				module = "notify",
-				opts = {
-					background_colour = "#000000",
-				},
-			},
-
 			-- Progress UI for LSP and rest
 			{
 				"j-hui/fidget.nvim",
