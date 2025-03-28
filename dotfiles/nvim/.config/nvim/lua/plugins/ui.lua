@@ -1,3 +1,5 @@
+local icons = require("custom.icons")
+
 return {
 	{
 		"catppuccin/nvim",
@@ -40,32 +42,32 @@ return {
 		end,
 	},
 
-	{ -- Input/Select overrided
-		"stevearc/dressing.nvim",
-		event = "VeryLazy",
-		opts = {
-			input = {
-				enabled = false,
-			},
-			select = {
-				-- see :help dressing_get_config
-				get_config = function()
-					return {
-						telescope = require("telescope.themes").get_dropdown({
-							initial_mode = "normal",
-						}),
-					}
-				end,
-			},
-		},
-	},
-
 	{ -- UI for messages, cmdline and the popupmenu
 		"folke/noice.nvim",
 		event = "VeryLazy",
-		config = function()
-			require("config.noice-config")
-		end,
+		---@module 'noice'
+		opts = {
+			popupmenu = { enabled = false },
+			notify = { enabeld = false },
+
+			---@type NoicePresets
+			presets = { inc_rename = true, lsp_doc_border = true },
+
+			cmdline = {
+				format = {
+					lua = false,
+					cmdline = { pattern = "^:", icon = icons.get("extended", "arrowRight"), lang = "vim" },
+				},
+			},
+
+			lsp = {
+				progress = { enabled = false },
+				override = {
+					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+					["vim.lsp.util.stylize_markdown"] = true,
+				},
+			},
+		},
 		dependencies = {
 			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 			{ "MunifTanjim/nui.nvim", module = "nui" },

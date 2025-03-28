@@ -104,3 +104,30 @@ for _, key in ipairs({ "gd", "gf" }) do
 		end, ("%s and then %s"):format(split, key))
 	end
 end
+
+-- Scrolling the signature help doc from Noice
+-- * <C-d> - Scroll down
+-- * <C-u> - Scroll up
+local noiceLSPDoc = utils.LazyRequire("noice.lsp")
+utils.create_keymaps({
+	{
+		{ "n", "i", "s" },
+		"<C-d>",
+		function()
+			if not noiceLSPDoc.scroll(4) then
+				return "<C-d>"
+			end
+		end,
+		{ expr = true },
+	},
+	{
+		{ "n", "i", "s" },
+		"<C-u>",
+		function()
+			if not noiceLSPDoc.scroll(-4) then
+				return "<C-u>"
+			end
+		end,
+		{ expr = true },
+	},
+})
