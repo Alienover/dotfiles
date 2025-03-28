@@ -13,7 +13,7 @@ return {
 		-- optional: provides snippets for the snippet source
 		dependencies = {
 			"saghen/blink.compat",
-			{
+			{ "MattiasMTS/cmp-dbee", ft = "sql", opts = {} },
 			{ "Kaiser-Yang/blink-cmp-avante", ft = "AvanteInput" },
 		},
 
@@ -48,14 +48,19 @@ return {
 				["<C-n>"] = { "show", "select_next", "fallback_to_mappings" },
 				["<Up>"] = { "select_prev", "fallback" },
 				["<Down>"] = { "select_next", "fallback" },
+				["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
 			},
 
 			completion = {
 				list = {
-					selection = { preselect = true, auto_insert = false },
+					selection = { preselect = true, auto_insert = true },
 				},
 				-- Show documentation when selecting a completion item
 				documentation = { auto_show = true, auto_show_delay_ms = 500 },
+
+				-- Disable auto brackets
+				-- NOTE: some LSPs may add auto brackets themselves anyway
+				accept = { auto_brackets = { enabled = false } },
 
 				menu = {
 					draw = {
@@ -68,7 +73,11 @@ return {
 
 			cmdline = {
 				enabled = true,
-				keymap = { preset = "inherit" },
+				keymap = {
+					preset = "cmdline",
+					["<C-p>"] = { "show", "select_prev", "fallback_to_mappings" },
+					["<C-n>"] = { "show", "select_next", "fallback_to_mappings" },
+				},
 
 				completion = {
 					menu = {
