@@ -14,10 +14,7 @@ return {
 		dependencies = {
 			"saghen/blink.compat",
 			{
-				"MattiasMTS/cmp-dbee",
-				ft = "sql", -- optional but good to have
-				opts = {}, -- needed
-			},
+			{ "Kaiser-Yang/blink-cmp-avante", ft = "AvanteInput" },
 		},
 
 		-- use a release tag to download pre-built binaries
@@ -110,10 +107,12 @@ return {
 			-- elsewhere in your config, without redefining it, due to `opts_extend`
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer" },
-				per_filetype = { sql = { "dbee", "buffer" } },
+				per_filetype = { sql = { "dbee", "buffer" }, AvanteInput = { "avante" } },
 				providers = {
 					-- Refer to https://github.com/MattiasMTS/cmp-dbee/issues/29#issue-2783603343
 					dbee = { name = "DB", module = "blink.compat.source", opts = { cmp_name = "cmp-dbee" } },
+					-- Completion for avante commands
+					avante = { name = "Avante", module = "blink-cmp-avante", opts = {} },
 				},
 			},
 
