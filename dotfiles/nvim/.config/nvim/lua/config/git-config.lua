@@ -35,7 +35,7 @@ local git_cmd = function(args)
 
 			local cmd = "git " .. table.concat(args, " ")
 
-			vim.fn.termopen(cmd, { ["cwd"] = vim.fn.getcwd() })
+			vim.fn.jobstart(cmd, { term = true, cwd = vim.fn.getcmd() })
 
 			for _, key in ipairs({ "<CR>", "<ESC>" }) do
 				vim.keymap.set({ "n", "i" }, key, clear, {

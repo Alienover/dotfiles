@@ -26,14 +26,16 @@ local lsp_keymaps = function(_, bufnr)
 	map("gi", vim.lsp.buf.implementation, "[G]o [I]mplementation")
 	map("gr", vim.lsp.buf.references, "[G]o [R]eferences")
 	map("]d", function()
-		vim.diagnostic.goto_next({
+		vim.diagnostic.jump({
+			count = 1,
 			float = {
 				border = "rounded",
 			},
 		})
 	end, "Next [D]iagnostic ")
-	map("[d]", function()
-		vim.diagnostic.goto_prev({
+	map("[d", function()
+		vim.diagnostic.jump({
+			count = -1,
 			float = {
 				border = "rounded",
 			},
@@ -91,18 +93,6 @@ end
 
 -- Re-write lsp handlers
 local rewrite_lsp_handlers = function()
-	-- Automatically update diagnostics
-	vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-		virtual_text = {
-			prefix = "  ",
-			spacing = 4,
-		},
-		signs = true,
-		underline = true,
-		severity_sort = true,
-		update_in_insert = false,
-	})
-
 	---@diagnostic disable-next-line: duplicate-set-field
 	vim.lsp.handlers["textDocument/definition"] = function(...)
 		local status_ok, ts = pcall(require, "telescope.builtin")
@@ -162,6 +152,20 @@ end
 local function setup_lsp()
 	-- Disable the log, set it to "debug" when necessary
 	vim.lsp.set_log_level("off")
+
+	-- Configure the diagnostic styling
+	vim.diagnostic.config({
+		float = true,
+		virtual_lines = true,
+		signs = true,
+		underline = true,
+		severity_sort = true,
+		update_in_insert = false,
+		-- virtual_text = {
+		-- 	prefix = "  ",
+		-- 	spacing = 4,
+		-- },
+	})
 
 	-- Setup the lsp for the one installed manually
 	for server, opts in pairs(ensure_externals) do

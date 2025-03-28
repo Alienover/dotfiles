@@ -30,7 +30,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight on yark",
 
 	callback = function()
-		vim.highlight.on_yank({})
+		vim.hl.on_yank({})
 	end,
 })
 
@@ -93,7 +93,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 		local run_format = false
 		for _, client in ipairs(clients) do
-			if client.supports_method("textDocument/formatting") then
+			if client:supports_method("textDocument/formatting") then
 				run_format = true
 				break
 			end
