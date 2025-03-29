@@ -95,11 +95,6 @@ local lspsaga = function(sub_cmd)
 	return t("Lspsaga " .. sub_cmd)
 end
 
--- Populate the floating terminal command with presets
-local terminal = function(input)
-	return lspsaga("term_toggle " .. (input or ""))
-end
-
 local toggle_diffview = function()
 	local is_opened = vim.g.diffview_opened or vim.o.filetype == "DiffviewFiles"
 	if is_opened then
@@ -221,16 +216,6 @@ wk.add(withTrigger({
 	{ "bn", t("tabnew"), desc = "[N]ew Tab" },
 }))
 
---- INFO: Terminal
-wk.add(withTrigger({
-	{ "t", group = "Terminal" },
-	{ "t;", terminal(os.getenv("SHELL") or "zsh"), desc = "[T]erminal" },
-	{ "th", terminal("htop"), desc = "[H]top" },
-	{ "tp", terminal("python"), desc = "[P]ython" },
-	{ "tn", terminal("node"), desc = "[N]ode" },
-	{ "tt", terminal(), desc = "[T]oggle" },
-}))
-
 --- INFO: Git
 wk.add(withTrigger({
 	{
@@ -245,7 +230,6 @@ wk.add(withTrigger({
 		{ "gk", gitsigns("prev_hunk"), desc = "Previous hunk" },
 		{ "gp", gitsigns("preview_hunk"), desc = "Preview hunk" },
 		{ "gb", gitsigns("blame_line"), desc = "[B]lame line" },
-		{ "gB", t("GitBlame"), desc = "[B]lame file" },
 		{ "gh", toggle_file_diff(true), desc = "Current File [H]istory" },
 		{ "gH", toggle_file_diff(), desc = "File [H]istory" },
 		{ "gs", gitsigns("stage_hunk"), desc = "[S]tage hunk" },
@@ -315,18 +299,6 @@ wk.add(withTrigger({
 		cond = function()
 			return vim.bo.filetype == "http"
 		end,
-		{ "rc", t("Rest curl copy"), desc = "[C]opy the request as Curl command" },
-		{ "rr", t("Rest run"), desc = "Send request under the cursor" },
-		{
-			"re",
-			telescope("rest", { "select_env" }),
-			desc = "Select env",
-		},
-		{
-			"rE",
-			telescope("rest", { "select_env_type" }),
-			desc = "Select env_type (http-client or .env)",
-		},
 	},
 }))
 

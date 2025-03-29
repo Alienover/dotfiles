@@ -21,7 +21,7 @@ return {
 				expr = true,
 			},
 		},
-		config = true,
+		opts = {},
 		dependencies = { "neovim/nvim-lspconfig" },
 	},
 
@@ -55,9 +55,6 @@ return {
 	{
 		"folke/lazydev.nvim",
 		ft = "lua", -- only load on lua files
-		dependencies = {
-			"Bilal2453/luvit-meta",
-		},
 		opts = {
 			format = {
 				enable = true,

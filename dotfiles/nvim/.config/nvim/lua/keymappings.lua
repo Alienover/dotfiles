@@ -108,26 +108,18 @@ end
 -- Scrolling the signature help doc from Noice
 -- * <C-d> - Scroll down
 -- * <C-u> - Scroll up
-local noiceLSPDoc = utils.LazyRequire("noice.lsp")
-utils.create_keymaps({
-	{
+utils.create_keymaps(vim.tbl_map(function(preset)
+	local lhs, scroll_lines = unpack(preset)
+	return {
 		{ "n", "i", "s" },
-		"<C-d>",
+		lhs,
 		function()
-			if not noiceLSPDoc.scroll(4) then
-				return "<C-d>"
+			local noice_lsp = require("noice.lsp")
+
+			if not noice_lsp.scroll(scroll_lines) then
+				return lhs
 			end
 		end,
 		{ expr = true },
-	},
-	{
-		{ "n", "i", "s" },
-		"<C-u>",
-		function()
-			if not noiceLSPDoc.scroll(-4) then
-				return "<C-u>"
-			end
-		end,
-		{ expr = true },
-	},
-})
+	}
+end, { { "<C-d>", 4 }, { "<C-u>", -4 } }))

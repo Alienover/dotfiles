@@ -24,16 +24,10 @@ oil.setup(
 		-- Set to false if you want some other plugin (e.g. netrw) to open when you edit directories.
 		default_file_explorer = true,
 
-		-- Send deleted files to the trash instead of permanently deleting them (:help oil-trash)
-		delete_to_trash = false,
+		win_options = { cursorline = true },
 
-		win_options = {
-			cursorline = true,
-		},
+		lsp_file_methods = { enabled = false },
 
-		lsp_file_methods = {
-			enabled = false,
-		},
 		-- Set to false to disable all of the above keymaps
 		use_default_keymaps = false,
 		keymaps = {

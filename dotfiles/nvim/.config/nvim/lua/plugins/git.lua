@@ -1,12 +1,14 @@
 return {
 	{
 		"Alienover/blame.nvim",
-		cmd = { "Git", "GitBlame" },
-		config = function()
-			require("config.git-config")
-		end,
+		cmd = { "BlameToggle" },
+		keys = {
+			{ "<space>gB", "<cmd>BlameToggle<CR>", desc = "[B]lame " },
+		},
+		opts = {
+			date_format = "%Y-%m-%d %H:%M",
+		},
 	},
-
 	{
 		"sindrets/diffview.nvim",
 		cmd = {

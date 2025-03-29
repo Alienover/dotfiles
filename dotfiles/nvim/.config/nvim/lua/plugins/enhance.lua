@@ -1,18 +1,48 @@
 local consts = require("custom.constants")
 
 return {
-	{
+	{ -- Navigate with labels
 		"folke/flash.nvim",
-		config = function()
-			require("config.flash-config")
-		end,
+		opts = {
+			prompt = {
+				enabled = false,
+			},
+			modes = {
+				char = {
+					jump_labels = true,
+				},
+				search = {
+					enabled = false,
+				},
+			},
+		},
 		keys = {
-			{ "<c-f>", mode = "c" },
+			{
+				"<c-f>",
+				function()
+					require("flash").toggle()
+				end,
+				mode = "c",
+				desc = "Toggle Flash Search",
+			},
+			{
+				"S",
+				function()
+					require("flash").treesitter()
+				end,
+				mode = { "o", "x" },
+				desc = "Flash Treesitter",
+			},
+			{
+				"R",
+				function()
+					require("flash").treesitter_search()
+				end,
+				mode = { "o", "x" },
+				desc = "Treesitter Search",
+			},
 			{ "f", mode = { "n", "x" } },
 			{ "F", mode = { "n", "x" } },
-			{ "S", mode = { "o", "x" } },
-			{ "r", mode = { "o" } },
-			{ "R", mode = { "o", "x" } },
 		},
 	},
 
@@ -41,7 +71,6 @@ return {
 		opts = {
 			modes = { insert = true, command = true },
 		},
-		config = true,
 	},
 
 	{
@@ -51,9 +80,25 @@ return {
 			"ds",
 			"cs",
 		},
-		config = function()
-			require("config.surround-config")
-		end,
+		opts = {
+			-- Whether to disable showing non-error feedback
+			silent = true,
+
+			-- Module mappings. Use `''` (empty string) to disable one.
+			mappings = {
+				add = "s", -- Add surrounding in Normal and Visual modes
+				delete = "ds", -- Delete surrounding
+				replace = "cs", -- Replace surrounding
+
+				-- Disabled
+				find = "", -- Find surrounding (to the right)
+				find_left = "", -- Find surrounding (to the left)
+				highlight = "", -- Highlight surrounding
+				update_n_lines = "", -- Update `n_lines`
+				suffix_last = "", -- Suffix to search with "prev" method
+				suffix_next = "", -- Suffix to search with "next" method
+			},
+		},
 	},
 
 	{ -- Go forward/backward with square brackets
@@ -87,13 +132,13 @@ return {
 	{
 		"nvimdev/hlsearch.nvim",
 		event = "BufReadPost",
-		config = true,
+		opts = {},
 	},
 
 	{
 		"windwp/nvim-ts-autotag",
 		event = "InsertEnter",
-		config = true,
+		opts = {},
 	},
 
 	{

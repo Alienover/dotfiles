@@ -8,7 +8,7 @@ local getenv = function(var, default)
 	return os.getenv(var) or default or ""
 end
 
-M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/my_plugins"
+M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/lua/custom"
 
 M.files = {
 	vim = getenv("HOME") .. "/.vimrc",

@@ -52,10 +52,10 @@ vim.api.nvim_create_autocmd("RecordingEnter", {
 		local reg = vim.fn.reg_recording()
 
 		if reg ~= "" then
-			vim.g.recording_notify_id = vim.notify(string.format("Recording @%s...", reg), vim.log.levels.INFO, {
+			vim.notify(string.format("Recording @%s...", reg), vim.log.levels.INFO, {
+				id = "marco-record",
 				title = " Marco",
 				icon = icons.get("extended", "recording"),
-				replace = vim.g.recording_notify_id,
 				keep = function()
 					return vim.fn.reg_recording() ~= ""
 				end,
@@ -69,18 +69,12 @@ vim.api.nvim_create_autocmd("RecordingLeave", {
 	group = augroups.recording,
 
 	callback = function()
-		local last_id = vim.g.recording_notify_id
-
-		if last_id then
-			vim.notify("Recording stopped", vim.log.levels.INFO, {
-				title = " Marco",
-				icon = icons.get("extended", "recording"),
-				timeout = 100,
-				replace = last_id,
-			})
-		end
-
-		vim.g.recording_notify_id = nil
+		vim.notify("Recording stopped", vim.log.levels.INFO, {
+			id = "marco-record",
+			title = " Marco",
+			icon = icons.get("extended", "recording"),
+			timeout = 500,
+		})
 	end,
 })
 

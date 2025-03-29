@@ -26,7 +26,7 @@ local function fix_cursor_underline(reset)
 end
 
 local function git_commit()
-	local notify_opts = { title = "Commit" }
+	local notify_opts = { title = "Commit", id = "git-commit" }
 
 	local staged = vim.system({ "git", "diff", "--name-only", "--cached" }, { test = true }):wait()
 
@@ -36,11 +36,9 @@ local function git_commit()
 				return
 			end
 
-			local notify_id = vim.notify("Commiting...", vim.log.levels.INFO, notify_opts)
+			vim.notify("Commiting...", vim.log.levels.INFO, notify_opts)
 
 			vim.system({ "git", "commit", "-m", msg }, { text = true }, function(results)
-				notify_opts = vim.tbl_extend("keep", notify_opts, { replace = notify_id })
-
 				if results.code ~= 0 then
 					local err_msg = table.concat({
 						"Commit failed with the message:",
