@@ -6,6 +6,9 @@ return {
 		name = "catppuccin",
 		lazy = false,
 		priority = 1000,
+		build = function()
+			vim.cmd("CatppuccinCompile")
+		end,
 		config = function()
 			require("config.catppuccin-config")
 		end,
