@@ -18,7 +18,7 @@ return {
 		},
 
 		-- use a release tag to download pre-built binaries
-		version = "*",
+		version = "1.*",
 		-- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
 		-- build = 'cargo build --release',
 		-- If you use nix, you can build from source using latest nightly rust with:
@@ -40,15 +40,9 @@ return {
 			--
 			-- See :h blink-cmp-config-keymap for defining your own keymap
 			keymap = {
-				preset = "none",
-				["<Tab>"] = { "select_and_accept", "fallback" },
+				preset = "default",
 				["<C-d>"] = { "scroll_documentation_down", "fallback" },
 				["<C-u>"] = { "scroll_documentation_up", "fallback" },
-				["<C-p>"] = { "show", "select_prev", "fallback_to_mappings" },
-				["<C-n>"] = { "show", "select_next", "fallback_to_mappings" },
-				["<Up>"] = { "select_prev", "fallback" },
-				["<Down>"] = { "select_next", "fallback" },
-				["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
 			},
 
 			completion = {
@@ -61,12 +55,6 @@ return {
 				-- Disable auto brackets
 				-- NOTE: some LSPs may add auto brackets themselves anyway
 				accept = { auto_brackets = { enabled = false } },
-
-				menu = {
-					draw = {
-						columns = { { "label" }, { "kind_icon" }, { "source_name" } },
-					},
-				},
 
 				ghost_text = { enabled = true, show_without_menu = true },
 			},
