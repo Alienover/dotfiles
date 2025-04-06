@@ -2,7 +2,7 @@ return {
 	{
 		"yetone/avante.nvim",
 		event = "VeryLazy",
-		version = "v0.0.23", -- Never set this value to "*"! Never!
+		version = false,
 		-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 		build = "make",
 
@@ -27,6 +27,12 @@ return {
 			},
 			hints = { enabled = false },
 		},
+		config = function(_, opts)
+			require("avante").setup(opts)
+
+			-- INFO: fix the border highlights
+			vim.api.nvim_set_hl(0, "AvanteSidebarWinSeparator", { link = "AvanteSidebarWinHorizontalSeparator" })
+		end,
 		dependencies = {
 			"stevearc/dressing.nvim",
 			"nvim-lua/plenary.nvim",
