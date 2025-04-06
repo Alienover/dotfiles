@@ -271,7 +271,7 @@ wk.add(withTrigger({
 	{ "oz", e(constants.files.zsh), desc = ".zshrc" },
 	{ "ot", e(constants.files.tmux), desc = ".tmux.conf" },
 	{ "on", e(constants.files.nvim), desc = "init.lua" },
-	{ "ok", e(constants.files.kitty), desc = "kitty.conf" },
+	{ "og", e(constants.files.ghostty), desc = "ghostty conf" },
 	{ "oa", e(constants.files.aerospace), desc = "aerospace.toml" },
 }))
 

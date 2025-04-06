@@ -221,7 +221,7 @@ if.during-aerospace-startup = true
 run = "move-node-to-workspace 🍣"
 
 [[on-window-detected]]
-if.app-id = 'net.kovidgoyal.kitty'
+if.app-id = 'com.mitchellh.ghostty'
 if.during-aerospace-startup = true
 run = "move-node-to-workspace 💻"
 

@@ -19,7 +19,7 @@ M.files = {
 	-- Tmux config
 	tmux = getenv("XDG_CONFIG_HOME") .. "/tmux/tmux.conf",
 	-- Kitty config
-	kitty = getenv("XDG_CONFIG_HOME") .. "/kitty/kitty.conf",
+	ghostty = getenv("XDG_CONFIG_HOME") .. "/ghostty/config",
 	-- ZSH config
 	zsh = getenv("XDG_CONFIG_HOME") .. "/zsh/.zshrc",
 	-- Aerospace config

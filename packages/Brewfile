@@ -88,6 +88,8 @@ cask "aerospace"
 cask "android-file-transfer"
 # Chromium based browser
 cask "arc"
+# Terminal emulator that uses platform-native UI and GPU acceleratio
+cask "ghostty"
 # Web browser
 cask "google-chrome"
 # Utility to hide menu bar items

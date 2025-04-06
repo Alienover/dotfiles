@@ -3,10 +3,10 @@
 # Undercurl support
 # Refer to: https://github.com/kovidgoyal/kitty/issues/3235#issuecomment-758354252
 
-local has_kitty=`command -v kitty`
+local has_ghostty=`command -v ghostty`
 
-if [[ -f $has_kitty ]]; then
-  export TERM="xterm-kitty"
+if [[ -f $has_ghostty ]]; then
+  export TERM="xterm-ghostty"
 else
   export TERM="xterm-256color"
 fi
