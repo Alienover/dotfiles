@@ -1,6 +1,6 @@
 local utils = require("custom.utils")
 
-local map, nmap, vmap = utils.map, utils.nmap, utils.vmap
+local nmap, vmap = utils.nmap, utils.vmap
 
 ---@module 'ufo'
 local ufo = utils.LazyRequire("ufo")
@@ -69,7 +69,7 @@ nmap("<C-p>", function()
 end)
 
 -- File browser
-map({ "n", "i", "x", "t" }, "<C-f>", function()
+nmap("<C-f>", function()
 	require("oil").toggle_float()
 end, "Toggle [F]ile browser")
 
