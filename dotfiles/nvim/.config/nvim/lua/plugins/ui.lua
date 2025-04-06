@@ -78,9 +78,10 @@ return {
 		"folke/noice.nvim",
 		event = "VeryLazy",
 		---@module 'noice'
+		---@type NoiceConfig
 		opts = {
 			popupmenu = { enabled = false },
-			notify = { enabeld = false },
+			notify = { enabled = false },
 
 			---@type NoicePresets
 			presets = { inc_rename = true, lsp_doc_border = true },
