@@ -56,14 +56,6 @@ return {
 		"folke/lazydev.nvim",
 		ft = "lua", -- only load on lua files
 		opts = {
-			format = {
-				enable = true,
-				defaultConfig = {
-					indent_style = "space",
-					indent_size = "2",
-					max_line_length = 80,
-				},
-			},
 			library = {
 				-- See the configuration section for more details
 				-- Load luvit types when the `vim.uv` word is found

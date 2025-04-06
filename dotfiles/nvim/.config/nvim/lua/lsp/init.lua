@@ -24,22 +24,12 @@ local lsp_keymaps = function(_, bufnr)
 	map("gd", vim.lsp.buf.definition, "[G]o [D]efinition")
 	map("gD", vim.lsp.buf.declaration, "[G]o [D]eclaration")
 	map("gi", vim.lsp.buf.implementation, "[G]o [I]mplementation")
-	map("gr", vim.lsp.buf.references, "[G]o [R]eferences")
+	map("grr", "<CMD>Telescope lsp_references<CR>", "[G]o [R]eferences")
 	map("]d", function()
-		vim.diagnostic.jump({
-			count = 1,
-			float = {
-				border = "rounded",
-			},
-		})
+		vim.diagnostic.jump({ count = 1, float = { border = "rounded" } })
 	end, "Next [D]iagnostic ")
 	map("[d", function()
-		vim.diagnostic.jump({
-			count = -1,
-			float = {
-				border = "rounded",
-			},
-		})
+		vim.diagnostic.jump({ count = -1, float = { border = "rounded" } })
 	end, "Previous [D]iagnostic")
 end
 
@@ -70,7 +60,7 @@ local load_config = function(external)
 
 	-- INFO: Capabilities config for nvim-cmp
 	local custom_capabilities = function()
-		local capabilities = require("blink.cmp").get_lsp_capabilities()
+		local capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 		capabilities.textDocument.completion.completionItem.snippetSupport = true
 
