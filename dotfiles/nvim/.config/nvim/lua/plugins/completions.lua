@@ -9,7 +9,7 @@ return {
 	},
 	{
 		"saghen/blink.cmp",
-		event = "InsertEnter",
+		event = { "InsertEnter", "CmdlineEnter" },
 		-- optional: provides snippets for the snippet source
 		dependencies = {
 			"saghen/blink.compat",
