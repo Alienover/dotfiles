@@ -13,6 +13,18 @@ return {
 				max_tokens = 4096, -- Max tokens for completion, adjust for reasoning
 				api_key_name = "cmd:pass show OpenAI/API-Key", -- Command to retrieve API key
 			},
+			web_search_engine = {
+				provider = "google",
+				providers = {
+					tavily = {
+						api_key_name = "cmd:pass show Tavily/API-Key", -- Command to retrieve API key
+					},
+					google = {
+						api_key_name = "cmd:pass show Google-Custom-Search/API-Key",
+						engine_id_name = "cmd:pass show Google-Custom-Search/Engine-ID",
+					},
+				},
+			},
 			hints = { enabled = false },
 		},
 		dependencies = {
