@@ -132,8 +132,9 @@ shift-alt-minus = 'resize smart -50'
 shift-alt-equal = 'resize smart +50'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-alt-1 = 'workspace 🦄'
-alt-2 = 'workspace 🍣'
+alt-esc = 'workspace 🦄'
+alt-1 = 'workspace 🍣'
+alt-2 = 'workspace 🐳'
 alt-3 = 'workspace 💻'
 alt-4 = 'workspace 🎧'
 alt-q = 'workspace Q'
@@ -180,8 +181,9 @@ shift-alt-tab = [
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 # Move focused window to workspace
-shift-alt-1 = ['move-node-to-workspace 🦄', 'workspace 🦄', 'mode main']
-shift-alt-2 = ['move-node-to-workspace 🍣', 'workspace 🍣', 'mode main']
+shift-alt-esc = ['move-node-to-workspace 🦄', 'workspace 🦄', 'mode main']
+shift-alt-1 = ['move-node-to-workspace 🍣', 'workspace 🍣', 'mode main']
+shift-alt-2 = ['move-node-to-workspace 🐳', 'workspace 🐳', 'mode main']
 shift-alt-3 = ['move-node-to-workspace 💻', 'workspace 💻', 'mode main']
 shift-alt-4 = ['move-node-to-workspace 🎧', 'workspace 🎧', 'mode main']
 shift-alt-q = ['move-node-to-workspace Q', 'workspace Q', 'mode main']
@@ -194,6 +196,7 @@ shift-alt-r = ['move-node-to-workspace R', 'workspace R', 'mode main']
 [workspace-to-monitor-force-assignment]
 "🦄" = "main"
 "🍣" = ['secondary', 'main']
+"🐳" = ['secondary', 'main']
 "💻" = ['secondary', 'main']
 
 
@@ -207,13 +210,13 @@ shift-alt-r = ['move-node-to-workspace R', 'workspace R', 'mode main']
 [[on-window-detected]]
 if.during-aerospace-startup = true
 check-further-callbacks = true
-run = 'move-node-to-workspace 🦄'
+run = "move-node-to-workspace 🦄"
 
 # Workspace Assignment
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
 if.during-aerospace-startup = true
-run = "move-node-to-workspace 🍣"
+run = "move-node-to-workspace 🐳"
 
 [[on-window-detected]]
 if.app-id = 'company.thebrowser.Browser'
