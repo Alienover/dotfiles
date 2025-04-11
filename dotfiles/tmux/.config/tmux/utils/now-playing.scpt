@@ -29,7 +29,7 @@ on output(input, prefix)
 end output
 
 on executeJavaScript(activeTab, code)
-  tell application "Arc"
+  tell application "Google Chrome"
   return execute activeTab javascript code
   end tell
 end executeJavaScript
@@ -46,25 +46,35 @@ on getSpotifySong(activeTab)
 end getSpotifySong
 
 on getYoutubeMusicSong(activeTab)
-  set songJsCode to "document.querySelector('.ytmusic-player-bar .subtitle .complex-string').title"
+  set songJsCode to "
+    (function() {
+      const title = document.querySelector('.title.ytmusic-player-bar')?.textContent || '';
+      const artist = document.querySelector('.byline.ytmusic-player-bar>*')?.textContent || '';
+      const isPlaying = document.querySelector('.play-pause-button')?.title.includes('Pause');
+
+      if (!isPlaying) return ''
+
+      return [title, artist].map(each => each.trim()).filter(Boolean).join(' - ')
+    })();
+  "
 
   if activeTab is not null then
-  try
-    set song to executeJavaScript(activeTab, songJsCode) of me
-    return song
-  on error err
-    return ""
-  end try
+    try
+      set song to executeJavaScript(activeTab, songJsCode) of me
+      return song
+    on error err
+      return ""
+    end try
   end if
 
   return ""
 end getYoutubeMusicSong
 
-on getArcBrowserSong()
+on getChromeBrowserSong()
   set prefix to ""
   set current to ""
 
-  tell application "Arc"
+  tell application "Google Chrome"
     repeat with theWindow in every window
       repeat with theTab in every tab of theWindow
         if theTab's URL contains "spotify.com" and theTab's title does not contain "Spotify" then
@@ -73,7 +83,7 @@ on getArcBrowserSong()
           set prefix to ""
           set current to getSpotifySong(theTab) of me
           exit repeat
-        else if theTab's URL contains "music.youtube.com" and theTab's title ends with "- Youtube Music" then
+        else if theTab's URL contains "music.youtube.com" and theTab's title ends with "Youtube Music" then
           (* Youtube Music *)
 
           set prefix to ""
@@ -88,8 +98,6 @@ on getArcBrowserSong()
     end repeat
   end tell
 
-  set current to removeQuotes(current)
-  
   return {current, prefix}
 end getCurrentSong
 
@@ -136,12 +144,14 @@ if application "Spotify" is running then
 end if
 *)
 
+(* Ignore `Apple Music` since i don't use it anymore
 if current is "" and application "Music" is running then
-  set {current, prefix} to getAppleMusicSong() of me
+set {current, prefix} to getAppleMusicSong() of me
 end if
+*)
 
-if current is "" and application "Arc" is running then
-  set {current, prefix} to getArcBrowserSong() of me
+if current is "" and application "Google Chrome" is running then
+  set {current, prefix} to getChromeBrowserSong() of me
 end if
 
 output(current, prefix)

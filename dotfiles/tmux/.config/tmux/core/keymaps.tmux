@@ -38,7 +38,6 @@ bind Escape if -F '#{pane_in_mode}' 'send-keys q' 'copy-mode'
 
 # vim-like copy-paste keymappings
 bind -T copy-mode-vi 'v' send -X begin-selection
-bind -T copy-mode-vi 'y' send -X copy-pipe-and-cancel "tmux show-buffer | pbcopy"
 
 __TM_TMUX_HOME="$XDG_CONFIG_HOME/tmux"
 
@@ -63,4 +62,3 @@ bind l if-shell "$is_vim" "send-keys C-w\ l" "select-pane -R"
 
 # reload config file
 bind r source-file $XDG_CONFIG_HOME/tmux/tmux.conf \; display "Config Reloaded!"
-

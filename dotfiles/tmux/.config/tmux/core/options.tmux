@@ -16,9 +16,8 @@ setw -g aggressive-resize on
 # Address vim mode switching delay (http://superuser.com/a/252717/65504)
 set -sg escape-time 0
 
-set -g set-titles on
-set -g set-titles-string "#T - #W"
-# set-window-option -g automatic-rename on
+# Disable title
+set -g set-titles off
 
 # For compatity about neovim
 set -g focus-events on
@@ -35,3 +34,6 @@ setw -g mode-keys vi
 
 # Increase tmux messages display duration from 750ms to 4s
 set -g display-time 4000
+
+## Prevent annoying renames
+set-option -g allow-rename off
