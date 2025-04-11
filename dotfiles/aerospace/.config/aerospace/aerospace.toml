@@ -128,8 +128,8 @@ ctrl-alt-up = 'move up'
 ctrl-alt-right = 'move right'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#resize
-shift-alt-minus = 'resize smart -50'
-shift-alt-equal = 'resize smart +50'
+shift-alt-minus = 'resize smart -25'
+shift-alt-equal = 'resize smart +25'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
 alt-esc = 'workspace 🦄'
@@ -160,8 +160,10 @@ cmd-shift-m = [] # Minimize all windows to dock
 [mode.service.binding]
 esc = ['reload-config', 'mode main']
 
+# Balance sizes
+shift-alt-equal = ['balance-sizes', 'mode main']
 # Reset layout
-shift-alt-equal = ['flatten-workspace-tree', 'mode main']
+shift-alt-minus = ['flatten-workspace-tree', 'mode main']
 # Toggle fullscreen
 shift-alt-f = ['fullscreen', 'mode main']
 # Toggle floating
@@ -174,7 +176,7 @@ shift-alt-l = ['join-with right', 'mode main']
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 shift-alt-tab = [
-  'move-node-to-monitor --wrap-around next',
+  'move-workspace-to-monitor --wrap-around next',
   'focus-monitor --wrap-around next',
   'mode main',
 ]
@@ -228,11 +230,6 @@ if.app-id = 'com.mitchellh.ghostty'
 if.during-aerospace-startup = true
 run = "move-node-to-workspace 💻"
 
-[[on-window-detected]]
-if.app-id = 'com.spotify.client'
-if.during-aerospace-startup = true
-run = "move-node-to-workspace 🎧"
-
 # Forced Floating Windows
 [[on-window-detected]]
 if.app-id = 'us.zoom.xos'
@@ -245,3 +242,13 @@ run = "layout floating"
 [[on-window-detected]]
 if.app-id = "com.apple.Preview"
 run = "layout floating"
+
+[[on-window-detected]]
+if.app-id = "com.tencent.xinWeChat"
+check-further-callbacks = true
+run = "layout floating"
+
+[[on-window-detected]]
+if.app-id = "com.tencent.xinWeChat"
+if.window-title-regex-substring = "Chats"
+run = "layout tiling"
