@@ -49,9 +49,6 @@ nmap("<leader>S", function()
 	vim.o.spell = vim.o.spell == false and true or false
 end, "Toggle [S]pell")
 
--- Zoom in/out pane
-nmap("zo", utils.zoom, "[Z]oom [O]n")
-
 -- Toggling file finder by telescope or fzf
 nmap("<C-p>", function()
 	local subcmd, options = "find_files", {}

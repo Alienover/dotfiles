@@ -230,26 +230,6 @@ M.buffer_is_big = function(bufnr)
 	end
 end
 
---- Zoom in/out the focused pane
-M.zoom = function()
-	local var_name = "zoom_winrestcmd"
-	local winnr = vim.api.nvim_get_current_win()
-
-	---@type string?
-	local winrestcmd = vim.fn.getwinvar(winnr, var_name, "")
-
-	if winrestcmd and #winrestcmd > 0 then
-		vim.cmd(winrestcmd)
-		vim.api.nvim_win_del_var(winnr, var_name)
-	else
-		vim.api.nvim_win_set_var(winnr, var_name, vim.fn.winrestcmd())
-
-		-- INFO: expand the current pane
-		vim.cmd([[resize]])
-		vim.cmd([[vertical resize]])
-	end
-end
-
 ---@param module_name string
 M.LazyRequire = function(module_name)
 	return setmetatable({

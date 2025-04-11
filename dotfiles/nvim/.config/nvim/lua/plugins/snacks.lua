@@ -66,6 +66,13 @@ return {
 			{
 				"<space>z",
 				function()
+					Snacks.zen.zoom()
+				end,
+				desc = "Toggle Zoom",
+			},
+			{
+				"<space>Z",
+				function()
 					Snacks.zen()
 				end,
 				desc = "[Z]en Mode",
