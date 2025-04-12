@@ -1,15 +1,25 @@
-tap "felixkratz/formulae"
+tap "felixKratz/formulae"
 tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/core"
 tap "homebrew/services", "git@github.com:Homebrew/homebrew-services.git"
 tap "nikitabobko/tap"
+# Extendable version manager with support for Ruby, Node.js, Erlang & more
+brew "asdf"
+# Official Amazon AWS command-line interface
+brew "awscli"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Container runtimes on MacOS (and Linux) with minimal setup
+brew "colima"
 # Powerful, enterprise-ready, open source web server with automatic HTTPS
 brew "caddy"
 # Good-lookin' diffs with diff-highlight and more
 brew "diff-so-fancy"
+# Pack, ship and run any application as a lightweight container
+brew "docker"
+# Isolated development environments using Docker
+brew "docker-compose"
 # Modern, maintained replacement for ls
 brew "eza"
 # Simple, fast and user-friendly alternative to find
@@ -22,6 +32,8 @@ brew "fzf"
 brew "zstd"
 # GNU compiler collection
 brew "gcc"
+# Remote repository management made easy
+brew "ghq"
 # Distributed revision control system
 brew "git"
 # GNU Pretty Good Privacy (PGP) package
@@ -30,6 +42,8 @@ brew "gnupg"
 brew "htop"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
+# Kubernetes command-line interface
+brew "kubernetes-cli"
 # Powerful, lightweight programming language
 brew "lua"
 # Powerful, lightweight programming language (v5.1.5)
@@ -72,10 +86,10 @@ brew "stow"
 brew "tidy-html5"
 # Terminal multiplexer
 brew "tmux"
-# Lightweight BitTorrent client
-brew "transmission-cli"
 # Internet file retriever
 brew "wget"
+# Tools for the WireGuard secure network tunnel
+brew "wireguard-tools"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
 # UNIX shell (command interpreter)
@@ -98,18 +112,14 @@ cask "hiddenbar"
 cask "iina"
 # File archiver
 cask "keka"
-# GPU-based terminal emulator
-cask "kitty"
 # Tool to control external monitor brightness & volume
 cask "monitorcontrol"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
-# Client program for the OpenVPN Access Server
-cask "openvpn-connect"
 # Team communication and collaboration software
 cask "slack"
 # System monitor for the menu bar
-cask "stats", args: { appdir: "~/Applications" }
+cask "stats"
 # Multimedia player
 cask "vlc"
 # Free messaging and calling application
