@@ -88,6 +88,7 @@ return {
 
 			-- See: https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki/Checkboxes
 			checkbox = {
+				checked = { icon = "✔ ", scope_highlight = "@markup.strikethrough" },
 				custom = {
 					important = {
 						raw = "[!]",
