@@ -175,8 +175,8 @@ return {
 		dependencies = { "echasnovski/mini.icons" },
 		opts = {
 			excluded_fn = function()
-				-- INFO: Display the winbar info from the diff plugin itself
-				return vim.opt.diff:get()
+				-- INFO: Exclude those non-exsited files
+				return not vim.uv.fs_stat(vim.fn.expand("%:p"))
 			end,
 			excluded_filetypes = consts.special_filetypes.excluded_winbar,
 		},
