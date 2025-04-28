@@ -292,16 +292,6 @@ wk.add(withTrigger({
 	{ "lh", toggle_inlay_hint, desc = "Toggle Inlay [H]int" },
 }))
 
-wk.add(withTrigger({
-	{
-		"r",
-		group = "HTTP Rest",
-		cond = function()
-			return vim.bo.filetype == "http"
-		end,
-	},
-}))
-
 --- INFO: Treesitter keymaps
 wk.add(withTrigger({
 	{ "a", desc = "Swap next param" },

@@ -2,10 +2,28 @@ local consts = require("custom.constants")
 
 return {
 	{ -- Client for HTTP requests
-		"rest-nvim/rest.nvim",
-		ft = { "http" },
+		"mistweaverco/kulala.nvim",
 		keys = {
-			{ "<space>rr", "<CMD>Rest run<CR>", desc = "Send request under the cursor" },
+			{
+				"<leader>Rs",
+				function()
+					require("kulala").run()
+				end,
+				mode = { "n", "v" },
+				desc = "Send request",
+			},
+			{
+				"<leader>Re",
+				function()
+					require("kulala").set_selected_env()
+				end,
+				desc = "Select environment",
+				ft = { "http", "rest" },
+			},
+		},
+		ft = { "http", "rest" },
+		opts = {
+			global_keymaps = false,
 		},
 	},
 
