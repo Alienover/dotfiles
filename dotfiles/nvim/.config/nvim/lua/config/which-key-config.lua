@@ -87,10 +87,6 @@ local telescope = function(sub_cmd, opts)
 	end
 end
 
-local gitsigns = function(sub_cmd)
-	return string.format(":Gitsigns %s<CR>", sub_cmd)
-end
-
 local lspsaga = function(sub_cmd)
 	return t("Lspsaga " .. sub_cmd)
 end
@@ -226,24 +222,8 @@ wk.add(withTrigger({
 		{ "gc", telescope("git_commits"), desc = "Git [C]ommits" },
 		{ "gC", utils.change_cwd, desc = "[C]hange Current Working Dir" },
 		{ "gf", telescope("git_files"), desc = "Git [F]iles" },
-		{ "gj", gitsigns("next_hunk"), desc = "Next hunk" },
-		{ "gk", gitsigns("prev_hunk"), desc = "Previous hunk" },
-		{ "gp", gitsigns("preview_hunk"), desc = "Preview hunk" },
-		{ "gb", gitsigns("blame_line"), desc = "[B]lame line" },
 		{ "gh", toggle_file_diff(true), desc = "Current File [H]istory" },
 		{ "gH", toggle_file_diff(), desc = "File [H]istory" },
-		{ "gs", gitsigns("stage_hunk"), desc = "[S]tage hunk" },
-		{ "gr", gitsigns("reset_hunk"), desc = "[R]eset Hunk" },
-		{ "gR", gitsigns("reset_buffer"), desc = "[R]eset buffer" },
-	},
-
-	{
-		"g",
-		group = "Git",
-		mode = "v",
-		{ "gs", gitsigns("stage_hunk"), desc = "[S]tage selected hunk" },
-		{ "go", desc = "[O]pen in browse" },
-		{ "gr", gitsigns("reset_hunk"), desc = "[R]eset selected hunk" },
 	},
 }))
 

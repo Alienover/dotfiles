@@ -32,18 +32,15 @@ local config = {
 
 		utils.create_keymaps({
 			-- Hunk Navigation
-			{
-				"n",
-				"]c",
-				make_hunk_navigate("]c", "next"),
-				{ buffer = bufnr, expr = true },
-			},
-			{
-				"n",
-				"[c",
-				make_hunk_navigate("[c", "prev"),
-				{ buffer = bufnr, expr = true },
-			},
+			{ "n", "]c", make_hunk_navigate("]c", "next"), { buffer = bufnr, expr = true } },
+			{ "n", "[c", make_hunk_navigate("[c", "prev"), { buffer = bufnr, expr = true } },
+
+			{ "n", "<space>gp", gs.preview_hunk, { buffer = bufnr, desc = "[P]review hunk" } },
+			{ "n", "<space>gb", gs.blame_line, { buffer = bufnr, desc = "[B]lame line" } },
+			{ "n", "<space>gR", gs.reset_buffer, { buffer = bufnr, desc = "[R]eset buffer" } },
+
+			{ { "n", "v" }, "<space>gs", ":Gitsign stage_hunk<CR>", { buffer = bufnr, desc = "[S]tage hunk" } },
+			{ { "n", "v" }, "<space>gr", ":Gitsign reset_hunk<CR>", { buffer = bufnr, desc = "[R]eset hunk" } },
 
 			-- Text Objects
 			{ { "o", "x" }, "ih", gs.select_hunk },
