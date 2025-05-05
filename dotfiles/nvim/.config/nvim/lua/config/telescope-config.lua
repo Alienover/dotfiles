@@ -3,6 +3,7 @@ local ts_actions = require("telescope.actions")
 
 telescope.setup({
 	defaults = {
+		path_display = { "smart" },
 		selection_caret = "  ",
 		entry_prefix = "  ",
 
