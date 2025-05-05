@@ -23,6 +23,8 @@ HALF_ROUND_CLOSE="#(printf '\uE0B4')"
 TRIANGLE_OPEN="#(printf '\uE0B2')"
 TRIANGLE_CLOSE="#(printf '\uE0B0')"
 
+ZOOM_IN="#(printf ' 󰲏 ')"
+
 # === Theme Options ===
 
 ## Status Content Lenth
@@ -76,6 +78,7 @@ ${tm_active_window}\
 # === Prompt ===
 ## Left Components
 tm_session_name="#[bg=${SESSION_BG},fg=${DARK_FG},bold] #S "
+tm_zoom_status="#{?window_zoomed_flag,${ZOOM_IN},}"
 
 ## Right Components
 ### Current playing track
@@ -87,7 +90,10 @@ tm_host="#[bg=${DATE_BG},fg=${HOST_BG}]${TRIANGLE_OPEN}#[bg=${HOST_BG},fg=${DARK
 set -g status-left "\
 #[fg=${SESSION_BG}]${HALF_ROUND_OPEN}\
 ${tm_session_name}\
-#[bg=${ACTIVE_WINDOW_BG},fg=${SESSION_BG}]${TRIANGLE_CLOSE}\
+#[bg=${ACTIVE_WINDOW_BG},fg=${SESSION_BG}]\
+${TRIANGLE_CLOSE}\
+#[fg=color3,bold]
+${tm_zoom_status}\
 #[fg=${ACTIVE_WINDOW_BG},bg=default]${TRIANGLE_CLOSE}\
 " 
 
