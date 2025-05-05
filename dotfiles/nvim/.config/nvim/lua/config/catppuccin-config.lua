@@ -17,24 +17,25 @@ require("catppuccin").setup({
 		treesitter = true,
 		treesitter_context = true,
 		which_key = true,
-	},
-	native_lsp = {
-		enabled = true,
-		virtual_text = {
-			errors = { "italic" },
-			hints = { "italic" },
-			warnings = { "italic" },
-			information = { "italic" },
+		native_lsp = {
+			enabled = true,
+			virtual_text = {
+				errors = { "italic" },
+				hints = { "italic" },
+				warnings = { "italic" },
+				information = { "italic" },
+			},
+			underlines = {
+				errors = { "undercurl" },
+				hints = { "undercurl" },
+				warnings = { "undercurl" },
+				information = { "undercurl" },
+			},
 		},
 	},
 	custom_highlights = function(colors)
 		return {
 			FoldedVirtualText = { fg = colors.overlay0, style = { "bold", "italic" } },
-			-- Replace the `underline` with `undercurl`
-			DiagnosticUnderlineError = { style = { "undercurl" } },
-			DiagnosticUnderlineWarn = { style = { "undercurl" } },
-			DiagnosticUnderlineInfo = { style = { "undercurl" } },
-			DiagnosticUnderlineHint = { style = { "undercurl" } },
 
 			TabLineSel = { bg = colors.red },
 
@@ -44,9 +45,6 @@ require("catppuccin").setup({
 
 			-- Mods for `telescope.nvim`
 			TelescopeSelection = { bg = colors.surface1 },
-
-			-- Mods for `nvim-cmp`
-			CmpItemMenu = { fg = colors.subtext0 },
 
 			-- Mods for `vim-matchup`
 			MatchParen = { style = { "bold", "italic" } },
