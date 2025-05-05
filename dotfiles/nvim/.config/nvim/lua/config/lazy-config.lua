@@ -5,7 +5,7 @@ local consts = require("custom.constants")
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 ---@diagnostic disable-next-line: undefined-field
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
 	vim.fn.system({
 		"git",
@@ -19,7 +19,6 @@ end
 ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
--- Setup lazy.nvim
 local found, lazy = pcall(require, "lazy")
 if found then
 	local sizing = utils.get_float_win_sizing()
@@ -45,6 +44,21 @@ if found then
 			border = "rounded",
 			icons = {
 				cmd = icons.get("extended", "command"),
+			},
+		},
+		performance = {
+			rtp = {
+				-- disable some rtp plugins
+				disabled_plugins = {
+					"gzip",
+					"matchit",
+					"matchparen",
+					"netrwPlugin",
+					"tarPlugin",
+					"tohtml",
+					"tutor",
+					"zipPlugin",
+				},
 			},
 		},
 	})

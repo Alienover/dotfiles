@@ -30,7 +30,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight on yark",
 
 	callback = function()
-		vim.hl.on_yank({})
+		vim.hl.on_yank({ higroup = "CurSearch" })
 	end,
 })
 
