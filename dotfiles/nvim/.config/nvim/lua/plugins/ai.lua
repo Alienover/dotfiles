@@ -34,7 +34,6 @@ return {
 			vim.api.nvim_set_hl(0, "AvanteSidebarWinSeparator", { link = "AvanteSidebarWinHorizontalSeparator" })
 		end,
 		dependencies = {
-			"stevearc/dressing.nvim",
 			"nvim-lua/plenary.nvim",
 			"MunifTanjim/nui.nvim",
 

@@ -65,15 +65,6 @@ return {
 		end,
 	},
 
-	{
-		"stevearc/dressing.nvim",
-		module = "dressing",
-		opts = {
-			input = { enabled = false },
-			select = { enabled = false },
-		},
-	},
-
 	{ -- UI for messages, cmdline and the popupmenu
 		"folke/noice.nvim",
 		event = "VeryLazy",

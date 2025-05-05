@@ -14,6 +14,7 @@ return {
 			gitbrowse = { enabled = true },
 			input = { enabled = true },
 			notifier = { enabled = true },
+			picker = { ui_select = true },
 			statuscolumn = {
 				right = { "git", "fold" },
 				folds = {
