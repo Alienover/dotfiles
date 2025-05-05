@@ -43,6 +43,8 @@ require("catppuccin").setup({
 			SagaBorder = { fg = colors.surface1 },
 			FloatBorder = { fg = colors.surface1 },
 
+			WinSeparator = { fg = colors.surface1 },
+
 			-- Mods for `telescope.nvim`
 			TelescopeSelection = { bg = colors.surface1 },
 

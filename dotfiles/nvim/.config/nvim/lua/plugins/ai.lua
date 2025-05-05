@@ -30,8 +30,12 @@ return {
 		config = function(_, opts)
 			require("avante").setup(opts)
 
-			-- INFO: fix the border highlights
-			vim.api.nvim_set_hl(0, "AvanteSidebarWinSeparator", { link = "AvanteSidebarWinHorizontalSeparator" })
+			-- Fix the border highlights
+			vim.api.nvim_set_hl(0, "AvanteSidebarWinSeparator", { link = "WinSeparator" })
+
+			-- Hide the horizontal separator
+			local palette = require("catppuccin.palettes").get_palette("mocha")
+			vim.api.nvim_set_hl(0, "AvanteSidebarWinHorizontalSeparator", { fg = palette.base })
 		end,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
