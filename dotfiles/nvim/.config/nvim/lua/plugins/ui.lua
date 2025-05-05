@@ -79,7 +79,6 @@ return {
 
 			cmdline = {
 				format = {
-					lua = false,
 					cmdline = { pattern = "^:", icon = icons.get("extended", "arrowRight"), lang = "vim" },
 				},
 			},
