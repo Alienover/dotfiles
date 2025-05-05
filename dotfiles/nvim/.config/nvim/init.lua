@@ -5,6 +5,6 @@ end
 
 require("options")
 require("autocmd")
-require("keymappings")
+require("keymaps")
 
 require("config.lazy-config")

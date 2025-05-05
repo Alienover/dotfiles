@@ -22,13 +22,6 @@ nmap("<S-Tab>", ":BufferLineCyclePrev<CR>", "Previous Tab")
 -- Open  nvim terminal in split or vertical split
 nmap("<C-t>", ":terminal<CR>i")
 
--- Move lines in <Normal> and <Visual>
--- ∆ for <Option-j> up and ˚ for <Option-k> down
-nmap("∆", ":m .+1<CR>==")
-nmap("˚", ":m .-2<CR>==")
-vmap("∆", ":m '>+1<CR>gv=gv")
-vmap("˚", ":m '<-2<CR>gv=gv")
-
 -- Increase/decrease indents without losing the selected
 vmap("<", "<gv")
 vmap(">", ">gv")
@@ -101,22 +94,3 @@ for _, key in ipairs({ "gd", "gf" }) do
 		end, ("%s and then %s"):format(split, key))
 	end
 end
-
--- Scrolling the signature help doc from Noice
--- * <C-d> - Scroll down
--- * <C-u> - Scroll up
-utils.create_keymaps(vim.tbl_map(function(preset)
-	local lhs, scroll_lines = unpack(preset)
-	return {
-		{ "n", "i", "s" },
-		lhs,
-		function()
-			local noice_lsp = require("noice.lsp")
-
-			if not noice_lsp.scroll(scroll_lines) then
-				return lhs
-			end
-		end,
-		{ expr = true },
-	}
-end, { { "<C-d>", 4 }, { "<C-u>", -4 } }))
