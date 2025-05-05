@@ -23,6 +23,7 @@ adjust-underline-thickness= 2
 window-colorspace = display-p3
 
 macos-titlebar-style = hidden
+macos-option-as-alt = true
 
 quick-terminal-position = bottom
 
