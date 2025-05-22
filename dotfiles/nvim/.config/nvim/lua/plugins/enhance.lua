@@ -50,10 +50,6 @@ return {
 		"@local/better_hjkl.nvim",
 		event = { "CursorMoved" },
 		opts = {
-			escape = {
-				-- Press `jk`, "kj",`jj`, "kk" to escape from insert mode
-				mapping = { "jk", "kj", "jj", "kk" },
-			},
 			discipline = {
 				excluded_filetypes = consts.special_filetypes.excluded_cowboy,
 			},
@@ -62,7 +58,8 @@ return {
 
 	{
 		"max397574/better-escape.nvim",
-		tag = "v1.0.0",
+		event = "VeryLazy",
+		opts = {},
 	},
 
 	{
