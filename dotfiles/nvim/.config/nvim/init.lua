@@ -12,6 +12,10 @@ if vim.loader then
 	vim.loader.enable()
 end
 
+-- Ignore the deprecate warnings
+---@diagnostic disable-next-line: duplicate-set-field
+vim.deprecate = function() end
+
 -- Load options here, before lazy init while sourcing plugin modules
 -- this is needed to make sure options will be correctly applied
 -- after installing missing plugins
