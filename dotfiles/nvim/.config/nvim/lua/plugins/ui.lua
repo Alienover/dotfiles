@@ -1,5 +1,3 @@
-local icons = require("custom.icons")
-
 return {
 	{
 		"catppuccin/nvim",
@@ -81,20 +79,12 @@ return {
 				lsp_doc_border = true,
 				long_message_to_split = true, -- long messages will be sent to a split
 			},
-
-			cmdline = {
-				format = {
-					cmdline = { pattern = "^:", icon = icons.get("extended", "arrowRight"), lang = "vim" },
-				},
-			},
-
 			lsp = {
 				override = {
 					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
 					["vim.lsp.util.stylize_markdown"] = true,
 				},
 			},
-
 			routes = {
 				{
 					filter = {
