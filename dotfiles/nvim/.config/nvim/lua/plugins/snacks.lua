@@ -46,6 +46,7 @@ return {
 					Snacks.gitbrowse()
 				end,
 				desc = "[O]pen in browse",
+				mode = { "n", "v" },
 			},
 
 			-- Notifier
