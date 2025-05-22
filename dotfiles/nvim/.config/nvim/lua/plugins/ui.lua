@@ -6,6 +6,10 @@ return {
 		name = "catppuccin",
 		lazy = false,
 		priority = 1000,
+		init = function()
+			-- setup must be called before loading
+			vim.cmd.colorscheme("catppuccin-mocha")
+		end,
 		build = function()
 			vim.cmd("CatppuccinCompile")
 		end,

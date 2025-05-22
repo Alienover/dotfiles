@@ -5,26 +5,11 @@ require("catppuccin").setup({
 	integrations = {
 		blink_cmp = true,
 		diffview = true,
-		fidget = true,
-		flash = true,
-		gitsigns = true,
 		lsp_saga = true,
-		markdown = true,
-		mason = true,
 		noice = true,
-		render_markdown = true,
-		telescope = { enabled = true },
-		treesitter = true,
-		treesitter_context = true,
 		which_key = true,
 		native_lsp = {
 			enabled = true,
-			virtual_text = {
-				errors = { "italic" },
-				hints = { "italic" },
-				warnings = { "italic" },
-				information = { "italic" },
-			},
 			underlines = {
 				errors = { "undercurl" },
 				hints = { "undercurl" },
@@ -53,6 +38,3 @@ require("catppuccin").setup({
 		}
 	end,
 })
-
--- setup must be called before loading
-vim.cmd.colorscheme("catppuccin-mocha")
