@@ -3,7 +3,7 @@ local ts_actions = require("telescope.actions")
 
 telescope.setup({
 	defaults = {
-		path_display = { "smart" },
+		path_display = { "filename_first" },
 		selection_caret = "  ",
 		entry_prefix = "  ",
 
@@ -14,8 +14,7 @@ telescope.setup({
 		prompt_prefix = " 🌈 ",
 		mappings = {
 			i = {
-				["<C-j>"] = ts_actions.move_selection_next,
-				["<C-k>"] = ts_actions.move_selection_previous,
+				["<C-l>"] = ts_actions.to_fuzzy_refine,
 				["<Esc>"] = ts_actions.close,
 			},
 			n = {
