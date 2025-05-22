@@ -196,20 +196,6 @@ return {
 	},
 
 	{
-		"cbochs/portal.nvim",
-		keys = {
-			{ "<leader>i", "<CMD>Portal jumplist forward<CR>" },
-			{ "<leader>o", "<CMD>Portal jumplist backward<CR>" },
-		},
-		opts = {
-			window_options = {
-				border = "rounded",
-				style = "minimal",
-			},
-		},
-	},
-
-	{
 		"echasnovski/mini.move",
 		event = "VeryLazy",
 		opts = {},
