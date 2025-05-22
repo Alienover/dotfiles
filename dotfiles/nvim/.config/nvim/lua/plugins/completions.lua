@@ -41,6 +41,8 @@ return {
 			-- See :h blink-cmp-config-keymap for defining your own keymap
 			keymap = {
 				preset = "default",
+				["<C-p>"] = { "show", "select_prev", "fallback_to_mappings" },
+				["<C-n>"] = { "show", "select_next", "fallback_to_mappings" },
 				["<C-d>"] = { "scroll_documentation_down", "fallback" },
 				["<C-u>"] = { "scroll_documentation_up", "fallback" },
 			},
@@ -118,9 +120,16 @@ return {
 			-- Default list of enabled providers defined so that you can extend it
 			-- elsewhere in your config, without redefining it, due to `opts_extend`
 			sources = {
-				default = { "lazydev", "lsp", "path", "snippets", "buffer" },
-				per_filetype = { sql = { "dbee", "buffer" }, AvanteInput = { "avante" } },
+				default = { "lsp", "path", "snippets", "buffer" },
+				per_filetype = {
+					sql = { "dbee", "buffer" },
+					AvanteInput = { "avante" },
+					-- optionally inherit from the `default` sources
+					lua = { inherit_defaults = true, "lazydev" },
+				},
 				providers = {
+					-- Boost the score for the items from LSP
+					lsp = { fallbacks = { "path", "buffer" } },
 					-- Refer to https://github.com/MattiasMTS/cmp-dbee/issues/29#issue-2783603343
 					dbee = { name = "DB", module = "blink.compat.source", opts = { cmp_name = "cmp-dbee" } },
 					-- Completion for avante commands
