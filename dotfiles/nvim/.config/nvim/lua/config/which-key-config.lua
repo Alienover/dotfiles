@@ -264,23 +264,7 @@ wk.add(withTrigger({
 	{ "lf", t("lua vim.lsp.buf.format({async = true})"), desc = "[F]ormat" },
 	{ "ls", telescope("lsp_document_symbols"), desc = "Document [S]ymbols" },
 	{ "lD", telescope("diagnostics"), desc = "Document [D]iagnostic" },
-	{ "ln", lspsaga("diagnostic_jump_next"), desc = "[N]ext diagnostic" },
-	{ "lp", lspsaga("diagnostic_jump_prev"), desc = "[P]revious diagnostic" },
-	{ "lt", telescope("lsp_type_definitions"), desc = "[T]ype dDfinitions" },
+	{ "ld", t("lua vim.diagnostic.open_float({ source = true })"), desc = "Hover [D]iagnostic" },
 	{ "la", lspsaga("code_action"), desc = "Code [A]ction" },
-	{ "ld", lspsaga("peek_definition"), desc = "[D]efinition" },
 	{ "lh", toggle_inlay_hint, desc = "Toggle Inlay [H]int" },
 }))
-
---- INFO: Treesitter keymaps
-wk.add(withTrigger({
-	{ "a", desc = "Swap next param" },
-	{ "m", desc = "[M]ove to start of next func" },
-	{ "M", desc = "[M]ove to end of next func" },
-}, "]"))
-
-wk.add(withTrigger({
-	{ "a", desc = "Swap previous param" },
-	{ "m", desc = "[M]ove to start of previous func" },
-	{ "M", desc = "[M]ove to end of previous func" },
-}, "["))

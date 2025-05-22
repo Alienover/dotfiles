@@ -10,9 +10,9 @@ local external_type = constants.external_type
 local ensure_externals = constants.ensure_externals
 
 -- Keymaps for LSP interfaces
-local lsp_keymaps = function(_, bufnr)
+local setup_keymaps = function(_, bufnr)
 	local function map(keys, fnc, desc)
-		local opts = { buffer = bufnr }
+		local opts = { buffer = bufnr, remap = true, noremap = false }
 		if desc then
 			opts.desc = "LSP: " .. desc
 		end
@@ -26,10 +26,10 @@ local lsp_keymaps = function(_, bufnr)
 	map("gi", vim.lsp.buf.implementation, "[G]o [I]mplementation")
 	map("grr", "<CMD>Telescope lsp_references<CR>", "[G]o [R]eferences")
 	map("]d", function()
-		vim.diagnostic.jump({ count = 1, float = { border = "rounded" } })
+		vim.diagnostic.jump({ count = 1 })
 	end, "Next [D]iagnostic ")
 	map("[d", function()
-		vim.diagnostic.jump({ count = -1, float = { border = "rounded" } })
+		vim.diagnostic.jump({ count = -1 })
 	end, "Previous [D]iagnostic")
 end
 
@@ -55,7 +55,7 @@ local load_config = function(external)
 			client.server_capabilities.documentFormattingProvider = false
 		end
 
-		lsp_keymaps(client, bufnr)
+		setup_keymaps(client, bufnr)
 	end
 
 	-- INFO: Capabilities config for nvim-cmp
@@ -107,19 +107,29 @@ local rewrite_lsp_handlers = function()
 	end
 end
 
--- Re-write lsp diagnostic icons
-local rewrite_lsp_icons = function()
-	local signs = {
-		Error = icons.get("extended", "error"),
-		Warn = icons.get("extended", "warn"),
-		Hint = icons.get("extended", "hint"),
-		Info = icons.get("extended", "info"),
-	}
-
-	for type, icon in pairs(signs) do
-		local hl = "DiagnosticSign" .. type
-		vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-	end
+-- Configure the diagnostic styling
+local setup_diagnostic = function()
+	vim.diagnostic.config({
+		float = {
+			severity_sort = true,
+			source = "if_many",
+			border = "rounded",
+		},
+		virtual_lines = { current_line = true },
+		severity_sort = true,
+		signs = {
+			text = {
+				[vim.diagnostic.severity.ERROR] = icons.get("extended", "error"),
+				[vim.diagnostic.severity.WARN] = icons.get("extended", "warn"),
+				[vim.diagnostic.severity.INFO] = icons.get("extended", "info"),
+				[vim.diagnostic.severity.HINT] = icons.get("extended", "hint"),
+			},
+		},
+		-- virtual_text = {
+		-- 	prefix = "  ",
+		-- 	spacing = 4,
+		-- },
+	})
 end
 
 -- Re-write lsp-config built-in functions
@@ -143,19 +153,7 @@ local function setup_lsp()
 	-- Disable the log, set it to "debug" when necessary
 	vim.lsp.set_log_level("off")
 
-	-- Configure the diagnostic styling
-	vim.diagnostic.config({
-		float = true,
-		virtual_lines = true,
-		signs = true,
-		underline = true,
-		severity_sort = true,
-		update_in_insert = false,
-		-- virtual_text = {
-		-- 	prefix = "  ",
-		-- 	spacing = 4,
-		-- },
-	})
+	setup_diagnostic()
 
 	-- Setup the lsp for the one installed manually
 	for server, opts in pairs(ensure_externals) do
@@ -169,7 +167,7 @@ local function setup_lsp()
 	end
 
 	rewrite_lsp_handlers()
-	rewrite_lsp_icons()
+	-- rewrite_lsp_icons()
 	rewrite_lsp_cmds()
 end
 
