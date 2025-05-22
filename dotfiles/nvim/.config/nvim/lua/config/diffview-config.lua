@@ -61,12 +61,14 @@ local function git_commit()
 	end
 end
 
-local config = {
+require("diffview").setup({
 	default_args = {
 		DiffviewOpen = { "--imply-local" },
 		DiffviewFileHistory = { "--base=LOCAL" },
 	},
 	view = {
+		default = { winbar_info = true },
+		file_history = { winbar_info = true },
 		merge_tool = {
 			-- Config for conflicted files in diff views during a merge or rebase.
 			layout = "diff4_mixed",
@@ -87,6 +89,4 @@ local config = {
 			fix_cursor_underline(true)
 		end,
 	},
-}
-
-require("diffview").setup(config)
+})
