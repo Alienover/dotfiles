@@ -18,7 +18,7 @@ __TM_EDITING_FOLDER="$(eval echo $__TM_EDITING_FOLDER)"
 # If the path in title is a valid directory, use it as yazi target. Otherwise, use the pane path
 local __TM_TARGET_FOLDER="$([ -d "$__TM_EDITING_FOLDER" ] && echo $__TM_EDITING_FOLDER || echo $__TM_PWD)"
 
-eval "tmux popup -h $__TM_HEIGHT_SCALE -w $__TM_WIDTH_SCALE -E 'yazi $__TM_TARGET_FOLDER --chooser-file $__TM_TMP'"
+eval "tmux popup -d $__TM_TARGET_FOLDER -h $__TM_HEIGHT_SCALE -w $__TM_WIDTH_SCALE -E 'tmux new-session yazi --chooser-file $__TM_TMP\; set status off'"
 
 # Exit if nothing chosen
 if [[ -z "$(cat $__TM_TMP)"  ]]; then
