@@ -76,4 +76,16 @@ end, {
 	{ "zM", ufo.closeAllFolds, "Close All Folds" },
 	{ "zj", ufo.goNextClosedFold, "Goto [N]ext Fold" },
 	{ "zk", ufo.goPreviousClosedFold, "Goto [P]revious Fold" },
+	{
+		"K",
+		function()
+			local winid = ufo.peekFoldedLinesUnderCursor()
+			if winid then
+				return
+			end
+
+			vim.lsp.buf.hover()
+		end,
+		"Peak lines if folded",
+	},
 }))

@@ -2,9 +2,6 @@ local utils = require("custom.utils")
 
 local nmap, vmap = utils.nmap, utils.vmap
 
----@module 'ufo'
-local ufo = utils.LazyRequire("ufo")
-
 -- Modes, check `:h map-modes` for more detail
 -- * normal_mode	 = "n"
 -- * insert_mode	 = "i"
@@ -18,9 +15,6 @@ nmap("-", "<C-X>", "Decrement")
 
 nmap("<Tab>", ":BufferLineCycleNext<CR>", "Next Tab")
 nmap("<S-Tab>", ":BufferLineCyclePrev<CR>", "Previous Tab")
-
--- Open  nvim terminal in split or vertical split
-nmap("<C-t>", ":terminal<CR>i")
 
 -- Increase/decrease indents without losing the selected
 vmap("<", "<gv")
@@ -72,15 +66,6 @@ nmap("<leader>s", function()
 		},
 	}))
 end, "[S]pell Suggestions")
-
-nmap("K", function()
-	local winid = ufo.peekFoldedLinesUnderCursor()
-	if winid then
-		return
-	end
-
-	vim.lsp.buf.hover()
-end, "Peak lines if folded")
 
 -- Splitting Horizontal/Vertical after running the following cmds
 -- * gd - Go to definition
