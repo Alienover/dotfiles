@@ -20,8 +20,8 @@ __git_diff() {
     --prompt " > Changed Files: " \
     --preview "$_gitDiffFilename | xargs -I % git diff --color -- $_toplevel/% | diff-so-fancy" \
     --preview-window "border-left" \
-    --bind "ctrl-d:preview-down" \
-    --bind 'ctrl-u:preview-up' \
+    --bind "ctrl-d:preview-page-down" \
+    --bind 'ctrl-u:preview-page-up' \
     --bind "enter:execute(git difftool -y -- $_toplevel/\`$_gitDiffFilename\`)"
 }
 

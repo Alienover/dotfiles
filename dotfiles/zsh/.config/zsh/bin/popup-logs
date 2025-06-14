@@ -18,7 +18,7 @@ __git_logs() {
             --prompt " > Git Logs: " \
             --preview "$_gitLogFirstLineToHash | xargs -I % sh -c 'git show --color=always --name-status --show-signature %'" \
             --preview-window "border-left" \
-            --bind "ctrl-d:preview-down,ctrl-u:preview-up" \
+            --bind "ctrl-d:preview-page-down,ctrl-u:preview-page-up" \
             --bind "ctrl-y:execute($_gitLogLineToHash | tr '\n' ' ' | pbcopy)+deselect-all+accept" \
             --bind "enter:execute($_viewGitLogLine | less -R)" \
 }

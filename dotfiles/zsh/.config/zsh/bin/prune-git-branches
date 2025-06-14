@@ -13,7 +13,7 @@ __prune() {
     --prompt " > Gone Branches: " \
     --header "/ CTRL-A: Select All / CTRL-T: Toggle Select / Enter: Prune /" \
     --bind ctrl-a:select-all,ctrl-t:toggle-all \
-    --bind ctrl-d:preview-down,ctrl-u:preview-up \
+    --bind ctrl-d:preview-page-down,ctrl-u:preview-page-up \
     --preview "echo {} | xargs $_logDetail"\
     --preview-window "border-left"
   )
