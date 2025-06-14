@@ -225,7 +225,7 @@ M.telescope = function(cmd, opts)
 	}
 
 	local win_spec = M.get_window_sepc()
-	if win_spec.columns < window_sizing.md.width then
+	if win_spec.columns <= window_sizing.md.width then
 		layout_config.width = 0.8
 		layout_config.height = 0.8
 	end

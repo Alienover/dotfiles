@@ -109,8 +109,8 @@ M.special_filetypes = {
 
 M.window_sizing = {
 	md = {
-		width = 260,
-		height = 65,
+		width = 270,
+		height = 80,
 	},
 }
 
