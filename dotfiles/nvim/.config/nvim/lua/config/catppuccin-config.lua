@@ -35,6 +35,8 @@ require("catppuccin").setup({
 
 			-- Mods for `vim-matchup`
 			MatchParen = { style = { "bold", "italic" } },
+
+			CursorLineNr = { fg = colors.peach },
 		}
 	end,
 })

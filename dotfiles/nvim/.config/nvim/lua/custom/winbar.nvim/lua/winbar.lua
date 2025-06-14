@@ -12,7 +12,7 @@ local DEFAULT_OPTS = {
 
 	---@type string
 	-- Highlight group for the content
-	text_hl = "CursorLineNr",
+	text_hl = "Title",
 
 	---@type number
 	-- Max depth of the upward path from current file to display
