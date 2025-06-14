@@ -50,7 +50,7 @@ unbind T
 bind T run "tmux-popup \"source $__TM_TMUX_HOME/floatterm.sh\" -s popup -t"
 
 unbind F
-bind F run "tmux-yazi"
+bind F run "tmux-popup \"lf\" -s popup -t" 
 
 is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
 

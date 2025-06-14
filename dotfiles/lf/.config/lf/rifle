@@ -1,0 +1,15 @@
+# vim:ft=lf
+
+cmd open &{{
+  case $(file --mime-type -Lb -- $f) in
+    video/*)
+      mpv --keep-open=yes $fx
+      ;;
+    text/*)
+      lf -remote "send $id \$$EDITOR -p \$fx"
+      ;;
+    *)
+      open $fx
+      ;;
+  esac
+}}

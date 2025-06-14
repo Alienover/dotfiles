@@ -1,0 +1,175 @@
+#!/bin/bash
+
+# lf preview script for Ghostty terminal emulator on macOS
+# Supports image preview using Kitty graphics protocol
+# Place this script in ~/.config/lf/preview and make it executable
+
+file="$1"
+width="${2:-80}"
+height="${3:-20}"
+x="${4:-0}"
+y="${5:-0}"
+
+MAX_IMAGE_PREVIEW_SIZE=$((4 * 1024 * 1024))
+
+
+# kitty +kitten icat --clear --stdin no --transfer-mode memory </dev/null >/dev/tty
+
+# Function to check if we're running inside tmux
+is_tmux() {
+    [[ -n "$TMUX" ]]
+}
+
+# manually clear the image created by kitty
+if ! is_tmux; then
+  kitty +kitten icat --clear --stdin no --transfer-mode file </dev/null >/dev/tty
+fi
+
+# Function to display image using various protocols
+show_image() {
+    local image_path="$1"
+    local width="$2"
+    local height="$3"
+    
+    # Check if file exists and is readable
+    if [[ ! -r "$image_path" ]]; then
+        echo "Cannot read file: $image_path"
+        return 1
+    fi
+
+    # Check image size
+    local file_size=$(stat -f "%z" "$image_path")
+    if [ $file_size -gt $MAX_IMAGE_PREVIEW_SIZE ]; then
+      echo "Image too large to preview (over 4MB)"
+      show_file_info "$image_path"
+      return 1
+    fi
+    
+    # Check if we're in tmux
+    if is_tmux; then
+        # tmux often doesn't forward graphics protocols properly
+        # Try a few approaches in order of preference
+        
+        # Method 1: Try tmux pass-through (tmux 3.3+)
+        # if command -v kitty >/dev/null 2>&1; then
+        #     printf '\033Ptmux;\033\033_Ga=T,f=100,t=d,s=%d,v=%d\033\\' "$width" "$height"
+        #     base64 < "$image_path" | tr -d '\n' | while IFS= read -r line; do
+        #         printf '\033Ptmux;\033\033_Gm=1;%s\033\\\033\\' "$line"
+        #     done
+        #     printf '\033Ptmux;\033\033_Gm=0\033\\\033\\'
+        #     return 0
+        # fi
+
+        if command -v catimg >/dev/null 2>&1; then
+          catimg -H $height "$1" | sed '$ d'
+          return 0
+        fi
+        
+        # Method 2: Try using chafa for ASCII art representation
+        if command -v chafa >/dev/null 2>&1; then
+            chafa --format=symbols --size="${width}x${height}" --animate=off "$image_path" 2>/dev/null
+            return 0
+        fi
+        
+        # Fallback: show image info for tmux
+        echo "Image preview in tmux (use 'o' to open in external viewer)"
+        show_file_info "$image_path"
+        return 1
+    else
+        # Not in tmux - use standard Kitty graphics protocol
+        if command -v kitty >/dev/null 2>&1; then
+            # Use kitty's icat if available
+            kitty +kitten icat --stdin=no --clear --transfer-mode=memory --place="${width}x${height}@${x}x${y}" "$1" </dev/null >/dev/tty
+        else
+            # Direct Kitty graphics protocol
+            local base64_data
+            base64_data=$(base64 < "$image_path" | tr -d '\n')
+            
+            # Send Kitty graphics protocol escape sequence
+            printf '\033_Ga=T,f=100,t=f,s=%d,v=%d;%s\033\\' "$width" "$height" "$base64_data"
+        fi
+    fi
+}
+
+# Function to show text file preview
+show_text() {
+    local file_path="$1"
+    local preview_height="$2"
+    
+    if command -v bat >/dev/null 2>&1; then
+        bat --color=always --style=plain --pager=never --line-range=":$preview_height" "$file_path" 2>/dev/null
+    else
+        head -n "$preview_height" "$file_path"
+    fi
+}
+
+# Function to show directory contents
+show_directory() {
+    local dir_path="$1"
+    local preview_height="$2"
+    
+    if command -v exa >/dev/null 2>&1; then
+        exa -la --color=always "$dir_path" | head -n "$preview_height"
+    elif command -v ls >/dev/null 2>&1 && ls --version >/dev/null 2>&1; then
+        # GNU ls
+        ls -la --color=always "$dir_path" | head -n "$preview_height"
+    else
+        # BSD ls (default on macOS)
+        ls -laG "$dir_path" | head -n "$preview_height"
+    fi
+}
+
+# Function to show file info
+show_file_info() {
+    local file_path="$1"
+    
+    echo "File: $(basename "$file_path")"
+    echo "Path: $file_path"
+    echo "Size: $(du -h "$file_path" | cut -f1)"
+    echo "Type: $(file -b "$file_path")"
+    echo "Modified: $(stat -f "%Sm" "$file_path" 2>/dev/null || stat -c "%y" "$file_path" 2>/dev/null)"
+    echo "Permissions: $(stat -f "%Mp%Lp" "$file_path" 2>/dev/null || stat -c "%A" "$file_path" 2>/dev/null)"
+}
+
+
+# Main logic
+case "$(file -bL --mime-type "$file")" in
+    image/*)
+        show_image "$file" "$width" "$height"
+        ;;
+    text/* | application/json | application/javascript | application/xml)
+        show_text "$file" "$height"
+        ;;
+    application/pdf)
+        if command -v pdftotext >/dev/null 2>&1; then
+            pdftotext -l 10 -nopgbrk -q "$file" - | head -n "$height"
+        else
+            echo "PDF preview requires pdftotext (install poppler-utils)"
+            show_file_info "$file"
+        fi
+        ;;
+    application/zip | application/x-rar-compressed | application/x-7z-compressed)
+        if command -v unzip >/dev/null 2>&1 && [[ "$file" == *.zip ]]; then
+            unzip -l "$file" | head -n "$height"
+        elif command -v 7z >/dev/null 2>&1; then
+            7z l "$file" | head -n "$height"
+        else
+            show_file_info "$file"
+        fi
+        ;;
+    video/* | audio/*)
+        if command -v ffprobe >/dev/null 2>&1; then
+            ffprobe -v quiet -show_format -show_streams "$file" 2>/dev/null | head -n "$height"
+        else
+            echo "Media file preview requires ffprobe (install ffmpeg)"
+            show_file_info "$file"
+        fi
+        ;;
+    *)
+        if [[ -d "$file" ]]; then
+            show_directory "$file" "$height"
+        else
+            show_file_info "$file"
+        fi
+        ;;
+esac

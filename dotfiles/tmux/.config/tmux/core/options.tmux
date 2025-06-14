@@ -37,3 +37,7 @@ set -g display-time 4000
 
 ## Prevent annoying renames
 set-option -g allow-rename off
+
+set -g allow-passthrough on
+set -ga update-environment TERM
+set -ga update-environment TERM_PROGRAM

@@ -1,0 +1,31 @@
+#vim:ft=lf
+
+source ~/.config/lf/rifle
+
+set preview true
+set previewer ~/.config/lf/preview
+
+set shell /bin/sh
+set shellopts '-eu'
+set relativenumber true
+set cursorpreviewfmt ""
+set icons true
+set ifs "\n"
+set ratios 1:2:2
+set info size:time
+set timefmt "2006-01-02 15:04"
+set incsearch true
+
+set errorfmt "\033[7;31;40m"
+set numberfmt "\033[90m"
+
+## commands
+cmd toggle-preview %{{
+    if [ "$lf_preview" = true ]; then
+        lf -remote "send $id :set preview false; set ratios 1:5"
+    else
+        lf -remote "send $id :set preview true; set ratios 1:2:2"
+    fi
+}}
+
+map g. :set hidden!
