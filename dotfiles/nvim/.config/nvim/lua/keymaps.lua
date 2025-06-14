@@ -36,21 +36,8 @@ nmap("<leader>S", function()
 	vim.o.spell = vim.o.spell == false and true or false
 end, "Toggle [S]pell")
 
--- Toggling file finder by telescope or fzf
-nmap("<C-p>", function()
-	local subcmd, options = "find_files", {}
-	local root = vim.fs.root(vim.fn.expand("%:p"), ".git")
-
-	if root then
-		subcmd = "git_files"
-		options = vim.tbl_extend("force", options, {
-			cwd = root,
-			show_untracked = true,
-		})
-	end
-
-	utils.telescope(subcmd, options)
-end)
+-- Toggling file finder in smart mode with Snacks.picker
+nmap("<C-p>", utils.snacks_picker.smart)
 
 -- File browser
 nmap("<C-f>", function()

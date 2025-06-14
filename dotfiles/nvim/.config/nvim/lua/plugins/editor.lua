@@ -1,3 +1,5 @@
+local utils = require("custom.utils")
+
 return {
 	{
 		"folke/which-key.nvim",
@@ -13,7 +15,6 @@ return {
 		cmd = { "Telescope" },
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-			"debugloop/telescope-undo.nvim",
 			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 			{
 				"nvim-telescope/telescope-live-grep-args.nvim",
@@ -27,8 +28,16 @@ return {
 		end,
 	},
 
-	{ -- Highlight keywords like todo, fix, and info
+	{ -- Highlight keywords like utils.snacks_picker.todo_commentstodo, fix, and info
 		"folke/todo-comments.nvim",
+		keys = {
+			{
+				"<space>ht",
+				---@diagnostic disable-next-line: undefined-field
+				utils.snacks_picker.todo_comments,
+				desc = "[T]odo Comments",
+			},
+		},
 		event = "BufReadPost",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {

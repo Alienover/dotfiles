@@ -189,6 +189,32 @@ M.setup_filetypes = function(filetypes)
 	end
 end
 
+--- @module 'snacks'
+--- @type snacks.picker
+M.snacks_picker = setmetatable({
+	get_picker_opts = function()
+		local sizing = M.get_float_win_sizing()
+
+		return {
+			layouts = {
+				telescope = {
+					layout = {
+						width = sizing.width,
+						height = sizing.height,
+					},
+				},
+			},
+		}
+	end,
+}, {
+	__index = function(ctx, cmd)
+		--- @param opts? snacks.picker.Config
+		return function(opts)
+			Snacks.picker[cmd](vim.tbl_deep_extend("force", ctx.get_picker_opts(), opts or {}))
+		end
+	end,
+})
+
 M.telescope = function(cmd, opts)
 	local flags = {}
 	opts = opts or {}

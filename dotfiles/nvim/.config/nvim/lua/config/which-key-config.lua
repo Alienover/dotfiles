@@ -172,12 +172,9 @@ wk.add(withTrigger({
 	{
 		"h",
 		group = "Help",
-		{ "ht", telescope("todo-comments"), desc = "[T]odo Comments" },
-		{ "hT", telescope("builtin"), desc = "[T]elescope" },
-		{ "hc", telescope("commands"), desc = "[C]ommands" },
-		{ "hk", telescope("keymaps"), desc = "[K]ey Maps" },
-		{ "hh", telescope("highlights"), desc = "[H]ighlight Groups" },
-		{ "hN", telescope("noice"), desc = "[N]oice history" },
+		{ "hc", utils.snacks_picker.commands, desc = "[C]ommands" },
+		{ "hk", utils.snacks_picker.keymaps, desc = "[K]ey Maps" },
+		{ "hh", utils.snacks_picker.highlights, desc = "[H]ighlight Groups" },
 		{ "hm", t("Mason"), desc = "[M]ason Manager" },
 		{
 			"hl",
@@ -185,15 +182,10 @@ wk.add(withTrigger({
 			{ "hlS", t("Lazy sync"), desc = "[S]ync Plugins" },
 			{ "hls", t("Lazy show"), desc = "[S]how Plugins" },
 		},
-		{ "hu", telescope("undo"), desc = "[U]ndo tree" },
-		{ "h?", telescope("help_tags"), desc = "Help doc" },
+		{ "hu", utils.snacks_picker.undo, desc = "[U]ndo tree" },
+		{ "h?", utils.snacks_picker.help, desc = "Help doc" },
 	},
-
-	{
-		"/",
-		telescope("current_buffer_fuzzy_find"),
-		desc = "Search",
-	},
+	{ "/", utils.snacks_picker.lines, desc = "Search" },
 }))
 
 --- INFO: Buffer
@@ -201,12 +193,14 @@ wk.add(withTrigger({
 	{ "b", group = "Buffer" },
 	{
 		"bb",
-		telescope("buffers", {
-			sort_mru = true,
-			sort_lastused = false,
-			initial_mode = "normal",
-			theme = "ivy",
-		}),
+		function()
+			utils.snacks_picker.buffers({
+				on_show = function()
+					vim.cmd.stopinsert()
+				end,
+				layout = "ivy",
+			})
+		end,
 		desc = "Find [B]uffers",
 	},
 	{ "bn", t("tabnew"), desc = "[N]ew Tab" },
@@ -236,17 +230,12 @@ wk.add(withTrigger({
 		telescope("find_files", { no_ignore = true, hidden = true }),
 		desc = "[F]ind files",
 	},
-	{ "fo", telescope("oldfiles"), desc = "Recently [O]pend" },
+	{ "fo", utils.snacks_picker.recent, desc = "Recently [O]pend" },
 }))
 
 --- INFO: Open File
 wk.add(withTrigger({
 	{ "o", group = "Open" },
-	{
-		"od",
-		telescope("git_files", { cwd = constants.files.dotfiles }),
-		desc = "dotfiles",
-	},
 	{ "ov", e(constants.files.vim), desc = ".vimrc" },
 	{ "oz", e(constants.files.zsh), desc = ".zshrc" },
 	{ "ot", e(constants.files.tmux), desc = ".tmux.conf" },
@@ -262,7 +251,7 @@ wk.add(withTrigger({
 	{ "lR", t("LspRestart"), desc = "[R]estart" },
 	{ "lN", t("NullLsInfo"), desc = "[N]ull-ls Info" },
 	{ "lf", t("lua vim.lsp.buf.format({async = true})"), desc = "[F]ormat" },
-	{ "ls", telescope("lsp_document_symbols"), desc = "Document [S]ymbols" },
+	{ "ls", utils.snacks_picker.lsp_symbols, desc = "Document [S]ymbols" },
 	{ "lD", telescope("diagnostics"), desc = "Document [D]iagnostic" },
 	{ "ld", t("lua vim.diagnostic.open_float({ source = true })"), desc = "Hover [D]iagnostic" },
 	{ "la", lspsaga("code_action"), desc = "Code [A]ction" },

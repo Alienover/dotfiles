@@ -15,7 +15,40 @@ return {
 			input = { enabled = true },
 			notifier = { enabled = true },
 			quickfile = { enabled = true },
-			picker = { ui_select = true },
+			picker = {
+				ui_select = true,
+				layout = { preset = "telescope" },
+				formatters = {
+					file = {
+						filename_first = true,
+					},
+				},
+				layouts = {
+					ivy = {
+						layout = {
+							height = 0.3,
+						},
+					},
+					select = {
+						layout = {
+							max_width = 80,
+						},
+					},
+				},
+				win = {
+					input = {
+						keys = {
+							["<Esc>"] = { "close", mode = { "n", "i" } },
+
+							-- Preview scorlling
+							["<C-f>"] = false,
+							["<C-b>"] = false,
+							["<C-d>"] = { "preview_scroll_down", mode = { "n", "i" } },
+							["<C-u>"] = { "preview_scroll_up", mode = { "n", "i" } },
+						},
+					},
+				},
+			},
 			statuscolumn = {
 				right = { "git", "fold" },
 				folds = {
