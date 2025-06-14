@@ -10,10 +10,8 @@ brew "asdf"
 brew "awscli"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
-# Container runtimes on MacOS (and Linux) with minimal setup
-brew "colima"
-# Powerful, enterprise-ready, open source web server with automatic HTTPS
-brew "caddy"
+# Insanely fast image printing in your terminal
+brew "catimg"
 # Good-lookin' diffs with diff-highlight and more
 brew "diff-so-fancy"
 # Pack, ship and run any application as a lightweight container
@@ -24,12 +22,12 @@ brew "docker-compose"
 brew "eza"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
+# A window border system for macOS
+brew "felixkratz/formulae/borders"
 # Fast and simple Node.js version manager
 brew "fnm"
 # Command-line fuzzy finder written in Go
 brew "fzf"
-# Zstandard is a real-time compression algorithm
-brew "zstd"
 # GNU compiler collection
 brew "gcc"
 # Remote repository management made easy
@@ -44,6 +42,8 @@ brew "htop"
 brew "jq"
 # Kubernetes command-line interface
 brew "kubernetes-cli"
+# Terminal file manager
+brew "lf"
 # Powerful, lightweight programming language
 brew "lua"
 # Powerful, lightweight programming language (v5.1.5)
@@ -51,27 +51,15 @@ brew "lua@5.1"
 # Package manager for the Lua programming language
 brew "luarocks"
 # Open source relational database management system
-brew "mysql-client", link: true
+brew "mysql-client"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# 7-Zip (high compression file archiver) implementation
-brew "p7zip"
-# Display directories as trees (with optional color/HTML output)
-brew "tree"
 # Password manager
 brew "pass"
 # Pass extension for managing one-time-password tokens
 brew "pass-otp"
 # Pinentry for GPG on Mac
 brew "pinentry-mac"
-# Tool for managing OCI containers and pods
-brew "podman"
-# Protocol buffers (Google's data interchange format)
-brew "protobuf"
-# Go support for Google's protocol buffers
-brew "protoc-gen-go"
-# Seamless operability between C++11 and Python
-brew "pybind11"
 # Python version management
 brew "pyenv"
 # Alternative to pyenv for managing virtualenvs
@@ -82,8 +70,6 @@ brew "re2"
 brew "ripgrep"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
-# Granddaddy of HTML tools, with support for modern standards
-brew "tidy-html5"
 # Terminal multiplexer
 brew "tmux"
 # Internet file retriever
@@ -94,34 +80,36 @@ brew "wireguard-tools"
 brew "yazi"
 # UNIX shell (command interpreter)
 brew "zsh"
-# A window border system for macOS
-brew "felixkratz/formulae/borders"
 # AeroSpace is an i3-like tiling window manager for macOS
 cask "aerospace"
 # Transfer files from and to an Android smartphone
 cask "android-file-transfer"
 # Chromium based browser
 cask "arc"
+# Display management tool
+cask "betterdisplay"
+# JetBrains Mono
+cask "font-jetbrains-mono"
 # Terminal emulator that uses platform-native UI and GPU acceleratio
 cask "ghostty"
 # Web browser
 cask "google-chrome"
-# Utility to hide menu bar items
-cask "hiddenbar"
-# Free and open-source media player
-cask "iina"
+# Menu bar manager
+cask "jordanbaird-ice"
 # File archiver
 cask "keka"
-# Tool to control external monitor brightness & volume
-cask "monitorcontrol"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
+# Replacement for Docker Desktop
+cask "orbstack"
+# Keyboard-driven, vim-like browser based on PyQt5
+cask "qutebrowser"
 # Team communication and collaboration software
 cask "slack"
 # System monitor for the menu bar
 cask "stats"
-# Multimedia player
-cask "vlc"
+# Media player based on MPlayer and mplayer2
+cask "stolendata-mpv"
 # Free messaging and calling application
 cask "wechat"
 # Video communication and virtual meeting platform
