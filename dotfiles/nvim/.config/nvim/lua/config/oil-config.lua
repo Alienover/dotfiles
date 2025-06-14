@@ -1,6 +1,7 @@
 local oil = require("oil")
 
 local utils = require("custom.utils")
+local finders = require("custom.finders")
 
 local detail = false
 local toggle_detail_view = function()
@@ -17,55 +18,45 @@ local toggle_detail_view = function()
 	end
 end
 
+local open_directory = function()
+	local cwd = oil.get_current_dir()
+	cwd = Snacks.git.get_root(cwd) or cwd
+
+	Snacks.picker.pick({
+		layout = "ivy",
+		preview = "directory",
+		title = "Oil: Open directory",
+		finder = function(opts, ctx)
+			opts.cwd = cwd
+
+			return finders.directories(opts, ctx)
+		end,
+		confirm = function(picker, item)
+			picker:close()
+
+			oil.open_float(item.file)
+		end,
+	})
+end
+
 oil.setup(
 	---@type oil.SetupOpts
 	{
-		-- Oil will take over directory buffers (e.g. `vim .` or `:e src/`)
-		-- Set to false if you want some other plugin (e.g. netrw) to open when you edit directories.
-		default_file_explorer = true,
-
 		win_options = { cursorline = true },
 
 		lsp_file_methods = { enabled = false },
 
-		-- Set to false to disable all of the above keymaps
-		use_default_keymaps = false,
 		keymaps = {
-			--- Flags
-			["g?"] = "actions.show_help",
-			["g."] = "actions.toggle_hidden",
-			["g\\"] = "actions.toggle_trash",
-			["gs"] = "actions.change_sort",
-
-			--- Selection
-			["<CR>"] = "actions.select",
-			["<C-s>"] = {
-				"actions.select",
-				opts = { vertical = true },
-				desc = "Open the entry in a vertical split",
-			},
-			["<C-v>"] = {
-				"actions.select",
-				opts = { horizontal = true },
-				desc = "Open the entry in a horizontal split",
-			},
-			["<C-t>"] = {
-				"actions.select",
-				opts = { tab = true },
-				desc = "Open the entry in new tab",
-			},
-
 			--- Close
-			["<C-c>"] = "actions.close",
-			["<ESC>"] = "actions.close",
+			["q"] = "actions.close",
 
 			--- Preview
-			["<C-p>"] = "actions.preview",
 			["<c-d>"] = "actions.preview_scroll_down",
 			["<c-u>"] = "actions.preview_scroll_up",
 
 			--- Misc
-			["<C-l>"] = "actions.refresh",
+			["l"] = "actions.select",
+			["h"] = "actions.parent",
 			["<BS>"] = "actions.parent",
 			["`"] = "actions.cd",
 
@@ -73,6 +64,10 @@ oil.setup(
 			["gd"] = {
 				desc = "Toggle file detail view",
 				callback = toggle_detail_view,
+			},
+			["gf"] = {
+				desc = "Toggle fzf directories search under CWD",
+				callback = open_directory,
 			},
 		},
 		-- Configuration for the floating window in oil.open_float
