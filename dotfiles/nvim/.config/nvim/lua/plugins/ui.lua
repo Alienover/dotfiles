@@ -55,7 +55,7 @@ return {
 					-- Flags
 					show_close_icon = false,
 					show_buffer_close_icons = false,
-					always_show_bufferline = true,
+					always_show_bufferline = false,
 
 					-- LSP diagnostics
 					diagnostics = "nvim_lsp",
