@@ -76,8 +76,6 @@ brew "tmux"
 brew "wget"
 # Tools for the WireGuard secure network tunnel
 brew "wireguard-tools"
-# Blazing fast terminal file manager written in Rust, based on async I/O
-brew "yazi"
 # UNIX shell (command interpreter)
 brew "zsh"
 # AeroSpace is an i3-like tiling window manager for macOS
