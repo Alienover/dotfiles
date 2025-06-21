@@ -1,7 +1,6 @@
 return {
 	{
 		"yetone/avante.nvim",
-		optional = false,
 		keys = { { "<leader>at", "<CMD>AvanteToggle<CR>" } },
 		cmd = { "AvanteAsk", "AvanteToggle", "AvanteEdit" },
 		version = false,
@@ -47,11 +46,13 @@ return {
 
 			--- The below dependencies are optional,
 			"echasnovski/mini.icons",
+
+			--- Blink.cmp completion source
+			{ "Kaiser-Yang/blink-cmp-avante", ft = "AvanteInput" },
 		},
 	},
 	{
 		"olimorris/codecompanion.nvim",
-		event = { "VeryLazy" },
 		keys = {
 			{ "<leader>cc", "<CMD>CodeCompanionChat Toggle<CR>", mode = "n", desc = "CodeCompanion: Toggle Chat" },
 			{ "<leader>cA", "<CMD>CodeCompanionActions<CR>", mode = "n", desc = "CodeCompanion: Actions" },

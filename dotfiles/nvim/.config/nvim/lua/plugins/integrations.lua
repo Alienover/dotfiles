@@ -32,6 +32,8 @@ return {
 		cmd = { "Dbee" },
 		dependencies = {
 			"MunifTanjim/nui.nvim",
+			--- Blink.cmp completion source
+			{ "MattiasMTS/cmp-dbee", ft = "sql", opts = {} },
 		},
 		build = function()
 			-- Install tries to automatically detect the install method.

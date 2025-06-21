@@ -11,11 +11,7 @@ return {
 		"saghen/blink.cmp",
 		event = { "InsertEnter", "CmdlineEnter" },
 		-- optional: provides snippets for the snippet source
-		dependencies = {
-			"saghen/blink.compat",
-			{ "MattiasMTS/cmp-dbee", ft = "sql", opts = {} },
-			{ "Kaiser-Yang/blink-cmp-avante", ft = "AvanteInput" },
-		},
+		dependencies = { "saghen/blink.compat" },
 
 		-- use a release tag to download pre-built binaries
 		version = "1.*",
