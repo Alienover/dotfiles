@@ -30,9 +30,6 @@ return {
 				},
 			},
 			hints = { enabled = false },
-			behaviour = {
-				auto_suggestions = true,
-			},
 		},
 		config = function(_, opts)
 			require("avante").setup(opts)
