@@ -1,10 +1,10 @@
-#! /bin/zsh
+#!/usr/bin/env sh
 
 # Check the `CWD` is inside the git repo
 git rev-parse --is-inside-work-tree >> /dev/null || exit 1
 
 # Check whether there's diff
-TMP=`git diff --name-only`; [[ -z "$TMP" ]] && exit 0
+[ -z "$(git diff --name-only)" ] && exit 0
 
 height=${__FZF_POPUP_HEIGHT:-30%}
 

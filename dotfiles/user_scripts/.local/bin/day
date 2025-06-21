@@ -1,4 +1,4 @@
-#! /bin/zsh
+#!/usr/bin/env sh
 
 __OB_DATE_FORMAT="%Y-%m-%d"
 today=$(date +"$__OB_DATE_FORMAT")

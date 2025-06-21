@@ -1,9 +1,5 @@
-#! /usr/bin/env zsh
-
-HISTSIZE=5000
-HISTFILE=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zsh_history
-SAVEHIST=$HISTSIZE
-HISTDUP=erase
+export SAVEHIST=$HISTSIZE
+export HISTDUP=erase
 
 setopt appendhistory
 setopt sharehistory

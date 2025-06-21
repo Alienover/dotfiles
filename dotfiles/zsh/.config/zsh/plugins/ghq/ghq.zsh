@@ -1,5 +1,3 @@
-#! /bin/env zsh
-
 ghq () {
   if [ "$1" = look -a -n "$2" ]; then
     local repos=($(command ghq list -p "$2"))

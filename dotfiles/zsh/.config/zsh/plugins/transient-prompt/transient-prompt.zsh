@@ -1,5 +1,3 @@
-#! /bin/zsh
-
 typeset -g __TP_NEWLINE=""
 
 __TP_ORIGINAL_PROMPT="$PROMPT"

@@ -39,18 +39,16 @@ bind Escape if -F '#{pane_in_mode}' 'send-keys q' 'copy-mode'
 # vim-like copy-paste keymappings
 bind -T copy-mode-vi 'v' send -X begin-selection
 
-__TM_TMUX_HOME="$XDG_CONFIG_HOME/tmux"
-
 # tmux pupup required
 unbind p
-bind p run "tmux-popup -w 100 -h 25 -s popup \"sh $__TM_TMUX_HOME/switchy.sh\""
+bind p run "tmux-popup -w 100 -h 25 -s popup -B tmux-switchy"
 
 # tmux floating terminal
 unbind T
-bind T run "tmux-popup \"source $__TM_TMUX_HOME/floatterm.sh\" -s popup -t"
+bind T run "tmux-popup -t -d #{pane_current_path} tmux-floatx"
 
 unbind F
-bind F run "tmux-popup \"lf\" -s popup -t" 
+bind F run "tmux-lf" 
 
 is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
 

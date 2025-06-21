@@ -1,5 +1,3 @@
-#! /bin/zsh
-
 function __init_work {
   local repos_root="$(ghq root)"
   export WORK_DIR="$HOME/Documents/work"

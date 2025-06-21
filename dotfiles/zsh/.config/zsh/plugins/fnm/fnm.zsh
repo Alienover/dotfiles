@@ -1,5 +1,3 @@
-FNM_BIN=`which fnm`
-
-if [[ -x "$FNM_BIN" ]]; then
-  eval "$($FNM_BIN env --use-on-cd)"
+if command -v fnm >/dev/null 2>&1; then
+  eval "$(fnm env --use-on-cd)"
 fi

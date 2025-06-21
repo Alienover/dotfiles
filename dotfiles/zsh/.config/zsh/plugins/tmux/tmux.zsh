@@ -1,22 +1,13 @@
-#! /bin/zsh
-function __init_env {
-  local TMUX_BIN="$XDG_CONFIG_HOME/tmux/bin"
-  local TMUXIFIER_BIN="$XDG_CONFIG_HOME/tmux/plugins/tmuxifier/bin"
+export TMUXIFIER_LAYOUT_PATH="$HOME/.config/tmuxifier"
 
-  export PATH="$PATH:$TMUX_BIN:$TMUXIFIER_BIN"
-
-  export TMUXIFIER_LAYOUT_PATH="$HOME/.config/tmuxifier"
-
-  # Tmux switchy
-  alias sw="sh $XDG_CONFIG_HOME/tmux/switchy.sh"
-}
+# Tmux switchy
+alias sw="tmux-switchy"
 
 # Tmuxifier
 function __load_tmuxifier {
   export TMUXIFIER_NO_COMPLETE=1
-  eval "$(tmuxifier init -)"
-}
 
-__init_env
+  eval "$(${TMUX_PLUGIN_MANAGER_PATH:-$HOME/.tmux}/tmuxifier/bin/tmuxifier init -)"
+}
 
 zsh_lazy_load tmuxifier "__load_tmuxifier"

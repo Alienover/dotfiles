@@ -1,17 +1,15 @@
-#! /bin/zsh
-
 function vim {
   NVIM_BIN=`which nvim`
 
   if [[ $? -ne 0 ]]; then
-    \vi $@
+    \vi "$@"
     exit 0
   fi
 
   NVIM_BIN_NIGHTLY="$NVIM_BIN-nightly"
   if [[ -f "$NVIM_BIN_NIGHTLY" ]]; then
-    $NVIM_BIN_NIGHTLY $@
+    $NVIM_BIN_NIGHTLY "$@"
   else
-    $NVIM_BIN $@
+    $NVIM_BIN "$@"
   fi
 }

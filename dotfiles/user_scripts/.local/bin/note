@@ -1,0 +1,59 @@
+#!/usr/bin/env sh
+
+# if more than one argument is given, print error message and stop script
+if [ $# -gt 1 ]; then
+  echo "Please provide only one filename separated by dashes, without .md extension."
+  echo "Example: ntoe my-new-note"
+  exit 1
+fi
+
+filename="${1:-}"
+
+get_filename() {
+  input=""
+  is_existed=1
+
+  while [ "$is_existed" ]; do
+    if [ -z "$input" ]; then
+      printf "Enter a filename: "
+    else
+      printf "File existed. Enter another name: "
+    fi
+    read input
+
+    if [ -f "$OBSIDIAN_VAULT/0-inbox/$input.md" ]; then
+      is_existed=1
+    else
+      is_existed=""
+    fi
+  done
+
+  filename="$input"
+}
+
+open_file() {
+  cd "$1" || exit
+
+  file="$filename.md"
+  touch "$file"
+
+  today=$(date +"%Y-%m-%d")
+
+  {
+    echo "# $(echo "$filename" | sed 's/-/ /g; s/\b\(.\)/\u\1/g')"
+    echo ""
+    echo ""
+    echo ""
+    echo "##### Links"
+    echo ""
+    echo "[[$today|Created at $today $(date +"%H:%M")]]"
+  } > "$file"
+
+  nvim '+normal ggzz2j' "$file"
+}
+
+if [ -z "$filename" ]; then
+  get_filename
+fi
+
+open_file "$OBSIDIAN_VAULT/0-inbox"

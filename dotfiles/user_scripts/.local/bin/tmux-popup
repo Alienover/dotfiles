@@ -1,0 +1,48 @@
+#!/usr/bin/env sh
+
+__TM_WIDTH_DEFAULT="50%"
+__TM_HEIGHT_DEFAULT="50%"
+
+[[ $(tmux display -p "#{window_width}") -lt $WINDOW_VIEWPORT_WIDTH_MD ]] && __TM_WIDTH_DEFAULT="80%"
+[[ $(tmux display -p "#{window_height}") -lt $WINDOW_VIEWPORT_HEIGHT_MD ]] && __TM_HEIGHT_DEFAULT="80%"
+
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -w|--width)
+      __TM_ARG_WIDTH=$2
+      shift ;;
+    -h|--height)
+      __TM_ARG_HEIGHT=$2
+      shift ;;
+    -x)
+      __TM_ARGS="$__TM_ARGS -x $2"
+      shift ;;
+    -y)
+      __TM_ARGS="$__TM_ARGS -y $2"
+      shift ;;
+    -d)
+      __TM_PWD="$2"
+      shift ;;
+    -t)
+      __TM_ARG_TOGGLE=1
+      ;;
+    -B)
+      __TM_ARGS="$__TM_ARGS -B"
+      ;;
+    *)
+      __TM_CMD=$1
+      ;;
+  esac
+  shift
+done
+
+if [ "$(tmux display-message -p -F "#{session_name}")" = "popup" ]; then
+  tmux detach-client -s 'popup'
+
+  [ $__TM_ARG_TOGGLE = 1 ] && exit 0
+fi
+
+__TM_WIDTH_SCALE=${__TM_ARG_WIDTH:-$__TM_WIDTH_DEFAULT}
+__TM_HEIGHT_SCALE=${__TM_ARG_HEIGHT:-$__TM_HEIGHT_DEFAULT}
+
+tmux popup -d "${__TM_PWD:-$PWD}" -h $__TM_HEIGHT_SCALE -w $__TM_WIDTH_SCALE $__TM_ARGS -E "$__TM_CMD"

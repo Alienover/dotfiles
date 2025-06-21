@@ -109,8 +109,8 @@ M.special_filetypes = {
 
 M.window_sizing = {
 	md = {
-		width = 270,
-		height = 80,
+		width = tonumber(vim.fn.getenv("WINDOW_VIEWPORT_WIDTH_MD")) or 0,
+		height = tonumber(vim.fn.getenv("WINDOW_VIEWPORT_HEIGHT_MD")) or 0,
 	},
 }
 

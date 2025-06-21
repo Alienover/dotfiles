@@ -1,6 +1,6 @@
-#! /bin/bash
+#!/usr/bin/env sh
 
-__TM_DEFAULT_PLUGINS_DIR="$HOME/.tmux/plugins"
+__TM_DEFAULT_PLUGINS_DIR="$HOME/.tmux"
 __TM_TPM_DIR="$__TM_DEFAULT_PLUGINS_DIR/tpm"
 
 __TM_AUTO_INSTALL=0

@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+[ -f "$(dirname $0)/profile.default" ] && source "$(dirname $0)/profile.default"
+
+if command -v brew >/dev/null 2>&1; then
+  export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications --fontdir=/Library/Fonts"
+
+  eval "${/opt/homebrew/bin/brew shellenv}"
+fi
+
+if command -v asdf >/dev/null 2>&1; then
+  PATH="${ASDF_DATA_DIR:=$HOME/.asdf}/shims:$PATH"
+fi
+
+if [ -d "/opt/homebrew/libpg/bin" ]; then
+  PATH="$PATH:/opt/homebrew/libpg/bin"
+fi

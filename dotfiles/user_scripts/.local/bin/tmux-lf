@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+
+# Set path to save the yazi chosen result
+__TM_TMP="$(mktemp -t "tmux-lf-chosen.XXXXXX")"
+
+# Get the current working direcotry from tmux pane title or path
+__TM_PWD="$(tmux display -p "#{pane_current_path}")"
+__TM_EDITING_FOLDER="$(tmux display -p "#{pane_title}" | grep -i vim | grep -vi "no name" | awk -F'[()]' '{ print $2 }')"
+__TM_EDITING_FOLDER="$(eval echo $__TM_EDITING_FOLDER)"
+
+# If the path in title is a valid directory, use it as yazi target. Otherwise, use the pane path
+__TM_TARGET_FOLDER="$([ -d "$__TM_EDITING_FOLDER" ] && echo $__TM_EDITING_FOLDER || echo $__TM_PWD)"
+
+tmux-popup -d "$__TM_TARGET_FOLDER" "lf --selection-path $__TM_TMP"
+
+fx=""
+while IFS= read -r line || [[ -n "$line" ]]; do
+  # Escape the filename
+  fx+=" $(printf '%q' "$line")"
+done < "$__TM_TMP"
+
+# Reset the chosen result
+rm -f $__TM_TMP
+
+# Open them through `rifle` if selected
+if [ -n "$fx" ]; then 
+  tmux run "TMUX_LF=1 $HOME/.local/bin/rifle $fx"
+fi

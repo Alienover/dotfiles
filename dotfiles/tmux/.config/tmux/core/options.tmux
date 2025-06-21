@@ -41,3 +41,5 @@ set-option -g allow-rename off
 set -g allow-passthrough on
 set -ga update-environment TERM
 set -ga update-environment TERM_PROGRAM
+
+set-environment -g TMUX_PLUGIN_MANAGER_PATH "~/.tmux"

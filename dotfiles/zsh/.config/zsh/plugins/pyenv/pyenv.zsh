@@ -1,16 +1,4 @@
-# Place your plugin content here
-source "$ZDOTDIR/zsh-functions.zsh"
-
 export VIRTUALENVWRAPPER_HOOK_DIR="$HOME/.virtualenvs"
-
-function __init_env {
-  # Pyenv Path
-  export PYENV_ROOT="$HOME/.pyenv"
-
-  local PYENV_BIN="$PYENV_ROOT/shims"
-
-  export PATH="$PYENV_BIN:$PATH"
-}
 
 # pyenv
 # Refer to: https://github.com/davidparsson/zsh-pyenv-lazy/blob/master/pyenv-lazy.plugin.zsh
@@ -29,8 +17,6 @@ function __load_virtualenv {
   export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
   export VIRTUAL_ENV_DISABLE_PROMPT='true'
 }
-
-__init_env
 
 # Commands
 zsh_lazy_load pyenv "__load_pyenv"

@@ -1,5 +1,3 @@
-#! /bin/zsh
-
 # Refer to https://github.com/jeffreytse/zsh-vi-mode for more configuration details
 
 # Disable the cursor style feature

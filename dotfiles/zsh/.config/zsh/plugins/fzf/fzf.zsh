@@ -1,9 +1,5 @@
-#! /usr/bin/env zsh
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
 # Options to fzf command
-export FZF_DEFAULT_OPTS="--height 30% --reverse \
+export FZF_DEFAULT_OPTS="--style=minimal --height=30% --reverse --no-scrollbar \
 --color=bg+:$GUI_BACKGROUND,bg:$GUI_BG_BLACK,spinner:$GUI_CURSOR_GREY,hl:$GUI_RED \
 --color=fg:$GUI_GUTTER_FG_GREY,header:$GUI_RED,info:$GUI_ACTIVE_TAB_BACKGROUND,pointer:$GUI_DARK_YELLOW \
 --color=marker:$GUI_RED,fg+:$GUI_DARK_YELLOW,prompt:$GUI_ACTIVE_TAB_BACKGROUND,hl+:$GUI_RED"

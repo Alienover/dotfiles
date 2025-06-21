@@ -1,0 +1,30 @@
+#!/usr/bin/env zsh
+
+if command -v ghostty >/dev/null 2>&1; then
+  export TERM=xterm-ghostty
+elif command -v kitty >/dev/null 2>&1; then
+  export TERM=xterm-kitty
+fi
+
+# Preferred editor for local
+[ -z $SSH_CONNECTION ] && command -v nvim >/dev/null 2>&1 && export EDITOR=nvim
+
+if command -v bat >/dev/null 2>&1; then
+  export MANROFFOPT="-c"
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+fi
+
+if command -v fzf >/dev/null 2>&1; then
+  [ -f "$HOME/.fzf.zsh" ] && source $HOME/.fzf.zsh
+fi
+
+if [ -d "/usr/local/go/bin" ]; then
+  PATH="/usr/local/go/bin:$HOME/go/bin:$PATH"
+fi
+
+if [ -d "$HOME/.pyenv" ]; then
+  export VIRTUALENVWRAPPER_HOOK_DIR="$HOME/.virtualenvs"
+  export PYENV_ROOT="$HOME/.pyenv"
+
+  PATH="$PYENV_ROOT/shims:$PATH"
+fi

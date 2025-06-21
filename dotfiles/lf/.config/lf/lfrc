@@ -1,9 +1,7 @@
 #vim:ft=lf
 
-source ~/.config/lf/rifle
-
 set preview true
-set previewer ~/.config/lf/preview
+set previewer ~/.local/bin/scope
 
 set shell /bin/sh
 set shellopts '-eu'
@@ -19,7 +17,9 @@ set incsearch true
 set errorfmt "\033[7;31;40m"
 set numberfmt "\033[90m"
 
-## commands
+# Commands
+cmd open &~/.local/bin/rifle
+
 cmd toggle-preview %{{
     if [ "$lf_preview" = true ]; then
         lf -remote "send $id :set preview false; set ratios 1:5"
@@ -28,4 +28,8 @@ cmd toggle-preview %{{
     fi
 }}
 
+map zp toggle-preview
 map g. :set hidden!
+
+# Unmap
+map zh
