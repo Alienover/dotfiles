@@ -23,8 +23,9 @@ require("mason").setup({
 local function ensure_installed()
 	for _, opts in pairs(ensure_externals) do
 		local mason = opts.mason or ""
+		local enabled = not (opts.disabled or false)
 
-		if mason ~= "" then
+		if mason ~= "" and enabled then
 			local pkg = registry.get_package(mason)
 			if not pkg:is_installed() then
 				pkg:install()
