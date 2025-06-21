@@ -15,5 +15,5 @@ ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
 # Do the initialization when the script is sourced (i.e. Initialize instantly)
 ZVM_INIT_MODE=sourcing
 
-source "${0:A:h}/../../zsh-functions.zsh"
+zinit ice wait'!0'
 zinit light "jeffreytse/zsh-vi-mode"
