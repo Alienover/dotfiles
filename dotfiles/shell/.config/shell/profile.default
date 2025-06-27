@@ -1,13 +1,36 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env sh
 
-if command -v ghostty >/dev/null 2>&1; then
+export TERM=xterm-256color
+export EDITOR=/usr/bin/vi
+
+# XDG
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_DATA_HOME="$HOME/.local/share"
+
+export LC_ALL=en_US.UTF-8
+
+export DYLD_LIBRARY_PATH=/usr/local/include
+export CPPFLAGS="-I/usr/local/include/snappy-c.h"
+export CFLAGS="-I/usr/local/include/snappy-c.h"
+
+export WINDOW_VIEWPORT_WIDTH_MD=270
+
+export WINDOW_VIEWPORT_HEIGHT_MD=80
+
+# User scripts
+[ -d "$HOME/.local/bin" ] && PATH="$HOME/.local/bin:$PATH"
+
+# Preferred terminal
+if [ -n "$GHOSTTY_BIN_DIR" ]; then
   export TERM=xterm-ghostty
-elif command -v kitty >/dev/null 2>&1; then
+elif [ -n "$KITTY_WINDOW_ID" ]; then
   export TERM=xterm-kitty
 fi
 
 # Preferred editor for local
-[ -z $SSH_CONNECTION ] && command -v nvim >/dev/null 2>&1 && export EDITOR=nvim
+[ -z $SSH_CONNECTION ] && command -v nvim >/dev/null 2>&1 && export EDITOR="$(command -v nvim)"
 
 if command -v bat >/dev/null 2>&1; then
   export MANROFFOPT="-c"
@@ -16,15 +39,4 @@ fi
 
 if command -v fzf >/dev/null 2>&1; then
   [ -f "$HOME/.fzf.zsh" ] && source $HOME/.fzf.zsh
-fi
-
-if [ -d "/usr/local/go/bin" ]; then
-  PATH="/usr/local/go/bin:$HOME/go/bin:$PATH"
-fi
-
-if [ -d "$HOME/.pyenv" ]; then
-  export VIRTUALENVWRAPPER_HOOK_DIR="$HOME/.virtualenvs"
-  export PYENV_ROOT="$HOME/.pyenv"
-
-  PATH="$PYENV_ROOT/shims:$PATH"
 fi

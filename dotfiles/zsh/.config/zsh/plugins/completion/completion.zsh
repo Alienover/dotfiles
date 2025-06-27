@@ -1,3 +1,6 @@
+# Completion
+export ZSH_COMPDUMP="$XDG_CACHE_HOME/zsh/.zcompdump"
+
 autoload -Uz compinit
 
 zstyle ':completion:*' menu no

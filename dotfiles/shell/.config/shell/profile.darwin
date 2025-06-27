@@ -1,17 +1,27 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env sh
 
-[ -f "$(dirname $0)/profile.default" ] && source "$(dirname $0)/profile.default"
-
-if command -v brew >/dev/null 2>&1; then
+if command -v /opt/homebrew/bin/brew >/dev/null 2>&1; then
   export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications --fontdir=/Library/Fonts"
 
-  eval "${/opt/homebrew/bin/brew shellenv}"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
+
+# Since lots of packages are installed by homebrew on macOS,
+# make sure homebrew is setup before sourcing the following
+[ -f "$(dirname $0)/profile.default" ] && source "$(dirname $0)/profile.default"
 
 if command -v asdf >/dev/null 2>&1; then
   PATH="${ASDF_DATA_DIR:=$HOME/.asdf}/shims:$PATH"
 fi
 
-if [ -d "/opt/homebrew/libpg/bin" ]; then
+if [ -d "${HOMEBREW_PREFIX:-/opt/homebrew}/libpg/bin" ]; then
   PATH="$PATH:/opt/homebrew/libpg/bin"
 fi
+
+if [ -d "/usr/local/go/bin" ]; then
+  export GOROOT='/usr/local/go'
+  export GOPATH="$HOME/go"
+
+  PATH="$GOPATH/bin:$GOROOT/bin:$PATH"
+fi
+
