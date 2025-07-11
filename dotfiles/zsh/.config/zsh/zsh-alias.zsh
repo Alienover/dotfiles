@@ -11,7 +11,7 @@ else
   alias ll="ls -lh"
 fi
 
-[ command -v bat >/dev/null 2>&1 ] && alias cat="bat"
+command -v bat >/dev/null 2>&1 && alias cat="$(command -v bat)"
 
 if command -v git >/dev/null 2>&1; then
   alias gd="fzf-git-diff"
