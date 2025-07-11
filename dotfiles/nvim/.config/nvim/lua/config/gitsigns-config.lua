@@ -44,6 +44,9 @@ local config = {
 
 			-- Text Objects
 			{ { "o", "x" }, "ih", gs.select_hunk },
+
+			-- Blame
+			{ { "n" }, "<space>gB", ":Gitsign blame<CR>", { buffer = bufnr, desc = "[Blame] current buffer" } },
 		})
 	end,
 }

@@ -1,14 +1,4 @@
 return {
-	{
-		"Alienover/blame.nvim",
-		cmd = { "BlameToggle" },
-		keys = {
-			{ "<space>gB", "<cmd>BlameToggle<CR>", desc = "[B]lame " },
-		},
-		opts = {
-			date_format = "%Y-%m-%d %H:%M",
-		},
-	},
 	{ -- Git Gutter
 		"lewis6991/gitsigns.nvim",
 		event = { "BufReadPost", "BufNewFile" },
