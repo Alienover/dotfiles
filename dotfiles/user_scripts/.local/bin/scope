@@ -157,6 +157,9 @@ case "$(file -bL --mime-type "$file")" in
             show_file_info "$file"
         fi
         ;;
+    application/*tar|application/*zip*|application/zstd|application/*xz)
+        tar vvtf "$1" | "$PAGER"
+        ;;
     video/* | audio/*)
         if command -v ffprobe >/dev/null 2>&1; then
             ffprobe -v quiet -show_format -show_streams "$file" 2>/dev/null | head -n "$height"
