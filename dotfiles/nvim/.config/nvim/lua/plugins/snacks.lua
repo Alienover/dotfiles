@@ -71,6 +71,13 @@ return {
 				end,
 				desc = "[D]elete",
 			},
+			{
+				"<space>bD",
+				function()
+					Snacks.bufdelete.all()
+				end,
+				desc = "[D]elete all",
+			},
 
 			-- Git
 			{
