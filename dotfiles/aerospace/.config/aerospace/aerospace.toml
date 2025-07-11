@@ -116,10 +116,22 @@ alt-shift-slash = 'layout tiles horizontal vertical'
 alt-shift-comma = 'layout accordion horizontal vertical'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-ctrl-alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
-ctrl-alt-j = 'focus --boundaries-action wrap-around-the-workspace down'
-ctrl-alt-k = 'focus --boundaries-action wrap-around-the-workspace up'
-ctrl-alt-l = 'focus --boundaries-action wrap-around-the-workspace right'
+ctrl-alt-h = [
+  'focus --boundaries-action wrap-around-the-workspace left',
+  'move-mouse window-lazy-center',
+]
+ctrl-alt-j = [
+  'focus --boundaries-action wrap-around-the-workspace down',
+  'move-mouse window-lazy-center',
+]
+ctrl-alt-k = [
+  'focus --boundaries-action wrap-around-the-workspace up',
+  'move-mouse window-lazy-center',
+]
+ctrl-alt-l = [
+  'focus --boundaries-action wrap-around-the-workspace right',
+  'move-mouse window-lazy-center',
+]
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move
 ctrl-alt-left = 'move left'
@@ -132,15 +144,15 @@ shift-alt-minus = 'resize smart -25'
 shift-alt-equal = 'resize smart +25'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-alt-esc = 'workspace 🦄'
-alt-1 = 'workspace 🍣'
-alt-2 = 'workspace 🐳'
-alt-3 = 'workspace 💻'
-alt-4 = 'workspace 🎧'
-alt-q = 'workspace Q'
-alt-w = 'workspace W'
-alt-e = 'workspace E'
-alt-r = 'workspace R'
+alt-esc = ['workspace 🦄', 'move-mouse window-lazy-center']
+alt-1 = ['workspace 🍣', 'move-mouse window-lazy-center']
+alt-2 = ['workspace 🐳', 'move-mouse window-lazy-center']
+alt-3 = ['workspace 💻', 'move-mouse window-lazy-center']
+alt-4 = ['workspace 🎧', 'move-mouse window-lazy-center']
+alt-q = ['workspace Q', 'move-mouse window-lazy-center']
+alt-w = ['workspace W', 'move-mouse window-lazy-center']
+alt-e = ['workspace E', 'move-mouse window-lazy-center']
+alt-r = ['workspace R', 'move-mouse window-lazy-center']
 
 ctrl-alt-leftSquareBracket = 'workspace --wrap-around prev'
 ctrl-alt-rightSquareBracket = 'workspace --wrap-around next'
@@ -250,7 +262,7 @@ run = "layout floating"
 
 [[on-window-detected]]
 if.app-id = "com.tencent.xinWeChat"
-if.window-title-regex-substring = "Chats"
+if.window-title-regex-substring = "Weixin"
 run = "layout tiling"
 
 [[on-window-detected]]
