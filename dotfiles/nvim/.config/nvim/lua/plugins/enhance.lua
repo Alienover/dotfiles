@@ -108,6 +108,7 @@ return {
 			quickfix = { suffix = "" },
 			yank = { suffix = "" },
 			treesitter = { suffix = "" },
+			undo = { suffix = "u", options = { wrap = false } },
 		},
 	},
 
