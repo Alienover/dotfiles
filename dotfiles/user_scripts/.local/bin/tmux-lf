@@ -24,5 +24,5 @@ rm -f $__TM_TMP
 
 # Open them through `rifle` if selected
 if [ -n "$fx" ]; then 
-  tmux run "TMUX_LF=1 $HOME/.local/bin/rifle $fx"
+  tmux run "TMUX_LF=1 $HOME/.local/bin/rifle $fx >/dev/null 2>&1"
 fi
