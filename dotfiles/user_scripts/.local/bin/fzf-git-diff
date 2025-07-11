@@ -18,7 +18,7 @@ __git_diff() {
     fzf -i +s --reverse --height $height --tiebreak=index --no-mouse \
     --header "$_instructions$_stat" \
     --prompt " > Changed Files: " \
-    --preview "$_gitDiffFilename | xargs -I % git diff --color -- $_toplevel/% | diff-so-fancy" \
+    --preview "$_gitDiffFilename | xargs -I % git diff --color -- $_toplevel/% | delta --diff-so-fancy" \
     --preview-window "border-left" \
     --bind "ctrl-d:preview-page-down" \
     --bind 'ctrl-u:preview-page-up' \
