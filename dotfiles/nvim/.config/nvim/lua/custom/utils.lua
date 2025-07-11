@@ -190,19 +190,26 @@ M.setup_filetypes = function(filetypes)
 end
 
 --- @module 'snacks'
---- @type snacks.picker
+--- @alias customizedSnacksPicker 'telescope'
+--- @alias snacks.picker.Layouts table<customizedSnacksPicker, snacks.picker.layout.Config>
+---
+--- @class snacks.picker.withOpts: snacks.picker
+--- @field get_picker_opts fun(): {layouts: snacks.picker.Layouts }
+---
+--- @type snacks.picker.withOpts
 M.snacks_picker = setmetatable({
+	--- @return { layouts: snacks.picker.Layouts}
 	get_picker_opts = function()
 		local sizing = M.get_float_win_sizing()
 
 		return {
 			layouts = {
-				telescope = {
+				telescope = vim.tbl_deep_extend("force", Snacks.picker.config.layout("telescope"), {
 					layout = {
 						width = sizing.width,
 						height = sizing.height,
 					},
-				},
+				}),
 			},
 		}
 	end,

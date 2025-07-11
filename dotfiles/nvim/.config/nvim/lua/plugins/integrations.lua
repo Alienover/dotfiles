@@ -1,4 +1,5 @@
 local consts = require("custom.constants")
+local utils = require("custom.utils")
 
 return {
 	{ -- Client for HTTP requests
@@ -24,6 +25,21 @@ return {
 		ft = { "http", "rest" },
 		opts = {
 			global_keymaps = false,
+			ui = {
+				pickers = {
+					snacks = {
+						layout = function()
+							local opts = utils.snacks_picker.get_picker_opts()
+
+							return vim.tbl_deep_extend(
+								"force",
+								require("snacks.picker").config.layout("telescope"),
+								opts.layouts.telescope
+							)
+						end,
+					},
+				},
+			},
 		},
 	},
 
