@@ -13,10 +13,11 @@ vim.cmd([[
 
 -- Global variables
 local global = {
-	-- Disble Perl support
+	-- Ignore the provider warnings
 	loaded_perl_provider = 0,
-	-- Disble Ruby support
 	loaded_ruby_provider = 0,
+	loaded_python3_provider = 0,
+	loaded_node_provider = 0,
 
 	editorconfig = true,
 
@@ -28,22 +29,7 @@ local global = {
 
 	-- Matchup
 	matchup_matchparen_offscreen = { method = "popup" },
-
-	-- Python for neovim
-	python_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py2",
-	python3_venv_home = os.getenv("VIRTUALENVWRAPPER_HOOK_DIR") .. "/neovim_py3",
 }
-
-local python_venv_bin = global.python_venv_home .. "/bin/python"
-local python3_venv_bin = global.python3_venv_home .. "/bin/python"
-
-if vim.fn.executable(python_venv_bin) then
-	global.python_host_prog = python_venv_bin
-end
-
-if vim.fn.executable(python3_venv_bin) then
-	global.python3_host_prog = python3_venv_bin
-end
 
 -- Vim based Options
 local options = {
