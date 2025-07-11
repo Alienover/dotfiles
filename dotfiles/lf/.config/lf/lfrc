@@ -20,7 +20,44 @@ set numberfmt "\033[90m"
 # Commands
 cmd open &~/.local/bin/rifle
 
-cmd toggle-preview %{{
+cmd fzf_jump ${{
+    res="$(fd . | fzf --reverse --prompt "lf > " --preview 'scope {}' --bind=ctrl-d:preview-page-down,ctrl-u:preview-page-up)"
+    if [ -n "$res" ]; then
+        if [ -d "$res" ]; then
+            cmd="cd"
+        else
+            cmd="select"
+        fi
+        res="$(printf '%s' "$res" | sed 's/\\/\\\\/g;s/"/\\"/g')"
+        lf -remote "send $id $cmd \"$res\""
+    fi
+}}
+
+cmd bulk-rename ${{
+    old="$(mktemp)"
+    new="$(mktemp)"
+    if [ -n "$fs" ]; then
+        fs="$(basename -a -- $fs)"
+    else
+        fs="$(ls)"
+    fi
+    printf '%s\n' "$fs" > "$old"
+    printf '%s\n' "$fs" > "$new"
+    $EDITOR "$new"
+    [ "$(wc -l < "$new")" -ne "$(wc -l < "$old")" ] && exit
+    paste "$old" "$new" | while IFS= read -r names; do
+        src="$(printf '%s' "$names" | cut -f1)"
+        dst="$(printf '%s' "$names" | cut -f2)"
+        if [ "$src" = "$dst" ] || [ -e "$dst" ]; then
+            continue
+        fi
+        mv -- "$src" "$dst"
+    done
+    rm -- "$old" "$new"
+    lf -remote "send $id unselect"
+}}
+
+cmd toggle-preview &{{
     if [ "$lf_preview" = true ]; then
         lf -remote "send $id :set preview false; set ratios 1:5"
     else
@@ -29,7 +66,10 @@ cmd toggle-preview %{{
 }}
 
 map zp toggle-preview
+
 map g. :set hidden!
+
+map f fzf_jump
 
 # Unmap
 map zh
