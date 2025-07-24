@@ -17,15 +17,6 @@ local augroups = setmetatable({
 	end,
 })
 
--- FIXME: need to find a way to set the filetype
--- using `pattern` in vim.filetype.add
-vim.api.nvim_create_autocmd("TermOpen", {
-	desc = "Set filetype to terminal",
-	group = augroups.terminal,
-
-	command = "set filetype=terminal",
-})
-
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight on yark",
 
