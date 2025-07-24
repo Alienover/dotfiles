@@ -108,41 +108,17 @@ local config = {
 			info = icons.get("extended", "info") .. " ",
 			hint = icons.get("extended", "hint") .. " ",
 		},
-		-- Separators
-		component_separators = {
-			left = icons.get("extended", "arrowRight"),
-			right = icons.get("extended", "arrowLeft"),
-		},
+		-- Disable sections and component separators
+		component_separators = "",
+		section_separators = "",
 	},
 	sections = {
-		lualine_a = {
-			{
-				"mode",
-				separator = {
-					left = icons.get("extended", "halfCircleLeft"),
-					right = icons.get("extended", "triangleRight"),
-				},
-			},
-		},
-		lualine_b = {
-			"branch",
-			diff,
-		},
-		lualine_c = {
-			spellcheck,
-			filename,
-		},
+		lualine_a = { "mode" },
+		lualine_b = { "branch", diff },
+		lualine_c = { spellcheck, filename },
 		lualine_x = { "diagnostics", filetype },
 		lualine_y = { encoding, spaces },
-		lualine_z = {
-			{
-				"location",
-				separator = {
-					left = icons.get("extended", "triangelLeft"),
-					right = icons.get("extended", "halfCircleRight"),
-				},
-			},
-		},
+		lualine_z = { "location" },
 	},
 }
 

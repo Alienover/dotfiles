@@ -13,19 +13,26 @@ DATE_BG="$GUI_BLACK"
 BORDER="$GUI_BLACK"
 
 WINDOW_MODE_BG="$GUI_GREEN"
+WINDOW_CURSOR_FG="$GUI_PRIMARY"
 MATCH_BG="#$GUI_SECONDARY"
 CURRENT_MATCH_BG="#$GUI_RED"
 
 # === Separators ===
-HALF_ROUND_OPEN="#(printf '\uE0B6')"
-HALF_ROUND_CLOSE="#(printf '\uE0B4')"
+HALF_ROUND_OPEN=""
+HALF_ROUND_CLOSE=""
 
-TRIANGLE_OPEN="#(printf '\uE0B2')"
-TRIANGLE_CLOSE="#(printf '\uE0B0')"
+TRIANGLE_OPEN=""
+TRIANGLE_CLOSE=""
 
 ZOOM_IN="#(printf ' 󰲏 ')"
 
-# === Theme Options ===
+HALF_BLOCK_SEP="\
+#[fg=${WINDOW_CURSOR_FG},bg=${BG}]\
+#(printf '\u2595')\
+#[bg=${ACTIVE_WINDOW_BG}]\
+#(printf '\u258F')\
+#[fg=default]\
+"
 
 ## Status Content Lenth
 set -g status-left-length 32
@@ -60,8 +67,8 @@ set -gwF copy-mode-current-match-style fg=${DARK_FG},bg=${CURRENT_MATCH_BG}
 # === Window Title ===
 
 ## Define winddow format
-tm_window="#[fg=default]- #W "
-tm_active_window="> #W "
+tm_window="#[fg=default]  #W  "
+tm_active_window=" #W  "
 
 set-window-option -g window-status-format "\
 #[fg=${BG}]${TRIANGLE_CLOSE} \
@@ -70,15 +77,15 @@ ${tm_window}\
 "
 
 set-window-option -g window-status-current-format "\
-#[fg=${BG}]${TRIANGLE_CLOSE}#[fg=default,bold] \
+${HALF_BLOCK_SEP}\
 ${tm_active_window}\
-#[fg=${ACTIVE_WINDOW_BG},bg=${BG}]${TRIANGLE_CLOSE}\
+#[fg=${ACTIVE_WINDOW_BG}]${TRIANGLE_CLOSE}\
 "
 
 # === Prompt ===
 ## Left Components
 tm_session_name="#[bg=${SESSION_BG},fg=${DARK_FG},bold] #S "
-tm_zoom_status="#{?window_zoomed_flag,${ZOOM_IN},}"
+tm_zoom_status="#{?window_zoomed_flag,${ZOOM_IN}, }"
 
 ## Right Components
 ### Current playing track
@@ -94,7 +101,8 @@ ${tm_session_name}\
 ${TRIANGLE_CLOSE}\
 #[fg=color3,bold]
 ${tm_zoom_status}\
-#[fg=${ACTIVE_WINDOW_BG},bg=default]${TRIANGLE_CLOSE}\
+#[fg=${ACTIVE_WINDOW_BG},bg=default]\
+${TRIANGLE_CLOSE} \
 " 
 
 set -g status-right "\
