@@ -186,6 +186,13 @@ shift-alt-j = ['join-with down', 'mode main']
 shift-alt-k = ['join-with up', 'mode main']
 shift-alt-l = ['join-with right', 'mode main']
 
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#swap
+shift-alt-left = ['swap left', 'mode main']
+shift-alt-down = ['swap down', 'mode main']
+shift-alt-up = ['swap up', 'mode main']
+shift-alt-right = ['swap right', 'mode main']
+
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 shift-alt-tab = [
   'move-workspace-to-monitor --wrap-around next',
