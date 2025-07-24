@@ -22,7 +22,6 @@ return {
 			},
 		},
 		opts = {},
-		dependencies = { "neovim/nvim-lspconfig" },
 	},
 
 	{

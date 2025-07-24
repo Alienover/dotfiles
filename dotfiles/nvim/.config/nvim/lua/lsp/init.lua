@@ -2,8 +2,6 @@ local utils = require("custom.utils")
 local icons = require("custom.icons")
 local constants = require("custom.constants")
 
-local lspconfig = require("lspconfig")
-
 local nmap = utils.nmap
 
 local external_type = constants.external_type
@@ -44,7 +42,11 @@ local load_config = function(external)
 	if (filename or "") ~= "" then
 		local success, module = pcall(require, filename)
 		if success then
-			config = module
+			config = vim.tbl_extend("force", module, module.settings and {
+				init_options = {
+					settings = module.settings,
+				},
+			} or {})
 		end
 	end
 
@@ -58,24 +60,11 @@ local load_config = function(external)
 		setup_keymaps(client, bufnr)
 	end
 
-	-- INFO: Capabilities config for nvim-cmp
-	local custom_capabilities = function()
-		local capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities())
-
-		capabilities.textDocument.completion.completionItem.snippetSupport = true
-
-		return capabilities
-	end
-
 	local DEFAULT_CONFIG = {
 		-- INFO: disable on diff view by default
 		autostart = vim.o.diff == false,
-
 		on_attach = on_attach,
-		capabilities = custom_capabilities(),
-		flags = {
-			debounce_text_changes = 150,
-		},
+		flags = { debounce_text_changes = 150 },
 	}
 
 	return vim.tbl_deep_extend("force", DEFAULT_CONFIG, config)
@@ -163,7 +152,9 @@ local function setup_lsp()
 		if is_lsp == true and enabled then
 			local config = load_config(opts)
 
-			lspconfig[server].setup(config)
+			vim.lsp.config(server, config)
+
+			vim.lsp.enable(server)
 		end
 	end
 
