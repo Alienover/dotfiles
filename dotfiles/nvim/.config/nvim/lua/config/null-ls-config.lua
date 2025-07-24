@@ -2,10 +2,24 @@ local null_ls = require("null-ls")
 
 local utils = require("custom.utils")
 
+-- Register the `null-ls` in vim.lsp
+vim.lsp.config("null-ls", {})
+
+-- Custom ruff command to organize the imports
+local ruff_organize_imports = {
+	name = "ruff_organize_imports",
+	method = null_ls.methods.FORMATTING,
+	filetypes = { "python" },
+	generator = null_ls.formatter({
+		command = "ruff",
+		args = { "check", "--select", "I", "--fix", "--stdin-filename", "$FILENAME", "-" },
+		to_stdin = true,
+	}),
+}
+
 null_ls.setup({
 	sources = {
-		null_ls.builtins.formatting.black.with({ extra_args = { "--fast" } }),
-		null_ls.builtins.formatting.isort,
+		ruff_organize_imports,
 
 		null_ls.builtins.formatting.prettier.with({
 			prefer_local = "node_modules/.bin",

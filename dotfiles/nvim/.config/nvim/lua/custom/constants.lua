@@ -144,6 +144,11 @@ M.ensure_externals = {
 		external_type = M.external_type.lsp,
 		mason = "bash-language-server",
 	},
+	ruff = {
+		external_type = M.external_type.lsp,
+		mason = "ruff",
+		config_file = "lsp.ruff-lsp",
+	},
 	pyright = {
 		external_type = M.external_type.lsp,
 		mason = "pyright",
@@ -196,14 +201,6 @@ M.ensure_externals = {
 	stylua = {
 		external_type = M.external_type.formatter,
 		mason = "stylua",
-	},
-	isort = {
-		external_type = M.external_type.formatter,
-		mason = "isort",
-	},
-	black = {
-		external_type = M.external_type.formatter,
-		mason = "black",
 	},
 	prettier = {
 		external_type = M.external_type.formatter,
