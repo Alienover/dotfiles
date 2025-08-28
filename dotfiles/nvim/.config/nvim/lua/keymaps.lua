@@ -13,9 +13,6 @@ local nmap, vmap = utils.nmap, utils.vmap
 nmap("+", "<C-A>", "Increment")
 nmap("-", "<C-X>", "Decrement")
 
-nmap("<Tab>", ":BufferLineCycleNext<CR>", "Next Tab")
-nmap("<S-Tab>", ":BufferLineCyclePrev<CR>", "Previous Tab")
-
 -- Increase/decrease indents without losing the selected
 vmap("<", "<gv")
 vmap(">", ">gv")

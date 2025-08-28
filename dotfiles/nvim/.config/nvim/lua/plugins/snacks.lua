@@ -1,3 +1,4 @@
+---@type LazySpec
 return {
 	{
 		"folke/snacks.nvim",
@@ -62,64 +63,22 @@ return {
 				},
 			},
 		},
+		-- stylua: ignore
 		keys = {
 			-- Buffers
-			{
-				"<space>bd",
-				function()
-					Snacks.bufdelete()
-				end,
-				desc = "[D]elete",
-			},
-			{
-				"<space>bD",
-				function()
-					Snacks.bufdelete.all()
-				end,
-				desc = "[D]elete all",
-			},
+			{ "<space>bd", function() Snacks.bufdelete() end, desc = "[D]elete" },
+			{ "<space>bD", function() Snacks.bufdelete.all() end, desc = "[D]elete all" },
 
 			-- Git
-			{
-				"<space>go",
-				function()
-					Snacks.gitbrowse()
-				end,
-				desc = "[O]pen in browse",
-				mode = { "n", "v" },
-			},
+			{ "<space>go", function() Snacks.gitbrowse() end, desc = "[O]pen in browse", mode = { "n", "v" } },
 
 			-- Notifier
-			{
-				"<space><esc>",
-				function()
-					Snacks.notifier.hide()
-				end,
-				desc = "Clear all notifications",
-			},
-			{
-				"<space>hn",
-				function()
-					Snacks.notifier.show_history()
-				end,
-				desc = "Show notifier history",
-			},
+			{ "<space><esc>", function() Snacks.notifier.hide() end, desc = "Clear all notifications" },
+			{ "<space>hn", function() Snacks.notifier.show_history() end, desc = "Show notifier history" },
 
 			-- Zen
-			{
-				"<space>z",
-				function()
-					Snacks.zen.zoom()
-				end,
-				desc = "Toggle Zoom",
-			},
-			{
-				"<space>Z",
-				function()
-					Snacks.zen()
-				end,
-				desc = "[Z]en Mode",
-			},
+			{ "<space>z", function() Snacks.zen.zoom() end, desc = "Toggle Zoom" },
+			{ "<space>Z", function() Snacks.zen() end, desc = "[Z]en Mode" },
 		},
 	},
 }

@@ -1,8 +1,5 @@
 local oil = require("oil")
 
-local utils = require("custom.utils")
-local finders = require("custom.finders")
-
 local detail = false
 local toggle_detail_view = function()
 	detail = not detail
@@ -29,7 +26,7 @@ local open_directory = function()
 		finder = function(opts, ctx)
 			opts.cwd = cwd
 
-			return finders.directories(opts, ctx)
+			return require("custom.finders").directories(opts, ctx)
 		end,
 		confirm = function(picker, item)
 			picker:close()
@@ -73,7 +70,7 @@ oil.setup(
 		-- Configuration for the floating window in oil.open_float
 		float = {
 			override = function(conf)
-				local win_opts = utils.get_float_win_opts()
+				local win_opts = require("custom.utils").get_float_win_opts()
 				return vim.tbl_extend("force", conf, win_opts)
 			end,
 		},

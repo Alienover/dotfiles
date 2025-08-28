@@ -1,3 +1,4 @@
+---@type LazySpec
 return {
 	-- add blink.compat
 	{
@@ -7,11 +8,17 @@ return {
 		-- make sure to set opts so that lazy.nvim calls blink.compat's setup
 		opts = {},
 	},
+
+	--- Blink.cmp completion source
+	{ "MattiasMTS/cmp-dbee", ft = "sql", opts = {} },
+
 	{
 		"saghen/blink.cmp",
 		event = { "InsertEnter", "CmdlineEnter" },
 		-- optional: provides snippets for the snippet source
-		dependencies = { "saghen/blink.compat" },
+		dependencies = {
+			"saghen/blink.compat",
+		},
 
 		-- use a release tag to download pre-built binaries
 		version = "1.*",
@@ -119,7 +126,7 @@ return {
 				default = { "lsp", "path", "snippets", "buffer" },
 				per_filetype = {
 					sql = { "dbee", "buffer" },
-					AvanteInput = { "avante" },
+					-- AvanteInput = { "avante" },
 					-- optionally inherit from the `default` sources
 					lua = { inherit_defaults = true, "lazydev" },
 					codecompanion = { "codecompanion" },
@@ -130,7 +137,7 @@ return {
 					-- Refer to https://github.com/MattiasMTS/cmp-dbee/issues/29#issue-2783603343
 					dbee = { name = "DB", module = "blink.compat.source", opts = { cmp_name = "cmp-dbee" } },
 					-- Completion for avante commands
-					avante = { name = "Avante", module = "blink-cmp-avante", opts = {} },
+					-- avante = { name = "Avante", module = "blink-cmp-avante", opts = {} },
 					lazydev = {
 						name = "LazyDev",
 						module = "lazydev.integrations.blink",

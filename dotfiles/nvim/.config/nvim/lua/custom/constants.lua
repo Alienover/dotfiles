@@ -174,7 +174,6 @@ M.ensure_externals = {
 		formatting = false,
 	},
 	gopls = {
-		disabled = true,
 		external_type = M.external_type.lsp,
 		mason = "gopls",
 		config_file = "lsp.go-lsp",
@@ -187,10 +186,6 @@ M.ensure_externals = {
 	taplo = {
 		external_type = M.external_type.lsp,
 		mason = "taplo",
-	},
-	ruby_lsp = {
-		external_type = M.external_type.lsp,
-		config_file = "lsp.ruby-lsp",
 	},
 	eslint = {
 		external_type = M.external_type.lsp,

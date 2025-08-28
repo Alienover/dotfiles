@@ -1,6 +1,8 @@
+---@type LazySpec
 return {
 	{
 		"yetone/avante.nvim",
+		enabled = false,
 		keys = { { "<leader>at", "<CMD>AvanteToggle<CR>" } },
 		cmd = { "AvanteAsk", "AvanteToggle", "AvanteEdit" },
 		version = false,
@@ -8,12 +10,15 @@ return {
 		build = "make",
 
 		opts = {
-			provider = "openai",
-			auto_suggestions_provider = "openai",
+			-- provider = "claude",
+			-- auto_suggestions_provider = "claude",
 			providers = {
 				openai = {
 					max_tokens = 4096, -- Max tokens for completion, adjust for reasoning
 					api_key_name = "cmd:pass show OpenAI/API-Key", -- Command to retrieve API key
+				},
+				claude = {
+					api_key_name = "cmd:pass show Anthropic/API-Key",
 				},
 			},
 			web_search_engine = {
@@ -56,7 +61,6 @@ return {
 		keys = {
 			{ "<leader>cc", "<CMD>CodeCompanionChat Toggle<CR>", mode = "n", desc = "CodeCompanion: Toggle Chat" },
 			{ "<leader>cA", "<CMD>CodeCompanionActions<CR>", mode = "n", desc = "CodeCompanion: Actions" },
-			{ "<leader>cH", "<CMD>CodeCompanionHistory<CR>", mode = "n", desc = "CodeCompanion: Chat Histories" },
 			{
 				"<leader>ca",
 				"<CMD>CodeCompanionChat Add<CR>",
@@ -67,16 +71,23 @@ return {
 		opts = {
 			strategies = {
 				chat = {
-					adapter = "openai",
+					adapter = "anthropic",
 				},
 				inline = {
-					adapter = "openai",
+					adapter = "anthropic",
 				},
 				cmd = {
-					adapter = "openai",
+					adapter = "anthropic",
 				},
 			},
 			adapters = {
+				anthropic = function()
+					return require("codecompanion.adapters").extend("anthropic", {
+						env = {
+							api_key = "cmd:pass show Anthropic/API-Key",
+						},
+					})
+				end,
 				openai = function()
 					return require("codecompanion.adapters").extend("openai", {
 						env = {
@@ -106,24 +117,33 @@ return {
 				window = { border = "rounded" }, -- Consistent border style
 				chat = { window = { width = 120 } }, -- Added line for chat width
 			},
-			extensions = {
-				history = {
-					enabled = true,
-					opts = {
-						---When chat is cleared with `gx` delete the chat from history
-						delete_on_clearing_chat = true,
-						chat_filter = function(chat_data)
-							return chat_data.cwd == vim.fn.getcwd()
-						end,
-					},
-				},
-			},
 		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-treesitter/nvim-treesitter",
-			--other plugins
-			"ravitemer/codecompanion-history.nvim",
+		},
+	},
+	{
+		"coder/claudecode.nvim",
+		dependencies = { "folke/snacks.nvim" },
+		opts = {},
+		keys = {
+			{ "<leader>a", nil, desc = "AI/Claude Code" },
+			{ "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+			{ "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+			{ "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+			{ "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+			{ "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+			{ "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+			{
+				"<leader>as",
+				"<cmd>ClaudeCodeTreeAdd<cr>",
+				desc = "Add file",
+				ft = { "NvimTree", "neo-tree", "oil" },
+			},
+			-- Diff management
+			{ "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+			{ "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
 		},
 	},
 }

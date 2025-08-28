@@ -21,18 +21,6 @@ local spellcheck = {
 	end,
 }
 
-local function filename()
-	local name = expand("%:t")
-
-	if name == "" then
-		return ""
-	end
-
-	local icon, hl = MiniIcons.get("file", name)
-
-	return "%#" .. hl .. "#" .. icon .. " " .. "%*" .. "%#CursorLineNr#" .. name .. "%*"
-end
-
 local function filetype()
 	local ext = expand("%:e")
 	if ext == "" then
@@ -115,7 +103,7 @@ local config = {
 	sections = {
 		lualine_a = { "mode" },
 		lualine_b = { "branch", diff },
-		lualine_c = { spellcheck, filename },
+		lualine_c = { spellcheck, "filename" },
 		lualine_x = { "diagnostics", filetype },
 		lualine_y = { encoding, spaces },
 		lualine_z = { "location" },

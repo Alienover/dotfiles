@@ -1,9 +1,6 @@
 local ls = require("luasnip")
 local types = require("luasnip.util.types")
 
-local utils = require("custom.utils")
-local consts = require("custom.constants")
-
 ls.config.set_config({
 	history = true,
 	updateevents = "TextChanged, TextChangedI",
@@ -18,11 +15,11 @@ ls.config.set_config({
 })
 
 require("luasnip.loaders.from_lua").lazy_load({
-	paths = { consts.files.snippets },
+	paths = { require("custom.constants").files.snippets },
 })
 
 -- Expand the current snippet or jump to the next item within the snippet
-local keymaps = {
+require("custom.utils").create_keymaps({
 	-- Snippet Navigate
 	{
 		{ "i", "s" },
@@ -53,6 +50,4 @@ local keymaps = {
 			end
 		end,
 	},
-}
-
-utils.create_keymaps(keymaps)
+})

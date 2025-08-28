@@ -87,45 +87,6 @@ local telescope = function(sub_cmd, opts)
 	end
 end
 
-local lspsaga = function(sub_cmd)
-	return t("Lspsaga " .. sub_cmd)
-end
-
-local toggle_diffview = function()
-	local is_opened = vim.g.diffview_opened or vim.o.filetype == "DiffviewFiles"
-	if is_opened then
-		local curr_tabid = vim.api.nvim_get_current_tabpage()
-		local tabidx, tabid = nil, nil
-
-		-- INFO: Find the tab id and index with buffer whose name is starting with "diffview://"
-		for i, tab in ipairs(vim.api.nvim_list_tabpages()) do
-			for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
-				local bufnr = vim.api.nvim_win_get_buf(win)
-				local name = vim.api.nvim_buf_get_name(bufnr)
-
-				if string.match(name, "^diffview://") ~= nil then
-					tabidx = i
-					tabid = tab
-					break
-				end
-			end
-		end
-
-		if tabid ~= nil and curr_tabid ~= tabid then
-			-- INFO: Focus back when the current tab is not the one with diff view
-			vim.cmd("tabnext " .. tabidx)
-		else
-			vim.g.diffview_opened = false
-			vim.cmd("DiffviewClose")
-		end
-	else
-		utils.change_cwd()
-
-		vim.g.diffview_opened = true
-		vim.cmd("DiffviewOpen")
-	end
-end
-
 --- @param curr_file boolean|nil
 ---@return function
 local toggle_file_diff = function(curr_file)
@@ -212,10 +173,9 @@ wk.add(withTrigger({
 		"g",
 		group = "Git",
 		mode = "n",
-		{ "gd", toggle_diffview, desc = "Toggle [D]iffview" },
-		{ "gc", telescope("git_commits"), desc = "Git [C]ommits" },
+		{ "gc", utils.snacks_picker.git_log, desc = "Git [C]ommits" },
 		{ "gC", utils.change_cwd, desc = "[C]hange Current Working Dir" },
-		{ "gf", telescope("git_files"), desc = "Git [F]iles" },
+		{ "gf", utils.snacks_picker.git_files, desc = "Git [F]iles" },
 		{ "gh", toggle_file_diff(true), desc = "Current File [H]istory" },
 		{ "gH", toggle_file_diff(), desc = "File [H]istory" },
 	},
@@ -224,7 +184,7 @@ wk.add(withTrigger({
 --- INFO: Files Operation
 wk.add(withTrigger({
 	{ "f", group = "Files" },
-	{ "fr", telescope("live_grep_args"), desc = "Live G[r]ep" },
+	{ "fr", utils.snacks_picker.grep, desc = "Live G[r]ep" },
 	{
 		"ff",
 		telescope("find_files", { no_ignore = true, hidden = true }),
@@ -254,6 +214,5 @@ wk.add(withTrigger({
 	{ "ls", utils.snacks_picker.lsp_symbols, desc = "Document [S]ymbols" },
 	{ "lD", telescope("diagnostics"), desc = "Document [D]iagnostic" },
 	{ "ld", t("lua vim.diagnostic.open_float({ source = true })"), desc = "Hover [D]iagnostic" },
-	{ "la", lspsaga("code_action"), desc = "Code [A]ction" },
 	{ "lh", toggle_inlay_hint, desc = "Toggle Inlay [H]int" },
 }))
