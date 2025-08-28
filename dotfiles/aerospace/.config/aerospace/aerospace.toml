@@ -275,3 +275,11 @@ run = "layout tiling"
 [[on-window-detected]]
 if.app-name-regex-substring = "mpv"
 run = "layout floating"
+
+[[on-window-detected]]
+if.app-id = "org.qutebrowser.qutebrowser"
+run = "layout tiling"
+
+[[on-window-detected]]
+if.app-id = "net.kovidgoyal.kitty"
+run = "layout floating"
