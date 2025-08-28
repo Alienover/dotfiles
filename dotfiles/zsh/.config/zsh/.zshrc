@@ -44,9 +44,10 @@ zsh_plugins=(
   nvim
   obsidian
   p10k
-  pyenv
   tmux
   vi-mode
+  mise
+  virtualenvwrapper
 
   # Work
   edo-work

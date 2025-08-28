@@ -1,0 +1,6 @@
+[tools]
+python = ['3.12']
+
+[settings]
+activate_aggressive = false
+idiomatic_version_file_enable_tools = ["node"]
