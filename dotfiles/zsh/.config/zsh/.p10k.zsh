@@ -189,6 +189,18 @@
   # really need it.
   typeset -g POWERLEVEL9K_DISABLE_HOT_RELOAD=true
 
+  # Dir shorten strategy
+  #
+  # - truncate_to_last - Shows only the last directory name
+  # 
+  # - truncate_from_right - Truncates from the right side
+  # 
+  # - truncate_to_first_and_last - Shows first and last directories with ... in between
+  # 
+  # - truncate_with_package_name - Shows package name and current directory
+  #
+  typeset -g POWERLEVEL9K_SHORTEN_STRATEGY="truncate_to_last"
+
   # If p10k is already loaded, reload configuration.
   # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.
   (( ! $+functions[p10k] )) || p10k reload
