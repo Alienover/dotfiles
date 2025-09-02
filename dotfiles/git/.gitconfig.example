@@ -1,7 +1,7 @@
 [user]
-	email = <email>
-	name = <name>
-	signingkey = <signingkey>
+	email =
+	name =
+	signingkey =
 [credential]
 	helper = osxkeychain
 
@@ -25,7 +25,7 @@
 
 [core]
 	editor = nvim
-	pager = diff-so-fancy | less --tabs=4 -RFX
+	pager = delta --diff-so-fancy | less --tabs=4 -RFX
 
 [diff]
 	tool = nvim-diff
@@ -36,10 +36,9 @@
 	tool = nvim-merge
 [mergetool]
 	keepBackup = false
-	trustExitCode = true
 	prompt = false
 [mergetool "nvim-merge"]
-	cmd = "nvim -c \"DiffviewOpen -- $MERGED\""
+	cmd = "nvim -c \"Gvdiffsplit!\" -- $MERGED"
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
@@ -50,13 +49,12 @@
 [alias]
 	ps = push
 	pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
-	logs = "!tmux-popup '__FZF_POPUP_HEIGHT=100% popup-logs'"
-	diffs = "!tmux-popup '__FZF_POPUP_HEIGHT=100% popup-diff'"
+	logs = "!tmux-popup '__FZF_POPUP_HEIGHT=100% fzf-git-logs'"
+	diffs = "!tmux-popup '__FZF_POPUP_HEIGHT=100% fzf-git-diff'"
 
 	skip = update-index --assume-unchanged
 	unskip = update-index --no-assume-unchanged
 
-	gone = "!tmux-popup prune-git-branches"
 	ob = "!git branch -v | grep -v '*' | awk '/\\[gone\\]/{print $1}'"
 	purge ="!git ob | xargs -r -n 1 git branch -D"
 	f = fetch -ptf
@@ -78,4 +76,3 @@
 
 [ghq]
 	root = ~/Documents/repos
-
