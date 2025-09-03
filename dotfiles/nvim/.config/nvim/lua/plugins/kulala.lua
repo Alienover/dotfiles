@@ -1,5 +1,3 @@
-local utils = require("custom.utils")
-
 ---@type LazySpec
 return {
 	{ -- Client for HTTP requests
@@ -11,10 +9,11 @@ return {
 			kulala_keymaps_prefix = "",
 			lsp = { enable = false },
 			ui = {
+				max_response_size = 500 * 1024, -- 500 Kb
 				pickers = {
 					snacks = {
 						layout = function()
-							local opts = utils.snacks_picker.get_picker_opts()
+							local opts = require("custom.utils").snacks_picker.get_picker_opts()
 
 							return vim.tbl_deep_extend(
 								"force",
