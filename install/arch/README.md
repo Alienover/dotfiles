@@ -10,7 +10,7 @@ zsh bat git ghq vim neovim lf fzf openssh zip unzip stow gnupg tmux wmenu pacman
 eza wget lf
 
 # System
-networkmanager sbctl mesa vulkan-radeon ufw ddcutil
+networkmanager sbctl mesa vulkan-radeon ufw ddcutil bluez-utils bluetui
 
 # Monitor
 btop nvtop
@@ -162,4 +162,13 @@ ddcutil capabilities | grep "Feature: 10"
 
 # You should see
 # Feature: 10 (Brightness)
+```
+
+# Enable Bluetooth
+> [!Bug] Since I am using `Mediateck MT7925` chip for both wifi and bluetooth, there's a issue for the bluetooth in the linux kernel.
+> [bbs archlinux](https://bbs.archlinux.org/viewtopic.php?id=306366)
+> [linux kernel patch](https://lists.openwall.net/linux-kernel/2025/06/06/739)
+
+```bash
+systemctl enable --now bluetooth.service
 ```
