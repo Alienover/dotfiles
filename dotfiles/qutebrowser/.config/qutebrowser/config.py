@@ -9,11 +9,13 @@ config.load_autoconfig(False)
 catppuccin.setup(c, "mocha", True)
 
 c.colors.webpage.darkmode.enabled = True
+c.colors.webpage.bg = "#1E1E1E"
+c.colors.webpage.preferred_color_scheme = "dark"
 DARKMODE_BLACKLIST = ["www.youtube.com"]
 for site in DARKMODE_BLACKLIST:
     config.set("colors.webpage.darkmode.enabled", False, site)
 
-c.fonts.default_size = "14pt"
+c.fonts.default_size = "12pt"
 
 c.window.hide_decoration = True
 
