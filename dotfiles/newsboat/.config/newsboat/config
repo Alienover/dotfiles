@@ -1,0 +1,17 @@
+include ~/.config/newsboat/dark
+
+# movement
+bind-key h quit
+bind-key j down
+bind-key k up
+bind-key l open
+bind-key g home
+bind-key G end
+bind-key S save-all
+bind-key ^u halfpageup
+bind-key ^d halfpagedown
+bind-key m mark-feed-read
+
+save-path ~/Documents/newsboat
+
+reload-threads 100 # loading feeds in parallel

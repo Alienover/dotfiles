@@ -1,0 +1,6 @@
+https://archlinux.org/feeds/news/ arch
+https://codeberg.org/river/river/releases.rss ~river git river
+https://codeberg.org/unixchad/damblocks.rss ~dam git river
+https://codeberg.org/adnano/wmenu.rss ~wmenu git gui
+https://codeberg.org/dnkl/foot/releases.rss ~foot git gui
+https://github.com/gokcehan/lf/releases.atom ~lf git tui
