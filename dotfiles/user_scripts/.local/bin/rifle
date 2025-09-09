@@ -1,11 +1,17 @@
 #!/bin/bash
 
 file="${f:-${1}}"
-selected_files=""
+selected_files=()
 
-for arg in "${fx:-$@}"; do
-  selected_files+=" $(printf '%q' "$arg")"
-done
+if [ -n "$fx" ]; then
+  for arg in "${fx[@]}"; do
+    selected_files+=("$arg")
+  done
+elif [ "$#" -gt 0 ]; then
+  for arg in "$@"; do
+    selected_files+=("$arg")
+  done
+fi
 
 open_in_editor() {
   if [ -n "$id" ]; then
@@ -16,30 +22,31 @@ open_in_editor() {
   if [ -n "$TMUX_LF" ]; then
     case $(tmux display -p "#{pane_current_command}") in
       *vim)
-        tmux send-keys :argadd Space $selected_files Enter
+        tmux send-keys :tabnew Enter
+        tmux send-keys :argadd Space "${selected_files[@]}" Enter
         tmux send-keys :b Space $(basename "$file") Enter
         ;;
       zsh)
-        tmux send-keys $EDITOR Space -- Space "$selected_files" Enter
+        tmux send-keys $EDITOR Space -- Space "${selected_files[@]}" Enter
         ;;
       *)
-        tmux new-window "$EDITOR -- $selected_files"
+        tmux new-window "$EDITOR --" "${selected_files[@]}"
         ;;
     esac
     return 0
   fi
 
-  $EDITOR "$selected_files"
+  $EDITOR "${selected_files[@]}"
 }
 
 case $(file --mime-type -Lb -- "$file") in
   video/*)
-    mpv --keep-open=yes "$selected_files"
+    mpv --keep-open=yes "${selected_files[@]}"
     ;;
   text/*|*/json|inode/x-empty|application/javascript)
     open_in_editor
     ;;
   *)
-    open "$selected_files"
+    open "${selected_files[@]}"
     ;;
 esac
