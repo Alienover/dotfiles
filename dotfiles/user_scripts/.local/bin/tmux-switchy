@@ -20,7 +20,7 @@ if [ -n "$1" ]; then
 else
   C_FG=$GUI_FOREGROUND
   C_BG=$GUI_BACKGROUND
-  C_PRIMARY=$GUI_BLUE
+  C_PRIMARY=$GUI_PRIMARY
   C_YELLOW=$GUI_DARK_YELLOW
   C_BLACK=$GUI_BLACK
 
@@ -40,9 +40,13 @@ else
     --color spinner:$C_PRIMARY,pointer:$C_BLACK,marker:$C_YELLOW,border:$C_BLACK
   "
 
-  MATCHEDS=$(tmux list-sessions -F "#S: #{session_windows} windows #{?session_attached,(attached),}" | \
+  __tm_format="#S: #{session_windows} windows #{?session_attached,(attached),}"
+  __tm_session="echo {} | grep -oE \"^[^:]+\""
+
+  MATCHEDS=$(tmux list-sessions -F "$__tm_format" | \
     grep -v "popup" | fzf $FZF_OPTIONS --prompt "Session: "\
-    --preview "echo {} | grep -oE \"^[^:]+\" | xargs -I %% tmux-preview \"%%\"" |\
+    --bind "ctrl-x:execute($__tm_session | xargs -I %% tmux kill-session -t \"%%\")+execute($0)+abort" \
+    --preview "$__tm_session | xargs -I %% tmux-preview \"%%\"" |\
     sed -E 's/.*[[:space:]]([^:]+):.*/\1/' \
   )
 
