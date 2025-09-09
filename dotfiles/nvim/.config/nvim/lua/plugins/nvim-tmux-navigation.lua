@@ -4,10 +4,10 @@ return {
 	{ -- Tmux Navigation
 		"alexghergh/nvim-tmux-navigation",
 		keys = {
-			{ "<C-w>h", "<CMD>NvimTmuxNavigateLeft<CR>", desc = "Focus Left Pane" },
-			{ "<C-w>l", "<CMD>NvimTmuxNavigateRight<CR>", desc = "Focus Right Pane" },
-			{ "<C-w>j", "<CMD>NvimTmuxNavigateDown<CR>", desc = "Focus Down Pane" },
-			{ "<C-w>k", "<CMD>NvimTmuxNavigateUp<CR>", desc = "Focus Up Pane" },
+			{ "<C-w>h", "<CMD>NvimTmuxNavigateLeft<CR>", mode = { "n", "t" }, desc = "Focus Left Pane" },
+			{ "<C-w>l", "<CMD>NvimTmuxNavigateRight<CR>", mode = { "n", "t" }, desc = "Focus Right Pane" },
+			{ "<C-w>j", "<CMD>NvimTmuxNavigateDown<CR>", mode = { "n", "t" }, desc = "Focus Down Pane" },
+			{ "<C-w>k", "<CMD>NvimTmuxNavigateUp<CR>", mode = { "n", "t" }, desc = "Focus Up Pane" },
 		},
 		opts = {
 			keybindings = {
