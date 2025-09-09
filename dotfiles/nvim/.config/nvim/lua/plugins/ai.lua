@@ -58,6 +58,7 @@ return {
 	},
 	{
 		"olimorris/codecompanion.nvim",
+		enabled = false,
 		keys = {
 			{ "<leader>cc", "<CMD>CodeCompanionChat Toggle<CR>", mode = "n", desc = "CodeCompanion: Toggle Chat" },
 			{ "<leader>cA", "<CMD>CodeCompanionActions<CR>", mode = "n", desc = "CodeCompanion: Actions" },
