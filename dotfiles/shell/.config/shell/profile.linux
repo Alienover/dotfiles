@@ -1,0 +1,13 @@
+#!/bin/env sh
+
+[ -f "$(dirname $0)/profile.default" ] && source "$(dirname $0)/profile.default"
+
+export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+
+# Launch `river` as the window manager
+if command -v river >/dev/null 2>&1; then
+  if [ -z "$WAYLAND_DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
+    exec ssh-agent river -no-xwayland -log-level error > /tmp/river.${XDG_VTNR}.${USER}.log 2>&1
+  fi
+fi
+
