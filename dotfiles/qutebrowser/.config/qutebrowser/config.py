@@ -11,7 +11,7 @@ catppuccin.setup(c, "mocha", True)
 c.colors.webpage.darkmode.enabled = True
 c.colors.webpage.bg = "#1E1E1E"
 c.colors.webpage.preferred_color_scheme = "dark"
-DARKMODE_BLACKLIST = ["www.youtube.com"]
+DARKMODE_BLACKLIST = ["www.youtube.com", "www.bilibili.com", "www.google.com"]
 for site in DARKMODE_BLACKLIST:
     config.set("colors.webpage.darkmode.enabled", False, site)
 
