@@ -1,3 +1,8 @@
+# Use `wl-copy` under linux
+if-shell 'uname | grep -q Linux' { \
+  set -s copy-command "wl-copy"; \
+}
+
 # Increase scrollback buffer size from 2000 to 50000 lines
 set -g history-limit 50000
 
