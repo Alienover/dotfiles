@@ -5,12 +5,6 @@ vim.cmd([[syntax on]])
 
 vim.cmd([[filetype plugin indent on]])
 
--- Italic support
-vim.cmd([[
-  let &t_ZH="\e[3m"
-  let &t_ZR="\e[23m"
-]])
-
 -- Global variables
 local global = {
 	-- Ignore the provider warnings
@@ -100,7 +94,7 @@ local options = {
 	undolevels = 1000,
 
 	-- Use the clipboard register "*" for all yank, delete, change and put operations
-	clipboard = { "unnamed" },
+	clipboard = { "unnamedplus" },
 
 	-- Influences the working of <BS>, <Del>, CTRL-W and CTRL-U in Insert mode
 	backspace = { "indent", "eol", "start" },
