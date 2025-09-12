@@ -2,8 +2,6 @@
 	email =
 	name =
 	signingkey =
-[credential]
-	helper = osxkeychain
 
 [color]
 	branch = auto
@@ -61,10 +59,6 @@
 	u = "!git f && git pl && git purge"
 
 	unstage = "reset HEAD --"
-[safe]
-	directory = /opt/homebrew/Library/Taps/homebrew/homebrew-cask
-	directory = /opt/homebrew/Library/Taps/homebrew/homebrew-core
-	directory = /opt/homebrew/Library/Taps/homebrew/homebrew-services
 [commit]
 	gpgsign = true
 [gpg]
