@@ -7,16 +7,16 @@
 ```
 # Base
 zsh bat git ghq vim neovim lf fzf openssh zip unzip stow gnupg tmux wmenu pacman-contrib
-eza wget lf
+eza wget lf fd 
 
 # System
-networkmanager sbctl mesa vulkan-radeon ufw ddcutil bluez-utils bluetui
+networkmanager sbctl mesa vulkan-radeon ufw ddcutil bluez-utils bluetui <yay>
 
 # Monitor
 btop nvtop
 
 # Wayland
-foot river <dam> wob wl-clipboard cliphist
+foot river <dam> wob wl-clipboard cliphist swaylock swaybg
 
 # Web browser
 qutebrowser firefox
@@ -27,6 +27,12 @@ ttf-jetbrains-mono ttf-jetbrains-mono-nerd
 
 # Audio
 pipewire pipewire-alsa pipewire-pulse wireplumber
+
+# Password
+pass pass-otp
+
+# IME
+fcitx5 fcitx5-qt fcitx5-gtk fcitx5-chinese-addons
 ```
 
 # `sbctl` Secure Boot
@@ -48,7 +54,7 @@ sbctl create-keys
 
 ```
 
-4. Encroll the keys, with `--microsoft` if need dual boot with Windows
+4. Enroll the keys, with `--microsoft` if need dual boot with Windows
 
 ```shell
 sbctl encroll-keys [--micronsoft]
@@ -67,6 +73,7 @@ sudo sbctl sign-all
 sudo sbctl sign -s /boot/EFI/BOOT/BOOTX64.EFI
 sudo sbctl sign -s /boot/EFI/systemd/systemd-boox64.efi
 sudo sbctl sign -s /boot/vmlinuz-linux
+sudo sbctl sign -s -o /usr/lib/systemd/boot/efi/systemd-bootx64.efi.signed /usr/lib/systemd/boot/efi/systemd-bootx64.efi
 ```
 
 7. Reboot into UEFI setup and double-check whether the `Secure Boot` is enabled. If not, enable it manually.
@@ -165,10 +172,47 @@ ddcutil capabilities | grep "Feature: 10"
 ```
 
 # Enable Bluetooth
+
 > [!Bug] Since I am using `Mediateck MT7925` chip for both wifi and bluetooth, there's a issue for the bluetooth in the linux kernel.
 > [bbs archlinux](https://bbs.archlinux.org/viewtopic.php?id=306366)
 > [linux kernel patch](https://lists.openwall.net/linux-kernel/2025/06/06/739)
 
 ```bash
 systemctl enable --now bluetooth.service
+```
+
+# Setup `sshd` to force login with keys
+edit `/etc/ssh/sshd_config`
+```conf
+# uncomment this line
+PasswordAuthentication no
+```
+
+## Enable `sshd` and `ssh-agent`
+```bash
+systemctl enable --now sshd.service
+
+systemctl enable --user --now ssh-agent.service
+```
+
+# Setup `fcitx5`
+
+install `fcitx5-configtool` for the GUI configure
+
+## Install theme
+```bash
+git clone https://github.com/catppuccin/fcitx5.git
+mkdir -p ~/.local/share/fcitx5/themes/
+cp -r ./fcitx5/src/catppuccin-{flavour}-{accent}
+```
+
+Update the `theme` variable in fcitx5 config
+```conf
+# ~/.local/fcitx5/conf/classicui.conf
+Theme=catppuccin-{flavour}-{accent}
+```
+
+For example if i'm using the `mocha` flavour with `red` accent. Check [palette](https://catppuccin.com/palette) for more options.
+```
+catppuccin-mocha-red
 ```
