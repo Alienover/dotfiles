@@ -1,0 +1,33 @@
+#!/bin/env sh
+
+change_audio() {
+  if [ -n "$1" ]; then
+    local device_id=$(echo "$1" | sed -nE 's/^\*? *([0-9]+)\..*/\1/p')
+
+    wpctl set-default "$device_id"
+  fi
+}
+
+select_sink() {
+  devices="$(wpctl status | awk '/Sinks:/,/Sources:/' | grep -E '\[vol' | awk '{$1=""; sub(/^ +/,""); print}')"
+  change_audio "$(echo "$devices[@]" | wmenu-color -p "[Audio Sinks]" -l 4)"
+}
+
+select_source() {
+  devices="$(wpctl status | awk '/Sources:/,/Filters:/' | grep -E '\[vol' | awk '{$1=""; sub(/^ +/,""); print}')"
+  change_audio "$(echo "$devices[@]" | wmenu-color -p "[Audio Sinks]" -l 4)"
+
+}
+
+case "$1" in
+  sink)
+    select_sink
+    ;;
+  source)
+    select_source
+    ;;
+  *)
+    echo "Usage: audio-menu <sink/source>"
+    exit 1
+    ;;
+esac

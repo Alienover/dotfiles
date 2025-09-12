@@ -1,0 +1,5 @@
+#!/bin/env sh
+
+confirm="$(printf "no\nyes" | wmenu-color -p "Exit river? This will end the Wayland session.")"
+
+[ "$confirm" = "yes" ] && riverctl exit || exit 0

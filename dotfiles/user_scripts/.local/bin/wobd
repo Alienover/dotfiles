@@ -1,0 +1,13 @@
+#!/bin/env sh
+
+WOBFIFO="${XDG_RUNTIME_DIR}/wob.fifo"
+
+[ -f "$WOBFIFO" ] && [ ! -p "$WOBFIFO" ] && rm "$WOBFIFO"
+[ -f "$WOBFIFO" ] || mkfifo "$WOBFIFO"
+
+tailing_cmd="tail -f $WOBFIFO"
+if pgrep -f "$tailing_cmd" > /dev/null; then
+  pkill -f "$tailing_cmd"
+fi
+
+eval $tailing_cmd | wob

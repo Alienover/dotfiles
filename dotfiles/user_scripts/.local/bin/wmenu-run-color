@@ -1,0 +1,3 @@
+#!/bin/env sh
+
+command cat $(dirname $0)/wmenu-color | sed 's/wmenu/wmenu-run/' | sh

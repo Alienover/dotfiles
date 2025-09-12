@@ -1,0 +1,13 @@
+#!/bin/env sh
+
+render() {
+  ${HOME}/.local/bin/dam-blocks | dam
+}
+
+bar_rerender() {
+  killall dam
+  pkill -f dam-blocks
+  render
+}
+
+! pgrep "dam" > /dev/null 2>&1 || ! pgrep -f "dam-blocks" > /dev/null 2>&1 && bar_rerender

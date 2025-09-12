@@ -1,0 +1,12 @@
+#!/bin/env sh
+# wmenu with the preset colorscheme
+
+source $HOME/.config/zsh/zsh-colors.zsh
+
+wmenu -i -f "JetBrains Mono Medium 12" \
+  -N "$GUI_BACKGROUND" \
+  -S "$GUI_PRIMARY" \
+  -s "$GUI_SELECTION_FOREGROUND" \
+  -M "$GUI_PRIMARY" \
+  -m "$GUI_SELECTION_FOREGROUND" \
+  "$@"

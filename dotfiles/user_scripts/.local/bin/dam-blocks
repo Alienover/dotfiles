@@ -1,0 +1,45 @@
+#!/bin/env sh
+
+# Init
+printf "$$" > "${XDG_RUNTIME_DIR}/$(basename $0).pid"
+
+render_date() {
+  date_blk="$(date +"%b%e %H:%M")"
+}
+
+render_volume() {
+  local level="$(cat "${XDG_CACHE_HOME}/audio-@DEFAULT_AUDIO_SINK@.level")"
+  local muted="$(cat "${XDG_CACHE_HOME}/audio-@DEFAULT_AUDIO_SINK@.muted")"
+  if [ -n "$muted" ]; then
+    icon="󰸈"
+  elif [ $level -eq 0 ]; then
+    icon="󰸈"
+  elif [ $level -lt 50 ]; then
+    icon=""
+  else
+    icon=""
+  fi
+  volume_blk="$icon"
+}
+
+render_date; render_volume
+
+display() {
+  local space=" "
+  printf "%s" "${spaace}${volume_blk}${space}${space}${date_blk}${space}"
+}
+
+trap "render_volume;display" "RTMIN+2"   # -36 .local/bin/audio
+
+
+sec=0
+while true
+do
+  sleep 1 & wait && {
+    [ $((sec % 60 )) -eq 0 ] && render_date # Update every 1 minute
+    
+    [ $((sec % 5 )) -eq 0 ] && display
+
+    sec=$((sec + 1))
+  }
+done

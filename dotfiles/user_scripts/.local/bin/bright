@@ -1,0 +1,33 @@
+#!/bin/env sh
+
+wobfifo="${XDG_RUNTIME_DIR}/wob.fifo"
+
+
+brightness() {
+  ddcutil getvcp 10 | sed 's/\( \|,\)\+/ /g' | awk '{print $9}'
+}
+
+set_brightness() {
+  ddcutil setvcp 10 "$1" && echo "$1" > "$wobfifo"
+}
+
+bright_minus() {
+  set_brightness "$(($(brightness) - 5))"
+}
+
+bright_plus() {
+  set_brightness "$(($(brightness) + 5))"
+}
+
+case "$1" in
+  --minus)
+    bright_minus
+    ;;
+  --plus)
+    bright_plus
+    ;;
+  *)
+    echo "Usage: bright <--minus | --plus>"
+    exit 1
+    ;;
+esac

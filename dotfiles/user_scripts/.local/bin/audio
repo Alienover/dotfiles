@@ -1,0 +1,50 @@
+#!/bin/env sh
+
+wobfifo="${XDG_RUNTIME_DIR}/wob.fifo"
+
+[ "$1" = "sink" ] && target="@DEFAULT_AUDIO_SINK@"
+[ "$1" = "source" ] && target="@DEFAULT_DUSIO_SOURCE@"
+
+rerender_block() {
+  local pid="$(command cat ${XDG_RUNTIME_DIR}/dam-blocks.pid)"
+  [ "$1" = "sink" ] && kill -36 "$pid"
+  [ "$1" = "source" ] && kill -37 "$pid"
+}
+
+save_volume_status() {
+  local status="$(wpctl get-volume "$target")"
+  echo "$status" | sed 's/[^0-9]//g; s/^0//' | tee "$wobfifo" "${XDG_CACHE_HOME}/audio-${target}.level"
+  echo "$status" | grep -i "MUTED" | tee "$wobfifo" "${XDG_CACHE_HOME}/audio-${target}.muted"
+}
+
+volume_minus() {
+  wpctl set-volume "$target" 1%-
+  wpctl set-mute "$target" 0
+}
+
+volume_plus() {
+  wpctl set-volume "$target" 1%+
+  wpctl set-mute "$target" 0
+}
+
+volume_mute() {
+  wpctl set-mute "$target" toggle
+}
+
+case "$2" in
+  --minus)
+    volume_minus
+    ;;
+  --plus)
+    volume_plus
+    ;;
+  --mute)
+    volume_mute
+    ;;
+  *)
+    echo "Usage: audio <sink/source> <--minus| --plus | --mute>"
+    exit 1
+    ;;
+esac
+save_volume_status
+rerender_block "$1"
