@@ -13,13 +13,7 @@ return {
 				pickers = {
 					snacks = {
 						layout = function()
-							local opts = require("custom.utils").snacks_picker.get_picker_opts()
-
-							return vim.tbl_deep_extend(
-								"force",
-								require("snacks.picker").config.layout("telescope"),
-								opts.layouts.telescope
-							)
+							return require("snacks.picker").config.layout("telescope")
 						end,
 					},
 				},

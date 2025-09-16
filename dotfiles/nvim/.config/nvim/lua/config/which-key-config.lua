@@ -78,28 +78,6 @@ local e = function(filepath)
 	return t("e " .. filepath)
 end
 
---- Telescope wrapper with theme flag based on the window sizing
----@param sub_cmd string
----@param opts table|nil
-local telescope = function(sub_cmd, opts)
-	return function()
-		utils.telescope(sub_cmd, opts)
-	end
-end
-
---- @param curr_file boolean|nil
----@return function
-local toggle_file_diff = function(curr_file)
-	return function()
-		if vim.bo.filetype == "DiffviewFileHistory" then
-			vim.cmd("tabclose")
-		else
-			utils.change_cwd()
-			vim.cmd("DiffviewFileHistory" .. (curr_file == true and " %" or ""))
-		end
-	end
-end
-
 local toggle_inlay_hint = function()
 	local bufnr = vim.api.nvim_get_current_buf()
 	local enabled = vim.lsp.inlay_hint.is_enabled({
@@ -128,14 +106,16 @@ local function withTrigger(mappings, trigger)
 	return mappings
 end
 
+--- @module 'snacks'
+
 --- INFO: Help
 wk.add(withTrigger({
 	{
 		"h",
 		group = "Help",
-		{ "hc", utils.snacks_picker.commands, desc = "[C]ommands" },
-		{ "hk", utils.snacks_picker.keymaps, desc = "[K]ey Maps" },
-		{ "hh", utils.snacks_picker.highlights, desc = "[H]ighlight Groups" },
+		{ "hc", Snacks.picker.commands, desc = "[C]ommands" },
+		{ "hk", Snacks.picker.keymaps, desc = "[K]ey Maps" },
+		{ "hh", Snacks.picker.highlights, desc = "[H]ighlight Groups" },
 		{ "hm", t("Mason"), desc = "[M]ason Manager" },
 		{
 			"hl",
@@ -143,10 +123,10 @@ wk.add(withTrigger({
 			{ "hlS", t("Lazy sync"), desc = "[S]ync Plugins" },
 			{ "hls", t("Lazy show"), desc = "[S]how Plugins" },
 		},
-		{ "hu", utils.snacks_picker.undo, desc = "[U]ndo tree" },
-		{ "h?", utils.snacks_picker.help, desc = "Help doc" },
+		{ "hu", Snacks.picker.undo, desc = "[U]ndo tree" },
+		{ "h?", Snacks.picker.help, desc = "Help doc" },
 	},
-	{ "/", utils.snacks_picker.lines, desc = "Search" },
+	{ "/", Snacks.picker.lines, desc = "Search" },
 }))
 
 --- INFO: Buffer
@@ -155,7 +135,7 @@ wk.add(withTrigger({
 	{
 		"bb",
 		function()
-			utils.snacks_picker.buffers({
+			Snacks.picker.buffers({
 				on_show = function()
 					vim.cmd.stopinsert()
 				end,
@@ -173,24 +153,24 @@ wk.add(withTrigger({
 		"g",
 		group = "Git",
 		mode = "n",
-		{ "gc", utils.snacks_picker.git_log, desc = "Git [C]ommits" },
+		{ "gc", Snacks.picker.git_log, desc = "Git [C]ommits" },
 		{ "gC", utils.change_cwd, desc = "[C]hange Current Working Dir" },
-		{ "gf", utils.snacks_picker.git_files, desc = "Git [F]iles" },
-		{ "gh", toggle_file_diff(true), desc = "Current File [H]istory" },
-		{ "gH", toggle_file_diff(), desc = "File [H]istory" },
+		{ "gf", Snacks.picker.git_files, desc = "Git [F]iles" },
 	},
 }))
 
 --- INFO: Files Operation
 wk.add(withTrigger({
 	{ "f", group = "Files" },
-	{ "fr", utils.snacks_picker.grep, desc = "Live G[r]ep" },
+	{ "fr", Snacks.picker.grep, desc = "Live G[r]ep" },
 	{
 		"ff",
-		telescope("find_files", { no_ignore = true, hidden = true }),
+		function()
+			Snacks.picker.files({ hidden = true, ignored = true })
+		end,
 		desc = "[F]ind files",
 	},
-	{ "fo", utils.snacks_picker.recent, desc = "Recently [O]pend" },
+	{ "fo", Snacks.picker.recent, desc = "Recently [O]pend" },
 }))
 
 --- INFO: Open File
@@ -211,8 +191,7 @@ wk.add(withTrigger({
 	{ "lR", t("LspRestart"), desc = "[R]estart" },
 	{ "lN", t("NullLsInfo"), desc = "[N]ull-ls Info" },
 	{ "lf", t("lua vim.lsp.buf.format({async = true})"), desc = "[F]ormat" },
-	{ "ls", utils.snacks_picker.lsp_symbols, desc = "Document [S]ymbols" },
-	{ "lD", telescope("diagnostics"), desc = "Document [D]iagnostic" },
+	{ "ls", Snacks.picker.lsp_symbols, desc = "Document [S]ymbols" },
 	{ "ld", t("lua vim.diagnostic.open_float({ source = true })"), desc = "Hover [D]iagnostic" },
 	{ "lh", toggle_inlay_hint, desc = "Toggle Inlay [H]int" },
 }))

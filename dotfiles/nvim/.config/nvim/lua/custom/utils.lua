@@ -160,11 +160,6 @@ M.change_cwd = function()
 	end
 end
 
-M.file_existed = function(path)
-	---@diagnostic disable-next-line: missing-parameter
-	return vim.fn.empty(vim.fn.glob(path)) == 0
-end
-
 --- Setup vim options by given list
 ---@param options table
 M.setup_options = function(options)
@@ -186,80 +181,6 @@ end
 M.setup_filetypes = function(filetypes)
 	if vim.filetype then
 		vim.filetype.add(filetypes)
-	end
-end
-
---- @module 'snacks'
---- @alias customizedSnacksPicker 'telescope'
---- @alias snacks.picker.Layouts table<customizedSnacksPicker, snacks.picker.layout.Config>
----
---- @class snacks.picker.withOpts: snacks.picker
---- @field get_picker_opts fun(): {layouts: snacks.picker.Layouts }
----
---- @type snacks.picker.withOpts
-M.snacks_picker = setmetatable({
-	--- @return { layouts: snacks.picker.Layouts}
-	get_picker_opts = function()
-		local sizing = M.get_float_win_sizing()
-
-		return {
-			layouts = {
-				telescope = vim.tbl_deep_extend("force", Snacks.picker.config.layout("telescope"), {
-					layout = {
-						width = sizing.width,
-						height = sizing.height,
-					},
-				}),
-			},
-		}
-	end,
-}, {
-	__index = function(ctx, cmd)
-		--- @param opts? snacks.picker.Config
-		return function(opts)
-			Snacks.picker[cmd](vim.tbl_deep_extend("force", ctx.get_picker_opts(), opts or {}))
-		end
-	end,
-})
-
-M.telescope = function(cmd, opts)
-	local flags = {}
-	opts = opts or {}
-
-	local layout_config = {
-		width = 0.5,
-		height = 0.5,
-	}
-
-	local win_spec = M.get_window_sepc()
-	if win_spec.columns <= window_sizing.md.width then
-		layout_config.width = 0.8
-		layout_config.height = 0.8
-	end
-
-	require("telescope").setup({
-		defaults = {
-			layout_config = layout_config,
-		},
-	})
-
-	for k, v in pairs(opts) do
-		table.insert(flags, type(k) == "number" and v or string.format("%s=%s", k, v))
-	end
-
-	vim.cmd(string.format("%s %s %s", "Telescope", cmd, table.concat(flags, " ")))
-end
-
-M.buffer_is_big = function(bufnr)
-	bufnr = bufnr or vim.api.nvim_get_current_buf()
-
-	local max_filesize = 100 * 1024 -- 100 KB
-
-	local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(bufnr))
-	if ok and stats and stats.size > max_filesize then
-		return true
-	else
-		return false
 	end
 end
 

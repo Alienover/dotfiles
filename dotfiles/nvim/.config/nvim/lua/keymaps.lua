@@ -34,7 +34,7 @@ nmap("<leader>S", function()
 end, "Toggle [S]pell")
 
 -- Toggling file finder in smart mode with Snacks.picker
-nmap("<C-p>", utils.snacks_picker.smart)
+nmap("<C-p>", Snacks.picker.smart)
 
 -- File browser
 nmap("<C-f>", function()

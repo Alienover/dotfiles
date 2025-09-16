@@ -1,5 +1,3 @@
-local utils = require("custom.utils")
-
 ---@type LazySpec
 return {
 	{ -- Highlight keywords like utils.snacks_picker.todo_commentstodo, fix, and info
@@ -8,7 +6,7 @@ return {
 			{
 				"<space>ht",
 				---@diagnostic disable-next-line: undefined-field
-				utils.snacks_picker.todo_comments,
+				"<CMD>lua Snacks.picker.todo_comments()<CR>",
 				desc = "[T]odo Comments",
 			},
 		},
