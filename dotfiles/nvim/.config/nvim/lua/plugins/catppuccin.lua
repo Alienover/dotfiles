@@ -21,13 +21,13 @@ return {
 				blink_cmp = true,
 				noice = true,
 				which_key = true,
-				native_lsp = {
-					enabled = true,
+				lsp_styles = {
 					underlines = {
-						errors = { "undercurl" },
-						hints = { "undercurl" },
-						warnings = { "undercurl" },
-						information = { "undercurl" },
+						errors = { "underline" },
+						hints = { "underline" },
+						warnings = { "underline" },
+						information = { "underline" },
+						ok = { "underline" },
 					},
 				},
 			},
@@ -50,6 +50,8 @@ return {
 					MatchParen = { style = { "bold", "italic" } },
 
 					CursorLineNr = { fg = colors.maroon },
+
+					BufferlineIndicatorSelected = { fg = colors.red, style = { "bold" } },
 				}
 			end,
 		},

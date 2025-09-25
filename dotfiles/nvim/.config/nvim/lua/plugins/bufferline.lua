@@ -7,11 +7,13 @@ return {
 		opts = function(_, opts)
 			return vim.tbl_extend("force", opts, {
 				-- Integrate the Catppuccin theme
-				highlights = require("catppuccin.groups.integrations.bufferline").get_theme(),
+				highlights = require("catppuccin.special.bufferline").get_theme(),
 				options = {
 					-- Styling
 					mode = "tabs",
-					indicator = { style = "underline" },
+					indicator = {
+						icon = "▎", -- this should be omitted if indicator style is not 'icon'
+					},
 					separator_style = { "", "" },
 
 					-- Flags
