@@ -13,5 +13,8 @@ return {
 				end, 10)
 			end,
 		},
+		references = {
+			provider = "snacks",
+		},
 	},
 }
