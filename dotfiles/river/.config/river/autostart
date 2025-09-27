@@ -19,4 +19,5 @@ killall "swaybg" > /dev/null 2>&1; riverctl spawn "swaybg -i $HOME/.local/share/
 # input method - fcitx5
 pgrep "fcitx5" || riverctl spawn "fcitx5 -d"
 
-
+# Idle management
+pgrep "swayidle" || riverctl spawn "swayidle"

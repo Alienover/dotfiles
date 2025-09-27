@@ -1,0 +1,5 @@
+# vim: ft=conf
+
+timeout 300 'ddcutil setvcp 10 5; swaylock' resume "ddcutil setvcp 10 50"
+timeout 600 'ddcutil setvcp 10 0' resume "ddcutil setvcp 10 50"
+before-sleep 'swaylock'
