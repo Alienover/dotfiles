@@ -1,0 +1,19 @@
+diff --git a/config.def.h b/config.def.h
+index a6b84fe..5009f46 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -1,11 +1,11 @@
+ /* appearance */
+ static int showbar           = 1; /* 0 means no bar */
+ static int topbar            = 1; /* 0 means bottom bar */
+-static const char *fonts[]   = { "monospace:size=10" };
++static const char *fonts[]   = { "JetBrains Mono Medium:size=12" };
+ static uint32_t colors[][3]  = {
+ 	/*               fg          bg         */
+-	[SchemeNorm] = { 0xbbbbbbff, 0x222222ff },
+-	[SchemeSel]  = { 0xeeeeeeff, 0x005577ff },
++	[SchemeNorm] = { 0xCDD6F4ff, 0x1E1E2Eff },
++	[SchemeSel]  = { 0x1E1E2Eff, 0x89B4FAff },
+ };
+ 
+ /* tagging */
