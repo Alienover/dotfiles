@@ -8,25 +8,14 @@
 # See the river(1), riverctl(1), and rivertile(1) man pages for complete
 # documentation.
 
-. $HOME/.config/river/autostart
-. $HOME/.config/river/keymaps
-
 # Set background and border color
-riverctl background-color 0x002b36
+riverctl background-color 0x1E1E2E
 riverctl border-color-focused 0xE45C9C
 riverctl border-color-unfocused 0xFFFFFF00
 riverctl border-width 2
 
-# Window rules
-# Fix the border for every window
-riverctl rule-add -app-id '*' ssd
-
-# Make all views with an app-id that starts with "float" and title "foo" start floating.
-riverctl rule-add -app-id 'float*' -title 'foo' float
-
-# Make all views with app-id "bar" and any title use client-side decorations
-riverctl rule-add -app-id "bar" csd
-
+. $HOME/.config/river/autostart
+. $HOME/.config/river/keymaps
 
 # Set keyboard repeat rate
 riverctl set-repeat 30 200
@@ -38,3 +27,14 @@ riverctl hide-cursor when-typing enabled
 # River will send the process group of the init executable SIGTERM on exit.
 riverctl default-layout rivertile
 rivertile -view-padding 12 -outer-padding 12 &
+
+# Window rules
+# Fix the border for every window
+riverctl rule-add -app-id '*' ssd
+
+# Make all views with an app-id that starts with "float" and title "foo" start floating.
+riverctl rule-add -app-id 'float*' -title 'foo' float
+
+# Make all views with app-id "bar" and any title use client-side decorations
+riverctl rule-add -app-id "bar" csd
+
