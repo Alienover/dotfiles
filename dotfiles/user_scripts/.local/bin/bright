@@ -26,6 +26,9 @@ case "$1" in
   --plus)
     bright_plus
     ;;
+  --set)
+    set_brightness "$2"
+    ;;
   *)
     echo "Usage: bright <--minus | --plus>"
     exit 1
