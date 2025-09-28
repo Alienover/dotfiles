@@ -16,7 +16,7 @@ function zsh_add_file() {
   local file="$dir/$1"
 
   if [ -f "$file" ]; then
-    source "$file"
+    zinit is-snippet for "$file"
   else
     __error "Couldn't find $file"
     return 1
