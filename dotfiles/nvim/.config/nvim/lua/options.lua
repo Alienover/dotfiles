@@ -116,6 +116,9 @@ local options = {
 
 	-- Round indent to multiple of `shiftwidth`
 	shiftround = true,
+
+	-- Show command preview
+	inccommand = "split",
 }
 
 -- Custom filetypes
