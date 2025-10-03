@@ -2,7 +2,7 @@
 return {
 	{ -- Markdown
 		"MeanderingProgrammer/render-markdown.nvim",
-		ft = { "markdown", "Avante", "codecompanion" },
+		ft = { "markdown" },
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
 			"nvim-mini/mini.icons",
@@ -10,7 +10,7 @@ return {
 		--- @module 'render-markdown'
 		--- @type render.md.UserConfig
 		opts = {
-			file_types = { "markdown", "Avante", "codecompanion" },
+			file_types = { "markdown" },
 
 			-- See: https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki/CodeBlocks
 			code = {

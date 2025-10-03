@@ -126,6 +126,7 @@ return {
 	},
 	{
 		"coder/claudecode.nvim",
+		enabled = false,
 		dependencies = { "folke/snacks.nvim" },
 		opts = {},
 		keys = {
@@ -145,6 +146,71 @@ return {
 			-- Diff management
 			{ "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
 			{ "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+		},
+	},
+	{
+		"folke/sidekick.nvim",
+		opts = {
+			-- add any options here
+			cli = {
+				mux = {
+					backend = "tmux",
+					enabled = true,
+				},
+			},
+		},
+    -- stylua: ignore
+		keys = {
+			{
+				"<leader>aa",
+				function() require("sidekick.cli").toggle() end,
+				desc = "Sidekick Toggle CLI",
+			},
+			{
+				"<leader>as",
+				function() require("sidekick.cli").select() end,
+				-- Or to select only installed tools:
+				-- require("sidekick.cli").select({ filter = { installed = true } })
+				desc = "Select CLI",
+			},
+			{
+				"<leader>at",
+				function()
+					local mode = vim.fn.mode()
+					if mode == "n" then
+						require("sidekick.cli").send({ msg = "{file}" })
+						return
+					end
+
+					require("sidekick.cli").send({ msg = "{this}" })
+				end,
+				mode = { "x", "n" },
+				desc = "Send This",
+			},
+			{
+				"<leader>av",
+				function() require("sidekick.cli").send({ msg = "{selection}" }) end,
+				mode = { "x" },
+				desc = "Send Visual Selection",
+			},
+			{
+				"<leader>ap",
+				function() require("sidekick.cli").prompt() end,
+				mode = { "n", "x" },
+				desc = "Sidekick Select Prompt",
+			},
+			{
+				"<leader>af",
+				function() require("sidekick.cli").focus() end,
+				mode = { "n", "x", "i", "t" },
+				desc = "Sidekick Switch Focus",
+			},
+			-- Example of a keybinding to open Claude directly
+			{
+				"<leader>ac",
+				function() require("sidekick.cli").toggle({ name = "claude", focus = true }) end,
+				desc = "Sidekick Toggle Claude",
+			},
 		},
 	},
 }
