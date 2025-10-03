@@ -9,7 +9,7 @@ change_audio() {
 }
 
 select_sink() {
-  devices="$(wpctl status | awk '/Sinks:/,/Sources:/' | grep -E '\[vol' | awk '{$1=""; sub(/^ +/,""); print}')"
+  devices="$(wpctl status | awk '/^Audio/,/^Video/' | awk '/Sinks:/,/Sources:/' | sed '1d;$d' | awk '{$1=""; sub(/^ +/,""); print}')"
   change_audio "$(echo "$devices[@]" | wmenu-color -p "[Audio Sinks]" -l 4)"
 }
 
