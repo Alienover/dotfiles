@@ -22,11 +22,24 @@ render_volume() {
   volume_blk="$icon"
 }
 
-render_date; render_volume
+render_wifi() {
+  local status="$(cat /sys/class/net/w*/operstate 2>/dev/null)"
+  if [ "$status" = "up" ]; then
+    icon=""
+  else
+    icon="󰖪"
+  fi
+  wifi_blk="$icon"
+}
+
+render_volume
 
 display() {
   local space=" "
-  printf "%s" "${spaace}${volume_blk}${space}${space}${date_blk}${space}"
+  local separator="${space}${space}"
+  local blk_start="${space}"
+  local blk_end="${space}"
+  printf "%s" "${blk_start}${wifi_blk}${separator}${volume_blk}${separator}${date_blk}${blk_end}"
 }
 
 trap "render_volume;display" "RTMIN+2"   # -36 .local/bin/audio
@@ -38,6 +51,8 @@ do
   sleep 1 & wait && {
     [ $((sec % 60 )) -eq 0 ] && render_date # Update every 1 minute
     
+    [ $((sec % 10 )) -eq 0 ] && render_wifi
+
     [ $((sec % 5 )) -eq 0 ] && display
 
     sec=$((sec + 1))
