@@ -107,7 +107,7 @@ return {
 				local function ensure_installed()
 					MasonPkgManager:read(function(pkg_list)
 						for _, pkg_name in ipairs(pkg_list) do
-							local ok, pkg = pcall(registry.get_package, registry, pkg_name)
+							local ok, pkg = pcall(registry.get_package, pkg_name)
 							if ok and pkg and not pkg:is_installed() then
 								pkg:install()
 							end
