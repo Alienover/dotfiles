@@ -104,22 +104,22 @@ return {
 			vim.api.nvim_create_user_command("MasonAutoInstall", function()
 				local registry = require("mason-registry")
 
-				MasonPkgManager:read(function(pkg_list)
-					local function ensure_installed()
+				local function ensure_installed()
+					MasonPkgManager:read(function(pkg_list)
 						for _, pkg_name in ipairs(pkg_list) do
 							local ok, pkg = pcall(registry.get_package, registry, pkg_name)
 							if ok and pkg and not pkg:is_installed() then
 								pkg:install()
 							end
 						end
-					end
+					end)
+				end
 
-					if registry.refresh then
-						registry.refresh(ensure_installed)
-					else
-						ensure_installed()
-					end
-				end)
+				if registry.refresh then
+					registry.refresh(ensure_installed)
+				else
+					ensure_installed()
+				end
 			end, {})
 
 			-- Toggle Mason package enabled state
