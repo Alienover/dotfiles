@@ -122,7 +122,6 @@ M.external_type = {
 }
 
 ---@class External
----@field disabled? boolean
 ---@field external_type ExternalType
 ---@field mason? string
 ---@field config_file? string
@@ -157,11 +156,6 @@ M.ensure_externals = {
 		external_type = M.external_type.lsp,
 		mason = "tailwindcss-language-server",
 	},
-	flow = {
-		disabled = true,
-		external_type = M.external_type.lsp,
-		config_file = "lsp.flow-lsp",
-	},
 	jsonls = {
 		external_type = M.external_type.lsp,
 		mason = "json-lsp",
@@ -170,13 +164,11 @@ M.ensure_externals = {
 	ts_ls = {
 		external_type = M.external_type.lsp,
 		mason = "typescript-language-server",
-		config_file = "lsp.ts-lsp",
 		formatting = false,
 	},
 	gopls = {
 		external_type = M.external_type.lsp,
 		mason = "gopls",
-		config_file = "lsp.go-lsp",
 	},
 	lua_ls = {
 		external_type = M.external_type.lsp,
