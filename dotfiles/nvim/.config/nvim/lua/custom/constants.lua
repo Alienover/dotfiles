@@ -148,9 +148,9 @@ M.ensure_externals = {
 		mason = "ruff",
 		config_file = "lsp.ruff-lsp",
 	},
-	pyright = {
+	pyrefly = {
 		external_type = M.external_type.lsp,
-		mason = "pyright",
+		mason = "pyrefly",
 	},
 	tailwindcss = {
 		external_type = M.external_type.lsp,

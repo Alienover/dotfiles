@@ -147,9 +147,8 @@ local function setup_lsp()
 	-- Setup the lsp for the one installed manually
 	for server, opts in pairs(ensure_externals) do
 		local is_lsp = opts.external_type == external_type.lsp
-		local enabled = not (opts.disabled or false)
 
-		if is_lsp == true and enabled then
+		if is_lsp == true then
 			local config = load_config(opts)
 
 			vim.lsp.config(server, config)
@@ -159,7 +158,6 @@ local function setup_lsp()
 	end
 
 	rewrite_lsp_handlers()
-	-- rewrite_lsp_icons()
 	rewrite_lsp_cmds()
 end
 
