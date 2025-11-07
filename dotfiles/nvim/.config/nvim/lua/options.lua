@@ -119,6 +119,9 @@ local options = {
 
 	-- Show command preview
 	inccommand = "split",
+
+	-- Default `rounded` style border for the floating window
+	winborder = "rounded",
 }
 
 -- Custom filetypes

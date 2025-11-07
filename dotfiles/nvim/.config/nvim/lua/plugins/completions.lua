@@ -55,7 +55,7 @@ return {
 					selection = { preselect = true, auto_insert = true },
 				},
 				-- Show documentation when selecting a completion item
-				documentation = { auto_show = true, auto_show_delay_ms = 500 },
+				documentation = { auto_show = true, auto_show_delay_ms = 500, window = { border = "none" } },
 
 				-- Disable auto brackets
 				-- NOTE: some LSPs may add auto brackets themselves anyway
@@ -63,6 +63,7 @@ return {
 
 				ghost_text = { enabled = true, show_without_menu = true },
 				menu = {
+					border = "none",
 					cmdline_position = function()
 						if vim.g.ui_cmdline_pos ~= nil then
 							-- NOTE: fix the menu position with noice cmdline conceal
