@@ -8,9 +8,10 @@ local nmap = utils.nmap
 local augroups = setmetatable({
 	__groups = {},
 }, {
+	---@param k string
 	__index = function(t, k)
 		if not t.__groups[k] then
-			t.__groups[k] = vim.api.nvim_create_augroup("AUTO_CREATED_GROUP_" .. k, { clear = true })
+			t.__groups[k] = vim.api.nvim_create_augroup("AUTO_CREATED_GROUP_" .. k:upper(), { clear = true })
 		end
 
 		return t.__groups[k]
@@ -19,6 +20,7 @@ local augroups = setmetatable({
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight on yark",
+	group = augroups.highlight_yank,
 
 	callback = function()
 		vim.hl.on_yank({ higroup = "CurSearch" })
@@ -88,4 +90,9 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 			vim.lsp.buf.format({ bufnr = args.buf })
 		end
 	end,
+})
+
+vim.api.nvim_create_autocmd("VimResized", {
+	desc = "Auto resize the splits when the terminal window or tmux pane is resized",
+	command = "wincmd =",
 })
