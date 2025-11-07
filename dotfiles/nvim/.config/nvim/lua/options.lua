@@ -135,7 +135,11 @@ local filetypes = {
 	},
 	filename = {
 		[".gitignore"] = "conf",
+		[".env"] = "dosini",
 		Brewfile = "ruby",
+	},
+	pattern = {
+		[".env.*"] = "dosini",
 	},
 }
 
