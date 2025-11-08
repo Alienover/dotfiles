@@ -44,31 +44,21 @@ show_image() {
       show_file_info "$image_path"
       return 1
     fi
+
+    # Method 1: Try using chafa for ASCII art representation
+    if command -v chafa >/dev/null 2>&1; then
+        chafa --format=sixels --size="${width}x${height}" --animate=off "$image_path" 2>/dev/null
+        return 0
+    fi
     
     # Check if we're in tmux
     if is_tmux; then
         # tmux often doesn't forward graphics protocols properly
         # Try a few approaches in order of preference
         
-        # Method 1: Try tmux pass-through (tmux 3.3+)
-        # if command -v kitty >/dev/null 2>&1; then
-        #     printf '\033Ptmux;\033\033_Ga=T,f=100,t=d,s=%d,v=%d\033\\' "$width" "$height"
-        #     base64 < "$image_path" | tr -d '\n' | while IFS= read -r line; do
-        #         printf '\033Ptmux;\033\033_Gm=1;%s\033\\\033\\' "$line"
-        #     done
-        #     printf '\033Ptmux;\033\033_Gm=0\033\\\033\\'
-        #     return 0
-        # fi
-
         if command -v catimg >/dev/null 2>&1; then
           catimg -H $height "$1" | sed '$ d'
           return 0
-        fi
-        
-        # Method 2: Try using chafa for ASCII art representation
-        if command -v chafa >/dev/null 2>&1; then
-            chafa --format=symbols --size="${width}x${height}" --animate=off "$image_path" 2>/dev/null
-            return 0
         fi
         
         # Fallback: show image info for tmux
