@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+shopt -s globstar
+
+title="[Pass]"
+args=""
+if [ "$1" = "otp" ]; then
+  args="otp"
+  title="[Pass OTP]"
+fi
+
+PASS_STORE="${HOME-~}/.password-store"
+
+prefix=${PASS_STORE}
+password_files=( "$prefix"/**/*.gpg )
+password_files=( "${password_files[@]#"$prefix"/}" )
+password_files=( "${password_files[@]%.gpg}" )
+
+password=$(printf '%s\n' "${password_files[@]}" | wmenu-color -p "$title " )
+
+if [ -n "$password" ]; then
+  eval "pass $args -c $password" 2>/dev/null
+fi
