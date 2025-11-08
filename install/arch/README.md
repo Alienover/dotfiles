@@ -10,7 +10,7 @@ zsh bat git ghq vim neovim lf fzf openssh zip unzip stow gnupg tmux wmenu pacman
 eza wget lf fd 
 
 # System
-networkmanager sbctl mesa vulkan-radeon ufw ddcutil bluez-utils bluetui <yay>
+iwd systemd-resolvconf sbctl mesa vulkan-radeon ufw ddcutil bluez-utils bluetui <yay>
 
 # Monitor
 btop nvtop
@@ -33,6 +33,23 @@ pass pass-otp
 
 # IME
 fcitx5 fcitx5-qt fcitx5-gtk fcitx5-chinese-addons
+```
+
+
+# Setup wireless network
+
+```bash
+# Enable the wireless daemon
+sudo systemctl enable --now iwd.service
+
+# Enable the DNS resolver daemon
+sudo systemctl enable --now systemd-resolved.service
+```
+
+Use the `iwctl` to manage/connect the Wi-Fi
+```bash
+# You will be prompted to enter the passphrase
+iwctl station <name> connect <SSID>
 ```
 
 # `sbctl` Secure Boot
