@@ -18,11 +18,10 @@ local setup_keymaps = function(_, bufnr)
 		nmap(keys, fnc, opts)
 	end
 
+	---@module 'snacks'
+	map("gd", Snacks.picker.lsp_definitions, "[G]o [D]efinition")
+
 	map("go", "<C-o>zz", "[G]o [O]riginal")
-	map("gd", vim.lsp.buf.definition, "[G]o [D]efinition")
-	map("gD", vim.lsp.buf.declaration, "[G]o [D]eclaration")
-	map("gi", vim.lsp.buf.implementation, "[G]o [I]mplementation")
-	map("grr", Snacks.picker.lsp_references, "[G]o [R]eferences")
 	map("]d", function()
 		vim.diagnostic.jump({ count = 1 })
 	end, "Next [D]iagnostic ")
@@ -72,27 +71,16 @@ end
 
 -- Re-write lsp handlers
 local rewrite_lsp_handlers = function()
-	---@diagnostic disable-next-line: duplicate-set-field
-	vim.lsp.handlers["textDocument/definition"] = function(...)
-		local status_ok, ts = pcall(require, "telescope.builtin")
-		if not status_ok then
-			return
-		end
+	vim.lsp.buf.references = Snacks.picker.lsp_references
 
-		return ts.lsp_definitions(...)
+	---@diagnostic disable-next-line: duplicate-set-field
+	vim.lsp.buf.document_symbol = function()
+		Snacks.picker.lsp_symbols({ layout = { preset = "vscode" } })
 	end
 
 	---@diagnostic disable-next-line: duplicate-set-field
-	vim.lsp.handlers["textDocument/references"] = function()
-		local status_ok, ts = pcall(require, "telescope.builtin")
-		if not status_ok then
-			return
-		end
-
-		return ts.lsp_references({
-			bufnr = vim.api.nvim_get_current_buf(),
-			winnr = vim.api.nvim_get_current_win(),
-		})
+	vim.lsp.buf.rename = function()
+		vim.fn.feedkeys(":IncRename " .. vim.fn.expand("<cword>"))
 	end
 end
 
