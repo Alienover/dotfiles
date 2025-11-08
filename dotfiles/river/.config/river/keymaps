@@ -4,6 +4,8 @@
 # Mod1=Alt Mod4=Super
 mod=Super
 
+term=footclient
+
 # ${mod}+Shift+r to reload the river config
 riverctl map normal ${mod}+Shift r spawn "${HOME}/.config/river/init"
 
@@ -118,3 +120,5 @@ riverctl map normal ${mod}+Control Q spawn "swaylock"
 
 # Control+Space to switch between input methods
 riverctl map normal Control Space spawn "fcitx5-remote -t"
+
+riverctl map normal ${mod}+Shift T spawn "${term} -T float_term -w 1400x800 tmux-floatx"
