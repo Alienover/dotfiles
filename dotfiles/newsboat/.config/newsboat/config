@@ -17,3 +17,5 @@ save-path ~/Documents/newsboat
 reload-threads 100 # loading feeds in parallel
 
 cleanup-on-quit yes
+
+browser "qutebrowser %u"

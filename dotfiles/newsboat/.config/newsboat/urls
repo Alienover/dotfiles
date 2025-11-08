@@ -1,4 +1,5 @@
 https://archlinux.org/feeds/news/ arch
+https://www.kernel.org/feeds/kdist.xml ~linux
 https://codeberg.org/river/river/releases.rss ~river git river
 https://codeberg.org/sewn/dam.rss ~dam git river
 https://codeberg.org/adnano/wmenu.rss ~wmenu git gui
