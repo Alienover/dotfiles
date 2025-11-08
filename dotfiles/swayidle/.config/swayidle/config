@@ -1,5 +1,5 @@
 # vim: ft=conf
 
-timeout 300 'ddcutil setvcp 10 5; swaylock' resume "ddcutil setvcp 10 50"
-timeout 600 'ddcutil setvcp 10 0' resume "ddcutil setvcp 10 50"
+timeout 300 '$HOME/.local/bin/bright --set 5; swaylock' resume '$HOME/.local/bin/bright --set 80'
+timeout 600 '$HOME/.local/bin/bright --set 0' resume '$HOME/.local/bin/bright --set 80'
 before-sleep 'swaylock'

@@ -1,14 +1,19 @@
 #!/bin/env sh
 
 wobfifo="${XDG_RUNTIME_DIR}/wob.fifo"
+brightness_level="${XDG_CACHE_HOME}/brightness.level"
 
 
 brightness() {
-  ddcutil getvcp 10 | sed 's/\( \|,\)\+/ /g' | awk '{print $9}'
+  local value="$(cat $brightness_level)"
+  if [ -z "$value" ]; then
+    value="$(ddcutil getvcp 10 | sed 's/\( \|,\)\+/ /g' | awk '{print $9}')"
+  fi
+  echo "$value"
 }
 
 set_brightness() {
-  ddcutil setvcp 10 "$1" && echo "$1" > "$wobfifo"
+  ddcutil setvcp 10 "$1" && echo "$1" | tee "$wobfifo" "$brightness_level"
 }
 
 bright_minus() {
