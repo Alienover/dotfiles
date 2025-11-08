@@ -33,6 +33,12 @@ after-startup-command = [
   # This makes the Finder use only basic information to immediately display each folder's contents in alphanumeric order.
   # check for more detail. https://support.apple.com/en-us/102064
   'exec-and-forget defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE',
+
+  # Disable the passcode autofill from Email/iMessage introduced in macOS Tahoe
+  'exec-and-forget defaults write -g NSAutoFillHeuristicControllerEnabled -bool false',
+
+  # Disable the electron window shadow
+  'exec-and-forget launchctl setenv CHROME_HEADLESS 1',
 ]
 
 # Start AeroSpace at login
@@ -249,6 +255,12 @@ if.app-id = 'com.mitchellh.ghostty'
 if.during-aerospace-startup = true
 run = "move-node-to-workspace 💻"
 
+
+[[on-window-detected]]
+if.app-id = 'org.alacritty'
+if.during-aerospace-startup = true
+run = "move-node-to-workspace 💻"
+
 # Forced Floating Windows
 [[on-window-detected]]
 if.app-id = 'us.zoom.xos'
@@ -277,9 +289,6 @@ if.app-name-regex-substring = "mpv"
 run = "layout floating"
 
 [[on-window-detected]]
-if.app-id = "org.qutebrowser.qutebrowser"
-run = "layout tiling"
-
-[[on-window-detected]]
-if.app-id = "net.kovidgoyal.kitty"
+if.app-name-regex-substring = "alacritty"
+if.window-title-regex-substring = "Float"
 run = "layout floating"
