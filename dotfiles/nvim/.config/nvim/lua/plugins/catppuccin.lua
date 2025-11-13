@@ -17,19 +17,19 @@ return {
 			transparent_background = true,
 			term_colors = true,
 			float = { transparent = true, solid = true },
+			lsp_styles = {
+				underlines = {
+					errors = { "undercurl" },
+					hints = { "undercurl" },
+					warnings = { "undercurl" },
+					information = { "undercurl" },
+					ok = { "undercurl" },
+				},
+			},
 			integrations = {
 				blink_cmp = true,
 				noice = true,
 				which_key = true,
-				lsp_styles = {
-					underlines = {
-						errors = { "underline" },
-						hints = { "underline" },
-						warnings = { "underline" },
-						information = { "underline" },
-						ok = { "underline" },
-					},
-				},
 			},
 			custom_highlights = function(colors)
 				return {
