@@ -1,33 +1,14 @@
 local utils = require("custom.utils")
 local icons = require("custom.icons")
 local constants = require("custom.constants")
+local mason_pkgs = require("custom.mason_pkgs")
 
-local nmap = utils.nmap
-
-local external_type = constants.external_type
 local ensure_externals = constants.ensure_externals
 
 -- Keymaps for LSP interfaces
 local setup_keymaps = function(_, bufnr)
-	local function map(keys, fnc, desc)
-		local opts = { buffer = bufnr, remap = true, noremap = false }
-		if desc then
-			opts.desc = "LSP: " .. desc
-		end
-
-		nmap(keys, fnc, opts)
-	end
-
-	---@module 'snacks'
-	map("gd", Snacks.picker.lsp_definitions, "[G]o [D]efinition")
-
-	map("go", "<C-o>zz", "[G]o [O]riginal")
-	map("]d", function()
-		vim.diagnostic.jump({ count = 1 })
-	end, "Next [D]iagnostic ")
-	map("[d", function()
-		vim.diagnostic.jump({ count = -1 })
-	end, "Previous [D]iagnostic")
+	utils.nmap("gd", Snacks.picker.lsp_definitions, { buffer = bufnr })
+	utils.nmap("go", "<C-o>zz", { buffer = bufnr })
 end
 
 ---@param external External
@@ -132,11 +113,11 @@ local function setup_lsp()
 
 	setup_diagnostic()
 
+	local enabled_pkgs = mason_pkgs:read()
+
 	-- Setup the lsp for the one installed manually
 	for server, opts in pairs(ensure_externals) do
-		local is_lsp = opts.external_type == external_type.lsp
-
-		if is_lsp == true then
+		if vim.tbl_contains(enabled_pkgs, opts.mason) then
 			local config = load_config(opts)
 
 			vim.lsp.config(server, config)

@@ -2,36 +2,35 @@
 local M = {
 	data_path = vim.fn.stdpath("data") .. "/mason_enabled_pkgs",
 
-	---Read enabled packages from file asynchronously
-	---@param callback function(string[])
-	read = function(self, callback)
-		vim.uv.fs_open(self.data_path, "r", 438, function(err, fd)
-			if err or not fd then
-				callback({})
-				return
+	---Read enabled packages from file synchronously
+	---@return string[]
+	read = function(self)
+		local fd, err = vim.uv.fs_open(self.data_path, "r", 438)
+		if err or not fd then
+			return {}
+		end
+
+		local stat, stat_err = vim.uv.fs_fstat(fd)
+		if stat_err or not stat then
+			vim.uv.fs_close(fd)
+			return {}
+		end
+
+		local data, read_err = vim.uv.fs_read(fd, stat.size, 0)
+		vim.uv.fs_close(fd)
+
+		if read_err or not data then
+			return {}
+		end
+
+		local enabled_pkgs = {}
+		for line in data:gmatch("[^\r\n]+") do
+			if line ~= "" then
+				table.insert(enabled_pkgs, line)
 			end
-			vim.uv.fs_fstat(fd, function(stat_err, stat)
-				if stat_err or not stat then
-					vim.uv.fs_close(fd)
-					callback({})
-					return
-				end
-				vim.uv.fs_read(fd, stat.size, 0, function(read_err, data)
-					vim.uv.fs_close(fd)
-					if read_err or not data then
-						callback({})
-						return
-					end
-					local enabled_pkgs = {}
-					for line in data:gmatch("[^\r\n]+") do
-						if line ~= "" then
-							table.insert(enabled_pkgs, line)
-						end
-					end
-					callback(enabled_pkgs)
-				end)
-			end)
-		end)
+		end
+
+		return enabled_pkgs
 	end,
 
 	---Write enabled packages to file asynchronously
@@ -51,29 +50,29 @@ local M = {
 
 	---Toggle a package in the enabled list
 	---@param pkg_name string
-	---@param callback function(boolean)
-	toggle = function(self, pkg_name, callback)
-		self:read(function(enabled_pkgs)
-			local found = false
-			local idx = nil
-			for i, pkg in ipairs(enabled_pkgs) do
-				if pkg == pkg_name then
-					found = true
-					idx = i
-					break
-				end
-			end
+	---@return boolean is_enabled
+	toggle = function(self, pkg_name)
+		local enabled_pkgs = self:read()
 
-			local is_enabled = not found
-			if is_enabled then
-				table.insert(enabled_pkgs, pkg_name)
-			else
-				table.remove(enabled_pkgs, idx)
+		local found = false
+		local idx = nil
+		for i, pkg in ipairs(enabled_pkgs) do
+			if pkg == pkg_name then
+				found = true
+				idx = i
+				break
 			end
+		end
 
-			self:write(enabled_pkgs)
-			callback(is_enabled)
-		end)
+		local is_enabled = not found
+		if is_enabled then
+			table.insert(enabled_pkgs, pkg_name)
+		else
+			table.remove(enabled_pkgs, idx)
+		end
+
+		self:write(enabled_pkgs)
+		return is_enabled
 	end,
 }
 
