@@ -22,12 +22,14 @@ export WINDOW_VIEWPORT_HEIGHT_MD=80
 [ -d "$HOME/.local/bin" ] && PATH="$HOME/.local/bin:$PATH"
 
 # Preferred terminal
-if [ -n "$GHOSTTY_BIN_DIR" ]; then
-  export TERM=xterm-ghostty
+if [ -n "$TMUX" ]; then
+  export TERM=tmux-256color
+elif [ -n "$ALACRITTY_WINDOW_ID" ]; then
+  export TERM=alacritty-direct
+elif [ -n "$GHOSTTY_BIN_DIR" ]; then
+  export TERM=xterm-ghostty 
 elif [ -n "$KITTY_WINDOW_ID" ]; then
   export TERM=xterm-kitty
-elif [ -n "$TMUX" ]; then
-  export TERM=tmux-256color
 fi
 
 # Preferred editor for local
