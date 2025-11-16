@@ -1,7 +1,7 @@
 #!/bin/env sh
 
 # foot server daemon
-riverctl spawn "$HOME/.local/bin/foots"
+riverctl spawn "${HOME}/.local/bin/foots"
 
 # wl-clipboard
 clipboard_cmd="wl-paste --watch cliphist store"
@@ -11,10 +11,10 @@ pgrep -f "$clipboard_cmd" || riverctl spawn "$clipboard_cmd"
 riverctl spawn "${HOME}/.local/bin/dam-run"
 
 # wob
-pgrep "wob" || riverctl spawn "$HOME/.local/bin/wobd"
+pgrep "wob" || riverctl spawn "${HOME}/.local/bin/wobd"
 
 # background image
-killall "swaybg" > /dev/null 2>&1; riverctl spawn "swaybg -i $HOME/.local/share/wallpaper -m fill"
+killall "swaybg" > /dev/null 2>&1; riverctl spawn "swaybg -i ${HOME}/.local/share/wallpaper -m fill"
 
 # input method - fcitx5
 pgrep "fcitx5" || riverctl spawn "fcitx5 -d"
