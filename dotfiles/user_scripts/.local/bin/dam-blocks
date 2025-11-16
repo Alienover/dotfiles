@@ -4,7 +4,7 @@
 printf "$$" > "${XDG_RUNTIME_DIR}/$(basename $0).pid"
 
 render_date() {
-  date_blk="$(date +"%b %e %H:%M")"
+  date_blk="$(date +"%b %-e %H:%M")"
 }
 
 render_volume() {
