@@ -5,6 +5,7 @@ autoload -Uz compinit
 
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
 
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
@@ -20,3 +21,9 @@ zmodload zsh/complist
 _comp_options+=(globdots)
 
 compinit -d $ZSH_COMPDUMP
+
+zinit ice wait '!0'
+zinit light "zsh-users/zsh-completions"
+
+zinit ice wait '!0'
+zinit light "Aloxaf/fzf-tab"

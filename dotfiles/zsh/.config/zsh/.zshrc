@@ -33,8 +33,6 @@ zsh_required=(
 zsh_plugins=(
   # External
   zsh-users/zsh-syntax-highlighting
-  zsh-users/zsh-completions
-  Aloxaf/fzf-tab
 
   # Personal - check $ZDOTDIR/plugins for more detail
   "history"
