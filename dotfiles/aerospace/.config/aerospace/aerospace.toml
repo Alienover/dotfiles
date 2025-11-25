@@ -208,15 +208,15 @@ shift-alt-tab = [
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 # Move focused window to workspace
-shift-alt-esc = ['move-node-to-workspace 🦄', 'mode main']
-shift-alt-1 = ['move-node-to-workspace 🍣', 'mode main']
-shift-alt-2 = ['move-node-to-workspace 🐳', 'mode main']
-shift-alt-3 = ['move-node-to-workspace 💻', 'mode main']
-shift-alt-4 = ['move-node-to-workspace 🎧', 'mode main']
-shift-alt-q = ['move-node-to-workspace Q', 'mode main']
-shift-alt-w = ['move-node-to-workspace W', 'mode main']
-shift-alt-e = ['move-node-to-workspace E', 'mode main']
-shift-alt-r = ['move-node-to-workspace R', 'mode main']
+shift-alt-esc = ['move-node-to-workspace 🦄', 'workspace 🦄', 'mode main']
+shift-alt-1 = ['move-node-to-workspace 🍣', 'workspace 🍣', 'mode main']
+shift-alt-2 = ['move-node-to-workspace 🐳', 'workspace 🐳', 'mode main']
+shift-alt-3 = ['move-node-to-workspace 💻', 'workspace 💻', 'mode main']
+shift-alt-4 = ['move-node-to-workspace 🎧', 'workspace 🎧', 'mode main']
+shift-alt-q = ['move-node-to-workspace Q', 'workspace Q', 'mode main']
+shift-alt-w = ['move-node-to-workspace W', 'workspace W', 'mode main']
+shift-alt-e = ['move-node-to-workspace E', 'workspace E', 'mode main']
+shift-alt-r = ['move-node-to-workspace R', 'workspace R', 'mode main']
 
 # See: https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
 # assign workspaces to always appear on particular monitors
