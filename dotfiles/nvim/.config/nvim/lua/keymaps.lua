@@ -63,3 +63,12 @@ for _, key in ipairs({ "gd", "gf" }) do
 		end, ("%s and then %s"):format(split, key))
 	end
 end
+
+nmap("K", function()
+	local winid = require("ufo").peekFoldedLinesUnderCursor()
+	if winid then
+		return
+	end
+
+	vim.lsp.buf.hover()
+end, "Peak lines of folded")
