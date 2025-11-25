@@ -5,6 +5,8 @@ local mason_pkgs = require("custom.mason_pkgs")
 
 local ensure_externals = constants.ensure_externals
 
+---@module 'snacks'
+
 -- Keymaps for LSP interfaces
 local setup_keymaps = function(_, bufnr)
 	utils.nmap("gd", Snacks.picker.lsp_definitions, { buffer = bufnr })

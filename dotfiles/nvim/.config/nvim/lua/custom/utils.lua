@@ -206,7 +206,6 @@ M.LazyRequire = function(module_name)
 	})
 end
 
----
 ---@param name string
 ---@param mock_fun  fun(): table
 M.MockPackage = function(name, mock_fun)
