@@ -146,7 +146,6 @@ M.ensure_externals = {
 	ruff = {
 		external_type = M.external_type.lsp,
 		mason = "ruff",
-		config_file = "lsp.ruff-lsp",
 	},
 	pyrefly = {
 		external_type = M.external_type.lsp,

@@ -34,10 +34,8 @@ local load_config = function(external)
 
 	-- Custom on_attach handler
 	local on_attach = function(client, bufnr)
-		-- Disable LSP formatting
-		if external.formatting == false then
-			client.server_capabilities.documentFormattingProvider = false
-		end
+		-- Disable LSP formatting, use `conform.nvim` to manage the auto-formatting
+		client.server_capabilities.documentFormattingProvider = false
 
 		setup_keymaps(client, bufnr)
 	end

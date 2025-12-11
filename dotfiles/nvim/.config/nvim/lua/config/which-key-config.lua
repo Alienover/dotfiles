@@ -190,7 +190,7 @@ wk.add(withTrigger({
 	{ "lI", t("LspInfo"), desc = "[I]nfo" },
 	{ "lR", t("LspRestart"), desc = "[R]estart" },
 	{ "lN", t("NullLsInfo"), desc = "[N]ull-ls Info" },
-	{ "lf", t("lua vim.lsp.buf.format({async = true})"), desc = "[F]ormat" },
+	{ "lf", t("Format"), desc = "[F]ormat" },
 	{ "ld", t("lua vim.diagnostic.open_float({ source = true })"), desc = "Hover [D]iagnostic" },
 	{ "lh", toggle_inlay_hint, desc = "Toggle Inlay [H]int" },
 }))
