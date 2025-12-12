@@ -1,19 +1,13 @@
 tap "felixKratz/formulae"
-tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/core"
-tap "homebrew/services", "git@github.com:Homebrew/homebrew-services.git"
 tap "nikitabobko/tap"
-# Extendable version manager with support for Ruby, Node.js, Erlang & more
-brew "asdf"
-# Official Amazon AWS command-line interface
-brew "awscli"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Resource monitor. C++ version and continuation of bashtop and bpytop
+brew "btop"
 # Insanely fast image printing in your terminal
 brew "catimg"
-# Good-lookin' diffs with diff-highlight and more
-brew "diff-so-fancy"
 # Pack, ship and run any application as a lightweight container
 brew "docker"
 # Isolated development environments using Docker
@@ -34,14 +28,14 @@ brew "gcc"
 brew "ghq"
 # Distributed revision control system
 brew "git"
+# Syntax-highlighting pager for git and diff output
+brew "git-delta"
 # GNU Pretty Good Privacy (PGP) package
 brew "gnupg"
 # Improved top (interactive process viewer)
 brew "htop"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
-# Kubernetes command-line interface
-brew "kubernetes-cli"
 # Terminal file manager
 brew "lf"
 # Powerful, lightweight programming language
@@ -54,54 +48,48 @@ brew "luarocks"
 brew "mysql-client"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
+# RSS/Atom feed reader for text terminals
+brew "newsboat"
 # Password manager
 brew "pass"
 # Pass extension for managing one-time-password tokens
 brew "pass-otp"
 # Pinentry for GPG on Mac
 brew "pinentry-mac"
-# Python version management
-brew "pyenv"
-# Alternative to pyenv for managing virtualenvs
-brew "pyenv-virtualenvwrapper"
-# Alternative to backtracking PCRE-style regular expression engines
-brew "re2"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
 # Terminal multiplexer
 brew "tmux"
+# Python virtualenv extensions
+brew "virtualenvwrapper"
 # Internet file retriever
 brew "wget"
-# Tools for the WireGuard secure network tunnel
-brew "wireguard-tools"
 # UNIX shell (command interpreter)
 brew "zsh"
 # AeroSpace is an i3-like tiling window manager for macOS
 cask "aerospace"
-# Transfer files from and to an Android smartphone
-cask "android-file-transfer"
+# Deprecated because it does not pass the macOS Gatekeeper check! It will be disabled on 2026-09-01.
+cask "alacritty"
 # Chromium based browser
 cask "arc"
 # Display management tool
 cask "betterdisplay"
+# Terminal-based AI coding assistant
+cask "claude-code"
+# OpenAI's coding agent that runs in your terminal
+cask "codex"
 # JetBrains Mono
 cask "font-jetbrains-mono"
 # Terminal emulator that uses platform-native UI and GPU acceleratio
 cask "ghostty"
 # Web browser
 cask "google-chrome"
-# Menu bar manager
-cask "jordanbaird-ice"
 # File archiver
 cask "keka"
-# Knowledge base that works on top of a local folder of plain text Markdown files
-cask "obsidian"
 # Replacement for Docker Desktop
 cask "orbstack"
-# Keyboard-driven, vim-like browser based on PyQt5
-cask "qutebrowser"
 # Team communication and collaboration software
 cask "slack"
 # System monitor for the menu bar
