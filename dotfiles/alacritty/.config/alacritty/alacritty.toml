@@ -1,0 +1,14 @@
+[general]
+import = [ "~/.config/alacritty/catppuccin-mocha.toml"]
+
+[font]
+normal = { family = "JetBrainsMono Nerd Font", style = "Medium" }
+size = 12
+offset = { x = 1, y = 1 }
+
+
+[window]
+padding.x = 2
+padding.y = 2
+decorations = "Buttonless"
+option_as_alt = "Both"
