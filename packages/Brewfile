@@ -1,7 +1,7 @@
 tap "felixKratz/formulae"
-tap "homebrew/cask"
-tap "homebrew/core"
 tap "nikitabobko/tap"
+# Bourne-Again SHell, a UNIX command interpreter
+brew "bash"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
@@ -32,8 +32,6 @@ brew "git"
 brew "git-delta"
 # GNU Pretty Good Privacy (PGP) package
 brew "gnupg"
-# Improved top (interactive process viewer)
-brew "htop"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Terminal file manager
@@ -44,8 +42,6 @@ brew "lua"
 brew "lua@5.1"
 # Package manager for the Lua programming language
 brew "luarocks"
-# Open source relational database management system
-brew "mysql-client"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # RSS/Atom feed reader for text terminals
@@ -73,8 +69,6 @@ cask "aerospace"
 # Deprecated because it does not pass the macOS Gatekeeper check! It will be disabled on 2026-09-01.
 cask "alacritty"
 # Chromium based browser
-cask "arc"
-# Display management tool
 cask "betterdisplay"
 # Terminal-based AI coding assistant
 cask "claude-code"
@@ -82,21 +76,15 @@ cask "claude-code"
 cask "codex"
 # JetBrains Mono
 cask "font-jetbrains-mono"
+# JetBrainsMono Nerd Font families (JetBrains Mono)
+cask "font-jetbrains-mono-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleratio
 cask "ghostty"
-# Web browser
-cask "google-chrome"
 # File archiver
 cask "keka"
 # Replacement for Docker Desktop
 cask "orbstack"
-# Team communication and collaboration software
-cask "slack"
 # System monitor for the menu bar
 cask "stats"
 # Media player based on MPlayer and mplayer2
 cask "stolendata-mpv"
-# Free messaging and calling application
-cask "wechat"
-# Video communication and virtual meeting platform
-cask "zoom"
