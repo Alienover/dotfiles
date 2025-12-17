@@ -1,0 +1,24 @@
+#!/bin/bash
+
+DOT_DIR="$(dirname $(readlink -f "$0"))/dotfiles"
+
+dotfiles=(
+  nvim
+  tmux
+  zsh
+  shell
+  user_scripts
+  tmuxifier
+  gnupg
+)
+
+cd $DOT_DIR > /dev/null
+
+for file in "${dotfiles[@]}"; do
+  echo -e "Stowing $file ..."
+  stow $file --no-folding
+done
+
+cd - > /dev/null
+
+echo -e "Stow Done!"

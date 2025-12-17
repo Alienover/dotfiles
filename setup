@@ -15,14 +15,16 @@ DOT_DIR="$(dirname $(readlink -f "$0"))/dotfiles"
 echo -e "Syncing symbolic links for dotfiles in $DOT_DIR...\n"
 
 function clear_line() {
-  COLUMNS=$(stty size | awk '{print $2}')
-  echo -en "\r$(eval "printf ' %.0s' {1..$COLUMNS}")"
+  if [ -n "$TTY" ]; then
+    COLUMNS=$(stty size | awk '{print $2}')
+  fi
+  echo -en "\r$(eval "printf ' %.0s' {1..${COLUMNS:-0}}")"
 }
 
 function create_link() {
   echo -en "- Stowing $1 ..."
 
-  stow $1
+  stow $1 --no-folding
 
   clear_line
   echo -e "\r$CHECK_MARK $1 stowed"
