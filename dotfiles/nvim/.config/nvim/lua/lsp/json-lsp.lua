@@ -31,6 +31,10 @@ local M = {
 					fileMatch = { ".babelrc", ".babelrc.json", "babel.config.json" },
 					url = "https://json.schemastore.org/babelrc.json",
 				},
+				{
+					fileMatch = { ".devcontainer.json" },
+					url = "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+				},
 			},
 		},
 	},
