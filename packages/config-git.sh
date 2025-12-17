@@ -80,7 +80,6 @@ git -C $REPO config user.email "$EMAIL"
 
 echo ""
 echo "Setting up GPG\n"
-git -C $REPO config gpg.program $(which gpg)
 git -C $REPO config user.signingkey $GPG_KEY
 git config --global commit.gpgsign true
 
