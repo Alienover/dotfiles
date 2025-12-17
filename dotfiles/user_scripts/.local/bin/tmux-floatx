@@ -1,4 +1,4 @@
-#! /usr/bin/env sh
+#!/usr/bin/env bash
 
 if [ "$(tmux display-message -p -F "#{session_name}")" = "popup" ]; then
     tmux detach-client -s 'popup'
