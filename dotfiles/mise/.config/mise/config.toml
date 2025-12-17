@@ -1,5 +1,6 @@
 [tools]
 python = ['3.12']
+node = 'latest'
 
 [settings]
 activate_aggressive = false
