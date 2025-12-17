@@ -1,14 +1,12 @@
 #! /usr/bin/env zsh
 
-# Load theme from kitty config
+# Load theme colors
 function load_theme() {
-  local kitty_dir="$HOME/.config/kitty"
+  local colors="$HOME/.local/bin/colors.sh"
 
-  if [[ ! -f "$kitty_dir/theme.sh" ]]; then
-    source "$kitty_dir/theme-gen.sh"
+  if [ -f "$colors" ]; then
+    source "$colors"
   fi
-
-  source "$kitty_dir/theme.sh"
 }
 
 load_theme

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 export GUI_FOREGROUND="#CDD6F4"
 export GUI_BACKGROUND="#1E1E2E"
