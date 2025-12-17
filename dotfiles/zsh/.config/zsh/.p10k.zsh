@@ -50,6 +50,7 @@
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
     # context                 # user@host
+    devpod                    # devpod workspace ID
     dir                       # current directory
     vcs                       # git status
     # command_execution_time  # previous command duration
@@ -192,11 +193,11 @@
   # Dir shorten strategy
   #
   # - truncate_to_last - Shows only the last directory name
-  # 
+  #
   # - truncate_from_right - Truncates from the right side
-  # 
+  #
   # - truncate_to_first_and_last - Shows first and last directories with ... in between
-  # 
+  #
   # - truncate_with_package_name - Shows package name and current directory
   #
   typeset -g POWERLEVEL9K_SHORTEN_STRATEGY="truncate_to_last"
