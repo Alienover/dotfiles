@@ -10,6 +10,7 @@ dotfiles=(
   user_scripts
   tmuxifier
   gnupg
+  ssh
 )
 
 cd $DOT_DIR > /dev/null
@@ -22,3 +23,5 @@ done
 cd - > /dev/null
 
 echo -e "Stow Done!"
+
+nvim --headless "+Lazy! restore" +qa
