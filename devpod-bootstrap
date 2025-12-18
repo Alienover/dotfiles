@@ -24,4 +24,6 @@ cd - > /dev/null
 
 echo -e "Stow Done!"
 
-nvim --headless "+Lazy! restore" +qa
+if command -v nvim >/dev/null 2>&1; then
+  nvim --headless "+Lazy! restore" +qa
+fi
