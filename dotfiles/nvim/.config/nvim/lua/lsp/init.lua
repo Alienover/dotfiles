@@ -113,11 +113,11 @@ local function setup_lsp()
 
 	setup_diagnostic()
 
-	local enabled_pkgs = mason_pkgs:read()
+	local disabled_pkgs = mason_pkgs:read()
 
 	-- Setup the lsp for the one installed manually
 	for server, opts in pairs(ensure_externals) do
-		if vim.tbl_contains(enabled_pkgs, opts.mason) then
+		if not vim.tbl_contains(disabled_pkgs, opts.mason) then
 			local config = load_config(opts)
 
 			vim.lsp.config(server, config)

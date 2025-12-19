@@ -1,8 +1,8 @@
--- Mason enabled packages manager
+-- Mason disabled packages manager
 local M = {
-	data_path = vim.fn.stdpath("data") .. "/mason_enabled_pkgs",
+	data_path = vim.fn.stdpath("data") .. "/mason_disabled_pkgs",
 
-	---Read enabled packages from file synchronously
+	---Read disabled packages from file synchronously
 	---@return string[]
 	read = function(self)
 		local fd, err = vim.uv.fs_open(self.data_path, "r", 438)
@@ -23,20 +23,20 @@ local M = {
 			return {}
 		end
 
-		local enabled_pkgs = {}
+		local disabled_pkgs = {}
 		for line in data:gmatch("[^\r\n]+") do
 			if line ~= "" then
-				table.insert(enabled_pkgs, line)
+				table.insert(disabled_pkgs, line)
 			end
 		end
 
-		return enabled_pkgs
+		return disabled_pkgs
 	end,
 
-	---Write enabled packages to file asynchronously
-	---@param enabled_pkgs string[]
-	write = function(self, enabled_pkgs)
-		local content = vim.deepcopy(enabled_pkgs)
+	---Write disabled packages to file asynchronously
+	---@param disabled_pkgs string[]
+	write = function(self, disabled_pkgs)
+		local content = vim.deepcopy(disabled_pkgs)
 		table.sort(content)
 		vim.uv.fs_open(self.data_path, "w", 438, function(err, fd)
 			if err or not fd then
@@ -48,15 +48,15 @@ local M = {
 		end)
 	end,
 
-	---Toggle a package in the enabled list
+	---Toggle a package in the disabled list
 	---@param pkg_name string
-	---@return boolean is_enabled
+	---@return boolean is_disabled
 	toggle = function(self, pkg_name)
-		local enabled_pkgs = self:read()
+		local disabled_pkgs = self:read()
 
 		local found = false
 		local idx = nil
-		for i, pkg in ipairs(enabled_pkgs) do
+		for i, pkg in ipairs(disabled_pkgs) do
 			if pkg == pkg_name then
 				found = true
 				idx = i
@@ -64,15 +64,15 @@ local M = {
 			end
 		end
 
-		local is_enabled = not found
-		if is_enabled then
-			table.insert(enabled_pkgs, pkg_name)
+		local is_disabled = not found
+		if is_disabled then
+			table.insert(disabled_pkgs, pkg_name)
 		else
-			table.remove(enabled_pkgs, idx)
+			table.remove(disabled_pkgs, idx)
 		end
 
-		self:write(enabled_pkgs)
-		return is_enabled
+		self:write(disabled_pkgs)
+		return is_disabled
 	end,
 }
 
