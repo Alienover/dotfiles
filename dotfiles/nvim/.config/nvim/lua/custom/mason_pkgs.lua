@@ -48,31 +48,51 @@ local M = {
 		end)
 	end,
 
-	---Toggle a package in the disabled list
-	---@param pkg_name string
-	---@return boolean is_disabled
+	---Toggle package(s) in the disabled list
+	---@param pkg_name string|string[] Package name or list of package names
+	---@return boolean|table<string, boolean> is_disabled (boolean for single, table for batch)
 	toggle = function(self, pkg_name)
+		-- Detect input type and normalize to list
+		local is_single = type(pkg_name) == "string"
+		---@type string[]
+		---@diagnostic disable-next-line: assign-type-mismatch
+		local pkg_list = is_single and { pkg_name } or pkg_name
+
+		-- Handle empty table input
+		if not is_single and #pkg_list == 0 then
+			return {}
+		end
+
+		-- Read disabled packages once
 		local disabled_pkgs = self:read()
 
-		local found = false
-		local idx = nil
-		for i, pkg in ipairs(disabled_pkgs) do
-			if pkg == pkg_name then
-				found = true
-				idx = i
-				break
+		-- Convert to set for O(1) operations
+		local disabled_set = {}
+		for _, pkg in ipairs(disabled_pkgs) do
+			disabled_set[pkg] = true
+		end
+
+		-- Toggle each package in the set
+		local results = {}
+		for _, pkg in ipairs(pkg_list) do
+			local is_disabled = not disabled_set[pkg]
+			if is_disabled then
+				disabled_set[pkg] = true
+			else
+				disabled_set[pkg] = nil
 			end
+			results[pkg] = is_disabled
 		end
 
-		local is_disabled = not found
-		if is_disabled then
-			table.insert(disabled_pkgs, pkg_name)
-		else
-			table.remove(disabled_pkgs, idx)
+		-- Convert set back to list and write once
+		local new_disabled_pkgs = {}
+		for pkg, _ in pairs(disabled_set) do
+			table.insert(new_disabled_pkgs, pkg)
 		end
+		self:write(new_disabled_pkgs)
 
-		self:write(disabled_pkgs)
-		return is_disabled
+		-- Return based on input type
+		return is_single and results[pkg_name] or results
 	end,
 }
 

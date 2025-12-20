@@ -52,38 +52,60 @@ return {
 
 			-- Toggle Mason package enabled state
 			vim.api.nvim_create_user_command("MasonPkgToggle", function(opts)
-				local pkg_name = opts.args
 				local registry = require("mason-registry")
+				local pkg_names = opts.fargs
 
-				-- Check if package exists in mason registry
-				local ok, pkg = pcall(registry.get_package, pkg_name)
-				if not ok or not pkg then
-					vim.notify("Package not found in Mason registry: " .. pkg_name, vim.log.levels.ERROR)
+				if #pkg_names == 0 then
+					vim.notify("No package names provided", vim.log.levels.ERROR)
 					return
 				end
 
-				-- Toggle the package in disabled list
-				local is_disabled = MasonPkgManager:toggle(pkg_name)
+				-- Phase 1: Validation - collect valid packages
+				local valid_packages = {}
+				local valid_pkg_objects = {}
 
-				if is_disabled then
-					-- Package was just disabled, uninstall it
-					if pkg:is_installed() then
-						vim.notify("Disabling and uninstalling: " .. pkg_name, vim.log.levels.INFO)
-						pkg:uninstall()
+				for _, pkg_name in ipairs(pkg_names) do
+					local ok, pkg = pcall(registry.get_package, pkg_name)
+					if not ok or not pkg then
+						vim.notify("Package not found in Mason registry: " .. pkg_name, vim.log.levels.ERROR)
 					else
-						vim.notify("Disabled: " .. pkg_name, vim.log.levels.INFO)
+						table.insert(valid_packages, pkg_name)
+						valid_pkg_objects[pkg_name] = pkg
 					end
-				else
-					-- Package was just enabled (removed from disabled list), install it
-					if not pkg:is_installed() then
-						vim.notify("Enabling and installing: " .. pkg_name, vim.log.levels.INFO)
-						pkg:install()
+				end
+
+				if #valid_packages == 0 then
+					return
+				end
+
+				-- Phase 2: Batch Toggle - single file I/O operation
+				local toggle_results = MasonPkgManager:toggle(valid_packages)
+
+				-- Phase 3: Process Results - install/uninstall based on toggle state
+				for _, pkg_name in ipairs(valid_packages) do
+					local is_disabled = toggle_results[pkg_name]
+					local pkg = valid_pkg_objects[pkg_name]
+
+					if is_disabled then
+						-- Package was just disabled, uninstall it
+						if pkg:is_installed() then
+							vim.notify("Disabling and uninstalling: " .. pkg_name, vim.log.levels.INFO)
+							pkg:uninstall()
+						else
+							vim.notify("Disabled: " .. pkg_name, vim.log.levels.INFO)
+						end
 					else
-						vim.notify("Enabled: " .. pkg_name, vim.log.levels.INFO)
+						-- Package was just enabled (removed from disabled list), install it
+						if not pkg:is_installed() then
+							vim.notify("Enabling and installing: " .. pkg_name, vim.log.levels.INFO)
+							pkg:install()
+						else
+							vim.notify("Enabled: " .. pkg_name, vim.log.levels.INFO)
+						end
 					end
 				end
 			end, {
-				nargs = 1,
+				nargs = "+",
 				complete = function()
 					local mason_pkgs = {}
 					for _, external_opts in pairs(require("custom.constants").ensure_externals) do
