@@ -1,6 +1,5 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i sh -p stow
-set -e
 
 export XDG_CONFIG_HOME="${HOME}/.config"
 
