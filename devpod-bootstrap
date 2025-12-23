@@ -1,6 +1,8 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i sh -p stow
 
+export XDG_CONFIG_HOME="${HOME}/.config"
+
 DOT_DIR="$(dirname $(readlink -f "$0"))/dotfiles"
 
 dotfiles=(
@@ -34,3 +36,11 @@ sudo chsh -s "$(which zsh)" "$(whoami)"
 
 # Install the nvim dependencies
 nvim --headless "+Lazy! restore" +qa
+
+if [ -f "${HOME}/.gitconfig.example" ]; then
+  cat "${HOME}/.gitconfig.example" > ${HOME}/.gitconfig
+fi
+
+if [ -f "${HOME}/.ssh/config.example" ]; then
+  cat "${HOME}/.ssh/config.example" > ${HOME}/.ssh/config
+fi
