@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#! nix-shell -i -p stow
+#! nix-shell -i sh -p stow
 
 DOT_DIR="$(dirname $(readlink -f "$0"))/dotfiles"
 
