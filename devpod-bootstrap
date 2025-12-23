@@ -1,6 +1,5 @@
-#!/bin/bash
-
-nix-shell -p stow
+#!/usr/bin/env nix-shell
+#! nix-shell -i -p stow
 
 DOT_DIR="$(dirname $(readlink -f "$0"))/dotfiles"
 
@@ -13,6 +12,7 @@ dotfiles=(
   tmuxifier
   gnupg
   ssh
+  nixpkgs
 )
 
 cd $DOT_DIR > /dev/null
