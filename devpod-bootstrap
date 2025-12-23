@@ -1,5 +1,6 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i sh -p stow
+set -e
 
 export XDG_CONFIG_HOME="${HOME}/.config"
 
@@ -33,9 +34,6 @@ nix-env -iA nixpkgs.devPackages
 
 # Switch the default shell to zsh
 sudo chsh -s "$(which zsh)" "$(whoami)"
-
-# Install the nvim dependencies
-nvim --headless "+Lazy! restore" +qa
 
 if [ -f "${HOME}/.gitconfig.example" ]; then
   cat "${HOME}/.gitconfig.example" > ${HOME}/.gitconfig
