@@ -15,6 +15,7 @@ dotfiles=(
   gnupg
   ssh
   nixpkgs
+  git
 )
 
 . ./setup "${dotfiles[@]}"
