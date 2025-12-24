@@ -39,3 +39,16 @@ done
 cd - > /dev/null
 
 echo -e "\nDone!"
+
+if [ -d "${HOME}/.ssh/config.d" ]; then
+  INCLUDE_CONTENT="Include ~/.ssh/config.d/*"
+  SSH_CONFIG="${HOME}/.ssh/config"
+
+  touch $SSH_CONFIG
+
+  if ! grep -qxF "$INCLUDE_CONTENT" "$SSH_CONFIG" 2>/dev/null; then
+    { printf "%s\n\n" "$INCLUDE_CONTENT"; cat $SSH_CONFIG; } > ${SSH_CONFIG}.tmp
+
+    mv ${SSH_CONFIG}.tmp $SSH_CONFIG
+  fi
+fi
