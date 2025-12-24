@@ -25,13 +25,12 @@ local open_directory = function()
 		title = "Oil: Open directory",
 		finder = function(opts, ctx)
 			opts.cwd = cwd
-
 			return require("custom.finders").directories(opts, ctx)
 		end,
 		confirm = function(picker, item)
 			picker:close()
 
-			oil.open_float(item.file)
+			oil.open_float(item.text)
 		end,
 	})
 end

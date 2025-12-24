@@ -5,20 +5,14 @@ local M = {}
 function M.directories(opts, ctx)
 	local cwd = opts.cwd or vim.uv.cwd()
 
-	local cmd = "fd"
-	local args = { "--type", "d", "--hidden", ".", cwd }
-
 	return require("snacks.picker.source.proc").proc({
-		opts,
-		{
-			cmd = cmd,
-			args = args,
-			notify = not opts.live,
-			transform = function(item)
-				item.cwd = cwd
-				item.file = item.text
-			end,
-		},
+		cmd = "fd",
+		args = { "--type", "d", "--exclude", ".git", "--hidden", ".", cwd },
+		notify = not opts.live,
+		transform = function(item)
+			item.cwd = cwd
+			item.file = item.text:sub(#cwd + 2)
+		end,
 	}, ctx)
 end
 
