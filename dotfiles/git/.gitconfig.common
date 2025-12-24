@@ -1,7 +1,4 @@
-[user]
-	email =
-	name =
-	signingkey =
+# vim:ft=toml
 
 [color]
 	branch = auto
@@ -61,8 +58,6 @@
 	unstage = "reset HEAD --"
 [commit]
 	gpgsign = true
-[gpg]
-	program = /opt/homebrew/bin/gpg
 [init]
 	defaultBranch = main
 [push]

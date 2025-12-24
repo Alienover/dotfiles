@@ -40,6 +40,10 @@ cd - > /dev/null
 
 echo -e "\nDone!"
 
+if [ -f "${HOME}/.gitconfig.common" ]; then
+  git config --global include.path "${HOME}/.gitconfig.common"
+fi
+
 if [ -d "${HOME}/.ssh/config.d" ]; then
   INCLUDE_CONTENT="Include ~/.ssh/config.d/*"
   SSH_CONFIG="${HOME}/.ssh/config"
