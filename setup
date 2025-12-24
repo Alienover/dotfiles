@@ -11,8 +11,27 @@ CHECK_MARK="\033[0;32m󰄬\033[0m"
 
 DOT_DIR="$(dirname $(readlink -f "$0"))/dotfiles"
 
-# Symlinks all the dotfiles into your home directory
-echo -e "Syncing symbolic links for dotfiles in $DOT_DIR...\n"
+PKGS_TO_STOW=()
+if [ $# -gt 0 ]; then
+  for item in "$@"; do
+    if [ -d "${DOT_DIR}/${item}" ]; then
+      PKGS_TO_STOW+=("$item")
+    else
+      echo -e "Error: Package '${item}' not found in $DOT_DIR\n"
+    fi
+  done
+else
+  PKGS_TO_STOW=($(ls $DOT_DIR))
+fi
+
+if [ ${#PKGS_TO_STOW[@]} -eq 0 ]; then
+  echo -e "No packages found to process in $DOT_DIR\n"
+  exit 2
+else
+  # Symlinks all the dotfiles into your home directory
+  echo -e "Syncing symbolic links for dotfiles in ${#PKGS_TO_STOW[@]} packages...\n"
+fi
+
 
 function clear_line() {
   if [ -n "$TTY" ]; then
@@ -32,8 +51,8 @@ function create_link() {
 
 cd $DOT_DIR > /dev/null
 
-for FILE in `ls $DOT_DIR`; do
-  create_link $FILE
+for item in "${PKGS_TO_STOW[@]}"; do
+  create_link $item
 done
 
 cd - > /dev/null
