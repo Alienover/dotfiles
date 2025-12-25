@@ -21,6 +21,7 @@ nix-env -iA nixpkgs.devPackages
 BASHRC="$HOME/.bashrc"
 if [ -f "$BASHRC" ]; then
   extra=(
+    "[ -f '${HOME}/.local/bin/colors.sh' ] && . ${HOME}/.local/bin/colors.sh"
     "export TERM=xterm-256color"
     "export XDG_CONFIG_HOME='${HOME}/.config'"
     "export XDG_CACHE_HOME='${HOME}/.cache'"
