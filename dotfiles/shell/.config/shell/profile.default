@@ -27,7 +27,7 @@ if [ -n "$TMUX" ]; then
 elif [ -n "$ALACRITTY_WINDOW_ID" ]; then
   export TERM=alacritty-direct
 elif [ -n "$GHOSTTY_BIN_DIR" ]; then
-  export TERM=xterm-ghostty 
+  export TERM=xterm-ghostty
 elif [ -n "$KITTY_WINDOW_ID" ]; then
   export TERM=xterm-kitty
 fi
@@ -40,12 +40,18 @@ if command -v bat >/dev/null 2>&1; then
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 fi
 
-if command -v fzf >/dev/null 2>&1; then
-  source <(fzf --zsh)
-fi
+# Execute the following only with zsh
+if [ -n "$ZSH_VERSION" ]; then
+
+  # Set up fzf key bindings and fuzzy completion
+  if command -v fzf >/dev/null 2>&1; then
+    source <(fzf --zsh)
+  fi
 
 
-# Create the cache folder for zsh completion and history
-if [ ! -d "${XDG_CACHE_HOME}/zsh" ]; then
-  mkdir -p "${XDG_CACHE_HOME}/zsh"
+  # Create the cache folder for zsh completion and history
+  if [ ! -d "${XDG_CACHE_HOME}/zsh" ]; then
+    mkdir -p "${XDG_CACHE_HOME}/zsh"
+  fi
 fi
+

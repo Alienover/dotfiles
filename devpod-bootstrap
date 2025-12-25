@@ -22,11 +22,7 @@ BASHRC="$HOME/.bashrc"
 if [ -f "$BASHRC" ]; then
   extra=(
     "[ -f '${HOME}/.local/bin/colors.sh' ] && . ${HOME}/.local/bin/colors.sh"
-    "export TERM=xterm-256color"
-    "export XDG_CONFIG_HOME='${HOME}/.config'"
-    "export XDG_CACHE_HOME='${HOME}/.cache'"
-    "export XDG_SHARE_HOME='${HOME}/.local/share'"
-    "export XDG_STATE_HOME='${HOME}/.local/state'"
+    "[ -f '${HOME}/.config/shell/profile.default' ] && . ${HOME}/.config/shell/profile.default"
   )
 
   for line in "${extra[@]}"; do
