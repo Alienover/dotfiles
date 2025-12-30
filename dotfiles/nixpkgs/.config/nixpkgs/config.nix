@@ -12,6 +12,7 @@
         fzf
         delta
         git
+        claude-code
       ];
     };
   };
