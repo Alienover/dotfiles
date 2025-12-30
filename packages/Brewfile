@@ -24,8 +24,6 @@ brew "fnm"
 brew "fzf"
 # GNU compiler collection
 brew "gcc"
-# Remote repository management made easy
-brew "ghq"
 # Distributed revision control system
 brew "git"
 # Syntax-highlighting pager for git and diff output

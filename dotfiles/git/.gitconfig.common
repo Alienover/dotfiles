@@ -63,9 +63,6 @@
 [push]
 	autoSetupRemote = true
 
-[ghq]
-	root = ~/Documents/repos
-
 # Include the extra git config for certain paths
 # [includeIf "gitdir:<path prefix for custom git repos>/"]
 # 	path = <git config for custom git repos>

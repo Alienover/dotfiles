@@ -39,7 +39,6 @@ zsh_plugins=(
   completion
   fnm
   fzf
-  ghq
   nvim
   obsidian
   p10k

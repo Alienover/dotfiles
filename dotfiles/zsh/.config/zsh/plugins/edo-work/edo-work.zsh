@@ -1,10 +1,12 @@
-function __init_work {
-  local repos_root="${$(git config ghq.root)/#\~/$HOME}"
+#!/usr/bin/env bash
 
-  eval "$(\
-    find "$repos_root/github.com/"{Yipit,agent8} -type d -maxdepth 1 -mindepth 1 2>/dev/null | \
-    awk -F/ '{print "alias " tolower($NF)  "=\"cd " $0 "\""}' \
-  )"
+function __init_work {
+  local repos_root="$HOME/Documents/dev"
+
+  # Alias all the sub-folders
+  if [ -d $repos_root ]; then
+    eval "$(ls $repos_root | grep -v share | awk -v dir=$repos_root '{print "alias " tolower($0)  "=\"cd " dir "/" $0 "\""}')"
+  fi
 }
 
 __init_work
