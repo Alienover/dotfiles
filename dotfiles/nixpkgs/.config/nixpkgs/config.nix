@@ -12,8 +12,6 @@
         fzf
         delta
         git
-        claude-code
-        docker
       ];
     };
   };
