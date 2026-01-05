@@ -1,25 +1,8 @@
 ---@type LazySpec
 return {
-	-- add blink.compat
-	{
-		"saghen/blink.compat",
-		-- use the latest release, via version = '*', if you also use the latest release for blink.cmp
-		version = "*",
-		-- make sure to set opts so that lazy.nvim calls blink.compat's setup
-		opts = {},
-	},
-
-	--- Blink.cmp completion source
-	{ "MattiasMTS/cmp-dbee", ft = "sql", opts = {} },
-
 	{
 		"saghen/blink.cmp",
 		event = { "InsertEnter", "CmdlineEnter" },
-		-- optional: provides snippets for the snippet source
-		dependencies = {
-			"saghen/blink.compat",
-		},
-
 		-- use a release tag to download pre-built binaries
 		version = "1.*",
 		-- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
@@ -126,7 +109,7 @@ return {
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer" },
 				per_filetype = {
-					sql = { "dbee", "buffer" },
+					sql = { "dadbod", "buffer" },
 					-- AvanteInput = { "avante" },
 					-- optionally inherit from the `default` sources
 					lua = { inherit_defaults = true, "lazydev" },
@@ -135,8 +118,8 @@ return {
 				providers = {
 					-- Boost the score for the items from LSP
 					lsp = { fallbacks = { "path", "buffer" } },
-					-- Refer to https://github.com/MattiasMTS/cmp-dbee/issues/29#issue-2783603343
-					dbee = { name = "DB", module = "blink.compat.source", opts = { cmp_name = "cmp-dbee" } },
+					-- DB completion from vim-dadbod
+					dadbod = { name = "DB", module = "vim_dadbod_completion.blink" },
 					-- Completion for avante commands
 					-- avante = { name = "Avante", module = "blink-cmp-avante", opts = {} },
 					lazydev = {
