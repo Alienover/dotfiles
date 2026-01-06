@@ -1,6 +1,6 @@
 # Set a custom session root path. Default is `$HOME`.
 # Must be called before `initialize_session`.
-session_root "~/Documents/repos/github.com/Yipit/spendhound"
+session_root "~/Documents/dev/spendhound"
 
 # Create session with specified name if it does not already exist. If no
 # argument is given, session name will be based on layout file name.

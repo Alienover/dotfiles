@@ -1,6 +1,6 @@
 # Set a custom session root path. Default is `$HOME`.
 # Must be called before `initialize_session`.
-session_root "~/Documents/repos/github.com/agent8/sh-kennel"
+session_root "~/Documents/dev/sh-kennel"
 
 # Create session with specified name if it does not already exist. If no
 # argument is given, session name will be based on layout file name.
