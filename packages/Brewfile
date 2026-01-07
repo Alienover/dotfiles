@@ -18,8 +18,6 @@ brew "eza"
 brew "fd"
 # A window border system for macOS
 brew "felixkratz/formulae/borders"
-# Fast and simple Node.js version manager
-brew "fnm"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # GNU compiler collection
@@ -34,12 +32,8 @@ brew "gnupg"
 brew "jq"
 # Terminal file manager
 brew "lf"
-# Powerful, lightweight programming language
-brew "lua"
-# Powerful, lightweight programming language (v5.1.5)
-brew "lua@5.1"
-# Package manager for the Lua programming language
-brew "luarocks"
+# Polyglot runtime manager (asdf rust clone)
+brew "mise"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # RSS/Atom feed reader for text terminals
