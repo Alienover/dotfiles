@@ -18,16 +18,15 @@ dotfiles=(
 # Install Nix packages from config.nix
 nix-env -iA nixpkgs.devPackages
 
-BASHRC="$HOME/.bashrc"
-if [ -f "$BASHRC" ]; then
+SHELL_PROFILE="${HOME}/.profile"
+if [ -f "$SHELL_PROFILE" ]; then
   extra=(
-    "[ -f '${HOME}/.local/bin/colors.sh' ] && . ${HOME}/.local/bin/colors.sh"
     "[ -f '${HOME}/.config/shell/profile.default' ] && . ${HOME}/.config/shell/profile.default"
   )
 
   for line in "${extra[@]}"; do
-    if ! grep -qxF "$line" "$BASHRC" 2>/dev/null; then
-      printf "$line\n" >> "$BASHRC"
+    if ! grep -qxF "$line" "$SHELL_PROFILE" 2>/dev/null; then
+      printf "$line\n" >> "$SHELL_PROFILE"
     fi
   done
 fi

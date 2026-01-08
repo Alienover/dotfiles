@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+export GPG_TTY=$(tty)
+
 export TERM=xterm-256color
 export EDITOR=/usr/bin/vi
 
@@ -20,6 +22,11 @@ export WINDOW_VIEWPORT_HEIGHT_MD=80
 
 # User scripts
 [ -d "$HOME/.local/bin" ] && PATH="$HOME/.local/bin:$PATH"
+
+# Source the colorschema
+if [ -f "$HOME/.local/bin/colors.sh" ]; then
+  . "$HOME/.local/bin/colors.sh"
+fi
 
 # Preferred terminal
 if [ -n "$TMUX" ]; then
