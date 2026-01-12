@@ -50,8 +50,6 @@ brew "ripgrep"
 brew "stow"
 # Terminal multiplexer
 brew "tmux"
-# Python virtualenv extensions
-brew "virtualenvwrapper"
 # Internet file retriever
 brew "wget"
 # UNIX shell (command interpreter)
@@ -64,8 +62,6 @@ cask "alacritty"
 cask "betterdisplay"
 # Terminal-based AI coding assistant
 cask "claude-code"
-# OpenAI's coding agent that runs in your terminal
-cask "codex"
 # JetBrains Mono
 cask "font-jetbrains-mono"
 # JetBrainsMono Nerd Font families (JetBrains Mono)
