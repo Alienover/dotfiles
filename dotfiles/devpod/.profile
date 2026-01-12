@@ -11,7 +11,7 @@
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+    [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
 fi
 
 # set PATH so it includes user's private bin if it exists
@@ -26,3 +26,8 @@ fi
 
 # source the common profile
 [ -f "$HOME/.config/shell/profile.default" ] && . "$HOME/.config/shell/profile.default"
+
+# activate mise
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
+fi

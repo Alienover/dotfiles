@@ -1,16 +1,18 @@
 #! /usr/bin/env bash
 
 dotfiles=(
-  devpod
   nvim
   tmux
   shell
   user_scripts
   tmuxifier
-  nixpkgs
   git
 )
 
 . ./setup "${dotfiles[@]}"
+
+cd "$(dirname $(readlink -f "$0"))/dotfiles"
+stow --override=".*" devpod
+cd -
 
 mise install

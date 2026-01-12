@@ -6,3 +6,4 @@ tmux = 'latest'
 fd = 'latest'
 ripgrep = 'latest'
 delta = 'latest'
+claude = "latest"
