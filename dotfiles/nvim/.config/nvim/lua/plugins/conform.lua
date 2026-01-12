@@ -16,6 +16,7 @@ return {
 				javascriptreact = { "prettier" },
 				typescript = { "prettier" },
 				typescriptreact = { "prettier" },
+				toml = { "taplo" },
 				-- Use the "*" filetype to run formatters on all filetypes.
 				["*"] = { "trim_whitespace" },
 			},
