@@ -58,6 +58,8 @@
 	unstage = "reset HEAD --"
 [commit]
 	gpgsign = true
+[tag]
+  gpgsign = true
 [init]
 	defaultBranch = main
 [push]
