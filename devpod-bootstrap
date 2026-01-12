@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 set -e
 
-[ -f "$HOM/.bashrc" ] && rm "$HOME/.bashrc"
+[ -f "$HOME/.bashrc" ] && rm "$HOME/.bashrc"
 [ -f "$HOME/.profile" ] && rm "$HOME/.profile"
 
 dotfiles=(
