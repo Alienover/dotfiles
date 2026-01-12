@@ -1,7 +1,5 @@
 #! /usr/bin/env bash
 
-mise install stow
-
 dotfiles=(
   devpod
   nvim
@@ -14,3 +12,5 @@ dotfiles=(
 )
 
 . ./setup "${dotfiles[@]}"
+
+mise install
