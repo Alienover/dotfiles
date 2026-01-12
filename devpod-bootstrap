@@ -1,6 +1,11 @@
 #! /usr/bin/env bash
+set -e
+
+[ -f "$HOM/.bashrc" ] && rm "$HOME/.bashrc"
+[ -f "$HOME/.profile" ] && rm "$HOME/.profile"
 
 dotfiles=(
+  devpod
   nvim
   tmux
   shell
@@ -11,8 +16,6 @@ dotfiles=(
 
 . ./setup "${dotfiles[@]}"
 
-cd "$(dirname $(readlink -f "$0"))/dotfiles"
-stow --override=".*" devpod
-cd -
-
 mise install
+
+bash -c 'nvim --headless "+Lazy! sync" +qa'
