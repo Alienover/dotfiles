@@ -18,4 +18,4 @@ dotfiles=(
 
 mise install
 
-bash -c 'nvim --headless "+Lazy! sync" +qa'
+mise exec -c 'nvim --headless "+Lazy! sync" +qa'
