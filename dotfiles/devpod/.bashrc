@@ -59,7 +59,7 @@ __bash_prompt() {
     local workspace='`[ -n $DEVPOD_WORKSPACE_ID ] && echo -n "\[\033[0;32m\]($DEVPOD_WORKSPACE_ID)"`'
     local lightblue='\[\033[1;34m\]'
     local removecolor='\[\033[0m\]'
-    PS1="${workspace} ${lightblue}\w${removecolor} $(__git_ps1)\n\$ "
+    PS1="${workspace} ${lightblue}\w${removecolor}\$(__git_ps1)\n\$ "
     unset -f __bash_prompt
 }
 __bash_prompt
