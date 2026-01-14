@@ -5,6 +5,7 @@ return {
 
 	{ -- Obsidian
 		"obsidian-nvim/obsidian.nvim",
+		enabled = consts.files.obsidian ~= "",
 		-- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
 		event = {
 			-- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
@@ -40,7 +41,6 @@ return {
 			---@class obsidian.config.CheckboxOpts
 			---
 			---Order of checkbox state chars, e.g. { " ", "x" }
-			---@field order? string[]
 			checkbox = {
 				order = { " ", "/", "x", "!", "-" },
 			},
