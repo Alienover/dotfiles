@@ -1,20 +1,5 @@
 #! /usr/bin/env zsh
 
-# Load theme colors
-function load_theme() {
-  local colors="$HOME/.local/bin/colors.sh"
-
-  if [ -f "$colors" ]; then
-    . "$colors"
-  fi
-}
-
-load_theme
-
-# Check with `man ls` and search `LSCOLORS` for the detail
-export LSCOLORS=Exfxcxdxbxegedabagacad
-
-
 print_segment() {
   echo "%F{$1}$1%f %K{$1}($1)%k"
 }

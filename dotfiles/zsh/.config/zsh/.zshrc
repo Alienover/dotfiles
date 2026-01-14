@@ -14,19 +14,17 @@ if [ ! -d "$ZINIT_HOME" ]; then
 fi
 
 # Source/Load zinit
-source "${ZINIT_HOME}/zinit.zsh"
-source "${ZDOTDIR}/zsh-functions.zsh"
+. "${ZINIT_HOME}/zinit.zsh"
+. "${ZDOTDIR}/zsh-functions.zsh"
 
 # Add Powrlevel10k
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
-zsh_required=(
-  # Load Customized color scheme
-  zsh-colors # $ZDOTDIR/zsh-colors.sh
-
+SHELL_CONFIG="$HOME/.config/shell"
 # Load alias
-  zsh-alias # $ZDOTDIR/zsh-alias.sh
-)
+[ -f "$SHELL_CONFIG/alias.sh" ] && . "$SHELL_CONFIG/alias.sh"
+# Load Customized color scheme
+[ -f "$SHELL_CONFIG/colors.sh" ] && . "$SHELL_CONFIG/colors.sh"
 
 zsh_plugins=(
   # External
@@ -35,15 +33,12 @@ zsh_plugins=(
   # Personal - check $ZDOTDIR/plugins for more detail
   "history"
   completion
-  fnm
   fzf
-  nvim
+  mise
   obsidian
   p10k
   tmux
   vi-mode
-  mise
-  virtualenvwrapper
 
   # Work
   edo-work

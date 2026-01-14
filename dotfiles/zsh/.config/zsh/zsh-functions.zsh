@@ -90,10 +90,6 @@ function zsh_update_plugin() {
 }
 
 function zsh_init() {
-  for required in $zsh_required;
-  do zsh_add_file "$required.zsh"
-  done
-
   for plugin in $zsh_plugins;
   do zsh_add_custom_plugin "$plugin" || zinit light "$plugin"
   done

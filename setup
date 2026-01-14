@@ -21,7 +21,7 @@ if [ $# -gt 0 ]; then
     fi
   done
 else
-  PKGS_TO_STOW=($(ls $DOT_DIR))
+  PKGS_TO_STOW=($(ls $DOT_DIR | grep -v devpod))
 fi
 
 if [ ${#PKGS_TO_STOW[@]} -eq 0 ]; then

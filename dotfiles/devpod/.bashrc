@@ -23,11 +23,16 @@ HISTFILESIZE=2000
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+SHELL_CONFIG="$HOME/.config/shell"
+# Load alias
+[ -f "$SHELL_CONFIG/alias.sh" ] && . "$SHELL_CONFIG/alias.sh"
+# Load Customized color scheme
+[ -f "$SHELL_CONFIG/colors.sh" ] && . "$SHELL_CONFIG/colors.sh"
+
 # enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-fi
+# if [ -x /usr/bin/dircolors ]; then
+#     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+# fi
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile

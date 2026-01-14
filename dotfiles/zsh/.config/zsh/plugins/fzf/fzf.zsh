@@ -38,3 +38,8 @@ _fzf_comprun() {
 }
 
 export FZF_CTRL_T_COMMAND="fd --type f"
+
+# Set up fzf key bindings and fuzzy completion
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi

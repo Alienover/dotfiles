@@ -5,13 +5,14 @@ export GPG_TTY=$(tty)
 export TERM=xterm-256color
 export EDITOR=/usr/bin/vi
 
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8 # locale
+
 # XDG
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_DATA_HOME="$HOME/.local/share"
-
-export LC_ALL=en_US.UTF-8
 
 export DYLD_LIBRARY_PATH=/usr/local/include
 export CPPFLAGS="-I/usr/local/include/snappy-c.h"
@@ -22,11 +23,6 @@ export WINDOW_VIEWPORT_HEIGHT_MD=80
 
 # User scripts
 [ -d "$HOME/.local/bin" ] && PATH="$HOME/.local/bin:$PATH"
-
-# Source the colorschema
-if [ -f "$HOME/.local/bin/colors.sh" ]; then
-  . "$HOME/.local/bin/colors.sh"
-fi
 
 # Preferred terminal
 if [ -n "$TMUX" ]; then
@@ -49,16 +45,8 @@ fi
 
 # Execute the following only with zsh
 if [ -n "$ZSH_VERSION" ]; then
-
-  # Set up fzf key bindings and fuzzy completion
-  if command -v fzf >/dev/null 2>&1; then
-    source <(fzf --zsh)
-  fi
-
-
   # Create the cache folder for zsh completion and history
   if [ ! -d "${XDG_CACHE_HOME}/zsh" ]; then
     mkdir -p "${XDG_CACHE_HOME}/zsh"
   fi
 fi
-
