@@ -1,9 +1,9 @@
 [tools]
-node = 'latest'
-fzf = 'latest'
-neovim = 'latest'
-tmux = 'latest'
-fd = 'latest'
-ripgrep = 'latest'
-delta = 'latest'
+node = "latest"
+fzf = "latest"
+neovim = "latest"
+tmux = "latest"
+fd = "latest"
+ripgrep = "latest"
+delta = "latest"
 claude = "latest"
