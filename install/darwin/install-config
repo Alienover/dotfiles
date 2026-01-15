@@ -1,0 +1,87 @@
+#! /usr/bin/env bash
+
+echo "Configuring Dock..."
+# Auto-hide Dock
+defaults write com.apple.dock autohide -bool true
+# Keep Dock on the right
+defaults write com.apple.dock orientation -string right
+# Dock size
+defaults write com.apple.dock tilesize -int 32
+defaults write com.apple.dock persistent-apps -array
+defaults write com.apple.dock persistent-others -array
+defaults write com.apple.dock show-recents -bool false
+
+echo "Configuring keyboard and trackpad..."
+# Set the keyboard repeat rate to fastest
+defaults write -g KeyRepeat -int 1
+# Set the trackpad speed to fastest
+defaults write -g com.apple.trackpad.scaling -float 7.0
+# Enable Tap to click
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+
+# Set date to 24-hour format
+defaults write NSGlobalDomain AppleICUForce24HourTime -bool true
+
+echo "Setting Accent Color to Pink..."
+# Set the Accent Color to pink
+defaults write -g AppleAccentColor -int 6
+
+echo "Disable Spotlight and remove the indexes..."
+sudo mdutil -a -E -i off
+
+echo "Re-configuring the system default keymaps..."
+DOMAIN="com.apple.symbolichotkeys"
+# ID 28: Save picture of screen as a file
+# ID 29: Copy picture of screen to clipboard
+# ID 30: Save picture of selected area as a file
+# ID 31: Copy picture of selected area to clipboard
+# ID 64: Spotlight Search
+# ID 65: Finder Search Window
+# ID 184: Show Screenshot and recording options
+for id in 28 29 30 31 64 65 184; do
+    defaults write $DOMAIN AppleSymbolicHotKeys -dict-add "$id" "
+      <dict>
+        <key>enabled</key>
+        <false/>
+      </dict>"
+done
+
+# 2. Set: Trigger screenshot selection to CLIPBOARD (Cmd+Shift+4) -> ID 31
+# Note: 1179648 represents Cmd+Shift
+defaults write $DOMAIN AppleSymbolicHotKeys -dict-add 31 "
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>parameters</key><array><integer>65535</integer><integer>21</integer><integer>1179648</integer></array>
+      <key>type</key><string>standard</string>
+    </dict>
+  </dict>"
+
+# 3. Set: Trigger screenshot selection to FILE (Cmd+Shift+Control+4) -> ID 30
+# Note: 1441792 represents Cmd+Shift+Control
+defaults write $DOMAIN AppleSymbolicHotKeys -dict-add 30 "
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>parameters</key><array><integer>65535</integer><integer>21</integer><integer>1441792</integer></array>
+      <key>type</key><string>standard</string>
+    </dict>
+  </dict>"
+
+# 4. Set: Trigger screen recording selection to FILE (Cmd+Shift+5) -> ID 184
+# Note: 1179648 represents Cmd+Shift
+defaults write $DOMAIN AppleSymbolicHotKeys -dict-add 184 "
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>parameters</key><array><integer>65535</integer><integer>23</integer><integer>1179648</integer></array>
+      <key>type</key><string>standard</string>
+    </dict>
+  </dict>"
+
+echo "Applying changes..."
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+killall SystemUIServer
+killall Dock
+
+echo "✅ Setup Complete! Please log out and back in for all changes to take effect."
