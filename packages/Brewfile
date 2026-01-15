@@ -55,7 +55,7 @@ brew "wget"
 # UNIX shell (command interpreter)
 brew "zsh"
 # AeroSpace is an i3-like tiling window manager for macOS
-cask "aerospace"
+cask "nikitabobko/tap/aerospace"
 # Deprecated because it does not pass the macOS Gatekeeper check! It will be disabled on 2026-09-01.
 cask "alacritty"
 # Chromium based browser
