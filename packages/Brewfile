@@ -72,7 +72,5 @@ cask "ghostty"
 cask "keka"
 # Replacement for Docker Desktop
 cask "orbstack"
-# System monitor for the menu bar
-cask "stats"
 # Media player based on MPlayer and mplayer2
 cask "stolendata-mpv"
