@@ -11,15 +11,14 @@ end
 M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/lua/custom"
 
 M.files = {
-	vim = getenv("HOME") .. "/.vimrc",
 	-- NeoVim initialization file
 	nvim = getenv("XDG_CONFIG_HOME") .. "/nvim/init.lua",
 	-- Folder saved snippets
 	snippets = getenv("XDG_CONFIG_HOME") .. "/nvim/snippets",
 	-- Tmux config
 	tmux = getenv("XDG_CONFIG_HOME") .. "/tmux/tmux.conf",
-	-- Kitty config
-	ghostty = getenv("XDG_CONFIG_HOME") .. "/ghostty/config",
+	-- Alacritty config
+	alacritty = getenv("XDG_CONFIG_HOME") .. "/alacritty/alacritty.toml",
 	-- ZSH config
 	zsh = getenv("XDG_CONFIG_HOME") .. "/zsh/.zshrc",
 	-- Aerospace config
@@ -49,7 +48,11 @@ M.filetype_mappings = setmetatable({
 	txt = "Plain Text",
 	sql = "SQL",
 	lua = "Lua",
+	python = "Python",
+	javascript = "JavaScript",
+	javascriptreact = "JavaScript React",
 	typescript = "TypeScript",
+	typescriptreact = "TypeScript React",
 }, {
 	__index = function(_, key)
 		return key
@@ -75,22 +78,14 @@ M.special_filetypes = {
 		"help",
 		"noice",
 		"http",
-		"rest_nvim_result",
-		"Avante",
 		"oil",
 	},
 	excluded_winbar = {
 		"git",
 		"help",
-		"packer",
-		"rnvimr",
 		"noice",
-		"DiffviewFiles",
-		"DiffviewFileHistory",
 		"terminal",
-		"blame",
 		"oil",
-		"dbee",
 	},
 	close_by_q = {
 		"qf",
@@ -100,8 +95,6 @@ M.special_filetypes = {
 		"help",
 		"lspinfo",
 		"startuptime",
-		"null-ls-info",
-		"git.nvim",
 		"query",
 		"notify",
 	},

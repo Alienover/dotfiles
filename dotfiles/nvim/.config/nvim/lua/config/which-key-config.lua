@@ -176,11 +176,10 @@ wk.add(withTrigger({
 --- INFO: Open File
 wk.add(withTrigger({
 	{ "o", group = "Open" },
-	{ "ov", e(constants.files.vim), desc = ".vimrc" },
 	{ "oz", e(constants.files.zsh), desc = ".zshrc" },
 	{ "ot", e(constants.files.tmux), desc = ".tmux.conf" },
 	{ "on", e(constants.files.nvim), desc = "init.lua" },
-	{ "og", e(constants.files.ghostty), desc = "ghostty conf" },
+	{ "oA", e(constants.files.alacritty), desc = "alacritty.toml" },
 	{ "oa", e(constants.files.aerospace), desc = "aerospace.toml" },
 }))
 
