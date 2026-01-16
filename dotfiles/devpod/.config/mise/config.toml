@@ -6,6 +6,3 @@ tmux = "latest"
 fd = "latest"
 ripgrep = "latest"
 claude = "latest"
-
-[plugins]
-neovim = "https://github.com/richin13/asdf-neovim.git"
