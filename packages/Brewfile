@@ -54,10 +54,10 @@ brew "tmux"
 brew "wget"
 # UNIX shell (command interpreter)
 brew "zsh"
-# AeroSpace is an i3-like tiling window manager for macOS
-cask "nikitabobko/tap/aerospace"
 # Deprecated because it does not pass the macOS Gatekeeper check! It will be disabled on 2026-09-01.
 cask "alacritty"
+# Chromium based browse
+cask "arc"
 # Chromium based browser
 cask "betterdisplay"
 # Terminal-based AI coding assistant
@@ -70,7 +70,11 @@ cask "font-jetbrains-mono-nerd-font"
 cask "ghostty"
 # File archiver
 cask "keka"
+# AeroSpace is an i3-like tiling window manager for macOS
+cask "nikitabobko/tap/aerospace"
 # Replacement for Docker Desktop
 cask "orbstack"
+# Control your tools with a few keystrokes
+cask "raycast"
 # Media player based on MPlayer and mplayer2
 cask "stolendata-mpv"
