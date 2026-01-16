@@ -69,7 +69,7 @@ map zp toggle-preview
 
 map g. :set hidden!
 
-map f fzf_jump
+map gf fzf_jump
 
 # Unmap
 map zh
