@@ -5,119 +5,215 @@
 # Description:
 #   Enables running and connecting to a remote Neovim instance inside a DevPod
 #   workspace with SSH port forwarding. Automatically manages port allocation,
-#   server lifecycle, and cleanup on exit.
+#   server lifecycle, and cleanup on exit. Uses SSH ControlMaster to minimize
+#   SSH connection overhead by reusing a single connection for all operations.
+#   Finds available ports on both local and remote machines independently.
+#   Optimized for performance with compression and fast ciphers.
 #
 # Usage:
 #   nvim-remote
 #
 #   The script will:
 #   1. Present a list of available DevPod instances via fzf
-#   2. Reuse existing port or find a new available port
-#   3. Deploy and launch headless Neovim server on remote instance
-#   4. Create SSH tunnel with port forwarding
-#   5. Connect local Neovim client to remote server
-#   6. Clean up resources on exit
+#   2. Establish SSH ControlMaster connection for efficient communication
+#   3. Generate port finder script using nvim headless mode
+#   4. Find available local port by running the script
+#   5. Find available remote port by copying script via SCP and running it
+#   6. Launch headless Neovim server on remote
+#   7. Create SSH tunnel forwarding local port to remote port
+#   8. Connect local Neovim client to forwarded port
+#   9. Clean up resources and close SSH connection on exit
 #
 # Requirements:
 #   - fzf (fuzzy finder for instance selection)
-#   - python3 (for finding available ports)
-#   - SSH access to DevPod instances
+#   - nvim (for finding available ports via headless Lua)
+#   - SSH access to DevPod instances with SCP support
 #   - DevPod workspaces in ~/.devpod/contexts/default/workspaces
 #
 # Environment:
 #   DEVPOD_WORKSPACES_DIR - Directory containing DevPod workspaces
-#   SRV_PORT_FILE         - Remote file storing server port
-#   LAUNCH_SCRIPT_FILE    - Temporary launch script path
+#   CONTROL_SOCKET        - Unix socket for SSH ControlMaster connection
+#   PORT_FINDER_SCRIPT    - Path to generated port finder script
 #
 
 
 DEVPOD_WORKSPACES_DIR="$HOME/.devpod/contexts/default/workspaces"
-SRV_PORT_FILE="/tmp/nvim.srv"
-LAUNCH_SCRIPT_FILE="/tmp/launch_nvim_server.sh"
 
-# Select target instance
-devpod_ins=($(ls $DEVPOD_WORKSPACES_DIR | sed 's/$/.devpod/' ))
+# Global variables
+ins=""
+local_port=""
+remote_port=""
+CONTROL_SOCKET=""
+remote_nvim_running=0
+PORT_FINDER_SCRIPT="/tmp/nvim-find-port.sh"
 
-ins=$({ printf '%s\n' "${devpod_ins[@]}"; } | fzf)
+#------------------------------------------------------------------------------
+# Function Definitions
+#------------------------------------------------------------------------------
 
-if [ -z "$ins" ]; then
-  printf "Abort! No instance selected\n"
-  exit 1
-fi
+# Select a DevPod instance using fzf
+# Sets: ins (instance name)
+function select_instance() {
+  local devpod_ins=($(ls $DEVPOD_WORKSPACES_DIR | sed 's/$/.devpod/' ))
 
-# Choose available port
-printf "🔄 Finding available port..."
+  ins=$({ printf '%s\n' "${devpod_ins[@]}"; } | fzf)
 
-local_port=$(ssh -T $ins "cat $SRV_PORT_FILE 2>/dev/null")
-
-if [ -z "$local_port" ]; then
-  local_port=$(python3 - <<EOF
-import socket
-s = socket.socket()
-s.bind(('', 0))
-print(s.getsockname()[1])
-s.close()
-EOF
-)
-
-  if [ -z "$local_port" ]; then
-    printf "Abort! Invalid port\n"
+  if [ -z "$ins" ]; then
+    printf "Abort! No instance selected\n"
     exit 1
   fi
-fi
+}
 
-printf "\r\033[K🎲 Found available port $local_port\n"
+# Generate port finder script using nvim headless Lua
+# Creates a shell script that can be run locally or remotely
+# Reuses existing script if already present
+# Uses: PORT_FINDER_SCRIPT (path where script will be created)
+function generate_port_finder_script() {
+  # Only create if it doesn't exist
+  if [ -f "$PORT_FINDER_SCRIPT" ]; then
+    return
+  fi
 
-# Prepare launch script
-cat <<EOF > "$LAUNCH_SCRIPT_FILE"
-port="\$1"
+  cat > "$PORT_FINDER_SCRIPT" <<'FINDER_SCRIPT'
+nvim --headless --noplugin -c 'lua local tcp = vim.loop.new_tcp(); tcp:bind("0.0.0.0", 0); local addr = tcp:getsockname(); tcp:close(); print(addr.port)' -c 'quit' 2>&1 | tail -1
+FINDER_SCRIPT
+}
 
-if [ -z "\$port" ]; then
-  printf "Abort! Invalid port\n"
-  exit 1
-fi
+# Establish SSH ControlMaster connection for connection reuse
+# Uses: ins
+# Sets: CONTROL_SOCKET
+function establish_ssh_connection() {
+  CONTROL_SOCKET="/tmp/ssh-nvim-remote-${ins//[^a-zA-Z0-9]/-}"
 
-echo "\$port" > $SRV_PORT_FILE
+  # Performance options:
+  # -C: Enable compression (good for text-heavy nvim UI updates)
+  # -c: Use AES-128-GCM cipher (fast with AES-NI hardware)
+  # -x: Disable X11 forwarding (not needed)
+  # -o ControlPersist=1h: Keep master connection alive for 1 hour
+  # -o ServerAliveInterval=60: Send keepalive every 60 seconds
+  ssh -M -S "$CONTROL_SOCKET" \
+    -C \
+    -c aes128-gcm@openssh.com \
+    -x \
+    -o ControlPersist=1h \
+    -o ServerAliveInterval=60 \
+    -fN "$ins"
 
-nvim --headless --listen 0.0.0.0:\$port
-EOF
+  if [ $? -ne 0 ]; then
+    printf "Abort! Failed to establish SSH connection\n"
+    exit 1
+  fi
+}
 
-printf "🔄 Sending launch script to ${ins}..."
+# Find an available port on the local machine using the generated script
+# Uses: PORT_FINDER_SCRIPT
+# Sets: local_port
+function find_local_port() {
+  local_port=$(sh "$PORT_FINDER_SCRIPT")
 
-scp "$LAUNCH_SCRIPT_FILE" "$ins:$LAUNCH_SCRIPT_FILE" >/dev/null
+  if [ -z "$local_port" ]; then
+    printf "\nAbort! Failed to find available local port\n"
+    exit 1
+  fi
+}
 
-printf "\r\033[K✨ Launch script sent\n"
+# Find an available port on the remote machine
+# Copies port finder script via SCP and executes it
+# Uses: PORT_FINDER_SCRIPT, CONTROL_SOCKET, ins
+# Sets: remote_port
+function find_remote_port() {
+  # Copy script to remote using SCP (reuses ControlMaster connection)
+  scp -o ControlPath="$CONTROL_SOCKET" "$PORT_FINDER_SCRIPT" "$ins:$PORT_FINDER_SCRIPT" >/dev/null 2>&1
 
-# Launch the remote neovim server
-printf "🔄 Running neovim server at %s:%s..." "$ins" "$local_port"
+  if [ $? -ne 0 ]; then
+    printf "\nAbort! Failed to copy port finder script to remote\n"
+    exit 1
+  fi
 
-ssh -T -L "$local_port:localhost:$local_port" $ins "bash -l $LAUNCH_SCRIPT_FILE $local_port" &
+  # Execute script on remote, get port, and cleanup script
+  remote_port=$(ssh -S "$CONTROL_SOCKET" -T "$ins" "bash -l $PORT_FINDER_SCRIPT && rm -f $PORT_FINDER_SCRIPT")
 
-printf "\r\033[K🔥 Remote neovim server is running on %s:%s\n" "$ins" "$local_port"
+  if [ -z "$remote_port" ]; then
+    printf "\nAbort! Failed to find available remote port\n"
+    exit 1
+  fi
+}
 
-# Set the trap for EXIT to apply the cleanup operations
-remote_nvim_running=1
-function _cleanup() {
+# Launch headless neovim server on remote with port forwarding
+# Uses: CONTROL_SOCKET, ins, local_port, remote_port
+function launch_remote_server() {
+  # Forward local_port to remote_port
+  ssh -S "$CONTROL_SOCKET" -T -L "$local_port:localhost:$remote_port" "$ins" "bash -l" <<LAUNCH_SCRIPT &
+nvim --headless --listen 0.0.0.0:$remote_port
+LAUNCH_SCRIPT
+}
+
+# Cleanup function: stop remote server and close SSH connection
+# Uses: CONTROL_SOCKET, ins, remote_port
+# Sets: remote_nvim_running
+function cleanup() {
   remote_nvim_running=0
 
   printf "\r\033[K🔄 Stopping remote neovim server..."
-  ssh -T $ins "bash -lc 'rm $SRV_PORT_FILE; nvim --server 0.0.0.0:${local_port} --remote-send \"<Esc>:qa!<CR>\" >/dev/null 2>&1'"
+  ssh -S "$CONTROL_SOCKET" -T "$ins" "bash -lc 'nvim --server 0.0.0.0:${remote_port} --remote-send \"<Esc>:qa!<CR>\" >/dev/null 2>&1'"
   printf "\r\033[K👋 Remote neovim server stopped\n"
+
+  # Close ControlMaster connection
+  ssh -S "$CONTROL_SOCKET" -O exit "$ins" 2>/dev/null
+
+  # Remove local port finder script
+  rm -f "$PORT_FINDER_SCRIPT"
 
   exit 1
 }
 
-trap _cleanup EXIT
+# Set up EXIT trap to run cleanup on script exit
+# Sets: remote_nvim_running
+function setup_cleanup_trap() {
+  remote_nvim_running=1
+  trap cleanup EXIT
+}
 
-# Try to attach to the remote neovim
-while true; do
-  if [ "$remote_nvim_running" -eq 0 ]; then
-    exit 1
-  fi
+# Wait for remote server to start and attach local neovim client
+# Uses: local_port, remote_nvim_running
+function attach_to_remote() {
+  while true; do
+    if [ "$remote_nvim_running" -eq 0 ]; then
+      exit 1
+    fi
 
-  sleep 1
+    sleep 1
 
-  nvim --remote-ui --server 0.0.0.0:$local_port 2>/dev/null && break
+    nvim --remote-ui --server 0.0.0.0:$local_port 2>/dev/null && break
 
-  printf "\r\033[K🔄 Waiting for the remote neovim to come up..."
-done
+    printf "\r\033[K🔄 Waiting for the remote neovim to come up..."
+  done
+}
+
+#------------------------------------------------------------------------------
+# Main Flow
+#------------------------------------------------------------------------------
+
+select_instance
+
+printf "🔄 Establishing SSH connection to %s...\n" "$ins"
+establish_ssh_connection
+printf "\r\033[K✨ SSH connection established\n"
+
+generate_port_finder_script
+
+printf "🔄 Finding available local port..."
+find_local_port
+printf "\r\033[K🎲 Found available local port $local_port\n"
+
+printf "🔄 Finding available remote port..."
+find_remote_port
+printf "\r\033[K🎲 Found available remote port $remote_port\n"
+
+printf "🔄 Launching neovim server on %s:%s (forwarding to local:%s)..." "$ins" "$remote_port" "$local_port"
+launch_remote_server
+printf "\r\033[K🔥 Remote neovim server is running on %s:%s (local:%s)\n" "$ins" "$remote_port" "$local_port"
+
+setup_cleanup_trap
+
+attach_to_remote
