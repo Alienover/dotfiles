@@ -15,7 +15,7 @@ fi
 
 # Source/Load zinit
 . "${ZINIT_HOME}/zinit.zsh"
-. "${ZDOTDIR}/zsh-functions.zsh"
+. "${XDG_CONFIG_HOME}/zsh/zsh-functions.zsh"
 
 # Add Powrlevel10k
 zinit ice depth=1; zinit light romkatv/powerlevel10k
@@ -25,6 +25,8 @@ SHELL_CONFIG="$HOME/.config/shell"
 [ -f "$SHELL_CONFIG/alias.sh" ] && . "$SHELL_CONFIG/alias.sh"
 # Load Customized color scheme
 [ -f "$SHELL_CONFIG/colors.sh" ] && . "$SHELL_CONFIG/colors.sh"
+
+[ -f "$HOME/.p10k.zsh" ] && . "$HOME/.p10k.zsh"
 
 zsh_plugins=(
   # External
@@ -36,7 +38,6 @@ zsh_plugins=(
   fzf
   mise
   obsidian
-  p10k
   tmux
   vi-mode
 

@@ -42,11 +42,3 @@ if command -v bat >/dev/null 2>&1; then
   export MANROFFOPT="-c"
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 fi
-
-# Execute the following only with zsh
-if [ -n "$ZSH_VERSION" ]; then
-  # Create the cache folder for zsh completion and history
-  if [ ! -d "${XDG_CACHE_HOME}/zsh" ]; then
-    mkdir -p "${XDG_CACHE_HOME}/zsh"
-  fi
-fi

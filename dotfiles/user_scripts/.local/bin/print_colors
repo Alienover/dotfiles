@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#! /usr/bin/env zsh
 
 print_segment() {
   echo "%F{$1}$1%f %K{$1}($1)%k"
