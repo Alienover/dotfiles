@@ -26,7 +26,7 @@ after-startup-command = [
 
   # Enable Group windows by application setting. Or in System Settings:
   # System Settings → Desktop & Dock → Group windows by application
-  # It would work after reboot or run `killall Dock` to make it work immediately 
+  # It would work after reboot or run `killall Dock` to make it work immediately
   'exec-and-forget defaults write com.apple.dock expose-group-apps -bool true',
 
   # To speed up SMB file browsing, you can prevent macOS from reading .DS_Store files on SMB shares.
@@ -146,8 +146,8 @@ ctrl-alt-up = 'move up'
 ctrl-alt-right = 'move right'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#resize
-shift-alt-minus = 'resize smart -25'
-shift-alt-equal = 'resize smart +25'
+shift-alt-minus = 'resize smart -100'
+shift-alt-equal = 'resize smart +100'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
 alt-esc = ['workspace 🦄', 'move-mouse window-lazy-center']
