@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# vim: ft=bash
 
 echo "Configuring Dock..."
 # Auto-hide Dock
@@ -28,6 +29,27 @@ defaults write -g AppleAccentColor -int 6
 
 echo "Disable Spotlight and remove the indexes..."
 sudo mdutil -a -E -i off
+
+# Move windows by dragging any part of the window with pressing `cmd + ctrl`
+# See: https://nikitabobko.github.io/AeroSpace/goodness#move-by-dragging-any-part-of-the-window
+defaults write -g NSWindowShouldDragOnGesture YES
+
+# Disable windows opening animations
+# See: https://nikitabobko.github.io/AeroSpace/goodness#disable-open-animations
+defaults write -g NSAutomaticWindowAnimationsEnabled -bool false
+
+# Enable Group windows by application setting. Or in System Settings:
+# System Settings → Desktop & Dock → Group windows by application
+# It would work after reboot or run `killall Dock` to make it work immediately
+defaults write com.apple.dock expose-group-apps -bool true
+
+# To speed up SMB file browsing, you can prevent macOS from reading .DS_Store files on SMB shares.
+# This makes the Finder use only basic information to immediately display each folder's contents in alphanumeric order.
+# check for more detail. https://support.apple.com/en-us/102064
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE
+
+# Disable the passcode autofill from Email/iMessage introduced in macOS Tahoe
+defaults write -g NSAutoFillHeuristicControllerEnabled -bool false
 
 echo "Re-configuring the system default keymaps..."
 DOMAIN="com.apple.symbolichotkeys"
