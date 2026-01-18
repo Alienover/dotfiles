@@ -20,4 +20,4 @@ mise plugins install neovim
 
 mise install
 
-mise exec -c 'nvim --headless "+Lazy! sync" +qa'
+mise exec -c 'nvim --headless "+Lazy! restore" +qa'

@@ -66,7 +66,7 @@ cd - > /dev/null
 
 echo -e "\nDone!"
 
-if [ ! -f "$HOME/.gnupg/gpg-agent.conf" ]; then
+if [ ! -f "$HOME/.gnupg/gpg-agent.conf" -a -f "$HOME/.gnupg/gpg-agent.conf.example" ]; then
   cat "$HOME/.gnupg/gpg-agent.conf.example" > "$HOME/.gnupg/gpg-agent.conf"
 fi
 
