@@ -43,7 +43,14 @@ function clear_line() {
 function create_link() {
   echo -en "- Stowing $1 ..."
 
-  stow $1 --no-folding
+  case "$1" in
+    gnupg|git|ssh)
+      stow $1 --no-folding
+      ;;
+    *)
+      stow $1
+      ;;
+  esac
 
   clear_line
   echo -e "\r$CHECK_MARK $1 stowed"
@@ -58,6 +65,10 @@ done
 cd - > /dev/null
 
 echo -e "\nDone!"
+
+if [ ! -f "$HOME/.gnupg/gpg-agent.conf" ]; then
+  cat "$HOME/.gnupg/gpg-agent.conf.example" > "$HOME/.gnupg/gpg-agent.conf"
+fi
 
 if [ -f "${HOME}/.gitconfig.common" ]; then
   git config --global include.path "${HOME}/.gitconfig.common"
