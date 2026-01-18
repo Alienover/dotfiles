@@ -1,0 +1,6 @@
+{
+  "Python Header": {
+    "prefix": "py-header",
+    "body": ["#! /usr/bin/env python", "# -*- coding:utf-8 -*-", "", ""]
+  }
+}

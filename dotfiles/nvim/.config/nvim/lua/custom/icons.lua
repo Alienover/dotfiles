@@ -1,8 +1,3 @@
-local utils = require("custom.utils")
-
----@module 'mini.icons'
-local MiniIcons = utils.LazyRequire("mini.icons")
-
 local presets = {
 	extended = {
 		arrowLeft = { glyph = "<" },
@@ -67,8 +62,9 @@ M.get = function(category, name)
 	local getter = get_impl[category]
 
 	if getter == nil then
+		---@module 'mini.icons'
 		-- Fallback to mini.icons
-		return MiniIcons.get(category, name)
+		return require("mini.icons").get(category, name)
 	end
 
 	local icon = getter(name)

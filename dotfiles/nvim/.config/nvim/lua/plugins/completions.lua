@@ -102,20 +102,26 @@ return {
 				nerd_font_variant = "mono",
 			},
 
-			snippets = { preset = "luasnip" },
-
 			-- Default list of enabled providers defined so that you can extend it
 			-- elsewhere in your config, without redefining it, due to `opts_extend`
 			sources = {
-				default = { "lsp", "path", "snippets", "buffer" },
+				default = { "lsp", "buffer", "path", "snippets" },
 				per_filetype = {
 					sql = { "dadbod", "buffer" },
 					-- AvanteInput = { "avante" },
 					-- optionally inherit from the `default` sources
 					lua = { inherit_defaults = true, "lazydev" },
-					codecompanion = { "codecompanion" },
 				},
 				providers = {
+					snippets = {
+						score_offset = 1000,
+						should_show_items = function(ctx) -- avoid triggering snippets after . " ' chars.
+							return ctx.trigger.initial_kind ~= "trigger_character"
+						end,
+						opts = {
+							friendly_snippets = false,
+						},
+					},
 					-- Boost the score for the items from LSP
 					lsp = { fallbacks = { "path", "buffer" } },
 					-- DB completion from vim-dadbod

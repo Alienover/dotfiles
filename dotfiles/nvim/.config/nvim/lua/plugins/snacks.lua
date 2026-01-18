@@ -66,7 +66,7 @@ return {
 		config = function(_, opts)
 			-- Reset the picker layouts width & height based on the current window sizing
 			---@return snacks.Config
-			local function update_picker_layouts(defaults)
+			local function override_picker_layouts(defaults)
 				local sizing = require("custom.utils").get_float_win_sizing()
 				return vim.tbl_deep_extend("force", defaults or {}, {
 					telescope = {
@@ -78,7 +78,7 @@ return {
 				})
 			end
 
-			opts.picker.layouts = update_picker_layouts(opts.picker.layouts)
+			opts.picker.layouts = override_picker_layouts(opts.picker.layouts)
 
 			require("snacks").setup(opts)
 
@@ -86,18 +86,33 @@ return {
 				desc = "Reset picker layouts when resizing",
 				callback = function()
 					Snacks.config.picker.layouts =
-						vim.tbl_deep_extend("force", Snacks.config.picker.layouts, update_picker_layouts())
+						vim.tbl_deep_extend("force", Snacks.config.picker.layouts, override_picker_layouts())
 				end,
 			})
 		end,
 		-- stylua: ignore
 		keys = {
 			-- Buffers
+			{
+				"<space>bb",
+				function()
+					Snacks.picker.buffers({
+						on_show	=	function() vim.cmd.stopinsert() end,
+						layout	=	"ivy",
+					})
+				end,
+				desc	=	"Find	[B]uffer"
+			},
 			{ "<space>bd", function() Snacks.bufdelete() end, desc = "[D]elete" },
 			{ "<space>bD", function() Snacks.bufdelete.all() end, desc = "[D]elete all" },
 
+			-- Files
+      { "<space>fr", function() Snacks.picker.grep() end, desc="Live [G]rep" },
+      { "<space>fo", function() Snacks.picker.recent() end, desc="Recently [O]pened" },
+
 			-- Git
 			{ "<space>go", function() Snacks.gitbrowse() end, desc = "[O]pen in browse", mode = { "n", "v" } },
+      { "<space>gC", function() require('custom.utils').change_cwd() end, desc="[C]hage CWD" },
 
 			-- Notifier
 			{ "<space><esc>", function() Snacks.notifier.hide() end, desc = "Clear all notifications" },

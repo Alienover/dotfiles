@@ -1,7 +1,7 @@
-local utils = require("custom.utils")
-
 -- Options
-vim.cmd.setlocal("nocursorline nonumber norelativenumber")
+vim.opt_local.cursorline = false
+vim.opt_local.number = false
+vim.opt_local.relativenumber = false
 
 vim.wo.statuscolumn = ""
 
@@ -11,7 +11,6 @@ local opts = { noremap = true, silent = true, buffer = bufnr }
 
 local escape = "<C-\\><C-n>"
 
-local mappings = {}
 for _, mapping in ipairs({
 	{ "<ESC>", escape },
 	{ "jk", escape },
@@ -22,7 +21,5 @@ for _, mapping in ipairs({
 }) do
 	local lhs, rhs = unpack(mapping)
 
-	table.insert(mappings, { "t", lhs, rhs, opts })
+	vim.keymap.set("t", lhs, rhs, opts)
 end
-
-utils.create_keymaps(mappings)

@@ -1,4 +1,4 @@
-local M = {
+return {
 	settings = {
 		Lua = {
 			format = {
@@ -7,5 +7,3 @@ local M = {
 		},
 	},
 }
-
-return M

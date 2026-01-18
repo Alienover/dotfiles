@@ -1,4 +1,3 @@
-local utils = require("custom.utils")
 local icons = require("custom.icons")
 
 vim.cmd([[syntax on]])
@@ -6,7 +5,7 @@ vim.cmd([[syntax on]])
 vim.cmd([[filetype plugin indent on]])
 
 -- Global variables
-local global = {
+for k, v in pairs({
 	-- Ignore the provider warnings
 	loaded_perl_provider = 0,
 	loaded_ruby_provider = 0,
@@ -23,10 +22,12 @@ local global = {
 
 	-- Matchup
 	matchup_matchparen_offscreen = { method = "popup" },
-}
+}) do
+	vim.g[k] = v
+end
 
 -- Vim based Options
-local options = {
+for k, v in pairs({
 	-- Base
 	-- Number of command-lines that are remembered
 	history = 1000,
@@ -86,7 +87,7 @@ local options = {
 	-- Cursor line
 	cursorline = true,
 
-	-- Disable the native suggestion list, use `telescope.builtin.spell_suggest` instead
+	-- Disable the native suggestion list, use `Snacks.picker.spelling` instead
 	spellsuggest = { 0 },
 
 	-- Undo
@@ -122,11 +123,12 @@ local options = {
 
 	-- Default `rounded` style border for the floating window
 	winborder = "rounded",
-}
+}) do
+	vim.opt[k] = v
+end
 
 -- Custom filetypes
---- @type vim.filetype.add.filetypes
-local filetypes = {
+vim.filetype.add({
 	extension = {
 		json = "jsonc",
 		tmux = "tmux",
@@ -142,10 +144,4 @@ local filetypes = {
 	pattern = {
 		[".env.*"] = "dosini",
 	},
-}
-
-utils.setup_options(options)
-
-utils.setup_global(global)
-
-utils.setup_filetypes(filetypes)
+})

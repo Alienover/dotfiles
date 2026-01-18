@@ -59,47 +59,6 @@ M.filetype_mappings = setmetatable({
 	end,
 })
 
-local os_name = vim.uv.os_uname().sysname
-
-M.os = {
-	is_mac = os_name == "Darwin",
-	is_linux = os_name == "Linux",
-	is_windows = os_name == "Windows_NT",
-	is_wsl = vim.fn.has("wsl") == 1,
-}
-
-M.os_sep = M.os.is_windows and "\\" or "/"
-
-M.special_filetypes = {
-	excluded_cowboy = {
-		"lazy",
-		"mason",
-		"blame",
-		"help",
-		"noice",
-		"http",
-		"oil",
-	},
-	excluded_winbar = {
-		"git",
-		"help",
-		"noice",
-		"terminal",
-		"oil",
-	},
-	close_by_q = {
-		"qf",
-		"fzf",
-		"man",
-		"git",
-		"help",
-		"lspinfo",
-		"startuptime",
-		"query",
-		"notify",
-	},
-}
-
 M.window_sizing = {
 	md = {
 		width = tonumber(vim.fn.getenv("WINDOW_VIEWPORT_WIDTH_MD")) or 0,
@@ -151,21 +110,14 @@ M.ensure_externals = {
 	jsonls = {
 		external_type = M.external_type.lsp,
 		mason = "json-lsp",
-		config_file = "lsp.json-lsp",
 	},
 	ts_ls = {
 		external_type = M.external_type.lsp,
 		mason = "typescript-language-server",
-		formatting = false,
-	},
-	gopls = {
-		external_type = M.external_type.lsp,
-		mason = "gopls",
 	},
 	lua_ls = {
 		external_type = M.external_type.lsp,
 		mason = "lua-language-server",
-		config_file = "lsp.lua-lsp",
 	},
 	taplo = {
 		external_type = M.external_type.lsp,

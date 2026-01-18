@@ -63,5 +63,8 @@ return {
 				require("conform").format({ async = true, lsp_format = "fallback", range = range })
 			end, { range = true })
 		end,
+		keys = {
+			{ "<space>lf", ":Format<CR>", desc = "[F]ormat", mode = { "n", "v" } },
+		},
 	},
 }
