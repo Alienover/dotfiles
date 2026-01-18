@@ -16,12 +16,7 @@ M.spellcheck = {
 }
 
 function M.filetype()
-	local ext = vim.fn.expand("%:e", false, false)
-	if ext == "" then
-		return ""
-	end
-
-	local icon, color = icons.get("filetype", ext)
+	local icon, color = icons.get("filetype", vim.bo.filetype)
 	icon = "%#" .. color .. "#" .. icon .. "%*"
 
 	local ft = constants.filetype_mappings[vim.bo.filetype]

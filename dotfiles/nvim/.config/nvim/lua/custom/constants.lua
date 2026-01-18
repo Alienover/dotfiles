@@ -50,9 +50,9 @@ M.filetype_mappings = setmetatable({
 	lua = "Lua",
 	python = "Python",
 	javascript = "JavaScript",
-	javascriptreact = "JavaScript React",
+	javascriptreact = "JavaScript",
 	typescript = "TypeScript",
-	typescriptreact = "TypeScript React",
+	typescriptreact = "TypeScript",
 }, {
 	__index = function(_, key)
 		return key
