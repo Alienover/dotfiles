@@ -48,3 +48,7 @@ set-option -g allow-rename off
 set -g allow-passthrough on
 set -ga update-environment TERM
 set -ga update-environment TERM_PROGRAM
+
+# Options for vim-tmux-navigator
+set -g @vim_navigator_prefix_mapping_clear_screen "" # Unbind the <Prefix> + <C-l> to clear screen
+set -g @vim_navigator_mapping_prev "" # Unbind the
