@@ -89,7 +89,7 @@ tm_zoom_status="#{?window_zoomed_flag,${ZOOM_IN}, }"
 
 ## Right Components
 ### Current playing track
-tm_playing="#[fg=color3]#(osascript $XDG_CONFIG_HOME/tmux/utils/now-playing.scpt)"
+tm_playing="#[fg=color3]#(osascript $XDG_CONFIG_HOME/tmux/now-playing.scpt)"
 
 tm_date="#[bg=default,fg=${DATE_BG}]${TRIANGLE_OPEN}#[bg=${DATE_BG},fg=${DATE_FG}] %b %d %R "
 tm_host="#[bg=${DATE_BG},fg=${HOST_BG}]${TRIANGLE_OPEN}#[bg=${HOST_BG},fg=${DARK_FG},bold] #(whoami) "
@@ -103,11 +103,11 @@ ${TRIANGLE_CLOSE}\
 ${tm_zoom_status}\
 #[fg=${ACTIVE_WINDOW_BG},bg=default]\
 ${TRIANGLE_CLOSE} \
-" 
+"
 
 set -g status-right "\
 ${tm_playing} \
 ${tm_date}\
 ${tm_host}\
 #[bg=default,fg=${HOST_BG}]${HALF_ROUND_CLOSE}\
-" 
+"

@@ -48,15 +48,7 @@ unbind T
 bind T run "tmux-popup -t -d #{pane_current_path} tmux-floatx"
 
 unbind F
-bind F run "tmux-lf" 
-
-is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
-
-# smart pane switching with awareness of vim splits
-bind h if-shell "$is_vim" "send-keys C-w\ h" "select-pane -L"
-bind j if-shell "$is_vim" "send-keys C-w\ j" "select-pane -D"
-bind k if-shell "$is_vim" "send-keys C-w\ k" "select-pane -U"
-bind l if-shell "$is_vim" "send-keys C-w\ l" "select-pane -R"
+bind F run "tmux-lf"
 
 # reload config file
 bind r source-file $XDG_CONFIG_HOME/tmux/tmux.conf \; display "Config Reloaded!"

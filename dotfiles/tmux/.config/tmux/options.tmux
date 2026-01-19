@@ -1,3 +1,5 @@
+set-environment -g TMUX_PLUGIN_MANAGER_PATH "~/.tmux"
+
 # Use `wl-copy` under linux
 if-shell 'uname | grep -q Linux' { \
   set -s copy-command "wl-copy"; \
@@ -46,5 +48,3 @@ set-option -g allow-rename off
 set -g allow-passthrough on
 set -ga update-environment TERM
 set -ga update-environment TERM_PROGRAM
-
-set-environment -g TMUX_PLUGIN_MANAGER_PATH "~/.tmux"
