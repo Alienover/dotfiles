@@ -33,7 +33,7 @@ return {
 
 	{
 		"nvim-mini/mini.pairs",
-		event = "VeryLazy",
+		event = { "InsertEnter", "CmdlineEnter" },
 		opts = {
 			modes = { insert = true, command = true },
 		},

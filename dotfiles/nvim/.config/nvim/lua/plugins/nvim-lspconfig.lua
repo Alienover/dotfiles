@@ -1,4 +1,3 @@
----@module 'snacks'
 ---@type LazySpec
 return {
 	{
