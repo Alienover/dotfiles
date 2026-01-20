@@ -4,15 +4,15 @@ __TM_DEFAULT_PLUGINS_DIR="$HOME/.tmux"
 __TM_TPM_DIR="$__TM_DEFAULT_PLUGINS_DIR/tpm"
 
 __TM_AUTO_INSTALL=0
-if [[ ! -d "$__TM_TPM_DIR" ]]; then
+if [ ! -d "$__TM_TPM_DIR" ]; then
   # Download the TPM if not existed
   git clone --depth 1 https://github.com/tmux-plugins/tpm $__TM_TPM_DIR
   __TM_AUTO_INSTALL=1
 fi
 
-source $__TM_TPM_DIR/tpm
+. "$__TM_TPM_DIR/tpm"
 
-if [[ $__TM_AUTO_INSTALL = 1 ]]; then
+if [ "$__TM_AUTO_INSTALL" = 1 ]; then
   # Auto install the missing plugins on start
-  source $__TM_TPM_DIR/bin/install_plugins
+  . "$__TM_TPM_DIR/bin/install_plugins"
 fi
