@@ -12,6 +12,8 @@ return {
 		build = function()
 			vim.cmd("CatppuccinCompile")
 		end,
+		---@module 'catppuccin'
+		---@type CatppuccinOptions
 		opts = {
 			flavour = "mocha",
 			transparent_background = true,
@@ -31,20 +33,23 @@ return {
 				noice = true,
 				which_key = true,
 			},
-			custom_highlights = function(colors)
-				return {
-					FoldedVirtualText = { fg = colors.overlay0, style = { "bold", "italic" } },
+			highlight_overrides = {
+				mocha = function(colors)
+					return {
+						-- Override
+						IncSearch = { link = "CurSearch" },
+						FoldedVirtualText = { fg = colors.overlay0, style = { "bold", "italic" } },
+						WinSeparator = { fg = colors.surface1 },
+						CursorLineNr = { fg = colors.maroon },
 
-					WinSeparator = { fg = colors.surface1 },
+						-- Mods for `vim-matchup`
+						MatchParen = { style = { "bold", "italic" } },
 
-					-- Mods for `vim-matchup`
-					MatchParen = { style = { "bold", "italic" } },
-
-					CursorLineNr = { fg = colors.maroon },
-
-					BufferlineIndicatorSelected = { fg = colors.red, style = { "bold" } },
-				}
-			end,
+						-- Mods for `flash.nvim`
+						FlashLabel = { fg = colors.mantle, bg = colors.red },
+					}
+				end,
+			},
 		},
 	},
 }
