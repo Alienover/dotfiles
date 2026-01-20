@@ -34,7 +34,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_autocmd("RecordingEnter", {
 	desc = "Notify when recording starts",
-	group = augroup("recording"),
+	group = augroup("recording_start"),
 
 	callback = function()
 		local reg = vim.fn.reg_recording()
@@ -54,7 +54,7 @@ vim.api.nvim_create_autocmd("RecordingEnter", {
 
 vim.api.nvim_create_autocmd("RecordingLeave", {
 	desc = "Close notify when recording leaves",
-	group = augroup("recording"),
+	group = augroup("recording_end"),
 
 	callback = function()
 		vim.notify("Recording stopped", vim.log.levels.INFO, {
