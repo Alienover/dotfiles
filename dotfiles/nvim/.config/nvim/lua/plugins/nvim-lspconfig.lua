@@ -1,3 +1,4 @@
+---@module 'snacks'
 ---@type LazySpec
 return {
 	{
@@ -15,7 +16,7 @@ return {
 			end
 
 			-- INFO: Disable the log, set it to "debug" when necessary
-			vim.lsp.set_log_level("off")
+			vim.lsp.log.set_level(vim.log.levels.OFF)
 
 			-- INFO: Configure the diagnostic styling
 			vim.diagnostic.config({
@@ -68,7 +69,7 @@ return {
 				return win_info
 			end
 
-			vim.api.nvim_create_autocmd("LSPAttach", {
+			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("SetupLSP", { clear = true }),
 				callback = function(args)
 					local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
