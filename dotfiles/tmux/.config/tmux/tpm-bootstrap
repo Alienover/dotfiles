@@ -10,9 +10,9 @@ if [ ! -d "$__TM_TPM_DIR" ]; then
   __TM_AUTO_INSTALL=1
 fi
 
-. "$__TM_TPM_DIR/tpm"
+tmux run "$__TM_TPM_DIR/tpm"
 
 if [ "$__TM_AUTO_INSTALL" = 1 ]; then
   # Auto install the missing plugins on start
-  . "$__TM_TPM_DIR/bin/install_plugins"
+  tmux run "$__TM_TPM_DIR/bin/install_plugins" \; source-file "$XDG_CONFIG_HOME/tmux/tmux.conf"
 fi
