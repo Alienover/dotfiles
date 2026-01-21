@@ -24,10 +24,6 @@ return {
 					additional_vim_regex_highlighting = false,
 				},
 				indent = { enable = true, disable = { "ruby" } },
-				matchup = { enable = true },
-				autopairs = { enable = true },
-				playground = { enable = true },
-				context_commentstring = { enable = true },
 				incremental_selection = {
 					enable = true,
 					keymaps = {
