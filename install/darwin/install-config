@@ -51,6 +51,9 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE
 # Disable the passcode autofill from Email/iMessage introduced in macOS Tahoe
 defaults write -g NSAutoFillHeuristicControllerEnabled -bool false
 
+# Set the default location for screenshots and recrodings
+defaults write com.apple.screencapture location ~/Downloads
+
 echo "Re-configuring the system default keymaps..."
 DOMAIN="com.apple.symbolichotkeys"
 # ID 28: Save picture of screen as a file
