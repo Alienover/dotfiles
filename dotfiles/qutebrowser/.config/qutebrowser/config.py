@@ -1,15 +1,13 @@
-import catppuccin
-
 c = c  # noqa # pyright: ignore[reportUndefinedVariable]
 config = config  # noqa # pyright: ignore[reportUndefinedVariable]
 
 config.load_autoconfig(False)
 
-# Theme
-catppuccin.setup(c, "mocha", True)
+config.source("theme.py")
+config.source("keymaps.py")
 
 c.colors.webpage.darkmode.enabled = True
-c.colors.webpage.bg = "#1E1E1E"
+c.colors.webpage.bg = "#1E1E2E"
 c.colors.webpage.preferred_color_scheme = "dark"
 c.colors.webpage.darkmode.policy.images = "smart"
 
@@ -60,6 +58,3 @@ c.editor.command = [
     "-c",
     "normal {line}G{column0}l",
 ]
-
-
-config.source("keymaps.py")
