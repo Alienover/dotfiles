@@ -21,7 +21,7 @@
   "noice.nvim": { "branch": "main", "commit": "7bfd942445fb63089b59f97ca487d605e715f155" },
   "nui.nvim": { "branch": "main", "commit": "de740991c12411b663994b2860f1a4fd0937c130" },
   "nvim-colorizer.lua": { "branch": "master", "commit": "a065833f35a3a7cc3ef137ac88b5381da2ba302e" },
-  "nvim-lspconfig": { "branch": "master", "commit": "4044b8544a6cea57179d5a29c203b6b65d2b6ac4" },
+  "nvim-lspconfig": { "branch": "master", "commit": "ff9c0af8f9b2097fdd2695058db7e04c193908aa" },
   "nvim-tmux-navigation": { "branch": "main", "commit": "4898c98702954439233fdaf764c39636681e2861" },
   "nvim-treesitter": { "branch": "master", "commit": "42fc28ba918343ebfd5565147a42a26580579482" },
   "nvim-treesitter-refactor": { "branch": "master", "commit": "9cc0d22becf72e18808208cd0ce85032a2b19c6f" },
