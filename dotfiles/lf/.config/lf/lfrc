@@ -17,6 +17,8 @@ set incsearch true
 set errorfmt "\033[7;31;40m"
 set numberfmt "\033[90m"
 
+setlocal ~/Downloads sortby time
+
 # Commands
 cmd open &~/.local/bin/rifle
 
