@@ -5,10 +5,9 @@ return {
 		opts = {
 			-- add any options here
 			cli = {
-				mux = {
-					enabled = true,
-				},
+				mux = { enabled = true },
 			},
+			nes = { enabled = false },
 		},
     -- stylua: ignore
 		keys = {
