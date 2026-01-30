@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 options=(
 	style=round
@@ -6,7 +6,6 @@ options=(
 	hidpi=off
 	active_color=0xFFE45C9C
 	inactive_color=0x00FFFFFF
-	blacklist="kitty,Stats,ghostty,qutebrowser"
 )
 
 borders "${options[@]}"
