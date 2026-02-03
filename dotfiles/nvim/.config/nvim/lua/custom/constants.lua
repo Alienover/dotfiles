@@ -20,7 +20,7 @@ M.files = {
 	-- Alacritty config
 	alacritty = getenv("XDG_CONFIG_HOME") .. "/alacritty/alacritty.toml",
 	-- ZSH config
-	zsh = getenv("XDG_CONFIG_HOME") .. "/zsh/.zshrc",
+	zsh = getenv("HOME") .. "/.zshrc",
 	-- Aerospace config
 	aerospace = getenv("XDG_CONFIG_HOME") .. "/aerospace/aerospace.toml",
 	-- Dotfiles folder
