@@ -114,7 +114,6 @@ return {
 				},
 				providers = {
 					snippets = {
-						score_offset = 1000,
 						should_show_items = function(ctx) -- avoid triggering snippets after . " ' chars.
 							return ctx.trigger.initial_kind ~= "trigger_character"
 						end,
