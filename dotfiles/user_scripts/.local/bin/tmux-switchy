@@ -79,7 +79,16 @@ resolve_session() {
     )
   fi
 
-   [ -z "$query" ] && exit 0
+  [ -z "$query" ] && exit 0
+
+  # When fzf is called with --print-query, it outputs 2 lines on selection:
+  #   Line 1: The user's search query
+  #   Line 2: The selected item
+  # If we got 2 lines, extract the selected item (line 2) and return it
+  if [ "$(echo "$query" | wc -l )" -eq 2 ]; then
+    echo "$query" | tail -n 1
+    exit 0
+  fi
 
   load_session_mappings
 
