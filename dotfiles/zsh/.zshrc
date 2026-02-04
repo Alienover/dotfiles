@@ -38,7 +38,6 @@ zsh_plugins=(
   fzf
   mise
   obsidian
-  tmux
   vi-mode
 
   # Work

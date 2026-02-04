@@ -25,3 +25,7 @@ if command -v git >/dev/null 2>&1; then
   alias gc="git checkout"
   alias gs="git status"
 fi
+
+if [ -x "$HOME/.local/bin/tmux-preview" ]; then
+  alias sw="tmux-switchy"
+fi

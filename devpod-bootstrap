@@ -10,7 +10,6 @@ dotfiles=(
   tmux
   shell
   user_scripts
-  tmuxifier
   git
 )
 

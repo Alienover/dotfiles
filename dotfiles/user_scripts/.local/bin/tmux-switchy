@@ -1,61 +1,122 @@
 #!/usr/bin/env bash
 
-SELECTED_SESSION=""
+# tmux-switchy - Fuzzy-find and switch between tmux sessions
+#
+# Allows quick switching to tmux sessions using fzf for interactive selection
+# or direct query matching. Supports configurable session name mappings and
+# automatically creates sessions if they don't exist.
+#
+# Usage: tmux-switchy [query]
+#   Without args: Opens fzf to interactively select a session
+#   With query:   Switches to session matching the query
 
-TMUXIFIER_BIN="${TMUX_PLUGIN_MANAGER_PATH:-$HOME/.tmux}/tmuxifier/bin/tmuxifier"
+# Define session mappings: key (for fuzzy search) -> session name (actual tmux session)
+declare -A SESSION_MAPPINGS=(
+  ["term"]="🦄 term"
+  ["obsidian"]="📚 Obsidian"
+  ["vpn"]="🌈 vpn"
+  # Add more mappings as needed
+)
 
-pick() {
-  if [ -z "$1" ]; then
-    exit 0
-  elif [ $(echo "$1" | wc -l) == 1 ]; then
-    SELECTED_SESSION="$($TMUXIFIER_BIN ls | grep "$1")"
-  else
-    SELECTED_SESSION="$(echo "$1" | head -n 2 | tail -n 1)"
+# Load additional mappings from optional config file: ~/.tmux_session
+# File format (one mapping per line):
+#   key=session_name
+# Example:
+#   dotfiles=dotfiles
+#   work=work-project
+#   personal=personal-dev
+#   # Comments start with #
+load_session_mappings() {
+  SESSION_CONFIG="$HOME/.tmux_session"
+  if [ -f "$SESSION_CONFIG" ]; then
+    while IFS='=' read -r key value; do
+      # Skip empty lines and comments
+      [[ -z "$key" || "$key" =~ ^[[:space:]]*# ]] && continue
+      # Trim whitespace
+      key=$(echo "$key" | xargs)
+      value=$(echo "$value" | xargs)
+      # Add to mappings if both key and value are present
+      if [ -n "$key" ] && [ -n "$value" ]; then
+        SESSION_MAPPINGS["$key"]="$value"
+      fi
+    done < "$SESSION_CONFIG"
   fi
-
 }
 
-if [ -n "$1" ]; then
-  pick "$1"
-else
-  C_FG=$GUI_FOREGROUND
-  C_BG=$GUI_BACKGROUND
-  C_PRIMARY=$GUI_PRIMARY
-  C_YELLOW=$GUI_DARK_YELLOW
-  C_BLACK=$GUI_BLACK
+# Resolve session name from query or interactive fzf selection
+resolve_session() {
+  local selected_session=""
+  local query="$1"
 
-  # Refer to https://github.com/junegunn/fzf/wiki/Color-schemes#color-configuration for more detail
-  FZF_OPTIONS="
-    --no-info
-    --no-scrollbar
-    --height=100%
-    --print-query
-    --style=full
-    --layout=reverse
-    --preview-window=down
-    --color fg:$C_FG,bg:$C_BG,hl:$C_PRIMARY
-    --color fg+:$C_FG,bg+:$C_BLACK,hl+:$C_YELLOW
-    --color gutter:$C_BG,info:$C_PRIMARY,prompt:$C_PRIMARY
-    --color spinner:$C_PRIMARY,pointer:$C_BLACK,marker:$C_YELLOW,border:$C_BLACK
-  "
+  if [ -z "$1" ]; then
+    C_FG=$GUI_FOREGROUND
+    C_BG=$GUI_BACKGROUND
+    C_PRIMARY=$GUI_PRIMARY
+    C_YELLOW=$GUI_DARK_YELLOW
+    C_BLACK=$GUI_BLACK
 
-  __tm_format="#S: #{session_windows} windows #{?session_attached,(attached),}"
-  __tm_session="echo {} | grep -oE \"^[^:]+\""
+    # Refer to https://github.com/junegunn/fzf/wiki/Color-schemes#color-configuration for more detail
+    FZF_OPTIONS="
+      --no-info
+      --no-scrollbar
+      --height=100%
+      --print-query
+      --style=full
+      --layout=reverse
+      --preview-window=down
+      --color fg:$C_FG,bg:$C_BG,hl:$C_PRIMARY
+      --color fg+:$C_FG,bg+:$C_BLACK,hl+:$C_YELLOW
+      --color gutter:$C_BG,info:$C_PRIMARY,prompt:$C_PRIMARY
+      --color spinner:$C_PRIMARY,pointer:$C_BLACK,marker:$C_YELLOW,border:$C_BLACK
+    "
 
-  MATCHEDS=$(tmux list-sessions -F "$__tm_format" | \
-    grep -v "popup" | fzf $FZF_OPTIONS --prompt "Session: "\
-    --bind "ctrl-x:execute($__tm_session | xargs -I %% tmux kill-session -t \"%%\")+execute($0)+abort" \
-    --preview "$__tm_session | xargs -I %% tmux-preview \"%%\"" |\
-    sed -E 's/.*[[:space:]]([^:]+):.*/\1/' \
-  )
+    # Generate list of all existing sessions (excluding popup)
+    SESSION_LIST=$(tmux list-sessions -F '#S' 2>/dev/null | grep -v "popup" | sort)
 
-  pick "$MATCHEDS"
-fi
+    query=$(echo "$SESSION_LIST" | fzf $FZF_OPTIONS --prompt "Session: "\
+      --bind "ctrl-x:execute(tmux kill-session -t {} 2>/dev/null)+reload(tmux list-sessions -F '#S' 2>/dev/null | grep -v popup | sort)" \
+      --preview "tmux-preview {}" \
+    )
+  fi
+
+   [ -z "$query" ] && exit 0
+
+  load_session_mappings
+
+  selected_session="${SESSION_MAPPINGS[$query]}"
+
+  if [ -z "$selected_session" ]; then
+    all_keys=""
+    for key in "${!SESSION_MAPPINGS[@]}"; do
+      all_keys="${all_keys}${key}\n"
+    done
+    query="$(echo -e "$all_keys" | sed '/^$/d' | fzf --filter="$query" | head -n 1)"
+
+    [ -n "$query" ] && selected_session="${SESSION_MAPPINGS[$query]}"
+  fi
+
+  echo "$selected_session"
+}
 
 
-if [ -n "$SELECTED_SESSION" ]; then
-  $TMUXIFIER_BIN load-session $SELECTED_SESSION
-else
-  echo "No project selected!"
-fi
+# Switches to specified tmux session, or creates it if it doesn't exist
+switch_to_session() {
+  local session="$1"
+  if [ -n "$session" ]; then
+    # Check if we're inside tmux
+    if [ -n "$TMUX" ]; then
+      # Inside tmux: switch to session (create if doesn't exist)
+      if ! tmux has-session -t "$session" 2>/dev/null; then
+        tmux new-session -d -s "$session"
+      fi
+      tmux switch-client -t "$session"
+    else
+      # Outside tmux: attach or create new session
+      tmux new-session -As "$session"
+    fi
+  else
+    echo "No project selected!"
+  fi
+}
 
+switch_to_session "$(resolve_session "$1")"
