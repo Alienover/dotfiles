@@ -20,7 +20,7 @@ return {
 
 	{ -- Customized winbar with file path and document symbols
 		"@local/winbar.nvim",
-		event = { "BufReadPost", "BufNewFile" },
+		event = { "BufReadPre", "BufNewFile" },
 		dependencies = { "nvim-mini/mini.icons" },
 		opts = {
 			excluded_fn = function()

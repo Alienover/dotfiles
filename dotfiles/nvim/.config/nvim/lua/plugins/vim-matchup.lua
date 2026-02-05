@@ -1,4 +1,4 @@
 ---@type LazySpec
 return {
-	{ "andymass/vim-matchup", event = "BufReadPre" },
+	{ "andymass/vim-matchup", event = "User LazyPost" },
 }

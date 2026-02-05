@@ -2,7 +2,7 @@
 return {
 	{ -- Status Line
 		"nvim-lualine/lualine.nvim",
-		event = { "BufReadPost", "BufNewFile" },
+		event = "User LazyPost",
 		config = function()
 			local icons = require("custom.icons")
 			local comps = require("config.statusline")

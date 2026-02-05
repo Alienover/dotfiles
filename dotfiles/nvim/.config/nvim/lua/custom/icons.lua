@@ -62,7 +62,6 @@ M.get = function(category, name)
 	local getter = get_impl[category]
 
 	if getter == nil then
-		---@module 'mini.icons'
 		-- Fallback to mini.icons
 		return require("mini.icons").get(category, name)
 	end

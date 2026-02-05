@@ -1,5 +1,16 @@
 local icons = require("custom.icons")
 
+vim.uv = vim.uv or vim.loop
+
+-- Enables the experimental Lua module loader
+if vim.loader then
+	vim.loader.enable()
+end
+
+-- Ignore the deprecate warnings
+---@diagnostic disable-next-line: duplicate-set-field
+vim.deprecate = function() end
+
 vim.cmd([[syntax on]])
 
 vim.cmd([[filetype plugin indent on]])

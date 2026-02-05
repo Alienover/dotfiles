@@ -10,7 +10,7 @@ return {
 				desc = "[T]odo Comments",
 			},
 		},
-		event = "BufReadPost",
+		event = "User LazyPost",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {
 			signs = false,

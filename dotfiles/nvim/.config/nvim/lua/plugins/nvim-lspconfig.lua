@@ -3,7 +3,7 @@
 return {
 	{
 		"neovim/nvim-lspconfig",
-		event = { "BufReadPre", "BufNewFile" },
+		event = "User LazyPost",
 		dependencies = { "williamboman/mason.nvim" },
 		config = function()
 			local utils = require("custom.utils")

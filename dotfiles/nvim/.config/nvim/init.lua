@@ -1,18 +1,4 @@
-local lazy = {
-	autocmds = nil,
-	clipboard = nil,
-}
-
-vim.uv = vim.uv or vim.loop
-
--- Enables the experimental Lua module loader
-if vim.loader then
-	vim.loader.enable()
-end
-
--- Ignore the deprecate warnings
----@diagnostic disable-next-line: duplicate-set-field
-vim.deprecate = function() end
+local lazy = { autocmds = nil, clipboard = nil }
 
 -- Load options here, before lazy init while sourcing plugin modules
 -- this is needed to make sure options will be correctly applied
@@ -29,9 +15,8 @@ end
 lazy.clipboard = vim.opt.clipboard
 vim.opt.clipboard = ""
 
-local group = vim.api.nvim_create_augroup("LazyVim", { clear = true })
 vim.api.nvim_create_autocmd("User", {
-	group = group,
+	group = vim.api.nvim_create_augroup("LazyVim", { clear = true }),
 	pattern = "VeryLazy",
 
 	callback = function()

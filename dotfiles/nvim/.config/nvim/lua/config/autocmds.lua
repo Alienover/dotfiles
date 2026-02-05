@@ -70,3 +70,19 @@ vim.api.nvim_create_autocmd("VimResized", {
 	desc = "Auto resize the splits when the terminal window or tmux pane is resized",
 	command = "wincmd =",
 })
+
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+	desc = "Custom lazy event for `BufReadPost` and `BufNewFile` event",
+	pattern = "*",
+	once = true,
+
+	callback = function()
+		local key = "_custom_lazy_post_event_emmitted"
+		if not vim.g[key] then
+			vim.g[key] = true
+			vim.schedule(function()
+				vim.api.nvim_exec_autocmds("User", { pattern = "LazyPost" })
+			end)
+		end
+	end,
+})
