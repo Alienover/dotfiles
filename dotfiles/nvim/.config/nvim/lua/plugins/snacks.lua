@@ -107,6 +107,7 @@ return {
 			{ "<space>bD", function() Snacks.bufdelete.all() end, desc = "[D]elete all" },
 
 			-- Files
+      { "<space>ff", function() Snacks.picker.files() end, desc="[F]ind [F]iles" },
       { "<space>fr", function() Snacks.picker.grep() end, desc="Live [G]rep" },
       { "<space>fo", function() Snacks.picker.recent() end, desc="Recently [O]pened" },
 
