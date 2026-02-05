@@ -128,31 +128,11 @@ function MM:get_filename()
 	table.insert(self.elements, table.concat(name_items, " "))
 end
 
-function MM:get_symbol_node()
-	local status_ok, winbar = pcall(require, "lspsaga.symbol.winbar")
-	if not status_ok or not self.opts.show_symbol then
-		return
-	end
-
-	-- INFO: Refer to: https://nvimdev.github.io/lspsaga/breadcrumbs/#use-in-custom-statusline-or-winbar
-	local symbol_node = winbar.get_bar()
-
-	if symbol_node ~= "" then
-		table.insert(self.elements, symbol_node)
-	end
-end
-
 local set_winbar = function(value)
 	pcall(vim.api.nvim_set_option_value, "winbar", value, { scope = "local" })
 end
 
-function M.render_winbar(opts)
-	MM.opts = setmetatable(opts or {}, {
-		__index = function(_, key)
-			return DEFAULT_OPTS[key]
-		end,
-	})
-
+function M.render_winbar()
 	if MM:is_excluded() then
 		return
 	end
@@ -161,7 +141,6 @@ function M.render_winbar(opts)
 
 	MM:get_filepath()
 	MM:get_filename()
-	MM:get_symbol_node()
 
 	if #MM.elements > 0 then
 		set_winbar((" "):rep(3) .. table.concat(MM.elements, MM:separator()))
@@ -169,25 +148,17 @@ function M.render_winbar(opts)
 end
 
 function M.setup(opts)
-	local g_ui = vim.api.nvim_create_augroup("WinbarUI", { clear = true })
+	MM.opts = vim.tbl_deep_extend("force", DEFAULT_OPTS, opts)
 
 	local render_winbar = function()
-		coroutine.wrap(M.render_winbar)(opts)
+		coroutine.wrap(M.render_winbar)()
 	end
 
-	vim.api.nvim_create_autocmd({ "CursorMoved", "BufWinEnter", "BufEnter", "BufWritePost" }, {
+	vim.api.nvim_create_autocmd({ "VimEnter", "BufEnter", "BufModifiedSet", "WinEnter", "WinLeave" }, {
 		desc = "Winbar handler",
 
-		group = g_ui,
+		group = vim.api.nvim_create_augroup("WinbarUI", { clear = true }),
 		pattern = "*",
-		callback = render_winbar,
-	})
-
-	vim.api.nvim_create_autocmd("User", {
-		desc = "Update Winbar",
-
-		group = g_ui,
-		pattern = "LspsagaUpdateSymbol",
 		callback = render_winbar,
 	})
 end

@@ -8,11 +8,11 @@ return {
 				excluded_filetypes = {
 					"lazy",
 					"mason",
-					"blame",
 					"help",
 					"noice",
 					"http",
 					"oil",
+					"gitsigns-blame",
 				},
 			},
 		},
