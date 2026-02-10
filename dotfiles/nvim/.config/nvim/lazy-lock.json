@@ -3,6 +3,7 @@
   "blink.cmp": { "branch": "main", "commit": "4b18c32adef2898f95cdef6192cbd5796c1a332d" },
   "catppuccin": { "branch": "main", "commit": "beaf41a30c26fd7d6c386d383155cbd65dd554cd" },
   "conform.nvim": { "branch": "master", "commit": "c2526f1cde528a66e086ab1668e996d162c75f4f" },
+  "diffs.nvim": { "branch": "main", "commit": "4ce1e1786a9bd724fda5ab4aba528b64a790b11f" },
   "flash.nvim": { "branch": "main", "commit": "fcea7ff883235d9024dc41e638f164a450c14ca2" },
   "gitsigns.nvim": { "branch": "main", "commit": "1ce96a464fdbc24208e24c117e2021794259005d" },
   "goto-preview": { "branch": "main", "commit": "d2d6923c9b9e0e43f0b9b566f261a8b1ae016540" },
