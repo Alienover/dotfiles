@@ -4,6 +4,7 @@ return {
 		"folke/which-key.nvim",
 		keys = { "<space>" },
 		event = { "VeryLazy" },
+		--- @type wk.Opts
 		opts = {
 			---@type false | "classic" | "modern" | "helix"
 			preset = false,
@@ -19,6 +20,10 @@ return {
 				width = { min = 20, max = 50 }, -- min and max width of the columns
 				spacing = 5, -- spacing between columns
 			},
+			triggers = {
+				{ "<space>" },
+				{ "<leader>" },
+			},
 		},
 		---@param opts wk.Opts
 		config = function(_, opts)
@@ -27,11 +32,9 @@ return {
 
 			wk.setup(opts)
 
-			local function e(filepath)
-				return "<CMD>e " .. filepath .. "<CR>"
-			end
-
 			wk.add({
+				--- @module 'snacks'
+
 				-- Help
 				{ "<space>/", Snacks.picker.lines, desc = "Search" },
 				{ "<space>h?", Snacks.picker.help, desc = "Help doc" },
@@ -45,11 +48,11 @@ return {
 
 				-- Open File
 				{ "<space>o", group = "Open" },
-				{ "<space>oz", e(constants.files.zsh), desc = ".zshrc" },
-				{ "<space>ot", e(constants.files.tmux), desc = ".tmux.conf" },
-				{ "<space>on", e(constants.files.nvim), desc = "init.lua" },
-				{ "<space>oA", e(constants.files.alacritty), desc = "alacritty.toml" },
-				{ "<space>oa", e(constants.files.aerospace), desc = "aerospace.toml" },
+				{ "<space>oz", "<CMD>e " .. constants.files.zsh .. "<CR>", desc = ".zshrc" },
+				{ "<space>ot", "<CMD>e " .. constants.files.tmux .. "<CR>", desc = ".tmux.conf" },
+				{ "<space>on", "<CMD>e " .. constants.files.nvim .. "<CR>", desc = "init.lua" },
+				{ "<space>oA", "<CMD>e " .. constants.files.alacritty .. "<CR>", desc = "alacritty.toml" },
+				{ "<space>oa", "<CMD>e " .. constants.files.aerospace .. "<CR>", desc = "aerospace.toml" },
 			})
 		end,
 	},
