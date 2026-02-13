@@ -28,9 +28,6 @@ for k, v in pairs({
 	-- Leader key mapping
 	mapleader = ";",
 
-	-- Disable tab key in copilot
-	copilot_no_tab_map = true,
-
 	-- Matchup
 	matchup_matchparen_offscreen = { method = "popup" },
 }) do
