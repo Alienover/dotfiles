@@ -1,4 +1,4 @@
 ---@type LazySpec
 return {
-	{ "nvimdev/hlsearch.nvim", event = "User LazyPost", opts = {} },
+	{ "nvimdev/hlsearch.nvim", lazy = false, opts = {} },
 }
