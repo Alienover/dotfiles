@@ -38,6 +38,9 @@ return {
 		"tpope/vim-fugitive",
 		cmd = { "Git", "Gvdiffsplit", "GBrowse" },
 		dependencies = { "tpope/vim-rhubarb", "barrettruth/diffs.nvim" },
+		init = function()
+			vim.g.diffs = { fugitive = true }
+		end,
 		config = function()
 			vim.api.nvim_create_autocmd("FileType", {
 				group = vim.api.nvim_create_augroup("Custom_Fugitive", { clear = true }),
