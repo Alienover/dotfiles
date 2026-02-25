@@ -56,10 +56,10 @@ return {
 								detail = not detail
 								if detail then
 									require("oil").set_columns({
-										"icon",
 										"permissions",
 										"size",
 										"mtime",
+										"icon",
 									})
 								else
 									require("oil").set_columns({ "icon" })
@@ -95,12 +95,6 @@ return {
 						override = function(conf)
 							local win_opts = require("custom.utils").get_float_win_opts()
 							return vim.tbl_extend("force", conf, win_opts)
-						end,
-					},
-
-					view_options = {
-						is_hidden_file = function(name)
-							return vim.startswith(name, ".")
 						end,
 					},
 				}
