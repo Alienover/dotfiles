@@ -33,7 +33,7 @@ return {
 					append_args = { "--line-length", "100" },
 				},
 				eslint_fix = function()
-					if vim.fn.exists("LspEslintFixAll") then
+					if not vim.fn.exists(":LspEslintFixAll") == 0 then
 						vim.cmd("LspEslintFixAll")
 					end
 					-- Return `: <colon>` command that does nothing
