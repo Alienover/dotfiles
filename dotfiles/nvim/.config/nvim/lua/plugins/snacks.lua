@@ -50,10 +50,11 @@ return {
 				},
 			},
 			statuscolumn = {
-				right = { "git", "fold" },
+				right = { "mark", "fold" },
+				left = { "git" },
 				folds = {
 					open = true, -- show open fold icons
-					git_hl = true, -- use Git Signs hl for fold icons
+					git_hl = false, -- use Git Signs hl for fold icons
 				},
 			},
 			zen = {
