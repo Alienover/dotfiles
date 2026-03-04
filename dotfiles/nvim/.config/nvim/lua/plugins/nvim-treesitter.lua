@@ -1,95 +1,85 @@
 ---@type LazySpec
 return {
-	{
+	{ -- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
-		lazy = false,
+		lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
+		event = { "VeryLazy" },
 		build = ":TSUpdate",
+		-- TODO: switch to `main` branch when it's ready
+		branch = "master",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter-refactor",
+			"nvim-treesitter/nvim-treesitter-textobjects",
+		},
 		config = function()
-			vim.api.nvim_create_autocmd("FileType", {
-				desc = "Enable treesitter and install the missing parser",
-				pattern = "*",
-
-				callback = function(args)
-					local lang = vim.treesitter.language.get_lang(vim.bo[args.buf].filetype)
-
-					if not lang then
-						return
-					end
-
-					if not vim.treesitter.language.add(lang) then
-						if not vim.list_contains(require("nvim-treesitter").get_available(), lang) then
-							return
-						end
-
-						require("nvim-treesitter").install(lang):wait()
-					end
-
-					vim.treesitter.start(args.buf, lang)
-				end,
+			require("nvim-treesitter.configs").setup({
+				modules = {}, -- Empty to remove the warning
+				ensure_installed = {},
+				auto_install = true,
+				sync_install = false,
+				ignore_install = {},
+				highlight = {
+					enable = true,
+					use_languagetree = true,
+					additional_vim_regex_highlighting = false,
+				},
+				indent = { enable = true, disable = { "ruby" } },
+				incremental_selection = {
+					enable = true,
+					keymaps = {
+						init_selection = "gnn", -- in normal mode, start incremental selection
+						node_incremental = ".", -- in visual mode, increment to the upper named parent
+						node_decremental = ",", -- in visual mode, decrement to the previous named node
+						scope_incremental = "grc", -- in visual mode, increment to the upper scope
+					},
+				},
+				textobjects = {
+					select = {
+						enable = true,
+						lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+						keymaps = {
+							-- You can use the capture groups defined in textobjects.scm
+							["aa"] = "@parameter.outer",
+							["ia"] = "@parameter.inner",
+							["af"] = "@function.outer",
+							["if"] = "@function.inner",
+							["ac"] = "@class.outer",
+							["ic"] = "@class.inner",
+						},
+					},
+					move = {
+						enable = true,
+						set_jumps = true, -- whether to set jumps in the jumplist
+						goto_next_start = {
+							["]f"] = "@function.outer",
+						},
+						goto_next_end = {
+							["]F"] = "@function.outer",
+						},
+						goto_previous_start = {
+							["[f"] = "@function.outer",
+						},
+						goto_previous_end = {
+							["[F"] = "@function.outer",
+						},
+					},
+					swap = {
+						enable = true,
+						swap_next = {
+							["]a"] = "@parameter.inner",
+						},
+						swap_previous = {
+							["[a"] = "@parameter.inner",
+						},
+					},
+				},
+				refactor = {
+					highlight_definitions = { enable = true },
+					highlight_current_scope = { enable = true },
+					smart_rename = { enable = false },
+					navigation = { enable = false },
+				},
 			})
 		end,
-	},
-
-	{
-		"nvim-treesitter/nvim-treesitter-textobjects",
-		branch = "main",
-		event = "User LazyPost",
-		init = function()
-			-- Disable entire built-in ftplugin mappings to avoid conflicts.
-			-- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
-			vim.g.no_plugin_maps = true
-
-			-- Or, disable per filetype (add as you like)
-			-- vim.g.no_python_maps = true
-			-- vim.g.no_ruby_maps = true
-			-- vim.g.no_rust_maps = true
-			-- vim.g.no_go_maps = true
-		end,
-		opts = {},
-		keys = {
-			-- Swap the parameters/arguments
-			{
-				"[a",
-				function()
-					require("nvim-treesitter-textobjects.swap").swap_previous("@parameter.inner")
-				end,
-			},
-			{
-				"]a",
-				function()
-					require("nvim-treesitter-textobjects.swap").swap_next("@parameter.inner")
-				end,
-			},
-
-			-- Select arround/inside the function/class
-			{
-				"af",
-				function()
-					require("nvim-treesitter-textobjects.select").select_textobject("@function.outer", "textobjects")
-				end,
-				mode = { "x", "o" },
-			},
-			{
-				"if",
-				function()
-					require("nvim-treesitter-textobjects.select").select_textobject("@function.inner", "textobjects")
-				end,
-				mode = { "x", "o" },
-			},
-			{
-				"ac",
-				function()
-					require("nvim-treesitter-textobjects.select").select_textobject("@class.outer", "textobjects")
-				end,
-				mode = { "x", "o" },
-			},
-			{
-				"ic",
-				function()
-					require("nvim-treesitter-textobjects.select").select_textobject("@class.inner", "textobjects")
-				end,
-				mode = { "x", "o" },
-			},
-		},
 	},
 }
