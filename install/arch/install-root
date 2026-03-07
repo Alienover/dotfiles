@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+sudoer="$(grep ':1000:1000:' /etc/passwd | cut -d':' -f1)"
+
+[ ! "$UID" -eq 1 ] && echo "You mush run this script as root." && exit 1
+
+pacman --noconfirm -Sy && pacman -S --noconfirm --needed archlinux-keyring
+
+CRYPTKEY="/root/cryptkey"
+[ -f "$CRYPTKEY" ] && (chmod -f 400 "$CRYPTKEY"; chattr +i "$CRYPTKEY")
+
+timedatectl set-ntp true
+systemctl enable --now systemd-timesyncd.service
+
+command -v ufw > /dev/null \
+  && (ufw allow from 192.168.0.0/16 to any app SSH
+      ufw enable
+      systemctl enable --now ufw.service)
+
+systemctl enable --now sshd.service
+systemctl enable --now systemd-boot-update.service
+systemctl enable --now bluetooth.service 2>/dev/null
+
+systemctl enable --now paccache.timer

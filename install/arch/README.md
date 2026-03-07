@@ -7,7 +7,7 @@
 ```
 # Base
 zsh bat git ghq vim neovim lf fzf openssh zip unzip stow gnupg tmux wmenu pacman-contrib
-eza wget lf fd 
+eza wget lf fd
 
 # System
 iwd systemd-resolvconf sbctl mesa vulkan-radeon ufw ddcutil bluez-utils bluetui <yay>
@@ -86,11 +86,9 @@ sudo sbctl verify
 6. Sign the related files
 
 ```shell
-sudo sbctl sign-all
 sudo sbctl sign -s /boot/EFI/BOOT/BOOTX64.EFI
 sudo sbctl sign -s /boot/EFI/systemd/systemd-boox64.efi
 sudo sbctl sign -s /boot/vmlinuz-linux
-sudo sbctl sign -s -o /usr/lib/systemd/boot/efi/systemd-bootx64.efi.signed /usr/lib/systemd/boot/efi/systemd-bootx64.efi
 ```
 
 7. Reboot into UEFI setup and double-check whether the `Secure Boot` is enabled. If not, enable it manually.
