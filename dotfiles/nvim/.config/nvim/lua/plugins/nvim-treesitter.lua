@@ -24,15 +24,7 @@ return {
 					additional_vim_regex_highlighting = false,
 				},
 				indent = { enable = true, disable = { "ruby" } },
-				incremental_selection = {
-					enable = true,
-					keymaps = {
-						init_selection = "gnn", -- in normal mode, start incremental selection
-						node_incremental = ".", -- in visual mode, increment to the upper named parent
-						node_decremental = ",", -- in visual mode, decrement to the previous named node
-						scope_incremental = "grc", -- in visual mode, increment to the upper scope
-					},
-				},
+				incremental_selection = { enable = false },
 				textobjects = {
 					select = {
 						enable = true,
