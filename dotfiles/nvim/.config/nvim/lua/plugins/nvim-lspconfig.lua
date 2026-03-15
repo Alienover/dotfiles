@@ -6,7 +6,6 @@ return {
 		event = "User LazyPost",
 		dependencies = { "williamboman/mason.nvim" },
 		config = function()
-			local utils = require("custom.utils")
 			local icons = require("custom.icons")
 			local consts = require("custom.constants")
 
@@ -52,21 +51,6 @@ return {
 			---@diagnostic disable-next-line: duplicate-set-field
 			vim.lsp.buf.rename = function()
 				vim.fn.feedkeys(":IncRename " .. vim.fn.expand("<cword>"))
-			end
-
-			-- INFO: Re-write lsp-config built-in functions
-			local window = require("lspconfig.ui.windows")
-			local og_percentage_range_window = window.percentage_range_window
-
-			-- INFO: Overwrite the function `percentage_range_window` from `nvim-lspconfig`
-			-- to create float window with customized config
-			---@diagnostic disable-next-line: duplicate-set-field
-			window.percentage_range_window = function(...)
-				local win_info = og_percentage_range_window(...)
-
-				vim.api.nvim_win_set_config(win_info.win_id, utils.get_float_win_opts({ border = true }))
-
-				return win_info
 			end
 
 			vim.api.nvim_create_autocmd("LspAttach", {
