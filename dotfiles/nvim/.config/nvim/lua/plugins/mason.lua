@@ -24,13 +24,39 @@ return {
 			-- Auto install the required packages from Mason
 			vim.api.nvim_create_user_command("MasonAutoInstall", function()
 				local registry = require("mason-registry")
+				local const = require("custom.constants")
 
-				for _, client in ipairs(vim.lsp.get_clients()) do
-					local ok, pkg = pcall(registry.get_package, client.name)
-
-					if ok and pkg and not pkg:is_installed() then
-						pkg:install()
+				for name, opts in pairs(const.ensure_externals) do
+					-- INFO: Check whether LSP config is enabled
+					local config = vim.lsp._enabled_configs[name]
+					if not config or vim.tbl_isempty(config) then
+						goto continue
 					end
+
+					-- INFO: Check whether it's available for current filetype
+					if not vim.list_contains(config.resolved_config.filetypes, vim.bo.filetype) then
+						goto continue
+					end
+
+					-- INFO: Get the mason package and check whether it's installed
+					local ok, pkg = pcall(registry.get_package, opts.mason)
+					if not ok or not pkg or pkg:is_installed() then
+						goto continue
+					end
+
+					-- INFO: Perform the package installation
+					local log_opts = { id = pkg.name }
+					vim.notify("Installing " .. pkg.name .. "...", vim.log.levels.INFO, log_opts)
+
+					pkg:install({}, function(success)
+						if success then
+							vim.notify(pkg.name .. " is installed.", vim.log.levels.INFO, log_opts)
+						else
+							vim.notify("Failed to install " .. pkg.name, vim.log.levels.ERROR, log_opts)
+						end
+					end)
+
+					::continue::
 				end
 			end, {
 				desc = "Auto install the enabled LSP servers",
