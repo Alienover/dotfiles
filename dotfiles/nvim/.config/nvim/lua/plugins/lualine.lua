@@ -10,7 +10,7 @@ return {
 			require("lualine").setup({
 				options = {
 					-- Theme
-					theme = "catppuccin",
+					theme = "catppuccin-nvim",
 
 					-- Icons
 					icons_enabled = true,
