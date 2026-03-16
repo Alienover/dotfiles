@@ -72,8 +72,9 @@ return {
 				},
 			})
 
-			vim.keymap.set("n", "zR", require("ufo").openAllFolds)
-			vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+			vim.keymap.set("n", "zR", ufo.openAllFolds, { desc = "Open all folds" })
+			vim.keymap.set("n", "zM", ufo.closeAllFolds, { desc = "Close all folds" })
+			vim.keymap.set("n", "zK", ufo.peekFoldedLinesUnderCursor, { desc = "Peek lines of follded" })
 		end,
 	},
 }
