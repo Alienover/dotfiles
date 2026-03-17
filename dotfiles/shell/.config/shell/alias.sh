@@ -7,7 +7,7 @@ if command -v nvim >/dev/null 2>&1; then
 fi
 
 if command -v eza >/dev/null 2>&1; then
-  alias ls="eza"
+  alias ls="eza --sort=type"
   alias ll="eza -alh --sort=type"
   alias tree="eza --tree"
 else
@@ -26,6 +26,6 @@ if command -v git >/dev/null 2>&1; then
   alias gs="git status"
 fi
 
-if [ -x "$HOME/.local/bin/tmux-preview" ]; then
-  alias sw="tmux-switchy"
+if [ -x "$HOME/.local/bin/tmux-switchy" ]; then
+  alias sw="$HOME/.local/bin/tmux-switchy"
 fi
