@@ -27,13 +27,13 @@ return {
 				local const = require("custom.constants")
 
 				for name, opts in pairs(const.ensure_externals) do
-					-- INFO: Check whether LSP config is enabled
-					local config = vim.lsp._enabled_configs[name]
-					if not config or vim.tbl_isempty(config) then
+					-- INFO: Ignore non-lsp externals
+					if opts.external_type ~= const.external_type.lsp then
 						goto continue
 					end
 
 					-- INFO: Check whether it's available for current filetype
+					local config = vim.lsp._enabled_configs[name]
 					if not vim.list_contains(config.resolved_config.filetypes, vim.bo.filetype) then
 						goto continue
 					end

@@ -10,8 +10,10 @@ return {
 			local consts = require("custom.constants")
 
 			-- INFO: Enable pre-defined LSP
-			for name in pairs(consts.ensure_externals) do
-				vim.lsp.enable(name)
+			for name, opts in pairs(consts.ensure_externals) do
+				if opts.external_type == consts.external_type.lsp then
+					vim.lsp.enable(name)
+				end
 			end
 
 			-- INFO: Disable the log, set it to "debug" when necessary
