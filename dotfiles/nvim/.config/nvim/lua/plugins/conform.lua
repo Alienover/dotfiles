@@ -12,10 +12,10 @@ return {
 				python = { "ruff_format", "ruff_organize_imports" },
 				json = { "prettier" },
 				jsonc = { "prettier" },
-				javascript = { "prettier", "eslint_fix" },
-				javascriptreact = { "prettier", "eslint_fix" },
-				typescript = { "prettier", "eslint_fix" },
-				typescriptreact = { "prettier", "eslint_fix" },
+				javascript = { "prettier", lsp_format = "last" },
+				javascriptreact = { "prettier", lsp_format = "last" },
+				typescript = { "prettier", lsp_format = "last" },
+				typescriptreact = { "prettier", lsp_format = "last" },
 				toml = { "taplo" },
 				-- Use the "*" filetype to run formatters on all filetypes.
 				["*"] = { "trim_whitespace" },
@@ -32,14 +32,6 @@ return {
 				ruff_format = {
 					append_args = { "--line-length", "100" },
 				},
-				eslint_fix = function()
-					if not vim.fn.exists(":LspEslintFixAll") == 0 then
-						vim.cmd("LspEslintFixAll")
-					end
-					-- Return `: <colon>` command that does nothing
-					-- Refer to https://pubs.opengroup.org/onlinepubs/009695399/utilities/colon.html
-					return { command = ":" }
-				end,
 			},
 		},
 		config = function(_, opts)

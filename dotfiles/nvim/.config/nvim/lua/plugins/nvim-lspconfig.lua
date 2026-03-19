@@ -5,6 +5,9 @@ return {
 		"neovim/nvim-lspconfig",
 		event = "User LazyPost",
 		dependencies = { "williamboman/mason.nvim" },
+		init = function()
+			vim.g.lsp_eslint_auto_format = true
+		end,
 		config = function()
 			local icons = require("custom.icons")
 			local consts = require("custom.constants")
@@ -61,7 +64,8 @@ return {
 					local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
 
 					-- Disable LSP formatting, use `conform.nvim` to manage the auto-formatting
-					client.server_capabilities.documentFormattingProvider = false
+					client.server_capabilities.documentFormattingProvider = vim.g["lsp_" .. client.name .. "_auto_format"]
+						or false
 
 					-- Keymaps for LSP interfaces
 					vim.keymap.set("n", "gd", Snacks.picker.lsp_definitions, { buffer = args.buf })
