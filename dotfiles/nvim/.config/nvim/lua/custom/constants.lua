@@ -99,9 +99,9 @@ M.ensure_externals = {
 		external_type = M.external_type.lsp,
 		mason = "ruff",
 	},
-	pyright = {
+	ty = {
 		external_type = M.external_type.lsp,
-		mason = "pyright",
+		mason = "ty",
 	},
 	tailwindcss = {
 		external_type = M.external_type.lsp,
