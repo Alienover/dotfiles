@@ -8,7 +8,6 @@ return {
 		-- TODO: switch to `main` branch when it's ready
 		branch = "master",
 		dependencies = {
-			"nvim-treesitter/nvim-treesitter-refactor",
 			{ "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
 		},
 		config = function()
@@ -64,12 +63,6 @@ return {
 							["[a"] = "@parameter.inner",
 						},
 					},
-				},
-				refactor = {
-					highlight_definitions = { enable = true },
-					highlight_current_scope = { enable = true },
-					smart_rename = { enable = false },
-					navigation = { enable = false },
 				},
 			})
 		end,
