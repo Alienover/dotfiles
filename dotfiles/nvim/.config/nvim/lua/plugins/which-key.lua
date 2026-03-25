@@ -7,23 +7,17 @@ return {
 		--- @type wk.Opts
 		opts = {
 			---@type false | "classic" | "modern" | "helix"
-			preset = false,
+			preset = "helix",
 
 			---@type wk.Win.opts
-			win = {
-				width = vim.o.columns > 200 and 0.4 or 0.6,
-				col = 0.5,
-				---@type 'none' | 'rounded'
-				border = "none",
-			},
+			win = { border = "rounded" },
 			layout = {
 				width = { min = 20, max = 50 }, -- min and max width of the columns
 				spacing = 5, -- spacing between columns
 			},
-			triggers = {
-				{ "<space>" },
-				{ "<leader>" },
-			},
+			triggers = { { "<space>" }, { "<leader>" } },
+			show_help = false,
+			show_keys = false,
 		},
 		---@param opts wk.Opts
 		config = function(_, opts)
