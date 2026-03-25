@@ -155,7 +155,7 @@ function cleanup() {
   remote_nvim_running=0
 
   printf "\r\033[K🔄 Stopping remote neovim server..."
-  ssh -S "$CONTROL_SOCKET" -T "$ins" "exec bash -lc 'nvim --server 0.0.0.0:${remote_port} --remote-send \"<Esc>:qa!<CR>\" >/dev/null 2>&1'"
+  ssh -S "$CONTROL_SOCKET" -T "$ins" "exec bash -lc 'for p in \$(pgrep -f \"nvim --headless\"); do [ \$(ps -o etimes= -p \$p) -ge 86400 ] && kill -9 \$p; done >/dev/null 2>&1'"
   printf "\r\033[K👋 Remote neovim server stopped\n"
 
   # Close ControlMaster connection
