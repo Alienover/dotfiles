@@ -1,70 +1,61 @@
 ---@type LazySpec
 return {
-	{ -- Highlight, edit, and navigate code
+	{
 		"nvim-treesitter/nvim-treesitter",
-		lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
-		event = { "VeryLazy" },
+		lazy = false,
 		build = ":TSUpdate",
-		-- TODO: switch to `main` branch when it's ready
-		branch = "master",
-		dependencies = {
-			{ "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
-		},
 		config = function()
-			require("nvim-treesitter.configs").setup({
-				modules = {}, -- Empty to remove the warning
-				ensure_installed = {},
-				auto_install = true,
-				sync_install = false,
-				ignore_install = {},
-				highlight = {
-					enable = true,
-					use_languagetree = true,
-					additional_vim_regex_highlighting = false,
-				},
-				indent = { enable = true, disable = { "ruby" } },
-				incremental_selection = { enable = false },
-				textobjects = {
-					select = {
-						enable = true,
-						lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-						keymaps = {
-							-- You can use the capture groups defined in textobjects.scm
-							["aa"] = "@parameter.outer",
-							["ia"] = "@parameter.inner",
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ac"] = "@class.outer",
-							["ic"] = "@class.inner",
-						},
-					},
-					move = {
-						enable = true,
-						set_jumps = true, -- whether to set jumps in the jumplist
-						goto_next_start = {
-							["]f"] = "@function.outer",
-						},
-						goto_next_end = {
-							["]F"] = "@function.outer",
-						},
-						goto_previous_start = {
-							["[f"] = "@function.outer",
-						},
-						goto_previous_end = {
-							["[F"] = "@function.outer",
-						},
-					},
-					swap = {
-						enable = true,
-						swap_next = {
-							["]a"] = "@parameter.inner",
-						},
-						swap_previous = {
-							["[a"] = "@parameter.inner",
-						},
-					},
-				},
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = "*",
+				callback = function(args)
+					local ft = vim.bo.filetype
+					local lang = vim.treesitter.language.get_lang(ft)
+
+					if not lang then
+						return
+					end
+
+					if vim.list_contains(require("nvim-treesitter").get_available(), lang) then
+						require("nvim-treesitter").install(lang):await(function()
+							if vim.treesitter.language.add(lang) then
+								-- Enable Treesitter highlighting
+								vim.treesitter.start(args.buf, lang)
+
+								-- Enable Treesitter-based folding
+								-- vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+								-- vim.wo[0][0].foldmethod = "expr"
+
+								-- Enable Treesitter-based indentation
+								vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+							end
+						end)
+					end
+				end,
 			})
 		end,
+	},
+	{
+		"nvim-treesitter/nvim-treesitter-textobjects",
+		branch = "main",
+		init = function()
+			-- Disable entire built-in ftplugin mappings to avoid conflicts.
+			-- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
+			vim.g.no_plugin_maps = true
+		end,
+		opts = {},
+		keys = {
+			{
+				"[a",
+				function()
+					require("nvim-treesitter-textobjects.swap").swap_previous("@parameter.inner")
+				end,
+			},
+			{
+				"]a",
+				function()
+					require("nvim-treesitter-textobjects.swap").swap_next("@parameter.inner")
+				end,
+			},
+		},
 	},
 }
