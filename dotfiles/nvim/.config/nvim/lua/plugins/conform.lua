@@ -9,7 +9,7 @@ return {
 		opts = {
 			formatters_by_ft = {
 				lua = { "stylua" },
-				python = { "ruff_format", "ruff_organize_imports" },
+				python = { "ruff_fix", "ruff_format" },
 				json = { "prettier" },
 				jsonc = { "prettier" },
 				javascript = { "prettier", lsp_format = "last" },
@@ -29,6 +29,16 @@ return {
 			format_on_save = { timeout_ms = 1000 },
 
 			formatters = {
+				ruff_fix = {
+				  -- stylua: ignore start
+					append_args = {
+						-- Fix unsorted-imports, https://docs.astral.sh/ruff/rules/unsorted-imports/
+						"--select", "I001",
+						-- Fix unused-import, https://docs.astral.sh/ruff/rules/unused-import/
+						"--select", "F401",
+					},
+					-- stylua: ignore end
+				},
 				ruff_format = {
 					append_args = { "--line-length", "100" },
 				},
