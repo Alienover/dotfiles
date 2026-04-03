@@ -1,5 +1,5 @@
-local icons = require("custom.icons")
-local constants = require("custom.constants")
+local icons = require("util.icons")
+local constants = require("util.constants")
 
 local c = constants.colors
 

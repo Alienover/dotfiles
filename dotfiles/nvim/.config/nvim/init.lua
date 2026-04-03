@@ -34,3 +34,6 @@ vim.api.nvim_create_autocmd("User", {
 
 -- Bootstrap lazy.nvim and plugins
 require("config.lazy")
+
+-- Enable the new experimental command-line features.
+require("vim._core.ui2").enable({})

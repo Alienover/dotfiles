@@ -13,10 +13,10 @@ return {
 			bufdelete = { enabled = true },
 			gitbrowse = { enabled = true },
 			input = { enabled = true },
-			notifier = { enabled = true },
+			notifier = { sort = { "added" } },
 			quickfile = { enabled = true },
 			picker = {
-				ui_select = true,
+				ui_select = false, -- Use the select from `custom/select.lua`
 				layout = { preset = "telescope" },
 				formatters = {
 					file = {
@@ -67,11 +67,22 @@ return {
 		config = function(_, opts)
 			-- Reset the picker layouts width & height based on the current window sizing
 			---@return snacks.Config
-			local function override_picker_layouts(defaults)
-				local sizing = require("custom.utils").get_float_win_sizing()
+			local function override_win_sizing(defaults)
+				local sizing = require("util").get_float_win_sizing()
+
 				return vim.tbl_deep_extend("force", defaults or {}, {
-					telescope = {
-						layout = {
+					picker = {
+						layouts = {
+							telescope = {
+								layout = {
+									width = sizing.width,
+									height = sizing.height,
+								},
+							},
+						},
+					},
+					styles = {
+						notification_history = {
 							width = sizing.width,
 							height = sizing.height,
 						},
@@ -79,15 +90,15 @@ return {
 				})
 			end
 
-			opts.picker.layouts = override_picker_layouts(opts.picker.layouts)
-
-			require("snacks").setup(opts)
+			require("snacks").setup(override_win_sizing(opts))
 
 			vim.api.nvim_create_autocmd("VimResized", {
 				desc = "Reset picker layouts when resizing",
 				callback = function()
-					Snacks.config.picker.layouts =
-						vim.tbl_deep_extend("force", Snacks.config.picker.layouts, override_picker_layouts())
+					local overrided_opts = override_win_sizing()
+
+					Snacks.config.picker = vim.tbl_deep_extend("force", Snacks.config.picker, overrided_opts.picker)
+					Snacks.config.styles = vim.tbl_deep_extend("force", Snacks.config.styles, overrided_opts.styles)
 				end,
 			})
 		end,
@@ -114,7 +125,7 @@ return {
 
 			-- Git
 			{ "<space>go", function() Snacks.gitbrowse() end, desc = "[O]pen in browse", mode = { "n", "v" } },
-      { "<space>gC", function() require('custom.utils').change_cwd() end, desc="[C]hage CWD" },
+      { "<space>gC", function() require("utils").change_cwd() end, desc="[C]hage CWD" },
 
 			-- Notifier
 			{ "<space><esc>", function() Snacks.notifier.hide() end, desc = "Clear all notifications" },

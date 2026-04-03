@@ -55,7 +55,7 @@ return {
 				vim.schedule(function()
 					vim.api.nvim_win_set_config(
 						vim.api.nvim_get_current_win(),
-						require("custom.utils").get_float_win_opts({ border = true })
+						require("util").get_float_win_opts({ border = true })
 					)
 				end)
 			end, {})

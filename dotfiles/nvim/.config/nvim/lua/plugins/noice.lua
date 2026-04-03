@@ -12,25 +12,16 @@ return {
 				lsp_doc_border = true,
 				long_message_to_split = true, -- long messages will be sent to a split
 			},
+			cmdline = { enabled = false },
 			lsp = {
 				override = {
 					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
 					["vim.lsp.util.stylize_markdown"] = true,
 				},
-			},
-			routes = {
-				{
-					filter = {
-						event = "notify",
-						find = "No information available",
-					},
-					opts = { skip = true },
+				hover = {
+					silent = false, -- set to true to not show a message if hover is not available
 				},
 			},
-		},
-		dependencies = {
-			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-			{ "MunifTanjim/nui.nvim" },
 		},
 	},
 }

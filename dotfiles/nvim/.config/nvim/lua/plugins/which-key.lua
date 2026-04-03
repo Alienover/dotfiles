@@ -22,7 +22,7 @@ return {
 		---@param opts wk.Opts
 		config = function(_, opts)
 			local wk = require("which-key")
-			local constants = require("custom.constants")
+			local constants = require("util.constants")
 
 			wk.setup(opts)
 

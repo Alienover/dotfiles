@@ -4,8 +4,8 @@ return {
 		"nvim-lualine/lualine.nvim",
 		event = "User LazyPost",
 		config = function()
-			local icons = require("custom.icons")
-			local comps = require("config.statusline")
+			local icons = require("util.icons")
+			local comps = require("util.statusline")
 
 			require("lualine").setup({
 				options = {

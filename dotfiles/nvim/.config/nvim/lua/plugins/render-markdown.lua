@@ -11,6 +11,11 @@ return {
 		--- @type render.md.UserConfig
 		opts = {
 			file_types = { "markdown" },
+			ignore = function()
+				local winnr = vim.api.nvim_get_current_win()
+				local bufnr = vim.api.nvim_win_get_buf(winnr)
+				return vim.bo[bufnr].buftype ~= ""
+			end,
 
 			-- See: https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki/CodeBlocks
 			code = {

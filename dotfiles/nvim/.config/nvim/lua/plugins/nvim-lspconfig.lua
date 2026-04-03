@@ -3,26 +3,30 @@
 return {
 	{
 		"neovim/nvim-lspconfig",
-		event = "User LazyPost",
+		event = "VeryLazy",
 		dependencies = { "williamboman/mason.nvim" },
 		init = function()
 			vim.g.lsp_eslint_auto_format = true
 		end,
 		config = function()
-			local icons = require("custom.icons")
-			local consts = require("custom.constants")
+			local icons = require("util.icons")
+			local consts = require("util.constants")
 
-			-- INFO: Enable pre-defined LSP
-			for name, opts in pairs(consts.ensure_externals) do
-				if opts.external_type == consts.external_type.lsp then
-					vim.lsp.enable(name)
-				end
-			end
-
-			-- INFO: Disable the log, set it to "debug" when necessary
+			-- Disable the log, set it to "debug" when necessary
 			vim.lsp.log.set_level(vim.log.levels.OFF)
 
-			-- INFO: Configure the diagnostic styling
+			-- Extend neovim's client capabilities with the completion ones.
+			vim.lsp.config("*", { capabilities = require("blink.cmp").get_lsp_capabilities(nil, true) })
+
+			-- Enable pre-defined LSP
+			local servers = vim.iter(vim.tbl_keys(consts.ensure_externals))
+				:filter(function(key)
+					return consts.ensure_externals[key].external_type == consts.external_type.lsp
+				end)
+				:totable()
+			vim.lsp.enable(servers)
+
+			-- Configure the diagnostic styling
 			vim.diagnostic.config({
 				float = {
 					severity_sort = true,
@@ -45,7 +49,7 @@ return {
 				-- },
 			})
 
-			-- INFO: Re-write lsp handlers
+			-- Re-write lsp handlers
 			vim.lsp.buf.references = Snacks.picker.lsp_references
 
 			---@diagnostic disable-next-line: duplicate-set-field

@@ -8,8 +8,6 @@ local getenv = function(var, default)
 	return os.getenv(var) or default or ""
 end
 
-M.LOCAL_PLUGINS_FOLDER = vim.fn.stdpath("config") .. "/lua/custom"
-
 M.files = {
 	-- NeoVim initialization file
 	nvim = getenv("XDG_CONFIG_HOME") .. "/nvim/init.lua",

@@ -1,4 +1,4 @@
-local consts = require("custom.constants")
+local consts = require("util.constants")
 
 ---@type LazySpec
 return {

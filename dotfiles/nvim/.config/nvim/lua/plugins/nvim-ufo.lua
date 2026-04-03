@@ -6,7 +6,7 @@ return {
 		dependencies = "kevinhwang91/promise-async",
 		config = function()
 			local ufo = require("ufo")
-			local icons = require("custom.icons")
+			local icons = require("util.icons")
 
 			local handler = function(virtText, lnum, endLnum, width, truncate)
 				local newVirtText = {}

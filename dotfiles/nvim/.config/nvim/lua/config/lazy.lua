@@ -1,6 +1,5 @@
-local utils = require("custom.utils")
-local icons = require("custom.icons")
-local consts = require("custom.constants")
+local util = require("util")
+local icons = require("util.icons")
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -21,7 +20,7 @@ vim.opt.rtp:prepend(lazypath)
 
 local found, lazy = pcall(require, "lazy")
 if found then
-	local sizing = utils.get_float_win_sizing()
+	local sizing = util.get_float_win_sizing()
 
 	lazy.setup({
 		spec = {
@@ -29,11 +28,6 @@ if found then
 		},
 		defaults = {
 			lazy = true,
-		},
-		dev = {
-			path = consts.LOCAL_PLUGINS_FOLDER,
-			patterns = { "@local" },
-			fallback = true,
 		},
 		install = {
 			-- try to load one of these colorschemes when starting an installation during startup
@@ -51,8 +45,8 @@ if found then
 				-- disable some rtp plugins
 				disabled_plugins = {
 					"gzip",
-					"matchit",
-					"matchparen",
+					-- "matchit",
+					-- "matchparen",
 					"netrwPlugin",
 					"tarPlugin",
 					"tohtml",

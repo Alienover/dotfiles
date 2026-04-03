@@ -1,27 +1,6 @@
-local window_sizing = require("custom.constants").window_sizing
+local window_sizing = require("util.constants").window_sizing
 
 local M = {}
-
----@param mode string|table
----@param key string
----@param cmd string|function
----@param opts string|table|nil
-M.map = function(mode, key, cmd, opts)
-	if type(opts) == "string" then
-		opts = { desc = opts }
-	end
-
-	opts = vim.tbl_deep_extend("force", { noremap = true, silent = true, desc = "User Keymap: " .. key }, opts or {})
-
-	vim.keymap.set(mode, key, cmd, opts)
-end
-
---- Populate the mode-preseted map func for `nmap`, `imap`, `tmap`, `vmap`, `smap`, `xmap`
-for _, mode in ipairs({ "n", "i", "t", "v", "s", "x" }) do
-	M[mode .. "map"] = function(...)
-		M.map(mode, ...)
-	end
-end
 
 ---@return {columns: integer, lines: integer}
 M.get_window_sepc = function()

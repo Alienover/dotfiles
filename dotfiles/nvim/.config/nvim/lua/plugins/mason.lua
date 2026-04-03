@@ -5,8 +5,8 @@ return {
 		cmd = { "Mason", "MasonAutoInstall" },
 		build = ":MasonUpdate",
 		config = function()
-			local icons = require("custom.icons")
-			local sizing = require("custom.utils").get_float_win_sizing()
+			local icons = require("util.icons")
+			local sizing = require("util").get_float_win_sizing()
 
 			require("mason").setup({
 				ui = {
@@ -24,7 +24,7 @@ return {
 			-- Auto install the required packages from Mason
 			vim.api.nvim_create_user_command("MasonAutoInstall", function()
 				local registry = require("mason-registry")
-				local const = require("custom.constants")
+				local const = require("util.constants")
 
 				for name, opts in pairs(const.ensure_externals) do
 					-- INFO: Ignore non-lsp externals

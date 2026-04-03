@@ -93,7 +93,7 @@ return {
 					-- Configuration for the floating window in oil.open_float
 					float = {
 						override = function(conf)
-							local win_opts = require("custom.utils").get_float_win_opts()
+							local win_opts = require("util").get_float_win_opts()
 							return vim.tbl_extend("force", conf, win_opts)
 						end,
 					},

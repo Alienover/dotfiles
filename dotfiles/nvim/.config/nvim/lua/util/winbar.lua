@@ -24,28 +24,19 @@ local DEFAULT_OPTS = {
 	---@type boolean
 	-- Toggle the symbol of the cursor word
 	show_symbol = true,
-
-	---@type fun(): boolean
-	-- Function to enable/disable the winbar
-	excluded_fn = function()
-		return false
-	end,
-	---@type table<string>
-	-- Filetype list to disable the winbar
-	excluded_filetypes = {},
 }
 
 local M = {}
-local MM = {}
+local MM = { opts = DEFAULT_OPTS }
 
 function MM:is_excluded()
-	local success, excluded = pcall(self.opts.excluded_fn, nil)
-	if success and excluded then
-		return true
-	end
+	local winnr = vim.api.nvim_get_current_win()
+	local bufnr = vim.api.nvim_win_get_buf(winnr)
 
-	local ft = vim.bo.filetype
-	return ft == "" or vim.tbl_contains(self.opts.excluded_filetypes, ft)
+	return vim.api.nvim_win_get_config(winnr).zindex -- Floating window
+		or vim.bo[bufnr].buftype ~= "" -- Not a normal buffer
+		or vim.api.nvim_buf_get_name(bufnr) == "" -- Has no filename
+		or vim.wo[winnr].diff -- In diff mode
 end
 
 function MM:separator()
@@ -128,39 +119,13 @@ function MM:get_filename()
 	table.insert(self.elements, table.concat(name_items, " "))
 end
 
-local set_winbar = function(value)
-	pcall(vim.api.nvim_set_option_value, "winbar", value, { scope = "local" })
-end
-
-function M.render_winbar()
-	if MM:is_excluded() then
-		return
-	end
-
+function M.render()
 	MM.elements = {}
 
 	MM:get_filepath()
 	MM:get_filename()
 
-	if #MM.elements > 0 then
-		set_winbar((" "):rep(3) .. table.concat(MM.elements, MM:separator()))
-	end
-end
-
-function M.setup(opts)
-	MM.opts = vim.tbl_deep_extend("force", DEFAULT_OPTS, opts)
-
-	local render_winbar = function()
-		coroutine.wrap(M.render_winbar)()
-	end
-
-	vim.api.nvim_create_autocmd({ "VimEnter", "BufEnter", "BufModifiedSet", "WinEnter", "WinLeave" }, {
-		desc = "Winbar handler",
-
-		group = vim.api.nvim_create_augroup("WinbarUI", { clear = true }),
-		pattern = "*",
-		callback = render_winbar,
-	})
+	return (" "):rep(3) .. table.concat(MM.elements, MM:separator())
 end
 
 return M

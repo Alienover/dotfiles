@@ -1,4 +1,4 @@
-local icons = require("custom.icons")
+local icons = require("util.icons")
 
 vim.uv = vim.uv or vim.loop
 
@@ -15,6 +15,9 @@ vim.cmd([[syntax on]])
 
 vim.cmd([[filetype plugin indent on]])
 
+-- Use custom select UI that is the Snacks picker with mods
+vim.ui.select = require("util.select").select
+
 -- Global variables
 for k, v in pairs({
 	-- Ignore the provider warnings
@@ -30,6 +33,9 @@ for k, v in pairs({
 
 	-- Matchup
 	matchup_matchparen_offscreen = { method = "popup" },
+
+	-- Enable Cowboy by default
+	cowboy_enabled = true,
 }) do
 	vim.g[k] = v
 end
@@ -131,25 +137,8 @@ for k, v in pairs({
 
 	-- Default `rounded` style border for the floating window
 	winborder = "rounded",
+
+	cmdheight = 0,
 }) do
 	vim.opt[k] = v
 end
-
--- Custom filetypes
-vim.filetype.add({
-	extension = {
-		json = "jsonc",
-		tmux = "tmux",
-		http = "http",
-		sql = "sql",
-	},
-	filename = {
-		[".gitignore"] = "conf",
-		[".env"] = "dosini",
-		config = "dosini",
-		Brewfile = "ruby",
-	},
-	pattern = {
-		[".env.*"] = "dosini",
-	},
-})

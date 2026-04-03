@@ -1,16 +1,8 @@
-local utils = require("custom.utils")
-local icons = require("custom.icons")
-
-local nmap = utils.nmap
-
----@param name string
-local augroup = function(name)
-	return vim.api.nvim_create_augroup("AUTO_CREATED_GROUP_" .. name:upper(), { clear = true })
-end
+local icons = require("util.icons")
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight on yark",
-	group = augroup("highlight_yank"),
+	group = vim.api.nvim_create_augroup("custom/highlight_yank", { clear = true }),
 
 	callback = function()
 		vim.hl.on_yank({ higroup = "CurSearch" })
@@ -19,22 +11,22 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.api.nvim_create_autocmd("FileType", {
 	desc = "Close the listed window with `q`",
-
-	group = augroup("filetype"),
+	group = vim.api.nvim_create_augroup("custom/close_by_q", { clear = true }),
 	pattern = {
 		"qf",
 		"fzf",
 		"man",
 		"help",
 	},
+
 	callback = function(args)
-		nmap("q", ":close<CR>", { silent = true, buffer = args.buf })
+		vim.keymap.set("n", "q", ":close<CR>", { silent = true, buffer = args.buf })
 	end,
 })
 
 vim.api.nvim_create_autocmd("RecordingEnter", {
 	desc = "Notify when recording starts",
-	group = augroup("recording_start"),
+	group = vim.api.nvim_create_augroup("custom/recording_start", { clear = true }),
 
 	callback = function()
 		local reg = vim.fn.reg_recording()
@@ -54,7 +46,7 @@ vim.api.nvim_create_autocmd("RecordingEnter", {
 
 vim.api.nvim_create_autocmd("RecordingLeave", {
 	desc = "Close notify when recording leaves",
-	group = augroup("recording_end"),
+	group = vim.api.nvim_create_augroup("custom/recording_end", { clear = true }),
 
 	callback = function()
 		vim.notify("Recording stopped", vim.log.levels.INFO, {
@@ -68,11 +60,13 @@ vim.api.nvim_create_autocmd("RecordingLeave", {
 
 vim.api.nvim_create_autocmd("VimResized", {
 	desc = "Auto resize the splits when the terminal window or tmux pane is resized",
+	group = vim.api.nvim_create_augroup("custom/auto_resize", { clear = true }),
 	command = "wincmd =",
 })
 
 vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
 	desc = "Custom lazy event for `BufReadPost` and `BufNewFile` event",
+	group = vim.api.nvim_create_augroup("custom/lazy_post", { clear = true }),
 	pattern = "*",
 	once = true,
 
@@ -83,6 +77,25 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
 			vim.schedule(function()
 				vim.api.nvim_exec_autocmds("User", { pattern = "LazyPost" })
 			end)
+		end
+	end,
+})
+
+vim.api.nvim_create_autocmd("BufWinEnter", {
+	desc = "Winbar handler",
+	group = vim.api.nvim_create_augroup("custom/winbar", { clear = true }),
+
+	callback = function()
+		local winnr = vim.api.nvim_get_current_win()
+		local bufnr = vim.api.nvim_win_get_buf(winnr)
+
+		if
+			not vim.api.nvim_win_get_config(winnr).zindex -- Not a floating window
+			and vim.bo[bufnr].buftype == "" -- Normal buffer
+			and vim.api.nvim_buf_get_name(bufnr) ~= "" -- Has a filename
+			and not vim.wo[winnr].diff -- Not in diff mode
+		then
+			vim.wo.winbar = "%{%v:lua.require'util.winbar'.render()%}"
 		end
 	end,
 })
