@@ -49,16 +49,7 @@ M.get_float_win_opts = function(args)
 		width = math.floor((1 - l_offset * 2) * win_spec.columns),
 		style = "minimal",
 		relative = "editor",
-		border = border and {
-			"╭",
-			"─",
-			"╮",
-			"│",
-			"╯",
-			"─",
-			"╰",
-			"│",
-		},
+		border = border or "rounded",
 	}, args)
 end
 
