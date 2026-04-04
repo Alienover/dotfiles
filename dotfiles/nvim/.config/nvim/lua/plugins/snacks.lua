@@ -66,28 +66,30 @@ return {
 		---@param opts snacks.Config
 		config = function(_, opts)
 			-- Reset the picker layouts width & height based on the current window sizing
+			---@param defaults snacks.Config
 			---@return snacks.Config
 			local function override_win_sizing(defaults)
 				local sizing = require("util").get_float_win_sizing()
 
-				return vim.tbl_deep_extend("force", defaults or {}, {
-					picker = {
-						layouts = {
-							telescope = {
-								layout = {
-									width = sizing.width,
-									height = sizing.height,
-								},
+				defaults.picker = vim.tbl_deep_extend("force", defaults.picker or {}, {
+					layouts = {
+						telescope = {
+							layout = {
+								width = sizing.width,
+								height = sizing.height,
 							},
 						},
 					},
-					styles = {
-						notification_history = {
-							width = sizing.width,
-							height = sizing.height,
-						},
+				})
+
+				defaults.styles = vim.tbl_deep_extend("force", defaults.styles or {}, {
+					notification_history = {
+						width = sizing.width,
+						height = sizing.height,
 					},
 				})
+
+				return defaults
 			end
 
 			require("snacks").setup(override_win_sizing(opts))
@@ -95,10 +97,7 @@ return {
 			vim.api.nvim_create_autocmd("VimResized", {
 				desc = "Reset picker layouts when resizing",
 				callback = function()
-					local overrided_opts = override_win_sizing()
-
-					Snacks.config.picker = vim.tbl_deep_extend("force", Snacks.config.picker, overrided_opts.picker)
-					Snacks.config.styles = vim.tbl_deep_extend("force", Snacks.config.styles, overrided_opts.styles)
+					override_win_sizing(Snacks.config)
 				end,
 			})
 		end,
@@ -119,13 +118,13 @@ return {
 			{ "<space>bD", function() Snacks.bufdelete.all() end, desc = "[D]elete all" },
 
 			-- Files
-      { "<space>ff", function() Snacks.picker.files() end, desc="[F]ind [F]iles" },
-      { "<space>fr", function() Snacks.picker.grep() end, desc="Live [G]rep" },
-      { "<space>fo", function() Snacks.picker.recent() end, desc="Recently [O]pened" },
+			{ "<space>ff", function() Snacks.picker.files() end, desc="[F]ind [F]iles" },
+			{ "<space>fr", function() Snacks.picker.grep() end, desc="Live [G]rep" },
+			{ "<space>fo", function() Snacks.picker.recent() end, desc="Recently [O]pened" },
 
 			-- Git
 			{ "<space>go", function() Snacks.gitbrowse() end, desc = "[O]pen in browse", mode = { "n", "v" } },
-      { "<space>gC", function() require("utils").change_cwd() end, desc="[C]hage CWD" },
+			{ "<space>gC", function() require("util").change_cwd() end, desc="[C]hage CWD" },
 
 			-- Notifier
 			{ "<space><esc>", function() Snacks.notifier.hide() end, desc = "Clear all notifications" },
