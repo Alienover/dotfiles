@@ -269,11 +269,25 @@ if.app-id = 'com.mitchellh.ghostty'
 if.during-aerospace-startup = true
 run = "move-node-to-workspace 💻"
 
-
 [[on-window-detected]]
 if.app-id = 'org.alacritty'
 if.during-aerospace-startup = true
 run = "move-node-to-workspace 💻"
+
+[[on-window-detected]]
+if.app-id = 'com.1password.1password'
+if.during-aerospace-startup = true
+run = 'move-node-to-workspace Q'
+
+[[on-window-detected]]
+if.app-id = 'org.openvpn.client.app'
+if.during-aerospace-startup = true
+run = ['move-node-to-workspace Q', 'layout tiling']
+
+[[on-window-detected]]
+if.app-id = "com.tencent.xinWeChat"
+if.window-title-regex-substring = "Weixin"
+run = "layout tiling"
 
 # Forced Floating Windows
 [[on-window-detected]]
@@ -288,11 +302,6 @@ run = "layout floating"
 if.app-id = "com.tencent.xinWeChat"
 check-further-callbacks = true
 run = "layout floating"
-
-[[on-window-detected]]
-if.app-id = "com.tencent.xinWeChat"
-if.window-title-regex-substring = "Weixin"
-run = "layout tiling"
 
 [[on-window-detected]]
 if.app-name-regex-substring = "mpv"
