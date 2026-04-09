@@ -237,8 +237,8 @@ shift-alt-r = ['move-node-to-workspace R', 'workspace R', 'mode main']
 # assign workspaces to always appear on particular monitors
 [workspace-to-monitor-force-assignment]
 "🦄" = "main"
-"🍣" = ['secondary', 'main']
-"💻" = ['secondary', 'main']
+"🍣" = ['secondary', 'DELL.*\(2\)', 'main']
+"💻" = ['secondary', 'DELL.*\(1\)', 'main']
 
 
 # See: https://nikitabobko.github.io/AeroSpace/guide#on-window-detected-callback
