@@ -17,7 +17,7 @@ pgrep "wob" || riverctl spawn "${HOME}/.local/bin/wobd"
 killall "swaybg" > /dev/null 2>&1; riverctl spawn "swaybg -i ${HOME}/.local/share/wallpaper -m fill"
 
 # input method - fcitx5
-pgrep "fcitx5" || riverctl spawn "fcitx5 -d"
+killall "fcitx5" > /dev/null 2>&1; riverctl spawn "fcitx5 -d"
 
 # Idle management
 pgrep "swayidle" || riverctl spawn "swayidle"
