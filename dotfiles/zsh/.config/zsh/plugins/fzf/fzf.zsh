@@ -1,3 +1,7 @@
+if ! command -v fzf >/dev/null 2>&1; then
+  return 0
+fi
+
 # Options to fzf command
 export FZF_DEFAULT_OPTS="--style=minimal --height=30% --reverse --no-scrollbar \
 --color=bg+:$GUI_BACKGROUND,gutter:$GUI_BACKGROUND,spinner:$GUI_CURSOR_GREY,hl:$GUI_RED \
@@ -39,7 +43,6 @@ _fzf_comprun() {
 
 export FZF_CTRL_T_COMMAND="fd --type f"
 
-# Set up fzf key bindings and fuzzy completion
-if command -v fzf >/dev/null 2>&1; then
-  source <(fzf --zsh)
-fi
+# Postponing loading `fzf` after zsh-vi-mode
+# Refer to https://github.com/jeffreytse/zsh-vi-mode#execute-extra-commands
+zvm_after_init_commands+=('source <(fzf --zsh)')
