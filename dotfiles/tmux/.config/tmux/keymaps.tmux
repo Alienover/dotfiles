@@ -7,17 +7,13 @@ bind C-a send-prefix
 bind-key a send-prefix
 
 # tile all windows
-unbind =
 bind = select-layout tiled
 
 # split window just like vim
-unbind v
 bind v split-window -h -c "#{pane_current_path}"
-unbind s
 bind s split-window -v -c "#{pane_current_path}"
 
 # synchronize all panes in a window
-unbind S
 bind S setw synchronize-panes
 
 bind -r C-h previous-window
@@ -40,14 +36,11 @@ bind Escape if -F '#{pane_in_mode}' 'send-keys q' 'copy-mode'
 bind -T copy-mode-vi 'v' send -X begin-selection
 
 # tmux pupup required
-unbind p
 bind p run "tmux-popup -w 100 -h 25 -s popup -B tmux-switchy"
 
 # tmux floating terminal
-unbind T
 bind T run "tmux-popup -t -d #{pane_current_path} tmux-floatx"
 
-unbind F
 bind F run "tmux-lf"
 
 # reload config file

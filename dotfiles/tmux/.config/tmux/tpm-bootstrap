@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 
-__TM_DEFAULT_PLUGINS_DIR="$HOME/.tmux"
-__TM_TPM_DIR="$__TM_DEFAULT_PLUGINS_DIR/tpm"
+__TM_TPM_DIR="$TMUX_PLUGIN_MANAGER_PATH/tpm"
 
 __TM_AUTO_INSTALL=0
 if [ ! -d "$__TM_TPM_DIR" ]; then
