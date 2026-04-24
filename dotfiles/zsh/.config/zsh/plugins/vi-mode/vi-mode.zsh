@@ -1,21 +1,21 @@
-# Refer to https://github.com/jeffreytse/zsh-vi-mode for more configuration details
+# Vi mode — use zsh's built-in ZLE vi keymap instead of jeffreytse/zsh-vi-mode.
 
-function zvm_config() {
-  # Disable the cursor style feature
-  ZVM_CURSOR_STYLE_ENABLED=false
+typeset -g VI_SELECT_BACKGROUND=${VI_SELECT_BACKGROUND:-$GUI_GREEN}
+typeset -g VI_SELECT_FOREGROUND=${VI_SELECT_FOREGROUND:-$GUI_SELECTION_FOREGROUND}
 
-  # Changing the escape key to `jk`
-  ZVM_VI_ESCAPE_BINDKEY=jk
+bindkey -v
 
-  ZVM_VI_HIGHLIGHT_BACKGROUND=$GUI_GREEN
-  ZVM_VI_HIGHLIGHT_FOREGROUND=$GUI_SELECTION_FOREGROUND
+zle_highlight=("region:bg=$VI_SELECT_BACKGROUND,fg=$VI_SELECT_FOREGROUND")
 
-  # Always starting with insert mode for each command line
-  ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+# allow vv to edit the command line (standard behaviour)
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd 'vv' edit-command-line
 
-  # Do the initialization when the script is sourced (i.e. Initialize instantly)
-  ZVM_INIT_MODE=sourcing
-}
+# allow ctrl-p, ctrl-n for navigate history (standard behaviour)
+bindkey '^P' up-history
+bindkey '^N' down-history
 
-zinit ice wait lucid
-zinit light "jeffreytse/zsh-vi-mode"
+# allow ctrl-a and ctrl-e to move to beginning/end of line
+bindkey '^a' beginning-of-line
+bindkey '^e' end-of-line
