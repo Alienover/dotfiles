@@ -1,4 +1,6 @@
-# Completion
+# completion — Initialise compinit with cached dump, case-insensitive matching,
+# and load zsh-completions + fzf-tab via zinit for richer, fzf-driven menus.
+
 export ZSH_COMPDUMP="$XDG_CACHE_HOME/zsh/.zcompdump"
 
 autoload -Uz compinit

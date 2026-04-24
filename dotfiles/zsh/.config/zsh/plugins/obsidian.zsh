@@ -1,3 +1,6 @@
+# obsidian — Export $OBSIDIAN_VAULT to the platform-specific vault path and
+# provide an `obsidian` alias to cd into it.
+
 case "$SYSTEM_OS" in
   "darwin")
     export OBSIDIAN_VAULT="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian"

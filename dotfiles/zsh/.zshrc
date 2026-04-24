@@ -5,42 +5,28 @@ if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Set the directory we want to store zinit and plugins
+# Bootstrap zinit
 ZINIT_HOME="${XDG_DATA_HOME}/zinit/zinit.git"
-
 if [ ! -d "$ZINIT_HOME" ]; then
   mkdir -p "$(dirname $ZINIT_HOME)"
   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
-
-# Source/Load zinit
 . "${ZINIT_HOME}/zinit.zsh"
-. "${XDG_CONFIG_HOME}/zsh/zsh-functions.zsh"
 
-# Add Powrlevel10k
+# Powerlevel10k
 zinit ice atload=". $HOME/.p10k.zsh" depth=1
 zinit load romkatv/powerlevel10k
 
-SHELL_CONFIG="$HOME/.config/shell"
-# Load alias
-[ -f "$SHELL_CONFIG/alias.sh" ] && . "$SHELL_CONFIG/alias.sh"
-# Load Customized color scheme
-[ -f "$SHELL_CONFIG/colors.sh" ] && . "$SHELL_CONFIG/colors.sh"
+# Shared shell config (aliases + GUI_* color palette)
+[ -f "$HOME/.config/shell/alias.sh" ]  && . "$HOME/.config/shell/alias.sh"
+[ -f "$HOME/.config/shell/colors.sh" ] && . "$HOME/.config/shell/colors.sh"
 
-zsh_plugins=(
-  # External
-  zsh-users/zsh-syntax-highlighting
+# Local plugins — sourced directly, in dependency order
+ZSH_DIR="${XDG_CONFIG_HOME}/zsh"
+for plugin in history completion fzf mise obsidian vi-mode edo-work; do
+  source "$ZSH_DIR/plugins/$plugin.zsh"
+done
 
-  # Personal - check $ZDOTDIR/plugins for more detail
-  "history"
-  completion
-  fzf
-  mise
-  obsidian
-  vi-mode
-
-  # Work
-  edo-work
-)
-
-zsh_init 2>> /tmp/zsh-error.$(date +%F).log
+# External plugins (deferred)
+zinit ice wait lucid depth=1
+zinit light zsh-users/zsh-syntax-highlighting

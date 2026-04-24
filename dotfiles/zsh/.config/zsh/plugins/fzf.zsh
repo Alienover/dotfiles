@@ -1,6 +1,5 @@
-if ! command -v fzf >/dev/null 2>&1; then
-  return 0
-fi
+# fzf — Theme fzf with the shared GUI_* palette, use fd for path candidates,
+# define per-command previews (cd/export/ssh/...), and load fzf's zsh keybindings.
 
 # Options to fzf command
 export FZF_DEFAULT_OPTS="--style=minimal --height=30% --reverse --no-scrollbar \
@@ -43,6 +42,6 @@ _fzf_comprun() {
 
 export FZF_CTRL_T_COMMAND="fd --type f"
 
-# Postponing loading `fzf` after zsh-vi-mode
-# Refer to https://github.com/jeffreytse/zsh-vi-mode#execute-extra-commands
-zvm_after_init_commands+=('source <(fzf --zsh)')
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi

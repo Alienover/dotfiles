@@ -1,4 +1,4 @@
-# Vi mode — use zsh's built-in ZLE vi keymap instead of jeffreytse/zsh-vi-mode.
+# vi mode — Use zsh's built-in ZLE vi keymap instead of jeffreytse/zsh-vi-mode.
 
 typeset -g VI_SELECT_BACKGROUND=${VI_SELECT_BACKGROUND:-$GUI_GREEN}
 typeset -g VI_SELECT_FOREGROUND=${VI_SELECT_FOREGROUND:-$GUI_SELECTION_FOREGROUND}
