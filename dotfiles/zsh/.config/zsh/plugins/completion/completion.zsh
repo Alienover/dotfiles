@@ -22,8 +22,8 @@ _comp_options+=(globdots)
 
 compinit -d $ZSH_COMPDUMP
 
-zinit ice wait '!0'
+zinit ice blockf wait lucid depth=1
 zinit light "zsh-users/zsh-completions"
 
-zinit ice wait '!0'
+zinit ice wait lucid depth=1
 zinit light "Aloxaf/fzf-tab"

@@ -17,5 +17,5 @@ function zvm_config() {
   ZVM_INIT_MODE=sourcing
 }
 
-zinit ice wait'!0'
+zinit ice wait lucid
 zinit light "jeffreytse/zsh-vi-mode"

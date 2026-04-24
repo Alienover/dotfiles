@@ -44,7 +44,10 @@ function zsh_lazy_load() {
 }
 
 function zsh_init() {
-  for plugin in $zsh_plugins;
-  do zsh_add_custom_plugin "$plugin" || zinit light "$plugin"
+  for plugin in $zsh_plugins; do
+    if ! zsh_add_custom_plugin "$plugin"; then
+      zinit ice wait lucid depth=1
+      zinit light "$plugin"
+    fi
   done
 }

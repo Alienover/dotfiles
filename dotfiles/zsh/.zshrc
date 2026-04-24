@@ -18,15 +18,14 @@ fi
 . "${XDG_CONFIG_HOME}/zsh/zsh-functions.zsh"
 
 # Add Powrlevel10k
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+zinit ice atload=". $HOME/.p10k.zsh" depth=1
+zinit load romkatv/powerlevel10k
 
 SHELL_CONFIG="$HOME/.config/shell"
 # Load alias
 [ -f "$SHELL_CONFIG/alias.sh" ] && . "$SHELL_CONFIG/alias.sh"
 # Load Customized color scheme
 [ -f "$SHELL_CONFIG/colors.sh" ] && . "$SHELL_CONFIG/colors.sh"
-
-[ -f "$HOME/.p10k.zsh" ] && . "$HOME/.p10k.zsh"
 
 zsh_plugins=(
   # External
