@@ -22,3 +22,9 @@ systemctl enable --now systemd-boot-update.service
 systemctl enable --now bluetooth.service 2>/dev/null
 
 systemctl enable --now paccache.timer
+
+# Setup network
+if command -v iwctl >/dev/null 2>&1; then
+  systemctl enable --now iwd.service
+  systemctl enable --now systemd-resolved.service
+fi

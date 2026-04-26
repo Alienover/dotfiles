@@ -1,0 +1,184 @@
+#! /usr/bin/env bash
+
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") [OPTIONS]
+
+Without --install, the script runs in dry-run mode and only prints the
+package lists that would be installed.
+
+Options:
+  --install     Actually install packages (pacman / yay / make)
+  --base        Base CLI tools (git, stow, vim, neovim, tmux, ...)
+  --river       River compositor and Wayland session tools
+  --fonts       Noto and JetBrains Mono fonts
+  --graphic     Graphics drivers (mesa, vulkan-radeon)
+  --audio       PipeWire audio stack
+  --network     Network stack (iwd, systemd-resolvconf)
+  --bluetooth   Bluetooth utilities (bluez-utils, bluetui)
+  --monitor     System monitoring tools (btop)
+  --ime         Fcitx5 input method and Chinese addons
+  --mise        Mise version manager
+  --all         Everything above plus misc packages
+  -h, --help    Show this help message and exit
+EOF
+}
+
+install_yay() {
+  mkdir -p "$XDG_CACHE_HOME/yay"
+  sudo pacman -S --needed git base-devel
+  git clone https://aur.archlinux.org/yay.git "$XDG_CACHE_HOME/yay"
+  makepkg -si --dir "$XDG_CACHE_HOME/yay"
+}
+
+install_make() {
+  for package in $@; do
+    src_url="$package"
+    src_dir="$XDG_CACHE_HOME/$(basename $src_url)"
+
+    if [ -d "$src_dir" ]; then
+      git -C "$src_dir" pull --recurse-submodules
+    else
+      git clone --recurse-submodules --depth 1 "$src_url" "$src_dir"
+    fi
+
+    cd "$src_dir"
+    sudo make install
+    cd -
+  done
+}
+
+add_base() {
+  pkg="$pkg base base-devel git stow gnupg openssh pacman-contrib zip unzip wget"
+  pkg="$pkg make man-db man-pages sbctl ufw mise"
+  pkg="$pkg lf fd ripgrep bat eza vim neovim tmux"
+}
+
+add_dam() {
+  pkg="$pkg wayland wayland-protocols fcft pixman pkg-config"
+
+  make_pkg="$make_pkg https://codeberg.org/sewn/dam.git"
+}
+
+add_river_classic() {
+  add_dam
+
+  pkg="$pkg foot river-classic wmenu wob wl-clipboard cliphist swaylock swaybg swayidle"
+}
+
+add_fonts() {
+  pkg="$pkg noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra"
+  pkg="$pkg ttf-jetbrains-mono ttf-jetbrains-mono-nerd"
+}
+
+
+add_graphic() {
+  pkg="$pkg mesa vulkan-radeon"
+}
+add_audio() {
+  pkg="$pkg pipewire pipewire-alsa pipewire-pulse wireplumber"
+}
+
+add_network() {
+  pkg="$pkg iwd systemd-resolvconf"
+}
+
+add_bluetooth() {
+  pkg="$pkg bluez-utils bluetui"
+}
+
+add_monitor() {
+  pkg="$pkg btop"
+}
+
+add_ime() {
+  pkg="$pkg fcitx5 fcitx5-qt fcitx5-gtk fcitx5-chinese-addons"
+}
+
+add_misc() {
+  pkg="$pkg qutebrowser"
+}
+
+if [ $# -eq 0 ]; then
+  usage
+  exit 0
+fi
+
+while [ -n "$1" ]; do
+  case "$1" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --install)
+      prefer_pacman="sudo pacman -S --needed"
+      prefer_make="install_make"
+      prefer_aur="yay -S --needed"
+      ;;
+    --base)
+      add_base
+      ;;
+    --river)
+      add_river_classic
+      ;;
+    --fonts)
+      add_fonts
+      ;;
+    --graphic)
+      add_graphic
+      ;;
+    --audio)
+      add_audio
+      ;;
+    --network)
+      add_network
+      ;;
+    --bluetooth)
+      add_bluetooth
+      ;;
+    --monitor)
+      add_monitor
+      ;;
+    --ime)
+      add_ime
+      ;;
+    --mise)
+      add_mise
+      ;;
+    --all)
+      add_base
+      add_river_classic
+      add_fonts
+      add_graphic
+      add_audio
+      add_network
+      add_bluetooth
+      add_monitor
+      add_ime
+      add_misc
+      ;;
+  esac
+  shift
+done
+
+if [ -n "$pkg" ]; then
+  echo "Pacman: "
+  ${prefer_pacman:-echo} $pkg
+  echo
+fi
+
+if [ -n "$aur" ]; then
+  echo "AUR: "
+  ! command -v yay 2>/dev/null && install_yay
+  ${prefer_aur:-echo} $aur
+  echo
+fi
+
+if [ -n "$make_pkg" ]; then
+  echo "Source(make): "
+  ! command -v make 2>/dev/null && sudo pacman -S make
+  ${prefer_make:-echo} $make_pkg
+  echo
+fi

@@ -1,0 +1,24 @@
+#! /usr/bin/env bash
+
+[ "$UID" -eq 1 ] && echo "You can't run this script as root." && exit 1
+
+mkdir -p ${HOME}/.{cache,config,local/state,local/share}
+
+systemctl enable --now --user ssh-agent.service
+
+# Setup zsh
+chsh -s $(command -v zsh)
+zsh -l -c exit
+
+if command -v fcitx5 >/dev/null 2>&1; then
+  flavour="mocha"
+  accent="red"
+  src_dir="${HOME}/.cache/catppuccin-fcitx5"
+
+  target_dir="${HOME}/.local/share/fcitx5/themes"
+  mkdir -p "${target_dir}"
+
+  git clone --depth 1 https://github.com/catppuccin/fcitx5.git "$src_dir"
+  cp -r "${src_dir}/src/catppuccin-${flavour}-${accent}" "${target_dir}"
+fi
+
