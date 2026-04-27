@@ -108,7 +108,7 @@ swapon /dev/vg0/swap
 ```
 
 
-# Installation OS and linux kernel
+# OS and linux kernel installation
 ```bash
 # config pacman
 # config pacman
@@ -125,7 +125,7 @@ pacman -Sy && pacman -S archlinux-keyring
 # to verify the signatures of packages.
 
 # install packages
-pacstrap -K /mnt base base-devel linux linux-headers linux-firmware intel-ucode lvm2 vim neovim networkmanager man-db man-pages bash-completion
+pacstrap -K /mnt base base-devel linux linux-headers linux-firmware intel-ucode lvm2 vim neovim iwd man-db man-pages bash-completion
 
 # explaining packages
 #    base               minimal package set to define a basic arch linux
