@@ -330,7 +330,7 @@ pipewire pipewire-alsa pipewire-pulse wireplumber
 pass pass-otp
 
 # IME
-fcitx5 fcitx5-qt fcitx5-gtk fcitx5-chinese-addons
+fcitx5 fcitx5-qt fcitx5-gtk fcitx5-chinese-addons fcitx5-configtool
 ```
 
 
@@ -502,7 +502,7 @@ install `fcitx5-configtool` for the GUI configure
 ```bash
 git clone https://github.com/catppuccin/fcitx5.git
 mkdir -p ~/.local/share/fcitx5/themes/
-cp -r ./fcitx5/src/catppuccin-{flavour}-{accent}
+cp -r ./fcitx5/src/catppuccin-{flavour}-{accent} ~/.local/share/fcitx5/themes
 ```
 
 Update the `theme` variable in fcitx5 config
