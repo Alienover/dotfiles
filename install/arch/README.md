@@ -314,7 +314,7 @@ iwd systemd-resolvconf sbctl mesa vulkan-radeon ufw ddcutil bluez-utils bluetui 
 btop nvtop
 
 # Wayland
-foot river-classic <dam> wob wl-clipboard cliphist swaylock swaybg
+foot river-classic <dam> wob wl-clipboard cliphist swaylock swaybg wlr-randr kanshi
 
 # Web browser
 qutebrowser firefox

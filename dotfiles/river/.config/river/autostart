@@ -21,3 +21,6 @@ killall "fcitx5" > /dev/null 2>&1; riverctl spawn "fcitx5 -d"
 
 # Idle management
 pgrep "swayidle" || riverctl spawn "swayidle"
+
+# Dynamic display configuration
+killall "kanshi" > /dev/null 2>&1; riverctl  spawn "kanshi"

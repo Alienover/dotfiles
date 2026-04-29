@@ -66,6 +66,7 @@ add_river_classic() {
   add_dam
 
   pkg="$pkg foot river-classic wmenu wob wl-clipboard cliphist swaylock swaybg swayidle"
+  pkg="$pkg wlr-randr kanshi"
 }
 
 add_fonts() {
