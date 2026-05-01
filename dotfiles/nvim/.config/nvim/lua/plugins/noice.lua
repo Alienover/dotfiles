@@ -2,6 +2,7 @@
 return {
 	{ -- UI for messages, cmdline and the popupmenu
 		"folke/noice.nvim",
+		enabled = false,
 		event = "VeryLazy",
 		---@module 'noice'
 		---@type NoiceConfig

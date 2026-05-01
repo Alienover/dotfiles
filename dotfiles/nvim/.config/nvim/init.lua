@@ -20,6 +20,9 @@ vim.api.nvim_create_autocmd("User", {
 	pattern = "VeryLazy",
 
 	callback = function()
+		-- Enable the new experimental command-line features
+		require("vim._core.ui2").enable({})
+
 		if lazy.autocmds then
 			require("config.autocmds")
 		end

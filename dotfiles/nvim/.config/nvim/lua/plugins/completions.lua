@@ -32,6 +32,7 @@ return {
 				["<C-d>"] = { "scroll_documentation_down", "fallback" },
 				["<C-u>"] = { "scroll_documentation_up", "fallback" },
 			},
+			signature = { enabled = true },
 
 			completion = {
 				list = {
@@ -45,22 +46,7 @@ return {
 				accept = { auto_brackets = { enabled = false } },
 
 				ghost_text = { enabled = true, show_without_menu = true },
-				menu = {
-					border = "none",
-					cmdline_position = function()
-						if vim.g.ui_cmdline_pos ~= nil then
-							-- NOTE: fix the menu position with noice cmdline conceal
-							local offset = 0
-							local noice_cmd = vim.F.npcall(require, "noice.ui.cmdline")
-							offset = noice_cmd and (noice_cmd.active.offset - 1) or 0
-
-							local pos = vim.g.ui_cmdline_pos -- (1, 0)-indexed
-							return { pos[1] - 1, pos[2] - offset }
-						end
-						local height = (vim.o.cmdheight == 0) and 1 or vim.o.cmdheight
-						return { vim.o.lines - height, 0 }
-					end,
-				},
+				menu = { border = "none" },
 			},
 
 			cmdline = {
@@ -76,7 +62,7 @@ return {
 
 				completion = {
 					menu = {
-						auto_show = false,
+						auto_show = true,
 						draw = {
 							columns = { { "label", "label_description", gap = 1 } },
 						},
