@@ -6,10 +6,11 @@ return {
 		build = ":TSUpdate",
 		config = function()
 			vim.api.nvim_create_autocmd("FileType", {
+				group = vim.api.nvim_create_augroup("custom/treesitter", { clear = true }),
 				pattern = "*",
+
 				callback = function(args)
-					local ft = vim.bo.filetype
-					local lang = vim.treesitter.language.get_lang(ft)
+					local lang = vim.treesitter.language.get_lang(args.match)
 
 					if not lang then
 						return
@@ -19,7 +20,7 @@ return {
 						require("nvim-treesitter").install(lang):await(function()
 							if vim.treesitter.language.add(lang) then
 								-- Enable Treesitter highlighting
-								vim.treesitter.start(args.buf, lang)
+								vim.treesitter.start()
 
 								-- Enable Treesitter-based folding
 								-- vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
