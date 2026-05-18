@@ -30,9 +30,7 @@ vim.keymap.set("n", "x", '"_x')
 vim.keymap.set("n", "<C-p>", Snacks.picker.smart)
 
 -- File browser
-vim.keymap.set("n", "<C-f>", function()
-	require("oil").toggle_float()
-end, { desc = "Toggle [F]ile browser" })
+vim.keymap.set("n", "<C-f>", "<CMD>Oil --float<CR>", { desc = "Toggle [F]ile browser" })
 
 -- Smart toggling the spell checking
 vim.keymap.set("n", "<leader>s", function()
