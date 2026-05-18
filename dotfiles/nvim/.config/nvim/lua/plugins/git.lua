@@ -67,7 +67,7 @@ return {
 		end,
 		config = function()
 			vim.api.nvim_create_autocmd("FileType", {
-				group = vim.api.nvim_create_augroup("Custom_Fugitive", { clear = true }),
+				group = vim.api.nvim_create_augroup("custom/fugitive", { clear = true }),
 				pattern = "fugitive",
 				callback = function(args)
 					vim.keymap.set("n", "o", "=", { buffer = args.buf, remap = true })
