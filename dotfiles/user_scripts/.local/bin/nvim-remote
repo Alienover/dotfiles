@@ -125,11 +125,6 @@ function find_remote_port() {
   # Copy script to remote using SCP (reuses ControlMaster connection)
   scp -o ControlPath="$CONTROL_SOCKET" "$PORT_FINDER_SCRIPT" "$ins:$PORT_FINDER_SCRIPT" >/dev/null 2>&1
 
-  if [ $? -ne 0 ]; then
-    printf "\nAbort! Failed to copy port finder script to remote\n"
-    exit 1
-  fi
-
   # Execute script on remote, get port, and cleanup script
   remote_port=$(ssh -S "$CONTROL_SOCKET" -T "$ins" "bash -l $PORT_FINDER_SCRIPT && rm -f $PORT_FINDER_SCRIPT")
 
