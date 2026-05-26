@@ -18,6 +18,8 @@ return {
 			"MeanderingProgrammer/render-markdown.nvim",
 		},
 		opts = {
+			legacy_commands = false,
+
 			workspaces = {
 				{
 					name = "notes",
