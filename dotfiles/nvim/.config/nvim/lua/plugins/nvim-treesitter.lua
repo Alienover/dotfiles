@@ -20,7 +20,7 @@ return {
 						require("nvim-treesitter").install(lang):await(function()
 							if vim.treesitter.language.add(lang) then
 								-- Enable Treesitter highlighting
-								vim.treesitter.start()
+								vim.treesitter.start(args.buf, lang)
 
 								-- Enable Treesitter-based folding
 								-- vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
