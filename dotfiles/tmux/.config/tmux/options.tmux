@@ -42,10 +42,13 @@ setw -g mode-keys vi
 # Increase tmux messages display duration from 750ms to 4s
 set -g display-time 4000
 
-## Prevent annoying renames
+# Prevent annoying renames
 set-option -g allow-rename off
 
+# Enable the `OSC 52` to share os clipboard
+set -s set-clipboard on
 set -g allow-passthrough on
+
 set -ga update-environment TERM
 set -ga update-environment TERM_PROGRAM
 

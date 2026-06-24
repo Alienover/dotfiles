@@ -36,6 +36,8 @@ for k, v in pairs({
 
 	-- Enable Cowboy by default
 	cowboy_enabled = true,
+
+	clipboard = "osc52",
 }) do
 	vim.g[k] = v
 end
