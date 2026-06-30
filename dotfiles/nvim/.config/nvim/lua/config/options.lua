@@ -103,9 +103,6 @@ for k, v in pairs({
 	-- Cursor line
 	cursorline = true,
 
-	-- Disable the native suggestion list, use `Snacks.picker.spelling` instead
-	spellsuggest = { 0 },
-
 	-- Undo
 	undofile = true,
 	undolevels = 1000,
