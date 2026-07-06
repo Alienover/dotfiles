@@ -1,5 +1,3 @@
-local icons = require("util.icons")
-
 vim.uv = vim.uv or vim.loop
 
 -- Enables the experimental Lua module loader
@@ -11,133 +9,73 @@ end
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.deprecate = function() end
 
-vim.cmd([[syntax on]])
-
-vim.cmd([[filetype plugin indent on]])
-
 -- Use custom select UI that is the Snacks picker with mods
 vim.ui.select = require("util.select").select
 
 -- Global variables
-for k, v in pairs({
-	-- Ignore the provider warnings
-	loaded_perl_provider = 0,
-	loaded_ruby_provider = 0,
-	loaded_python3_provider = 0,
-	loaded_node_provider = 0,
+-- Ignore the provider warnings
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_node_provider = 0
 
-	editorconfig = true,
+vim.g.editorconfig = true
 
-	-- Leader key mapping
-	mapleader = ";",
+-- Leader key mapping
+vim.g.mapleader = ";"
 
-	-- Matchup
-	matchup_matchparen_offscreen = { method = "popup" },
+-- Matchup
+vim.g.matchup_matchparen_offscreen = { method = "popup" }
 
-	-- Enable Cowboy by default
-	cowboy_enabled = true,
+-- Enable Cowboy by default
+vim.g.cowboy_enabled = true
 
-	clipboard = "osc52",
-}) do
-	vim.g[k] = v
-end
+vim.g.clipboard = "osc52"
 
 -- Vim based Options
-for k, v in pairs({
-	-- Base
-	-- Number of command-lines that are remembered
-	history = 1000,
 
-	-- Show (partial) command in status line
-	showcmd = false,
+-- UI
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.cursorline = true
+vim.opt.showcmd = false -- Show (partial) command in status line
+vim.opt.showmode = false -- Hide current mode on status line
+vim.opt.showmatch = true -- Briefly jump to matching bracket when inserting one
+vim.opt.scrolloff = 10 -- Minimal number of screen lines to keep above/below the cursor
+vim.opt.pumheight = 15 -- Count for the items in the menu popup
+vim.opt.cmdheight = 0
+vim.opt.winborder = "rounded" -- Default border style for floating windows
+vim.opt.visualbell = true -- Use visual bell instead of beeping
+vim.opt.list = true
+vim.opt.listchars = { tab = "> ", lead = "·", trail = "·" }
+vim.opt.fillchars = { diff = "╱" }
 
-	-- Briefly jump to matching bracket if insert one
-	showmatch = true,
+-- Search
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.wildignorecase = true -- Ignore case when completing file names and directories
 
-	-- Hide show current mode on status line
-	showmode = false,
+-- Indentation
+vim.opt.expandtab = true
+vim.opt.shiftwidth = 2
+vim.opt.tabstop = 2
+vim.opt.shiftround = true -- Round indent to multiple of `shiftwidth`
+vim.opt.copyindent = true -- Copy the existing line's indent when autoindenting a new line
 
-	-- Use a swapfile for the buffer
-	swapfile = false,
+-- Splits
+vim.opt.splitbelow = true
+vim.opt.splitright = true
 
-	-- Copy the structure of the existing lines indent when autoindenting a new line
-	copyindent = true,
+-- Folding
+vim.opt.foldenable = true
+vim.opt.foldcolumn = "1" -- '0' is not bad
+vim.opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.opt.foldlevelstart = 99
 
-	-- Split a window will put the new window below the current one
-	splitbelow = true,
-	-- split a window will put the new window right of the current one
-	splitright = true,
+-- Files & persistence
+vim.opt.swapfile = false
+vim.opt.undofile = true
 
-	-- Use visual bell instead of beeping
-	visualbell = true,
-
-	-- Search case matching
-	smartcase = true,
-	ignorecase = true,
-
-	-- Confirm before quite
-	confirm = true,
-
-	-- Number
-	number = true,
-	relativenumber = true,
-
-	-- be iMproved, required
-	compatible = false,
-
-	-- Decrease update time
-	updatetime = 200,
-
-	-- Minimal number of screen lines to keep above and below the cursor
-	scrolloff = 10,
-
-	-- Folding
-	foldenable = true,
-	foldcolumn = "1", -- '0' is not bad
-	foldlevel = 99, -- Using ufo provider need a large value, feel free to decrease the value
-	foldlevelstart = 99,
-
-	--  Count for the items in the menu popup
-	pumheight = 15,
-
-	-- Cursor line
-	cursorline = true,
-
-	-- Undo
-	undofile = true,
-	undolevels = 1000,
-
-	-- Use the clipboard register "*" for all yank, delete, change and put operations
-	clipboard = { "unnamedplus" },
-
-	-- Influences the working of <BS>, <Del>, CTRL-W and CTRL-U in Insert mode
-	backspace = { "indent", "eol", "start" },
-
-	-- Ignore case when completing file names and directories
-	wildignorecase = true,
-
-	-- Diff Mode
-	fillchars = { diff = "╱", foldclose = icons.get("extended", "arrowRight") },
-
-	-- List Mode
-	list = true,
-	listchars = { tab = "> ", lead = "·", trail = "·" },
-
-	-- Spaces of indent
-	shiftwidth = 2,
-	tabstop = 2,
-	expandtab = true,
-
-	-- Round indent to multiple of `shiftwidth`
-	shiftround = true,
-
-	-- Show command preview
-	inccommand = "split",
-
-	-- Default `rounded` style border for the floating window
-	winborder = "rounded",
-
-	cmdheight = 0,
-}) do
-	vim.opt[k] = v
-end
+-- Behavior
+vim.opt.inccommand = "split" -- Show command preview
+vim.opt.clipboard:append("unnamedplus") -- Use system clipboard for all operations
