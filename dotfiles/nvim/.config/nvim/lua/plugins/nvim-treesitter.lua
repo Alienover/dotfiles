@@ -10,25 +10,31 @@ return {
 				pattern = "*",
 
 				callback = function(args)
-					local lang = vim.treesitter.language.get_lang(args.match)
+					local buf = args.buf
+					local ft = vim.bo[buf].filetype
 
+					local lang = vim.treesitter.language.get_lang(ft)
 					if not lang then
 						return
 					end
 
 					if vim.list_contains(require("nvim-treesitter").get_available(), lang) then
 						require("nvim-treesitter").install(lang):await(function()
-							if vim.treesitter.language.add(lang) then
-								-- Enable Treesitter highlighting
-								vim.treesitter.start(args.buf, lang)
-
-								-- Enable Treesitter-based folding
-								-- vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
-								-- vim.wo[0][0].foldmethod = "expr"
-
-								-- Enable Treesitter-based indentation
-								vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+							-- Load Treesitter parser
+							local added = pcall(vim.treesitter.language.add, lang)
+							if not added then
+								return
 							end
+
+							-- Enable Treesitter highlighting
+							vim.treesitter.start(buf, lang)
+
+							-- Enable Treesitter-based folding
+							vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+							vim.wo[0][0].foldmethod = "expr"
+
+							-- Enable Treesitter-based indentation
+							vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 						end)
 					end
 				end,
