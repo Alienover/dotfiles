@@ -5,7 +5,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	group = vim.api.nvim_create_augroup("custom/highlight_yank", { clear = true }),
 
 	callback = function()
-		vim.hl.on_yank({ higroup = "CurSearch" })
+		vim.hl.hl_op()
 	end,
 })
 
