@@ -53,15 +53,13 @@ end, { desc = "Toggle [S]pell" })
 
 -- * gd - Go to definition
 -- * gf - Go to file
-for _, key in ipairs({ "gd", "gf" }) do
-	for prefix, split in pairs({ s = "split", v = "vsplit" }) do
-		vim.keymap.set("n", prefix .. key, function()
-			vim.cmd(split)
+-- Horizontal split wrappers (s)
+vim.keymap.set("n", "sgd", ":split | normal gd<CR>", { silent = true })
+vim.keymap.set("n", "sgf", ":split | normal gf<CR>", { silent = true })
 
-			vim.api.nvim_feedkeys(key, "x", false)
-		end, { desc = ("%s and then %s"):format(split, key) })
-	end
-end
+-- Vertical split wrappers (v)
+vim.keymap.set("n", "vgd", ":vsplit | normal gd<CR>", { silent = true })
+vim.keymap.set("n", "vgf", ":vsplit | normal gf<CR>", { silent = true })
 
 -- Better HJKL including
 -- * Cowboy discipline

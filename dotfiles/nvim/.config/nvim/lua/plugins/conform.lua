@@ -39,9 +39,6 @@ return {
 					},
 					-- stylua: ignore end
 				},
-				ruff_format = {
-					append_args = { "--line-length", "100" },
-				},
 			},
 		},
 		config = function(_, opts)
