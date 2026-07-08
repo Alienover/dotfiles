@@ -9,21 +9,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-	desc = "Close the listed window with `q`",
-	group = vim.api.nvim_create_augroup("custom/close_by_q", { clear = true }),
-	pattern = {
-		"qf",
-		"fzf",
-		"man",
-		"help",
-	},
-
-	callback = function(args)
-		vim.keymap.set("n", "q", ":close<CR>", { silent = true, buffer = args.buf })
-	end,
-})
-
 vim.api.nvim_create_autocmd("RecordingEnter", {
 	desc = "Notify when recording starts",
 	group = vim.api.nvim_create_augroup("custom/recording_start", { clear = true }),
