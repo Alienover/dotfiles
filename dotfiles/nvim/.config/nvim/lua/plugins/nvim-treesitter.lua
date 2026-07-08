@@ -26,15 +26,15 @@ return {
 								return
 							end
 
-							-- Enable Treesitter highlighting
-							vim.treesitter.start(buf, lang)
+							if vim.api.nvim_buf_is_valid(buf) then
+								-- Enable Treesitter highlighting
+								vim.treesitter.start(buf, lang)
 
-							-- Enable Treesitter-based folding
-							vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
-							vim.wo[0][0].foldmethod = "expr"
-
-							-- Enable Treesitter-based indentation
-							vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+								-- Enable Treesitter-based indentation
+								if vim.treesitter.query.get(lang, "indents") then
+									vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+								end
+							end
 						end)
 					end
 				end,
