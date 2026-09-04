@@ -1,7 +1,10 @@
 local icons = require("util.icons")
 local constants = require("util.constants")
 
-local c = constants.colors
+-- INFO: source colours from the colorscheme rather than `GUI_*` env vars, which
+-- are only exported by an interactive shell -- a GUI-launched nvim got empty
+-- strings, and lualine renders those as `guifg=None` with no error
+local c = require("catppuccin.palettes").get_palette("mocha")
 
 local M = {}
 
@@ -31,9 +34,9 @@ end
 M.diff = {
 	"diff",
 	diff_color = {
-		added = { fg = c.GREEN },
-		modified = { fg = c.DARK_YELLOW },
-		removed = { fg = c.DARK_RED },
+		added = { fg = c.green },
+		modified = { fg = c.peach },
+		removed = { fg = c.red },
 	},
 	symbols = {
 		added = icons.get("git", "add") .. " ",

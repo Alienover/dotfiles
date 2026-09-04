@@ -23,20 +23,6 @@ M.files = {
 	obsidian = getenv("OBSIDIAN_VAULT"),
 }
 
-M.colors = {
-	RED = getenv("GUI_RED"),
-	BLACK = getenv("GUI_BLACK"),
-	GREEN = getenv("GUI_GREEN"),
-	PRIMARY = getenv("GUI_BLUE"),
-	BG = getenv("GUI_BACKGROUND"),
-	FG = getenv("GUI_FOREGROUND"),
-	DARK_RED = getenv("GUI_DARK_RED"),
-	DARK_YELLOW = getenv("GUI_DARK_YELLOW"),
-	VISUAL_GREY = getenv("GUI_VISUAL_GREY"),
-	COMMENT_GREY = getenv("GUI_COMMENT_GREY"),
-	SPECIAL_GREY = getenv("GUI_SPECIAL_GREY"),
-}
-
 M.filetype_mappings = setmetatable({
 	json = "JSON",
 	jsonc = "JSON with comments",
@@ -54,10 +40,13 @@ M.filetype_mappings = setmetatable({
 	end,
 })
 
+-- INFO: shared with `tmux-popup`, but only exported by a login shell. The
+-- fallbacks matter: without them the thresholds are 0, no viewport is ever
+-- "small", and every float renders at 50% instead of 80%.
 M.window_sizing = {
 	md = {
-		width = tonumber(vim.fn.getenv("WINDOW_VIEWPORT_WIDTH_MD")) or 0,
-		height = tonumber(vim.fn.getenv("WINDOW_VIEWPORT_HEIGHT_MD")) or 0,
+		width = tonumber(vim.fn.getenv("WINDOW_VIEWPORT_WIDTH_MD")) or 270,
+		height = tonumber(vim.fn.getenv("WINDOW_VIEWPORT_HEIGHT_MD")) or 80,
 	},
 }
 
