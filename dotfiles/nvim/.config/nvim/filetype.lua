@@ -1,18 +1,5 @@
 -- Custom filetypes
 vim.filetype.add({
-	extension = {
-		json = "jsonc",
-		tmux = "tmux",
-		http = "http",
-		sql = "sql",
-	},
-	filename = {
-		[".gitignore"] = "conf",
-		[".env"] = "dosini",
-		config = "dosini",
-		Brewfile = "ruby",
-	},
-	pattern = {
-		[".env.*"] = "dosini",
-	},
+	-- Nvim only detects `tmux*.conf`; these are plain `*.tmux` include files
+	extension = { tmux = "tmux" },
 })
