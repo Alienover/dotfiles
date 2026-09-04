@@ -1,7 +1,7 @@
 ---@type LazySpec
 return {
 	{
-		"williamboman/mason.nvim",
+		"mason-org/mason.nvim",
 		cmd = { "Mason", "MasonAutoInstall" },
 		build = ":MasonUpdate",
 		config = function()

@@ -46,7 +46,7 @@ local M = {}
 --- - `extended` - extended icons data for mini.icons
 ---
 --- and other categories from mini.icons
---- See: https://github.com/echasnovski/mini.icons/blob/12e7b5d47bfc1b4c5ba4278fb49ec9100138df14/lua/mini/icons.lua#L334-L447
+--- See: https://github.com/nvim-mini/mini.icons/blob/12e7b5d47bfc1b4c5ba4278fb49ec9100138df14/lua/mini/icons.lua#L334-L447
 ---@param name  string
 ---@return string, string, boolean
 M.get = function(category, name)
