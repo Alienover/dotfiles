@@ -1,9 +1,5 @@
-vim.uv = vim.uv or vim.loop
-
 -- Enables the experimental Lua module loader
-if vim.loader then
-	vim.loader.enable()
-end
+vim.loader.enable()
 
 -- Ignore the deprecate warnings
 ---@diagnostic disable-next-line: duplicate-set-field
@@ -18,8 +14,6 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_node_provider = 0
-
-vim.g.editorconfig = true
 
 -- Leader key mapping
 vim.g.mapleader = ";"
