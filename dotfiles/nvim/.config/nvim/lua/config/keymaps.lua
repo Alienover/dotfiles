@@ -61,6 +61,11 @@ vim.keymap.set("n", "sgf", ":split | normal gf<CR>", { silent = true })
 vim.keymap.set("n", "vgd", ":vsplit | normal gd<CR>", { silent = true })
 vim.keymap.set("n", "vgf", ":vsplit | normal gf<CR>", { silent = true })
 
+-- Peek the folded lines under the cursor
+vim.keymap.set("n", "zK", function()
+	require("util.folding").peek()
+end, { desc = "Peek folded lines under cursor" })
+
 -- Better HJKL including
 -- * Cowboy discipline
 -- * `j`, `k` for wrapped lines

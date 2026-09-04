@@ -60,8 +60,8 @@ return {
 
 	{
 		"tpope/vim-fugitive",
-		cmd = { "Git", "Gvdiffsplit", "GBrowse" },
-		dependencies = { "tpope/vim-rhubarb", "barrettruth/diffs.nvim" },
+		cmd = { "Git", "Gvdiffsplit" },
+		dependencies = { "barrettruth/diffs.nvim" },
 		init = function()
 			vim.g.diffs = { fugitive = true }
 		end,

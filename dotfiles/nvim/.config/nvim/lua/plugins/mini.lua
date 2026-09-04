@@ -18,6 +18,26 @@ return {
 	{ "nvim-mini/mini.move", event = "VeryLazy", opts = {} },
 
 	{
+		"nvim-mini/mini.keymap",
+		-- INFO: not `InsertEnter`: terminal mode is entered through
+		-- `TermEnter`/`TermOpen`, so that trigger would leave the `t` combo dead
+		-- until the first insert-mode entry
+		event = "VeryLazy",
+		config = function()
+			local map_combo = require("mini.keymap").map_combo
+
+			-- INFO: combos are not mappings. Each key acts immediately and really
+			-- lands in the buffer, so the typed characters have to be removed
+			-- explicitly with `<BS><BS>`.
+			local opts = { delay = vim.o.timeoutlen }
+
+			map_combo("i", "jk", "<BS><BS><Esc>", opts)
+			map_combo("i", "jj", "<BS><BS><Esc>", opts)
+			map_combo("t", "jk", "<BS><BS><C-\\><C-n>", opts)
+		end,
+	},
+
+	{
 		"nvim-mini/mini.pairs",
 		event = { "InsertEnter", "CmdlineEnter" },
 		opts = {

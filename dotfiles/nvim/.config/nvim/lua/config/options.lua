@@ -42,7 +42,7 @@ vim.opt.winborder = "rounded" -- Default border style for floating windows
 vim.opt.visualbell = true -- Use visual bell instead of beeping
 vim.opt.list = true
 vim.opt.listchars = { tab = "> ", lead = "·", trail = "·" }
-vim.opt.fillchars = { diff = "╱" }
+vim.opt.fillchars = { diff = "╱", fold = " " } -- `fold` avoids the default `·` padding
 
 -- Search
 vim.opt.ignorecase = true
@@ -62,9 +62,12 @@ vim.opt.splitright = true
 
 -- Folding
 vim.opt.foldenable = true
-vim.opt.foldcolumn = "1" -- '0' is not bad
-vim.opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.opt.foldcolumn = "1" -- Snacks' statuscolumn only draws fold icons when this is not "0"
+vim.opt.foldlevel = 99 -- Keep everything open by default
 vim.opt.foldlevelstart = 99
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.require'util.folding'.foldexpr()"
+vim.opt.foldtext = "v:lua.require'util.folding'.foldtext()"
 
 -- Files & persistence
 vim.opt.swapfile = false
