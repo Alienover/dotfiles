@@ -51,7 +51,7 @@ return {
 				vim.keymap.set(
 					{ "n" },
 					"<space>gB",
-					":Gitsign blame<CR>",
+					":Gitsigns blame<CR>",
 					{ buffer = bufnr, desc = "[Blame] current buffer" }
 				)
 			end,

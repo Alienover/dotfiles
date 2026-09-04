@@ -18,13 +18,6 @@ return {
 					-- Global line
 					globalstatus = true,
 
-					-- Symbols
-					symbols = {
-						error = icons.get("extended", "error") .. " ",
-						warn = icons.get("extended", "warn") .. " ",
-						info = icons.get("extended", "info") .. " ",
-						hint = icons.get("extended", "hint") .. " ",
-					},
 					-- Disable sections and component separators
 					component_separators = "",
 					section_separators = "",
@@ -33,7 +26,18 @@ return {
 					lualine_a = { "mode" },
 					lualine_b = { "branch", comps.diff },
 					lualine_c = { comps.spellcheck, "filename" },
-					lualine_x = { "diagnostics", comps.filetype },
+					lualine_x = {
+						{
+							"diagnostics",
+							symbols = {
+								error = icons.get("extended", "error") .. " ",
+								warn = icons.get("extended", "warn") .. " ",
+								info = icons.get("extended", "info") .. " ",
+								hint = icons.get("extended", "hint") .. " ",
+							},
+						},
+						comps.filetype,
+					},
 					lualine_y = { comps.encoding, comps.spaces },
 					lualine_z = { "location" },
 				},
