@@ -1,76 +1,50 @@
----@class CowboyContext
----@field count integer
----@field timer any
+--- "Hold it Cowboy!" -- nudge when `hjkl` is repeated instead of reaching for a
+--- real motion.
+---
+--- Registered as `mini.keymap` combos: `COUNT` presses of the same key, each
+--- within `DELAY` of the previous one. This replaces a per-keystroke `expr`
+--- mapping on every `hjkl`, at the cost of one behaviour change -- a combo
+--- action runs *after* the key has been handled, so this only notifies where
+--- the previous implementation also swallowed the movement.
 
-local M = {
-	registered = {},
-}
+local M = {}
 
-M.registered = setmetatable({}, {
-	__index = function(tbl, key)
-		tbl[key] = {
-			count = 0,
-			timer = assert(vim.uv.new_timer()),
-		}
+local KEYS = { "h", "j", "k", "l" }
+local COUNT = 10
+-- INFO: matches the reset window of the previous timer-based implementation
+local DELAY = 2000
 
-		return tbl[key]
-	end,
-})
-
---- check whether the inpu is violating the discipline rules
---- @param key string
---- @return boolean
-function M:check(key)
-	-- INFO: bypass when it's not enabled
+---@param key string
+local function notify(key)
 	if
 		not vim.g.cowboy_enabled -- Global switch
-		or vim.bo[0].buftype ~= "" -- Not a normal buffer
-		or vim.api.nvim_buf_get_name(0) == "" -- Has not filename
+		or vim.bo.buftype ~= "" -- Not a normal buffer
+		or vim.api.nvim_buf_get_name(0) == "" -- Has no filename
 	then
-		return true
+		return
 	end
 
-	---@type integer
-	local count = self.registered[key].count
-	local timer = self.registered[key].timer
-
-	-- INFO: reset counter when doing hjkl with number prefix
-	if vim.v.count > 0 then
-		self.registered[key].count = 0
-
-		timer:stop()
-
-		return true
-	end
-
-	if count < 10 then
-		-- INFO: increase counter and set timer to reset it after 2 seconds
-		self.registered[key].count = count + 1
-
-		timer:stop()
-		timer:start(2000, 0, function()
-			self.registered[key].count = 0
-
-			timer:stop()
-		end)
-
-		return true
-	else
-		-- INFO: show notice
-		local ok, _ = pcall(vim.notify, "Hold it Cowboy!", vim.log.levels.WARN, {
-			icon = "🤯",
-			id = "cowboy",
-			keep = function()
-				return self.registered[key].count >= 10
-			end,
-		})
-
-		return not ok
-	end
+	vim.notify(("Hold it Cowboy! %d× %s"):format(COUNT, key), vim.log.levels.WARN, {
+		icon = "🤯",
+		id = "cowboy",
+		timeout = 1000,
+	})
 end
 
-vim.api.nvim_create_user_command("CowboyToggle", function()
-	vim.g.cowboy_enabled = not vim.g.cowboy_enabled
-end, { desc = "Toggle the Cowboy discipline" })
+--- Register the combos. Called from the `mini.keymap` spec, so the discipline
+--- follows that plugin being enabled.
+function M.setup()
+	local map_combo = require("mini.keymap").map_combo
+
+	for _, key in ipairs(KEYS) do
+		map_combo({ "n", "x" }, string.rep(key, COUNT), function()
+			notify(key)
+		end, { delay = DELAY })
+	end
+
+	vim.api.nvim_create_user_command("CowboyToggle", function()
+		vim.g.cowboy_enabled = not vim.g.cowboy_enabled
+	end, { desc = "Toggle the Cowboy discipline" })
+end
 
 return M
