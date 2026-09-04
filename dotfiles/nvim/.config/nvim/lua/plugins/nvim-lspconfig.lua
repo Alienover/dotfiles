@@ -49,19 +49,6 @@ return {
 				-- },
 			})
 
-			-- Re-write lsp handlers
-			vim.lsp.buf.references = Snacks.picker.lsp_references
-
-			---@diagnostic disable-next-line: duplicate-set-field
-			vim.lsp.buf.document_symbol = function()
-				Snacks.picker.lsp_symbols({ layout = { preset = "vscode" } })
-			end
-
-			---@diagnostic disable-next-line: duplicate-set-field
-			vim.lsp.buf.rename = function()
-				vim.fn.feedkeys(":IncRename " .. vim.fn.expand("<cword>"))
-			end
-
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("custom/lsp", { clear = true }),
 				callback = function(args)
@@ -72,8 +59,23 @@ return {
 						or false
 
 					-- Keymaps for LSP interfaces
+					--
+					-- INFO: `grr`, `gO` and `grn` are Neovim's default LSP mappings.
+					-- Overriding them buffer-locally shadows the defaults without
+					-- patching `vim.lsp.buf.*`, which would also change behaviour for
+					-- programmatic callers (`:ObsidianRename` and `:ObsidianTOC` both
+					-- call those functions with arguments).
 					vim.keymap.set("n", "gd", Snacks.picker.lsp_definitions, { buffer = args.buf })
 					vim.keymap.set("n", "go", "<C-o>zz", { buffer = args.buf })
+					vim.keymap.set("n", "grr", Snacks.picker.lsp_references, { buffer = args.buf })
+
+					vim.keymap.set("n", "gO", function()
+						Snacks.picker.lsp_symbols({ layout = { preset = "vscode" } })
+					end, { buffer = args.buf })
+
+					vim.keymap.set("n", "grn", function()
+						return ":IncRename " .. vim.fn.expand("<cword>")
+					end, { buffer = args.buf, expr = true })
 				end,
 			})
 		end,
