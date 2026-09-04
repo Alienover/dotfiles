@@ -2,6 +2,9 @@
 return {
 	{
 		"kevinhwang91/nvim-ufo",
+		-- INFO: replaced by core folding, see `util.folding`. Kept disabled rather
+		-- than deleted so it can be restored by flipping this flag.
+		enabled = false,
 		event = "User LazyPost",
 		dependencies = "kevinhwang91/promise-async",
 		config = function()

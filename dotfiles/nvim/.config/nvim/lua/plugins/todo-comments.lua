@@ -11,7 +11,6 @@ return {
 			},
 		},
 		event = "User LazyPost",
-		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {
 			signs = false,
 			search = {
