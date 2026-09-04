@@ -11,8 +11,6 @@ end
 M.files = {
 	-- NeoVim initialization file
 	nvim = getenv("XDG_CONFIG_HOME") .. "/nvim/init.lua",
-	-- Folder saved snippets
-	snippets = getenv("XDG_CONFIG_HOME") .. "/nvim/snippets",
 	-- Tmux config
 	tmux = getenv("XDG_CONFIG_HOME") .. "/tmux/tmux.conf",
 	-- Alacritty config
@@ -21,8 +19,6 @@ M.files = {
 	zsh = getenv("HOME") .. "/.zshrc",
 	-- Aerospace config
 	aerospace = getenv("XDG_CONFIG_HOME") .. "/aerospace/aerospace.toml",
-	-- Dotfiles folder
-	dotfiles = getenv("HOME") .. "/src/dotfiles",
 	-- Obsidian Vault
 	obsidian = getenv("OBSIDIAN_VAULT"),
 }

@@ -21,9 +21,6 @@ local DEFAULT_OPTS = {
 	---@type boolean
 	-- Toggle the file path
 	show_filepath = true,
-	---@type boolean
-	-- Toggle the symbol of the cursor word
-	show_symbol = true,
 }
 
 local M = {}

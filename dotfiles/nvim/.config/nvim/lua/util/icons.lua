@@ -1,8 +1,5 @@
 local presets = {
 	extended = {
-		arrowLeft = { glyph = "<" },
-		arrowRight = { glyph = ">" },
-
 		check = { glyph = "󰄬" },
 		circle = { glyph = "" },
 		close = { glyph = "󰅖" },
@@ -10,13 +7,7 @@ local presets = {
 		command = { glyph = "󰘳" },
 		ellipsisH = { glyph = "" },
 
-		halfCircleLeft = { glyph = "" },
-		halfCircleRight = { glyph = "" },
-
 		spell = { glyph = "" },
-
-		triangelLeft = { glyph = "" },
-		triangleRight = { glyph = "" },
 
 		recording = { glyph = "" },
 
