@@ -2,7 +2,6 @@
 return {
 	{
 		"folke/which-key.nvim",
-		keys = { "<space>" },
 		event = { "VeryLazy" },
 		--- @type wk.Opts
 		opts = {

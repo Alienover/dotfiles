@@ -17,9 +17,10 @@ return {
 			-- your configuration comes here
 			-- or leave it empty to use the default settings
 			-- refer to the configuration section below
+			-- INFO: `bigfile`, `input` and `quickfile` are set up from an event, so
+			-- they need an entry here to be enabled. `bufdelete` and `gitbrowse`
+			-- are reached lazily through `Snacks.<module>` and need no config.
 			bigfile = { enabled = true },
-			bufdelete = { enabled = true },
-			gitbrowse = { enabled = true },
 			input = { enabled = true },
 			notifier = { sort = { "added" } },
 			quickfile = { enabled = true },
