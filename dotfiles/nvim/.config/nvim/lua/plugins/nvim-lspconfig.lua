@@ -4,7 +4,7 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		event = "VeryLazy",
-		dependencies = { "williamboman/mason.nvim" },
+		dependencies = { "mason-org/mason.nvim" },
 		init = function()
 			vim.g.lsp_eslint_auto_format = true
 		end,
