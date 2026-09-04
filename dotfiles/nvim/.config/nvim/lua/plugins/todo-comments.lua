@@ -1,6 +1,6 @@
 ---@type LazySpec
 return {
-	{ -- Highlight keywords like utils.snacks_picker.todo_commentstodo, fix, and info
+	{ -- Highlight keywords like TODO, FIX and INFO
 		"folke/todo-comments.nvim",
 		keys = {
 			{
