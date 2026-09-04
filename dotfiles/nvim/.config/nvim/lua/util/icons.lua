@@ -68,6 +68,10 @@ M.get = function(category, name)
 
 	local icon = getter(name)
 
+	if icon == nil then
+		return "", "", false
+	end
+
 	return icon.glyph, "", true
 end
 

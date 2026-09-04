@@ -66,6 +66,41 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
 	end,
 })
 
+-- INFO: `TermOpen` sets the options when the terminal is created (`buftype` is not
+-- yet `terminal` during the initial `BufWinEnter`), `BufWinEnter` re-applies the
+-- window-local ones when an existing terminal is shown in another window
+vim.api.nvim_create_autocmd({ "TermOpen", "BufWinEnter" }, {
+	desc = "Terminal window options and keymaps",
+	group = vim.api.nvim_create_augroup("custom/terminal", { clear = true }),
+
+	callback = function(args)
+		if vim.bo[args.buf].buftype ~= "terminal" then
+			return
+		end
+
+		-- INFO: `number`, `relativenumber`, `list`, `signcolumn` and `foldcolumn`
+		-- are already forced off by Nvim for terminal buffers
+		vim.wo[vim.api.nvim_get_current_win()].cursorline = false
+		vim.wo[vim.api.nvim_get_current_win()].statuscolumn = ""
+
+		-- INFO: only map bare `:terminal` buffers. Plugin-owned terminals set their
+		-- own filetype and rely on `<Esc>` reaching the tool (it is Claude's
+		-- interrupt key, and lazygit/less/fzf all use it too)
+		if vim.bo[args.buf].filetype ~= "" then
+			return
+		end
+
+		local escape = "<C-\\><C-n>"
+		local opts = { noremap = true, silent = true, buffer = args.buf }
+
+		vim.keymap.set("t", "<Esc>", escape, opts)
+
+		for _, dir in ipairs({ "h", "j", "k", "l" }) do
+			vim.keymap.set("t", "<C-w>" .. dir, escape .. "<C-w>" .. dir, opts)
+		end
+	end,
+})
+
 vim.api.nvim_create_autocmd("BufWinEnter", {
 	desc = "Winbar handler",
 	group = vim.api.nvim_create_augroup("custom/winbar", { clear = true }),
