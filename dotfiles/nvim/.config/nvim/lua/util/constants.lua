@@ -38,6 +38,7 @@ M.colors = {
 }
 
 M.filetype_mappings = setmetatable({
+	json = "JSON",
 	jsonc = "JSON with comments",
 	txt = "Plain Text",
 	sql = "SQL",
