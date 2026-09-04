@@ -25,14 +25,21 @@ return {
 		event = "VeryLazy",
 		config = function()
 			local map_combo = require("mini.keymap").map_combo
+			local escape = require("util.escape")
+
+			escape.setup()
+			require("util.cowboy").setup()
 
 			-- INFO: combos are not mappings. Each key acts immediately and really
 			-- lands in the buffer, so the typed characters have to be removed
-			-- explicitly with `<BS><BS>`.
+			-- explicitly with `<BS><BS>`. `util.escape` restores 'modified' when
+			-- the buffer was clean before the combo.
 			local opts = { delay = vim.o.timeoutlen }
 
-			map_combo("i", "jk", "<BS><BS><Esc>", opts)
-			map_combo("i", "jj", "<BS><BS><Esc>", opts)
+			map_combo("i", "jk", escape.action("<Esc>"), opts)
+			map_combo("i", "jj", escape.action("<Esc>"), opts)
+
+			-- INFO: terminal buffers have no meaningful 'modified' state
 			map_combo("t", "jk", "<BS><BS><C-\\><C-n>", opts)
 		end,
 	},
