@@ -66,17 +66,6 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
 	end,
 })
 
-vim.api.nvim_create_autocmd({ "FileType", "BufReadPost", "BufNewFile" }, {
-	desc = "Pick the fold provider (treesitter -> indent) for the buffer",
-	group = vim.api.nvim_create_augroup("custom/folding", { clear = true }),
-
-	callback = function(args)
-		-- INFO: `BufReadPost`/`BufNewFile` cover buffers where filetype detection
-		-- finds nothing, which would otherwise get no folds at all
-		require("util.folding").detect(args.buf)
-	end,
-})
-
 -- INFO: `TermOpen` sets the options when the terminal is created (`buftype` is not
 -- yet `terminal` during the initial `BufWinEnter`), `BufWinEnter` re-applies the
 -- window-local ones when an existing terminal is shown in another window
