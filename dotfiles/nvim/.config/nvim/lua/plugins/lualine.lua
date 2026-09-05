@@ -4,7 +4,6 @@ return {
 		"nvim-lualine/lualine.nvim",
 		event = "User LazyPost",
 		config = function()
-			local icons = require("util.icons")
 			local comps = require("util.statusline")
 
 			require("lualine").setup({
@@ -26,18 +25,7 @@ return {
 					lualine_a = { "mode" },
 					lualine_b = { "branch", comps.diff },
 					lualine_c = { comps.spellcheck, "filename" },
-					lualine_x = {
-						{
-							"diagnostics",
-							symbols = {
-								error = icons.get("extended", "error") .. " ",
-								warn = icons.get("extended", "warn") .. " ",
-								info = icons.get("extended", "info") .. " ",
-								hint = icons.get("extended", "hint") .. " ",
-							},
-						},
-						comps.filetype,
-					},
+					lualine_x = { "diagnostics", comps.filetype },
 					lualine_y = { comps.encoding, comps.spaces },
 					lualine_z = { "location" },
 				},

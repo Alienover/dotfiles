@@ -49,6 +49,45 @@ return {
 				-- },
 			})
 
+			-- Re-write lsp handlers so the built-in `grn`, `grr` and `gO` keep working
+			-- but open the Snacks pickers.
+			--
+			-- INFO: the default mappings call these with no arguments, so anything
+			-- passing arguments is a programmatic caller and must reach the original.
+			-- `:ObsidianRename` passes a new name and `:ObsidianTOC` passes an
+			-- `on_list` handler; both break if their arguments are dropped.
+			local buf = vim.lsp.buf
+
+			local references = buf.references
+			---@diagnostic disable-next-line: duplicate-set-field
+			buf.references = function(context, opts)
+				if context == nil and opts == nil then
+					return Snacks.picker.lsp_references()
+				end
+
+				return references(context, opts)
+			end
+
+			local document_symbol = buf.document_symbol
+			---@diagnostic disable-next-line: duplicate-set-field
+			buf.document_symbol = function(opts)
+				if opts == nil then
+					return Snacks.picker.lsp_symbols({ layout = { preset = "vscode" } })
+				end
+
+				return document_symbol(opts)
+			end
+
+			local rename = buf.rename
+			---@diagnostic disable-next-line: duplicate-set-field
+			buf.rename = function(new_name, opts)
+				if new_name == nil and opts == nil then
+					return vim.fn.feedkeys(":IncRename " .. vim.fn.expand("<cword>"))
+				end
+
+				return rename(new_name, opts)
+			end
+
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("custom/lsp", { clear = true }),
 				callback = function(args)
@@ -59,23 +98,8 @@ return {
 						or false
 
 					-- Keymaps for LSP interfaces
-					--
-					-- INFO: `grr`, `gO` and `grn` are Neovim's default LSP mappings.
-					-- Overriding them buffer-locally shadows the defaults without
-					-- patching `vim.lsp.buf.*`, which would also change behaviour for
-					-- programmatic callers (`:ObsidianRename` and `:ObsidianTOC` both
-					-- call those functions with arguments).
 					vim.keymap.set("n", "gd", Snacks.picker.lsp_definitions, { buffer = args.buf })
 					vim.keymap.set("n", "go", "<C-o>zz", { buffer = args.buf })
-					vim.keymap.set("n", "grr", Snacks.picker.lsp_references, { buffer = args.buf })
-
-					vim.keymap.set("n", "gO", function()
-						Snacks.picker.lsp_symbols({ layout = { preset = "vscode" } })
-					end, { buffer = args.buf })
-
-					vim.keymap.set("n", "grn", function()
-						return ":IncRename " .. vim.fn.expand("<cword>")
-					end, { buffer = args.buf, expr = true })
 				end,
 			})
 		end,
