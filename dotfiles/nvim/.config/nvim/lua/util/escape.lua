@@ -16,6 +16,8 @@ local M = {}
 ---@type table<integer, boolean[]> [before the previous char, before the one before it]
 local states = {}
 
+local did_setup = false
+
 ---@param buf integer
 local function seed(buf)
 	local modified = vim.bo[buf].modified
@@ -38,6 +40,8 @@ end
 ---@param escape string keys that leave insert mode
 ---@return fun(): string
 function M.action(escape)
+	M.setup()
+
 	return function()
 		local state = states[vim.api.nvim_get_current_buf()]
 		local keys = "<BS><BS>" .. escape
@@ -56,6 +60,12 @@ end
 --- Register the autocmds backing `M.action`. Called from the `mini.keymap`
 --- spec, so nothing is registered when that plugin is disabled.
 function M.setup()
+	if did_setup then
+		return
+	else
+		did_setup = true
+	end
+
 	local group = vim.api.nvim_create_augroup("custom/escape", { clear = true })
 
 	vim.api.nvim_create_autocmd("InsertEnter", {
