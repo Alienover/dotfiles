@@ -25,6 +25,8 @@ return {
 		event = "VeryLazy",
 		config = function()
 			local map_combo = require("mini.keymap").map_combo
+			local multi_step = require("mini.keymap").map_multistep
+
 			local escape = require("util.escape")
 
 			-- INFO: combos are not mappings. Each key acts immediately and really
@@ -38,6 +40,33 @@ return {
 
 			-- INFO: terminal buffers have no meaningful 'modified' state
 			map_combo("t", "jk", "<BS><BS><C-\\><C-n>", opts)
+
+			-- INFO: check discipline when navigating in `Normal` mode
+			local cowboy = function(key)
+				return {
+					condition = function()
+						return vim.api.nvim_get_mode()["mode"] == "n" and not require("util.cowboy"):check(key)
+					end,
+					-- stylua: ignore
+					action = function() return "" end,
+				}
+			end
+
+			-- INFO: remap `j` -> `gj`, `k` -> `gk` when in `Normal` or `Visual` mode.
+			-- Counted jumps stay line-wise so `5j` agrees with `relativenumber`.
+			local better_jk = function(key)
+				return {
+				  -- stylua: ignore start
+					condition = function() return true end,
+					action = function() return vim.v.count == 0 and ("g" .. key) or key end,
+					-- stylua: ignore end
+				}
+			end
+
+			multi_step("n", "h", { cowboy("h") })
+			multi_step("n", "l", { cowboy("l") })
+			multi_step({ "n", "v" }, "j", { cowboy("j"), better_jk("j") })
+			multi_step({ "n", "v" }, "k", { cowboy("k"), better_jk("k") })
 		end,
 	},
 
