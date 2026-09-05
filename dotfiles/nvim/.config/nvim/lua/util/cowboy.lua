@@ -1,104 +1,76 @@
---- "Hold it Cowboy!" -- nudge when `hjkl` is repeated instead of reaching for a
---- real motion.
----
---- Registered as `mini.keymap` combos: `COUNT` presses of the same key, each
---- within `DELAY` of the previous one.
----
---- A combo action runs *after* the key has been handled, so the press that
---- trips the counter cannot be swallowed. Everything after it can: the action
---- shadows the key with a buffer-local `<Nop>` for `BLOCK` milliseconds.
---- Buffer-local mappings win over global ones, so the real `hjkl` mappings are
---- never touched -- deleting the temporary one restores them.
+---@class CowboyContext
+---@field count integer
+---@field timer any
 
-local M = {}
+local M = {
+	registered = {},
+}
 
-local KEYS = { "h", "j", "k", "l" }
-local MODES = { "n", "x" }
+M.registered = setmetatable({}, {
+	__index = function(tbl, key)
+		tbl[key] = {
+			count = 0,
+			timer = assert(vim.uv.new_timer()),
+		}
 
-local COUNT = 10
--- INFO: matches the reset window of the previous timer-based implementation
-local DELAY = 2000
--- INFO: how long the key stays inert once the nudge fires
-local BLOCK = 2000
+		return tbl[key]
+	end,
+})
 
----@type table<string, boolean>
-local blocked = {}
-
----@param key string
----@param buf integer
-local function unblock(key, buf)
-	blocked[key] = nil
-
-	if not vim.api.nvim_buf_is_valid(buf) then
-		return
-	end
-
-	for _, mode in ipairs(MODES) do
-		pcall(vim.keymap.del, mode, key, { buffer = buf })
-	end
-end
-
---- Shadow `key` with a no-op until `BLOCK` has passed.
----@param key string
-local function block(key)
-	if blocked[key] then
-		return
-	end
-
-	blocked[key] = true
-
-	local buf = vim.api.nvim_get_current_buf()
-
-	vim.keymap.set(MODES, key, "<Nop>", {
-		buffer = buf,
-		desc = "Hold it Cowboy! (" .. key .. " on a break)",
-	})
-
-	vim.defer_fn(function()
-		unblock(key, buf)
-	end, BLOCK)
-end
-
----@param key string
-local function nudge(key)
+--- check whether the inpu is violating the discipline rules
+--- @param key string
+--- @return boolean
+function M:check(key)
+	-- INFO: bypass when it's not enabled
 	if
 		not vim.g.cowboy_enabled -- Global switch
-		or vim.bo.buftype ~= "" -- Not a normal buffer
-		or vim.api.nvim_buf_get_name(0) == "" -- Has no filename
+		or vim.bo[0].buftype ~= "" -- Not a normal buffer
+		or vim.api.nvim_buf_get_name(0) == "" -- Has not filename
 	then
-		return
+		return true
 	end
 
-	vim.notify(("Hold it Cowboy! %d× %s"):format(COUNT, key), vim.log.levels.WARN, {
-		icon = "🤯",
-		id = "cowboy",
-		timeout = BLOCK,
-	})
+	---@type integer
+	local count = self.registered[key].count
+	local timer = self.registered[key].timer
 
-	block(key)
-end
+	-- INFO: reset counter when doing hjkl with number prefix
+	if vim.v.count > 0 then
+		self.registered[key].count = 0
 
---- Register the combos. Called from the `mini.keymap` spec, so the discipline
---- follows that plugin being enabled.
-function M.setup()
-	local map_combo = require("mini.keymap").map_combo
+		timer:stop()
 
-	for _, key in ipairs(KEYS) do
-		map_combo(MODES, string.rep(key, COUNT), function()
-			nudge(key)
-		end, { delay = DELAY })
+		return true
 	end
 
-	vim.api.nvim_create_user_command("CowboyToggle", function()
-		vim.g.cowboy_enabled = not vim.g.cowboy_enabled
+	if count < 10 then
+		-- INFO: increase counter and set timer to reset it after 2 seconds
+		self.registered[key].count = count + 1
 
-		-- INFO: do not leave a key inert when switching the discipline off
-		if not vim.g.cowboy_enabled then
-			for key in pairs(blocked) do
-				unblock(key, vim.api.nvim_get_current_buf())
-			end
-		end
-	end, { desc = "Toggle the Cowboy discipline" })
+		timer:stop()
+		timer:start(2000, 0, function()
+			self.registered[key].count = 0
+
+			timer:stop()
+		end)
+
+		return true
+	else
+		-- INFO: show notice
+		local ok, _ = pcall(vim.notify, "Hold it Cowboy!", vim.log.levels.WARN, {
+			icon = "🤯",
+			id = "cowboy",
+			keep = function()
+				return self.registered[key].count >= 10
+			end,
+		})
+
+		return not ok
+	end
 end
+
+vim.api.nvim_create_user_command("CowboyToggle", function()
+	vim.g.cowboy_enabled = not vim.g.cowboy_enabled
+end, { desc = "Toggle the Cowboy discipline" })
 
 return M

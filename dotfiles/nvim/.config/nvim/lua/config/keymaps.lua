@@ -1,3 +1,5 @@
+local Cowboy = require("util.cowboy")
+
 ---@module 'snacks'
 
 -- Modes, check `:h map-modes` for more detail
@@ -64,10 +66,26 @@ vim.keymap.set("n", "zK", function()
 	require("util.folding").peek()
 end, { desc = "Peek folded lines under cursor" })
 
--- Move by display line on wrapped lines, but keep counted jumps line-wise so
--- `5j` still agrees with `relativenumber`.
--- The Cowboy discipline that used to live here is now a `mini.keymap` combo,
--- see `util.cowboy`.
-for _, key in ipairs({ "j", "k" }) do
-	vim.keymap.set({ "n", "v" }, key, ("v:count == 0 ? 'g%s' : '%s'"):format(key, key), { expr = true })
+-- Better HJKL including
+-- * Cowboy discipline
+-- * `j`, `k` for wrapped lines
+for _, key in ipairs({ "h", "j", "k", "l" }) do
+	vim.keymap.set({ "n", "v" }, key, function()
+		local mode = vim.api.nvim_get_mode()["mode"]
+
+		-- INFO: check discipline when navigating in `Normal` mode
+		if mode == "n" then
+			if not Cowboy:check(key) then
+				return ""
+			end
+		end
+
+		-- INFO: remap `j` -> `gj`, `k` -> `gk` when in `Normal` or `Visual` mode.
+		-- Counted jumps stay line-wise so `5j` agrees with `relativenumber`.
+		if vim.tbl_contains({ "j", "k" }, key) and vim.tbl_contains({ "n", "v" }, mode) then
+			return vim.v.count == 0 and ("g" .. key) or key
+		end
+
+		return key
+	end, { expr = true })
 end
