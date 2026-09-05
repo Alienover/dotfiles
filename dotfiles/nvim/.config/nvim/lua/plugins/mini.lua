@@ -27,8 +27,6 @@ return {
 			local map_combo = require("mini.keymap").map_combo
 			local escape = require("util.escape")
 
-			require("util.cowboy").setup()
-
 			-- INFO: combos are not mappings. Each key acts immediately and really
 			-- lands in the buffer, so the typed characters have to be removed
 			-- explicitly with `<BS><BS>`. `util.escape` restores 'modified' when
