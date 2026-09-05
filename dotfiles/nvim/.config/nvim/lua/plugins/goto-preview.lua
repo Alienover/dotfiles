@@ -5,9 +5,7 @@ return {
 		event = "LspAttach",
 		opts = {
 			default_mappings = true, -- Bind default mappings
-			references = {
-				provider = "snacks",
-			},
+			references = { provider = "snacks" },
 			post_open_hook = function(bufnr)
 				pcall(vim.keymap.del, "n", "q", { buffer = bufnr })
 
