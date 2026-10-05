@@ -1,7 +1,7 @@
 ---@type LazySpec
 return {
 	{ -- Client for HTTP requests
-		"mistweaverco/kulala.nvim",
+		"dont-be-evil-company/kulala.nvim",
 		ft = { "http", "rest" },
 		opts = {
 			global_keymaps = true,
