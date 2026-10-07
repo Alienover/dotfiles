@@ -6,7 +6,7 @@ OPTIONS:
 \t --name, -n \t username
 \t --email, e \t email address
 \t --repo, -r \t repository location
-\t --ssh, -s \t sign commits with an SSH key instead of GPG (optionally --ssh={{ public key path }}, defaults to ~/.ssh/id_ed25519.pub)
+\t --ssh, -s \t sign commits with the given SSH public key (path or key value) instead of GPG
 
 GLOBAL OPTIONS:
 \t --help, -h \t show help"
@@ -14,42 +14,38 @@ GLOBAL OPTIONS:
 USERNAME=""
 EMAIL=""
 REPO=""
-SSH_SIGN=false
-SSH_KEY="$HOME/.ssh/id_ed25519.pub"
+SSH_KEY=""
 
-for arg in "$@"; do
+while [ $# -gt 0 ]; do
+  arg="$1"
   case $arg in
     -n=*|--name=*)
       USERNAME="${arg#*=}"
-      shift
       ;;
     -e=*|--email=*)
       EMAIL="${arg#*=}"
-      shift
       ;;
     -r=*|--repo=*)
       REPO="${arg#*=}"
-      shift
       ;;
     -s|--ssh)
-      SSH_SIGN=true
+      SSH_KEY="$2"
       shift
       ;;
     -s=*|--ssh=*)
-      SSH_SIGN=true
       SSH_KEY="${arg#*=}"
-      shift
       ;;
     -h|--help)
       echo "$usage"
       exit 1
       ;;
   esac
+  shift
 done
 
 which git > /dev/null 2>&1 || exit 1
 
-if [ "$SSH_SIGN" = false ]; then
+if [ -z "$SSH_KEY" ]; then
   which gpg > /dev/null 2>&1 || exit 1
 fi
 
@@ -77,10 +73,12 @@ else
   fi
 fi
 
-if [ "$SSH_SIGN" = true ]; then
-  SSH_KEY="${SSH_KEY/#\~/$HOME}"
-  if [ ! -f "$SSH_KEY" ]; then
-    echo "No SSH public key found at [$SSH_KEY]. Please create one or pass its path by --ssh={{ public key path }}"
+if [ -n "$SSH_KEY" ]; then
+  KEY_PATH="${SSH_KEY/#\~/$HOME}"
+  if [ -f "$KEY_PATH" ]; then
+    SSH_KEY="$KEY_PATH"
+  elif [[ "$SSH_KEY" != ssh-* && "$SSH_KEY" != key::* ]]; then
+    echo "Invalid SSH key [$SSH_KEY]. Please pass a public key path or key value by --ssh={{ key path or key value }}"
     exit 1
   fi
 else
@@ -101,7 +99,7 @@ git -C $REPO config user.name "$USERNAME"
 git -C $REPO config user.email "$EMAIL"
 
 echo ""
-if [ "$SSH_SIGN" = true ]; then
+if [ -n "$SSH_KEY" ]; then
   echo "Setting up SSH signing\n"
   git -C $REPO config gpg.format ssh
   git -C $REPO config user.signingkey "$SSH_KEY"
