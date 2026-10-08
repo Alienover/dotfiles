@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# DevPod host setup (macOS only). Safe to run repeatedly.
+# Usage: ./install/darwin/install-devpod-config
+# DOTFILES_URL defaults to the origin URL of the git repo containing this script;
+# override it via the DOTFILES_URL environment variable.
+set -euo pipefail
+
+# The same dotfiles repo is also cloned into containers; skip on non-macOS
+if [[ "$(uname)" != "Darwin" ]]; then
+  echo "skip: not macOS"
+  exit 0
+fi
+
+if ! command -v devpod >/dev/null 2>&1; then
+  echo "devpod CLI not found (install it from DevPod Desktop → Settings, or run: brew install devpod)" >&2
+  exit 1
+fi
+
+CONTEXT="${DEVPOD_CONTEXT:-default}"
+PROVIDER="${DEVPOD_PROVIDER:-docker}"
+IDE="${DEVPOD_IDE:-none}"
+DOTFILES_SCRIPT="${DOTFILES_SCRIPT:-devpod-bootstrap}"
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -z "${DOTFILES_URL:-}" ]]; then
+  if ! DOTFILES_URL="$(git -C "$SCRIPT_DIR" remote get-url origin 2>/dev/null)"; then
+    echo "Could not get git origin from $SCRIPT_DIR; please set DOTFILES_URL" >&2
+    exit 1
+  fi
+fi
+
+echo "==> context options ($CONTEXT)"
+devpod context set-options "$CONTEXT" \
+  -o SSH_AGENT_FORWARDING=true \
+  -o GIT_SSH_SIGNATURE_FORWARDING=false \
+  -o GPG_AGENT_FORWARDING=false \
+  -o SSH_ADD_PRIVATE_KEYS=false \
+  -o DOTFILES_URL="$DOTFILES_URL" \
+  -o DOTFILES_SCRIPT="$DOTFILES_SCRIPT"
+
+echo "==> provider ($PROVIDER)"
+if ! devpod provider list 2>/dev/null | grep -qw "$PROVIDER"; then
+  devpod provider add "$PROVIDER"
+fi
+devpod provider use "$PROVIDER"
+
+echo "==> default IDE ($IDE)"
+devpod ide use "$IDE"
+
+echo "==> done"
+devpod context options "$CONTEXT" | grep -E 'AGENT|SIGNATURE|DOTFILES|PRIVATE_KEYS' || true
