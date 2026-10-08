@@ -27,7 +27,8 @@ return {
 				},
 			},
 
-			new_notes_location = "0-inbox",
+			notes_subdir = "0-inbox",
+			new_notes_location = "notes_subdir",
 
 			ui = { enable = false },
 
