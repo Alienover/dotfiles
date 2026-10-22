@@ -126,7 +126,7 @@ function find_remote_port() {
   scp -o ControlPath="$CONTROL_SOCKET" "$PORT_FINDER_SCRIPT" "$ins:$PORT_FINDER_SCRIPT" >/dev/null 2>&1
 
   # Execute script on remote, get port, and cleanup script
-  remote_port=$(ssh -S "$CONTROL_SOCKET" -T "$ins" "bash -l $PORT_FINDER_SCRIPT && rm -f $PORT_FINDER_SCRIPT")
+  remote_port=$(ssh -S "$CONTROL_SOCKET" -T "$ins" "bash -l $PORT_FINDER_SCRIPT; rm -f $PORT_FINDER_SCRIPT")
 
   if [ -z "$remote_port" ]; then
     printf "\nAbort! Failed to find available remote port\n"
@@ -138,8 +138,8 @@ function find_remote_port() {
 # Uses: CONTROL_SOCKET, ins, local_port, remote_port
 function launch_remote_server() {
   # Forward local_port to remote_port
-  ssh -S "$CONTROL_SOCKET" -T -L "$local_port:localhost:$remote_port" "$ins" "bash -l" <<LAUNCH_SCRIPT &
-nvim --headless --listen 0.0.0.0:$remote_port
+  ssh -S "$CONTROL_SOCKET" -T -L "$local_port:localhost:$remote_port" "$ins" "exec bash -l" <<LAUNCH_SCRIPT &
+exec nvim --headless --listen 127.0.0.1:$remote_port
 LAUNCH_SCRIPT
 }
 
@@ -150,7 +150,7 @@ function cleanup() {
   remote_nvim_running=0
 
   printf "\r\033[K🔄 Stopping remote neovim server..."
-  ssh -S "$CONTROL_SOCKET" -T "$ins" "exec bash -lc 'for p in \$(pgrep -f \"nvim --headless\"); do [ \$(ps -o etimes= -p \$p) -ge 86400 ] && kill -9 \$p; done >/dev/null 2>&1'"
+  ssh -S "$CONTROL_SOCKET" -T "$ins" "pkill -f '[n]vim --headless --listen 127.0.0.1:$remote_port' >/dev/null 2>&1"
   printf "\r\033[K👋 Remote neovim server stopped\n"
 
   # Close ControlMaster connection
