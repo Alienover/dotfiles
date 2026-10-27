@@ -11,7 +11,7 @@
 # tmux's normal `setenv -g` semantics for top-level NAME=VALUE lines.
 # Requires tmux >= 3.2.
 
-# === Colors ===
+# Colors
 %hidden BG="$GUI_BG_BLACK"
 %hidden FG="$GUI_PRIMARY"
 %hidden DARK="$GUI_BLACK"
@@ -19,19 +19,23 @@
 %hidden MATCH_BG="$GUI_SECONDARY"
 %hidden MATCH_CUR_BG="$GUI_RED"
 
-# === Glyphs ===
+# Glyphs
 %hidden ZOOM=" 󰲏 "
-%hidden SEP="#[fg=${FG},bg=${BG}]▕#[bg=${DARK}]▏#[fg=default]"
+%hidden SEP="#[fg=${FG},bg=default]▕#[bg=${DARK}]▏#[fg=default]"
 
-# === Status layout ===
+# Background
+set -g window-style "bg=default"
+set -g window-active-style "bg=default"
+set -g popup-style "bg=default"
+set -g status-style "bg=default"
+
+# Status layout
 set -g status-left-length 32
 set -g status-right-length 150
 set -g status-interval 5
 
-# === Base styles ===
-set -g status-style bg=${BG},fg=${BG}
-set -gw window-status-style bg=${BG},fg=${FG}
-set -gw window-status-current-style bg=${DARK},fg=${FG}
+# Base styles
+set -gw window-status-current-style bg=default,fg=${FG}
 set -gw window-status-separator ""
 
 # Borders
@@ -41,7 +45,7 @@ set -g pane-border-style fg=${DARK}
 set -g pane-active-border-style fg=${DARK}
 
 # Messages / clock / mode
-set -g message-style fg=${FG},bg=${BG}
+set -g message-style fg=${FG},bg=default
 set -gw clock-mode-colour ${FG}
 set -gw mode-style fg=${BG},bg=${MODE_BG}
 
@@ -49,17 +53,17 @@ set -gw mode-style fg=${BG},bg=${MODE_BG}
 set -gw copy-mode-match-style bg=${MATCH_BG}
 set -gw copy-mode-current-match-style fg=${BG},bg=${MATCH_CUR_BG}
 
-# === Window format ===
+# Window format
 set -gw window-status-format "#[fg=${BG}] #[fg=default]  #W  #[fg=${BG}]"
 set -gw window-status-current-format "${SEP} #W  #[fg=${DARK}]"
 
-# === Status-left components ===
+# Status-left components
 %hidden SESSION="#[fg=${FG}]#[bg=${FG},fg=${BG},bold] #S #[bg=${DARK},fg=${FG}]"
 %hidden ZOOM_FLAG="#[fg=color3,bold]#{?window_zoomed_flag,${ZOOM}, }#[fg=${DARK},bg=default]"
 
 set -g status-left "${SESSION}${ZOOM_FLAG} "
 
-# === Status-right components ===
+# Status-right components
 %hidden PLAYING="#[fg=color3]#(osascript $XDG_CONFIG_HOME/tmux/now-playing.scpt)"
 %hidden DATE="#[bg=default,fg=${DARK}]#[bg=${DARK},fg=${FG}] %b %d %R "
 %hidden HOST="#[bg=${DARK},fg=${FG}]#[bg=${FG},fg=${BG},bold] #(whoami) #[bg=default,fg=${FG}]"
