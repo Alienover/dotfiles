@@ -19,18 +19,31 @@ open_in_editor() {
     return 0
   fi
 
+  # lf ran in a tmux popup and has exited; open the files in the pane underneath
   if [ -n "$TMUX_LF" ]; then
-    case $(tmux display -p "#{pane_current_command}") in
+    local pane
+    pane=$(tmux display -p "#{pane_id}")
+    case $(tmux display -p -t "$pane" "#{pane_current_command}") in
       *vim)
-        tmux send-keys :tabnew Enter
-        tmux send-keys :argadd Space "${selected_files[@]}" Enter
-        tmux send-keys :b Space $(basename "$file") Enter
+        # Build a vim list of single-quoted paths ('' escapes a quote)
+        local list="" path q="'"
+        for path in "${selected_files[@]}"; do
+          list+="$q${path//$q/$q$q}$q,"
+        done
+        # <C-\><C-n> reaches normal mode from any mode without the <Esc> timeout
+        # (nvim reads a fast <Esc>: as <M-:>). `tab drop` reuses a tab if the
+        # file is already open, and fnameescape handles spaces, %, #, etc.
+        tmux send-keys -t "$pane" 'C-\' C-n
+        tmux send-keys -t "$pane" -l ":execute 'tab drop' join(map([${list%,}], 'fnameescape(v:val)'))"
+        tmux send-keys -t "$pane" Enter
         ;;
-      zsh)
-        tmux send-keys $EDITOR Space -- Space "${selected_files[@]}" Enter
+      bash|zsh|fish|sh|-bash|-zsh)
+        # -l sends the text literally so names like "Enter" aren't read as keys
+        tmux send-keys -t "$pane" -l "$EDITOR -- $(printf '%q ' "${selected_files[@]}")"
+        tmux send-keys -t "$pane" Enter
         ;;
       *)
-        tmux new-window "$EDITOR --" "${selected_files[@]}"
+        tmux new-window $EDITOR -- "${selected_files[@]}"
         ;;
     esac
     return 0
