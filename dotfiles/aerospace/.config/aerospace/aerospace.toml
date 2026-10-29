@@ -260,7 +260,7 @@ if.during-aerospace-startup = true
 run = "move-node-to-workspace 🍣"
 
 [[on-window-detected]]
-if.app-id = 'company.thebrowser.Browser'
+if.app-id = 'com.vivaldi.Vivaldi'
 if.during-aerospace-startup = true
 run = "move-node-to-workspace 🍣"
 
