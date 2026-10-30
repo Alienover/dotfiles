@@ -50,7 +50,6 @@ resolve_session() {
 
   if [ -z "$1" ]; then
     C_FG=$GUI_FOREGROUND
-    C_BG=$GUI_BACKGROUND
     C_PRIMARY=$GUI_PRIMARY
     C_YELLOW=$GUI_DARK_YELLOW
     C_BLACK=$GUI_BLACK
@@ -64,7 +63,7 @@ resolve_session() {
       --style=full
       --layout=reverse
       --preview-window=down
-      --color fg:$C_FG,bg:$C_BG,hl:$C_PRIMARY
+      --color fg:$C_FG,hl:$C_PRIMARY
       --color fg+:$C_FG,bg+:$C_BLACK,hl+:$C_YELLOW
       --color gutter:$C_BG,info:$C_PRIMARY,prompt:$C_PRIMARY
       --color spinner:$C_PRIMARY,pointer:$C_BLACK,marker:$C_YELLOW,border:$C_BLACK

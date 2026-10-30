@@ -5,6 +5,23 @@
 #   https://stackoverflow.com/a/55247572/197789
 #   https://github.com/petobens/dotfiles/blob/master/tmux/tmux_tree
 
+# Convert the tmux style directives used by tree_mode_format
+# (e.g. "#[fg=themelightgrey]") into terminal colours, since they only
+# render inside tmux itself. Any other directive is dropped.
+render_styles()
+{
+  local grey magenta underline reset
+  grey=$(printf '\033[90m')
+  magenta=$(printf '\033[35m')
+  underline=$(printf '\033[4m')
+  reset=$(printf '\033[0m')
+  sed -e "s/#\[fg=themelightgrey\]/${grey}/g" \
+    -e "s/#\[fg=thememagenta\]/${magenta}/g" \
+    -e "s/#\[underscore\]/${underline}/g" \
+    -e 's/#\[[^]]*\]//g' \
+    -e "s/\$/${reset}/"
+}
+
 single_mode()
 {
   session_name="${1}"
@@ -34,14 +51,13 @@ display_session()
   fi
   # Display session name and information
   session_info=$(tmux ls -f "#{==:#{session_id},${session_id}}" \
-    -F "#{session_name}: #{T:tree_mode_format}")
+    -F "#{session_name}: #{T:tree_mode_format}" | render_styles)
   echo -e "\033[1;34m$session_info\033[0m"
 
   # Display all windows
-  tmux lsw -t "${session_id}" -F '#{window_id}' | while read -r w; do
-    W=$(tmux lsw -t "${session_id}" -F '#{window_id}#{T:tree_mode_format}' \
-      | grep ^"$w")
-    echo " 󱞩 ${W##$w}"
+  tmux lsw -t "${session_id}" -F '#{T:tree_mode_format}' | render_styles \
+    | while read -r W; do
+    echo " 󱞩 ${W}"
   done
 
 }
@@ -55,7 +71,8 @@ tree_mode()
   highlight="${1}"
   tmux ls -F'#{session_id}' | while read -r s; do
     prefix="$s "
-    S=$(tmux ls -F'#{session_id} #{session_name}: #{T:tree_mode_format}' | grep ^"$prefix")
+    S=$(tmux ls -F'#{session_id} #{session_name}: #{T:tree_mode_format}' \
+      | grep ^"$prefix" | render_styles)
     session_info=${S##$prefix}
     session_name=$(echo "$session_info" | cut -d ':' -f 1)
     if [[ -n "$highlight" ]] && [[ "$highlight" == "$session_name" ]]; then
@@ -64,9 +81,9 @@ tree_mode()
       echo -e "\033[1m$session_info\033[0m"
     fi
     # Display each window
-    tmux lsw -t"$s" -F'#{window_id}' | while read -r w; do
-      W=$(tmux lsw -t"$s" -F'#{window_id}#{T:tree_mode_format}' | grep ^"$w")
-      echo "  ﬌ ${W##$w}"
+    tmux lsw -t"$s" -F'#{T:tree_mode_format}' | render_styles \
+      | while read -r W; do
+      echo "  ﬌ ${W}"
     done
   done
 }
