@@ -3,18 +3,22 @@
 # rex-popup - Run a command in a Rex floating layer, like `tmux popup -E`
 #
 # Usage: rex-popup [-w WIDTH] [-h HEIGHT] [-d DIR] [-l LABEL] [-t] CMD
-#   WIDTH/HEIGHT are percentages of the window (default 50%, 80% on small windows)
-#   -l labels the popup, and sets REX_POPUP=LABEL for CMD
-#   -t closes the popup labelled LABEL instead, if one is open
+#   WIDTH/HEIGHT are cells (100) or percentages of the window (50%),
+#   default 50%, or 80% on small windows
+#   -l labels the popup (default "popup")
+#   -t closes the popup with the same label instead, if one is open
 #   The layer closes when CMD exits.
+
+# From a Rex key binding the server's PATH has no `rex`, which sits beside
+# the server that started us
+if ! command -v rex > /dev/null; then
+  PATH="$(dirname "$(ps -o comm= -p $PPID)"):$PATH"
+fi
 
 __RX_WIDTH_DEFAULT="50%"
 __RX_HEIGHT_DEFAULT="50%"
 __RX_LABEL="popup"
 __RX_ARG_TOGGLE=0
-
-[[ $(tput cols 2>/dev/null || echo 999) -lt ${WINDOW_VIEWPORT_WIDTH_MD:-0} ]] && __RX_WIDTH_DEFAULT="80%"
-[[ $(tput lines 2>/dev/null || echo 999) -lt ${WINDOW_VIEWPORT_HEIGHT_MD:-0} ]] && __RX_HEIGHT_DEFAULT="80%"
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -40,13 +44,15 @@ while [[ "$#" -gt 0 ]]; do
   shift
 done
 
-if [ -z "$REX_SESSION" ]; then
+if [ -z "$REX_SESSION" ] || [ -z "$REX_BLOCK" ]; then
   echo "rex-popup: not running inside Rex" >&2
   exit 1
 fi
 
+__RX_VIEW=$(rex api call -s "$REX_SESSION" session.view)
+
 if [ $__RX_ARG_TOGGLE = 1 ]; then
-  __RX_LAYER=$(rex api call -s "$REX_SESSION" session.view | jq -r --arg l "$__RX_LABEL" \
+  __RX_LAYER=$(echo "$__RX_VIEW" | jq -r --arg l "$__RX_LABEL" \
     'first(.windows[].layers[] | select(.kind == "floating" and any(.blocks[]; .label == $l)) | .layer_id) // empty')
 
   if [ -n "$__RX_LAYER" ]; then
@@ -56,9 +62,26 @@ if [ $__RX_ARG_TOGGLE = 1 ]; then
   fi
 fi
 
-# "50%" -> 0.5, then centre the layer in the window
-__RX_W=$(awk -v v="${__RX_ARG_WIDTH:-$__RX_WIDTH_DEFAULT}" 'BEGIN { sub(/%$/, "", v); printf "%.4f", v / 100 }')
-__RX_H=$(awk -v v="${__RX_ARG_HEIGHT:-$__RX_HEIGHT_DEFAULT}" 'BEGIN { sub(/%$/, "", v); printf "%.4f", v / 100 }')
+# Window size in cells: the block's size scaled up by its share of the window
+__RX_SIZE=$(rex block call -s "$REX_SESSION" -b "$REX_BLOCK" size)
+__RX_RECT=$(echo "$__RX_VIEW" | jq -c --arg b "$REX_BLOCK" \
+  'first(.. | objects | select(.block_id == $b and has("rect")) | .rect) // [0, 0, 1, 1]')
+read -r __RX_COLS __RX_ROWS < <(jq -rn --argjson s "$__RX_SIZE" --argjson r "$__RX_RECT" \
+  '"\($s.columns / $r[2] | floor) \($s.rows / $r[3] | floor)"')
+
+[[ $__RX_COLS -lt ${WINDOW_VIEWPORT_WIDTH_MD:-0} ]] && __RX_WIDTH_DEFAULT="80%"
+[[ $__RX_ROWS -lt ${WINDOW_VIEWPORT_HEIGHT_MD:-0} ]] && __RX_HEIGHT_DEFAULT="80%"
+
+# "50%" -> 0.5 and "100" -> 100 cells of the window, at most all of it
+fraction() {
+  awk -v v="$1" -v total="$2" 'BEGIN {
+    f = sub(/%$/, "", v) ? v / 100 : v / total
+    printf "%.4f", (f > 1 ? 1 : f)
+  }'
+}
+
+__RX_W=$(fraction "${__RX_ARG_WIDTH:-$__RX_WIDTH_DEFAULT}" "$__RX_COLS")
+__RX_H=$(fraction "${__RX_ARG_HEIGHT:-$__RX_HEIGHT_DEFAULT}" "$__RX_ROWS")
 
 jq -n \
   --arg cwd "${__RX_PWD:-$PWD}" \
@@ -72,6 +95,6 @@ jq -n \
     layout: { block: {
       flavor: "com.superlogical.terminal.shell",
       label: $label,
-      options: { cwd: $cwd, command: ["env", "REX_POPUP=\($label)", "sh", "-c", $cmd] }
+      options: { cwd: $cwd, command: ["sh", "-c", $cmd] }
     } }
   }' | rex api call -s "$REX_SESSION" session.new_layer - > /dev/null

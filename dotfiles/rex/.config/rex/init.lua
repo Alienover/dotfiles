@@ -40,7 +40,7 @@ rex.action({
 	name = "switchy",
 	title = "Switch Session…",
 	run = function(ctx)
-		run(ctx, { BIN .. "/rex-switchy" })
+		run(ctx, { BIN .. "/rex-popup", "-t", "-l", "switchy", "-w", "100", "-h", "25", "rex-switchy" })
 	end,
 })
 
