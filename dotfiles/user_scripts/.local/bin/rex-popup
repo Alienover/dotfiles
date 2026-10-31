@@ -2,15 +2,19 @@
 
 # rex-popup - Run a command in a Rex floating layer, like `tmux popup -E`
 #
-# Usage: rex-popup [-w WIDTH] [-h HEIGHT] [-d DIR] CMD
+# Usage: rex-popup [-w WIDTH] [-h HEIGHT] [-d DIR] [-l LABEL] [-t] CMD
 #   WIDTH/HEIGHT are percentages of the window (default 50%, 80% on small windows)
+#   -l labels the popup, and sets REX_POPUP=LABEL for CMD
+#   -t closes the popup labelled LABEL instead, if one is open
 #   The layer closes when CMD exits.
 
 __RX_WIDTH_DEFAULT="50%"
 __RX_HEIGHT_DEFAULT="50%"
+__RX_LABEL="popup"
+__RX_ARG_TOGGLE=0
 
-[[ $(tput cols) -lt ${WINDOW_VIEWPORT_WIDTH_MD:-0} ]] && __RX_WIDTH_DEFAULT="80%"
-[[ $(tput lines) -lt ${WINDOW_VIEWPORT_HEIGHT_MD:-0} ]] && __RX_HEIGHT_DEFAULT="80%"
+[[ $(tput cols 2>/dev/null || echo 999) -lt ${WINDOW_VIEWPORT_WIDTH_MD:-0} ]] && __RX_WIDTH_DEFAULT="80%"
+[[ $(tput lines 2>/dev/null || echo 999) -lt ${WINDOW_VIEWPORT_HEIGHT_MD:-0} ]] && __RX_HEIGHT_DEFAULT="80%"
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -23,6 +27,12 @@ while [[ "$#" -gt 0 ]]; do
     -d)
       __RX_PWD="$2"
       shift ;;
+    -l)
+      __RX_LABEL="$2"
+      shift ;;
+    -t)
+      __RX_ARG_TOGGLE=1
+      ;;
     *)
       __RX_CMD=$1
       ;;
@@ -35,6 +45,17 @@ if [ -z "$REX_SESSION" ]; then
   exit 1
 fi
 
+if [ $__RX_ARG_TOGGLE = 1 ]; then
+  __RX_LAYER=$(rex api call -s "$REX_SESSION" session.view | jq -r --arg l "$__RX_LABEL" \
+    'first(.windows[].layers[] | select(.kind == "floating" and any(.blocks[]; .label == $l)) | .layer_id) // empty')
+
+  if [ -n "$__RX_LAYER" ]; then
+    jq -n --arg id "$__RX_LAYER" '{layer_id: $id}' \
+      | rex api call -s "$REX_SESSION" session.close_layer - > /dev/null
+    exit 0
+  fi
+fi
+
 # "50%" -> 0.5, then centre the layer in the window
 __RX_W=$(awk -v v="${__RX_ARG_WIDTH:-$__RX_WIDTH_DEFAULT}" 'BEGIN { sub(/%$/, "", v); printf "%.4f", v / 100 }')
 __RX_H=$(awk -v v="${__RX_ARG_HEIGHT:-$__RX_HEIGHT_DEFAULT}" 'BEGIN { sub(/%$/, "", v); printf "%.4f", v / 100 }')
@@ -42,6 +63,7 @@ __RX_H=$(awk -v v="${__RX_ARG_HEIGHT:-$__RX_HEIGHT_DEFAULT}" 'BEGIN { sub(/%$/, 
 jq -n \
   --arg cwd "${__RX_PWD:-$PWD}" \
   --arg cmd "$__RX_CMD" \
+  --arg label "$__RX_LABEL" \
   --argjson w "$__RX_W" \
   --argjson h "$__RX_H" \
   '{
@@ -49,6 +71,7 @@ jq -n \
     focus: true,
     layout: { block: {
       flavor: "com.superlogical.terminal.shell",
-      options: { cwd: $cwd, command: ["sh", "-c", $cmd] }
+      label: $label,
+      options: { cwd: $cwd, command: ["env", "REX_POPUP=\($label)", "sh", "-c", $cmd] }
     } }
   }' | rex api call -s "$REX_SESSION" session.new_layer - > /dev/null

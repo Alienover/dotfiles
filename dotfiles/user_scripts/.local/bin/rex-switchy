@@ -7,7 +7,7 @@
 # Rex app to that session, creating it first if it doesn't exist.
 #
 # Usage: rex-switchy [query]
-#   Without args: Opens fzf to interactively select a session
+#   Without args: Toggles a popup that opens fzf to interactively select a session
 #   With query:   Switches to session matching the query
 #
 # Switching needs Remote Control turned on in Rex.app (Settings > Rex Server).
@@ -124,5 +124,10 @@ switch_to_session() {
     read -rsn1
   }
 }
+
+# Outside the popup: toggle the popup, which runs this script again inside it
+if [ -z "$1" ] && [ "$REX_POPUP" != "switchy" ]; then
+  exec rex-popup -t -l switchy -w 60% -h 50% -d "$HOME" rex-switchy
+fi
 
 switch_to_session "$(resolve_session "$1")"
