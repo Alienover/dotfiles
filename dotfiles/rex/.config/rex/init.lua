@@ -44,6 +44,28 @@ rex.action({
 	end,
 })
 
+-- Go to the Nth tab of the current session. client.tab.goto counts tabs
+-- across every session.
+rex.action({
+	name = "tab_goto",
+	title = "Go to Tab in Session",
+	args = { index = "integer" },
+	run = function(ctx, args)
+		local view, err = rex.session.view({})
+		if err ~= nil then
+			error(err, 0)
+		end
+		local window = (view.windows or {})[args.index]
+		if window == nil then
+			return
+		end
+		local _, ferr = rex.session.focus_window({ window_id = window.window_id })
+		if ferr ~= nil then
+			error(ferr, 0)
+		end
+	end,
+})
+
 rex.mode("prefix", { exclusive = true })
 rex.bind("ctrl+b", "prefix")
 rex.bind("prefix/ctrl+b", "pane.send_key", { key = "ctrl+b" })
@@ -54,5 +76,5 @@ rex.bind("prefix/shift+5", "pane.split", { direction = "right" }) -- %
 rex.bind("prefix/shift+'", "pane.split", { direction = "down" }) -- "
 rex.bind("prefix/c", "client.tab.new")
 for i = 1, 9 do
-	rex.bind("prefix/" .. i, "client.tab.goto", { index = i })
+	rex.bind("prefix/" .. i, "tab_goto", { index = i })
 end
