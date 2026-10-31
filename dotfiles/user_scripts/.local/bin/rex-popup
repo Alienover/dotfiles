@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+# rex-popup - Run a command in a Rex floating layer, like `tmux popup -E`
+#
+# Usage: rex-popup [-w WIDTH] [-h HEIGHT] [-d DIR] CMD
+#   WIDTH/HEIGHT are percentages of the window (default 50%, 80% on small windows)
+#   The layer closes when CMD exits.
+
+__RX_WIDTH_DEFAULT="50%"
+__RX_HEIGHT_DEFAULT="50%"
+
+[[ $(tput cols) -lt ${WINDOW_VIEWPORT_WIDTH_MD:-0} ]] && __RX_WIDTH_DEFAULT="80%"
+[[ $(tput lines) -lt ${WINDOW_VIEWPORT_HEIGHT_MD:-0} ]] && __RX_HEIGHT_DEFAULT="80%"
+
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -w|--width)
+      __RX_ARG_WIDTH=$2
+      shift ;;
+    -h|--height)
+      __RX_ARG_HEIGHT=$2
+      shift ;;
+    -d)
+      __RX_PWD="$2"
+      shift ;;
+    *)
+      __RX_CMD=$1
+      ;;
+  esac
+  shift
+done
+
+if [ -z "$REX_SESSION" ]; then
+  echo "rex-popup: not running inside Rex" >&2
+  exit 1
+fi
+
+# "50%" -> 0.5, then centre the layer in the window
+__RX_W=$(awk -v v="${__RX_ARG_WIDTH:-$__RX_WIDTH_DEFAULT}" 'BEGIN { sub(/%$/, "", v); printf "%.4f", v / 100 }')
+__RX_H=$(awk -v v="${__RX_ARG_HEIGHT:-$__RX_HEIGHT_DEFAULT}" 'BEGIN { sub(/%$/, "", v); printf "%.4f", v / 100 }')
+
+jq -n \
+  --arg cwd "${__RX_PWD:-$PWD}" \
+  --arg cmd "$__RX_CMD" \
+  --argjson w "$__RX_W" \
+  --argjson h "$__RX_H" \
+  '{
+    bounds: [(1 - $w) / 2, (1 - $h) / 2, $w, $h],
+    focus: true,
+    layout: { block: {
+      flavor: "com.superlogical.terminal.shell",
+      options: { cwd: $cwd, command: ["sh", "-c", $cmd] }
+    } }
+  }' | rex api call -s "$REX_SESSION" session.new_layer - > /dev/null

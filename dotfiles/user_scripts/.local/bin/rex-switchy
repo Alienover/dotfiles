@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+
+# rex-switchy - Fuzzy-find and switch between Rex sessions
+#
+# Rex counterpart of tmux-switchy. Lists existing Rex sessions with fzf, or
+# resolves a query against the pre-defined session mappings, then switches the
+# Rex app to that session, creating it first if it doesn't exist.
+#
+# Usage: rex-switchy [query]
+#   Without args: Opens fzf to interactively select a session
+#   With query:   Switches to session matching the query
+#
+# Switching needs Remote Control turned on in Rex.app (Settings > Rex Server).
+# Set REX_CLIENT to pick the app when several are connected.
+
+# Define session mappings: key (for fuzzy search) -> session name (actual Rex session)
+declare -A SESSION_MAPPINGS=(
+  ["term"]="🦄 term"
+  ["obsidian"]="📚 Obsidian"
+  ["vpn"]="🌈 vpn"
+  # Add more mappings as needed
+)
+
+# Load additional mappings from optional config file: ~/.tmux_session
+# Shared with tmux-switchy. File format (one mapping per line):
+#   key=session_name
+load_session_mappings() {
+  SESSION_CONFIG="$HOME/.tmux_session"
+  if [ -f "$SESSION_CONFIG" ]; then
+    while IFS='=' read -r key value; do
+      # Skip empty lines and comments
+      [[ -z "$key" || "$key" =~ ^[[:space:]]*# ]] && continue
+      # Trim whitespace
+      key=$(echo "$key" | xargs)
+      value=$(echo "$value" | xargs)
+      # Add to mappings if both key and value are present
+      if [ -n "$key" ] && [ -n "$value" ]; then
+        SESSION_MAPPINGS["$key"]="$value"
+      fi
+    done < "$SESSION_CONFIG"
+  fi
+}
+
+list_sessions() {
+  rex ls --json 2>/dev/null | jq -r '.sessions[].label' | sort
+}
+
+# Resolve session name from query or interactive fzf selection
+resolve_session() {
+  local selected_session=""
+  local query="$1"
+
+  if [ -z "$1" ]; then
+    C_FG=$GUI_FOREGROUND
+    C_PRIMARY=$GUI_PRIMARY
+    C_YELLOW=$GUI_DARK_YELLOW
+    C_BLACK=$GUI_BLACK
+
+    # Refer to https://github.com/junegunn/fzf/wiki/Color-schemes#color-configuration for more detail
+    FZF_OPTIONS="
+      --no-info
+      --no-scrollbar
+      --height=100%
+      --print-query
+      --style=full
+      --layout=reverse
+      --color fg:$C_FG,hl:$C_PRIMARY
+      --color fg+:$C_FG,bg+:$C_BLACK,hl+:$C_YELLOW
+      --color gutter:$C_BG,info:$C_PRIMARY,prompt:$C_PRIMARY
+      --color spinner:$C_PRIMARY,pointer:$C_BLACK,marker:$C_YELLOW,border:$C_BLACK
+    "
+
+    export -f list_sessions
+    query=$(list_sessions | fzf $FZF_OPTIONS --prompt "Session: " \
+      --bind "ctrl-x:execute-silent(rex kill {} 2>/dev/null)+reload(list_sessions)" \
+    )
+  fi
+
+  [ -z "$query" ] && exit 0
+
+  # When fzf is called with --print-query, it outputs 2 lines on selection:
+  #   Line 1: The user's search query
+  #   Line 2: The selected item
+  # If we got 2 lines, extract the selected item (line 2) and return it
+  if [ "$(echo "$query" | wc -l )" -eq 2 ]; then
+    echo "$query" | tail -n 1
+    exit 0
+  fi
+
+  load_session_mappings
+
+  selected_session="${SESSION_MAPPINGS[$query]}"
+
+  if [ -z "$selected_session" ]; then
+    all_keys=""
+    for key in "${!SESSION_MAPPINGS[@]}"; do
+      all_keys="${all_keys}${key}\n"
+    done
+    query="$(echo -e "$all_keys" | sed '/^$/d' | fzf --filter="$query" | head -n 1)"
+
+    [ -n "$query" ] && selected_session="${SESSION_MAPPINGS[$query]}"
+  fi
+
+  echo "$selected_session"
+}
+
+# Switches the Rex app to the session, or creates it if it doesn't exist
+switch_to_session() {
+  local session="$1"
+  local session_id
+
+  if [ -z "$session" ]; then
+    echo "No project selected!"
+    return
+  fi
+
+  session_id=$(rex ls --json | jq -r --arg s "$session" 'first(.sessions[] | select(.label == $s) | .session_id) // empty')
+  if [ -z "$session_id" ]; then
+    session_id=$(rex new "$session" -c "$HOME" --json | jq -r '.session_id')
+  fi
+
+  rex do session.select session_id="$session_id" || {
+    echo "Press any key to close"
+    read -rsn1
+  }
+}
+
+switch_to_session "$(resolve_session "$1")"
