@@ -44,59 +44,6 @@ rex.action({
 	end,
 })
 
--- The previously active tab per session, for `prefix l`. Rex doesn't track
--- it, so tab switches made through the prefix record it here.
-local last_window = {}
-
-local function active_window()
-	local view, err = rex.session.view({})
-	if err ~= nil then
-		error(err, 0)
-	end
-	return view.active_window_id
-end
-
-local function remember(ctx)
-	last_window[ctx.session_id] = active_window()
-end
-
-rex.action({
-	name = "tab_new",
-	title = "New Tab (remember last)",
-	run = function(ctx)
-		remember(ctx)
-		rex.client.queue("client.tab.new")
-	end,
-})
-
-rex.action({
-	name = "tab_goto",
-	title = "Go to Tab (remember last)",
-	args = { index = "integer" },
-	run = function(ctx, args)
-		remember(ctx)
-		rex.client.queue("client.tab.goto", { index = args.index })
-	end,
-})
-
-rex.action({
-	name = "tab_last",
-	title = "Last Tab",
-	run = function(ctx)
-		local target = last_window[ctx.session_id]
-		local current = active_window()
-		if target == nil or target == current then
-			return
-		end
-		local _, err = rex.session.focus_window({ window_id = target })
-		if err ~= nil then
-			last_window[ctx.session_id] = nil
-			return
-		end
-		last_window[ctx.session_id] = current
-	end,
-})
-
 rex.mode("prefix", { exclusive = true })
 rex.bind("ctrl+b", "prefix")
 rex.bind("prefix/ctrl+b", "pane.send_key", { key = "ctrl+b" })
@@ -105,8 +52,7 @@ rex.bind("prefix/p", "switchy")
 -- tmux defaults
 rex.bind("prefix/shift+5", "pane.split", { direction = "right" }) -- %
 rex.bind("prefix/shift+'", "pane.split", { direction = "down" }) -- "
-rex.bind("prefix/c", "tab_new")
-rex.bind("prefix/l", "tab_last")
+rex.bind("prefix/c", "client.tab.new")
 for i = 1, 9 do
-	rex.bind("prefix/" .. i, "tab_goto", { index = i })
+	rex.bind("prefix/" .. i, "client.tab.goto", { index = i })
 end
