@@ -45,7 +45,8 @@ rex.action({
 })
 
 -- Go to the Nth tab of the current session. client.tab.goto counts tabs
--- across every session.
+-- across every session, and the app keeps its own selected tab, so ask it
+-- to show the window rather than focusing it on the server.
 rex.action({
 	name = "tab_goto",
 	title = "Go to Tab in Session",
@@ -59,10 +60,7 @@ rex.action({
 		if window == nil then
 			return
 		end
-		local _, ferr = rex.session.focus_window({ window_id = window.window_id })
-		if ferr ~= nil then
-			error(ferr, 0)
-		end
+		rex.client.queue("session.select", { session_id = ctx.session_id, window_id = window.window_id })
 	end,
 })
 
