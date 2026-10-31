@@ -41,9 +41,8 @@ load_session_mappings() {
   fi
 }
 
-list_sessions() {
-  rex ls --json 2>/dev/null | jq -r '.sessions[].label' | sort
-}
+# A command string rather than a function, since fzf runs its binds in $SHELL
+LIST_SESSIONS="rex ls --json 2>/dev/null | jq -r '.sessions[].label' | sort"
 
 # Resolve session name from query or interactive fzf selection
 resolve_session() {
@@ -70,9 +69,8 @@ resolve_session() {
       --color spinner:$C_PRIMARY,pointer:$C_BLACK,marker:$C_YELLOW,border:$C_BLACK
     "
 
-    export -f list_sessions
-    query=$(list_sessions | fzf $FZF_OPTIONS --prompt "Session: " \
-      --bind "ctrl-x:execute-silent(rex kill {} 2>/dev/null)+reload(list_sessions)" \
+    query=$(eval "$LIST_SESSIONS" | fzf $FZF_OPTIONS --prompt "Session: " \
+      --bind "ctrl-x:execute-silent(rex kill {} 2>/dev/null)+reload($LIST_SESSIONS)" \
     )
   fi
 
