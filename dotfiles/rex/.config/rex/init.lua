@@ -8,16 +8,6 @@ local function in_tmux(ctx)
 	return fg ~= nil and (fg.name == "tmux" or fg.argv0 == "tmux")
 end
 
--- Programs that handle Ctrl+h/j/k/l themselves. nvim moves between its own
--- splits and calls `rex focus` at the edge; tmux uses vim-tmux-navigator.
-local NAV_APPS = { nvim = true, vim = true, tmux = true }
-
-local function nav_passthrough(ctx)
-	local p = rex.block.call(TERMINAL, "process", { block_id = ctx.block_id })
-	local fg = p and p.foreground
-	return fg ~= nil and (NAV_APPS[fg.name] or NAV_APPS[fg.argv0]) == true
-end
-
 -- Run a script with the session and block the action applies to
 local function run(ctx, argv)
 	local r, err = rex.exec(argv, {
@@ -74,24 +64,7 @@ rex.action({
 	end,
 })
 
--- Ctrl+h/j/k/l moves between panes, like vim-tmux-navigator. The key goes
--- through to nvim and tmux so they can move within their own splits first.
-rex.action({
-	name = "navigate",
-	title = "Navigate Pane",
-	args = { direction = "string", key = "string" },
-	run = function(ctx, args)
-		if nav_passthrough(ctx) then
-			rex.client.queue("pane.send_key", { key = args.key })
-		else
-			rex.client.queue("pane.focus", { direction = args.direction })
-		end
-	end,
-})
-
-for key, direction in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
-	rex.bind("ctrl+" .. key, "navigate", { direction = direction, key = "ctrl+" .. key })
-end
+require("plugins.navigate").setup()
 
 rex.mode("prefix", { exclusive = true })
 rex.bind("ctrl+b", "prefix")
