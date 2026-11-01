@@ -2,6 +2,7 @@
 return {
 	{ -- Tmux Navigation
 		"alexghergh/nvim-tmux-navigation",
+		cond = vim.env.TMUX ~= nil,
 		keys = {
 			"<C-h>",
 			"<C-j>",
