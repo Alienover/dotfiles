@@ -270,6 +270,11 @@ if.during-aerospace-startup = true
 run = "move-node-to-workspace 💻"
 
 [[on-window-detected]]
+if.app-id = 'com.superlogical.rex'
+if.during-aerospace-startup = true
+run = "move-node-to-workspace 💻"
+
+[[on-window-detected]]
 if.app-id = 'org.alacritty'
 if.during-aerospace-startup = true
 run = "move-node-to-workspace 💻"
