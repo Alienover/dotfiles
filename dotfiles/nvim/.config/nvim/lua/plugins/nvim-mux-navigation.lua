@@ -6,6 +6,10 @@ return {
 		"nvim-mux-navigation",
 		virtual = true,
 		cond = nav.enabled(),
+		-- At startup, not on the first key: Herdr reads the label nvim keeps
+		init = function()
+			nav.setup()
+		end,
 		keys = {
 			{
 				"<C-h>",
