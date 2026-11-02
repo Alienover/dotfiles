@@ -24,8 +24,6 @@ vim.g.matchup_matchparen_offscreen = { method = "popup" }
 -- Enable Cowboy by default
 vim.g.cowboy_enabled = true
 
-vim.g.clipboard = "osc52"
-
 -- Vim based Options
 
 -- UI
