@@ -1,19 +1,24 @@
 #!/usr/bin/env bash
 
-# rex-switchy - Fuzzy-find and switch between Rex sessions
+# mux-switchy - Fuzzy-find and switch between Rex sessions or Herdr spaces
 #
-# Rex counterpart of tmux-switchy. Lists existing Rex sessions with fzf, or
-# resolves a query against the pre-defined session mappings, then switches the
-# Rex app to that session, creating it first if it doesn't exist.
+# Counterpart of tmux-switchy. Lists existing sessions with fzf, or resolves a
+# query against the pre-defined session mappings, then switches the app to
+# that session, creating it first if it doesn't exist.
 #
-# Usage: rex-switchy [query]
+# Usage: mux-switchy [query]
 #   Without args: Opens fzf to interactively select a session
+#                 (ctrl-x closes the highlighted one)
 #   With query:   Switches to session matching the query
+#   --list / --kill NAME are used by the fzf bindings
 #
-# Switching needs Remote Control turned on in Rex.app (Settings > Rex Server).
-# Set REX_CLIENT to pick the app when several are connected.
+# Backend: $MUX_BACKEND (rex|herdr), else Rex inside Rex ($REX_SESSION), else
+# Herdr inside Herdr ($HC_TERMINAL_ID). A Rex session is a Herdr space.
+#
+# Rex: switching needs Remote Control turned on in Rex.app (Settings > Rex
+# Server). Set REX_CLIENT to pick the app when several are connected.
 
-# Define session mappings: key (for fuzzy search) -> session name (actual Rex session)
+# Define session mappings: key (for fuzzy search) -> session name (actual session)
 declare -A SESSION_MAPPINGS=(
   ["term"]="🦄 term"
   ["obsidian"]="📚 Obsidian"
@@ -41,13 +46,52 @@ load_session_mappings() {
   fi
 }
 
-# A command string rather than a function, since fzf runs its binds in $SHELL
-LIST_SESSIONS="rex ls --json 2>/dev/null | jq -r '.sessions[].label' | sort"
+backend=${MUX_BACKEND:-}
+if [ -z "$backend" ]; then
+  if [ -n "$REX_SESSION" ]; then
+    backend=rex
+  elif [ -n "$HC_TERMINAL_ID" ]; then
+    backend=herdr
+  fi
+fi
+case "$backend" in
+  rex|herdr) export MUX_BACKEND=$backend ;; # fzf's binds re-run this script
+  *)
+    echo "mux-switchy: not running inside Rex or Herdr (set MUX_BACKEND=rex|herdr)" >&2
+    exit 1 ;;
+esac
+
+# --- Backend operations: list names, find an id by name, create, select, close
+
+rex_list() { rex ls --json 2>/dev/null | jq -r '.sessions[].label'; }
+rex_find() { rex ls --json | jq -r --arg s "$1" 'first(.sessions[] | select(.label == $s) | .session_id) // empty'; }
+rex_create() { rex new "$1" -c "$HOME" --json | jq -r '.session_id'; }
+rex_select() { rex do session.select session_id="$1"; }
+rex_kill() { rex kill "$1" 2>/dev/null; }
+
+herdr_list() { herdr-app ls 2>/dev/null | jq -r '.spaces[].name'; }
+herdr_find() { herdr-app ls | jq -r --arg s "$1" 'first(.spaces[] | select(.name == $s) | .id) // empty'; }
+herdr_create() { herdr-app do space.new --name "$1" --folder "$HOME" | jq -r '.space // empty'; }
+herdr_select() { herdr-app do space.select --id "$1" | jq -e '.ok' > /dev/null; }
+herdr_kill() {
+  local id
+  id=$(herdr_find "$1")
+  [ -n "$id" ] && herdr-app do space.close --id "$id" --confirmed true > /dev/null
+}
+
+list_sessions() { "${backend}_list" | sort; }
+
+case "$1" in
+  --list) list_sessions; exit 0 ;;
+  --kill) "${backend}_kill" "$2"; exit 0 ;;
+esac
 
 # Resolve session name from query or interactive fzf selection
 resolve_session() {
   local selected_session=""
   local query="$1"
+  local self
+  self=$(printf '%q' "$0")
 
   if [ -z "$1" ]; then
     C_FG=$GUI_FOREGROUND
@@ -69,8 +113,9 @@ resolve_session() {
       --color spinner:$C_PRIMARY,pointer:$C_BLACK,marker:$C_YELLOW,border:$C_BLACK
     "
 
-    query=$(eval "$LIST_SESSIONS" | fzf $FZF_OPTIONS --prompt "Session: " \
-      --bind "ctrl-x:execute-silent(rex kill {} 2>/dev/null)+reload($LIST_SESSIONS)" \
+    # shellcheck disable=SC2086 # FZF_OPTIONS is a list of flags
+    query=$(list_sessions | fzf $FZF_OPTIONS --prompt "Session: " \
+      --bind "ctrl-x:execute-silent($self --kill {})+reload($self --list)" \
     )
   fi
 
@@ -102,7 +147,7 @@ resolve_session() {
   echo "$selected_session"
 }
 
-# Switches the Rex app to the session, or creates it if it doesn't exist
+# Switches the app to the session, or creates it if it doesn't exist
 switch_to_session() {
   local session="$1"
   local session_id
@@ -112,12 +157,12 @@ switch_to_session() {
     return
   fi
 
-  session_id=$(rex ls --json | jq -r --arg s "$session" 'first(.sessions[] | select(.label == $s) | .session_id) // empty')
+  session_id=$("${backend}_find" "$session")
   if [ -z "$session_id" ]; then
-    session_id=$(rex new "$session" -c "$HOME" --json | jq -r '.session_id')
+    session_id=$("${backend}_create" "$session")
   fi
 
-  rex do session.select session_id="$session_id" || {
+  "${backend}_select" "$session_id" || {
     echo "Press any key to close"
     read -rsn1
   }

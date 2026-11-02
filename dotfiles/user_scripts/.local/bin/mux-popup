@@ -1,0 +1,180 @@
+#!/usr/bin/env bash
+
+# mux-popup - Run a command in a floating popup, like `tmux popup -E`, in Rex
+# or Herdr
+#
+# Usage: mux-popup [-w WIDTH] [-h HEIGHT] [-d DIR] [-l LABEL] [-t] CMD
+#   WIDTH/HEIGHT are cells (100) or percentages of the window (50%),
+#   default 50%, or 80% on small windows
+#   -l labels the popup (default "popup")
+#   -t closes the popup with the same label instead, if one is open
+#   The popup closes when CMD exits.
+#
+# Backend: $MUX_BACKEND (rex|herdr), else Rex inside Rex ($REX_SESSION), else
+# Herdr inside Herdr ($HC_TERMINAL_ID). Herdr key bindings have no terminal,
+# so its mods set MUX_BACKEND=herdr and MUX_TERMINAL to the focused terminal.
+
+__MP_WIDTH_DEFAULT="50%"
+__MP_HEIGHT_DEFAULT="50%"
+__MP_LABEL="popup"
+__MP_ARG_TOGGLE=0
+
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -w|--width)
+      __MP_ARG_WIDTH=$2
+      shift ;;
+    -h|--height)
+      __MP_ARG_HEIGHT=$2
+      shift ;;
+    -d)
+      __MP_PWD="$2"
+      shift ;;
+    -l)
+      __MP_LABEL="$2"
+      shift ;;
+    -t)
+      __MP_ARG_TOGGLE=1
+      ;;
+    *)
+      __MP_CMD=$1
+      ;;
+  esac
+  shift
+done
+
+# Pick 80% instead of 50% when the window is smaller than the "medium" size
+small_window_defaults() {
+  local cols=$1 rows=$2
+  [[ $cols -lt ${WINDOW_VIEWPORT_WIDTH_MD:-270} ]] && __MP_WIDTH_DEFAULT="80%"
+  [[ $rows -lt ${WINDOW_VIEWPORT_HEIGHT_MD:-80} ]] && __MP_HEIGHT_DEFAULT="80%"
+}
+
+rex_popup() {
+  # From a Rex key binding the server's PATH has no `rex`, which sits beside
+  # the server that started us
+  if ! command -v rex > /dev/null; then
+    PATH="$(dirname "$(ps -o comm= -p $PPID)"):$PATH"
+  fi
+
+  if [ -z "$REX_SESSION" ] || [ -z "$REX_BLOCK" ]; then
+    echo "mux-popup: not running inside Rex" >&2
+    exit 1
+  fi
+
+  local view layer size rect cols rows w h
+  view=$(rex api call -s "$REX_SESSION" session.view)
+
+  if [ $__MP_ARG_TOGGLE = 1 ]; then
+    layer=$(echo "$view" | jq -r --arg l "$__MP_LABEL" \
+      'first(.windows[].layers[] | select(.kind == "floating" and any(.blocks[]; .label == $l)) | .layer_id) // empty')
+
+    if [ -n "$layer" ]; then
+      jq -n --arg id "$layer" '{layer_id: $id}' \
+        | rex api call -s "$REX_SESSION" session.close_layer - > /dev/null
+      exit 0
+    fi
+  fi
+
+  # Window size in cells: the block's size scaled up by its share of the window
+  size=$(rex block call -s "$REX_SESSION" -b "$REX_BLOCK" size)
+  rect=$(echo "$view" | jq -c --arg b "$REX_BLOCK" \
+    'first(.. | objects | select(.block_id == $b and has("rect")) | .rect) // [0, 0, 1, 1]')
+  read -r cols rows < <(jq -rn --argjson s "$size" --argjson r "$rect" \
+    '"\($s.columns / $r[2] | floor) \($s.rows / $r[3] | floor)"')
+
+  small_window_defaults "$cols" "$rows"
+
+  # "50%" -> 0.5 and "100" -> 100 cells of the window, at most all of it
+  fraction() {
+    awk -v v="$1" -v total="$2" 'BEGIN {
+      f = sub(/%$/, "", v) ? v / 100 : v / total
+      printf "%.4f", (f > 1 ? 1 : f)
+    }'
+  }
+
+  w=$(fraction "${__MP_ARG_WIDTH:-$__MP_WIDTH_DEFAULT}" "$cols")
+  h=$(fraction "${__MP_ARG_HEIGHT:-$__MP_HEIGHT_DEFAULT}" "$rows")
+
+  jq -n \
+    --arg cwd "${__MP_PWD:-$PWD}" \
+    --arg cmd "$__MP_CMD" \
+    --arg label "$__MP_LABEL" \
+    --argjson w "$w" \
+    --argjson h "$h" \
+    '{
+      bounds: [(1 - $w) / 2, (1 - $h) / 2, $w, $h],
+      focus: true,
+      layout: { block: {
+        flavor: "com.superlogical.terminal.shell",
+        label: $label,
+        options: { cwd: $cwd, command: ["sh", "-c", $cmd] }
+      } }
+    }' | rex api call -s "$REX_SESSION" session.new_layer - > /dev/null
+}
+
+# Herdr: start CMD as a hidden hc terminal labelled with its size, then have
+# the `popup` mod (~/.config/herdr-app/mods/popup) show it as a dialog. The mod
+# turns mux.popup=pending into shown; the dialog closes when CMD exits.
+herdr_popup() {
+  local name addr ref cols rows state i
+  # hc names are 1-32 of a-z 0-9 - _
+  name="popup-$(echo "$__MP_LABEL" | tr 'A-Z' 'a-z' | tr -c 'a-z0-9_-' '-' | cut -c1-26)"
+  name=${name%-}
+
+  addr=$(hc ls --json | jq -r --arg n "$name" 'first(.terminals[] | select(.name == $n) | .address) // empty')
+  if [ -n "$addr" ]; then
+    hc kill "$addr" > /dev/null # its dialog closes with it
+    [ $__MP_ARG_TOGGLE = 1 ] && exit 0
+  fi
+
+  # The terminal we were started from stands in for the window size
+  ref=${MUX_TERMINAL:-$HC_TERMINAL_ID}
+  if [ -n "$ref" ]; then
+    read -r cols rows < <(hc get "$ref" --json 2>/dev/null | jq -r '"\(.cols // 999) \(.rows // 999)"')
+    small_window_defaults "${cols:-999}" "${rows:-999}"
+  fi
+
+  # --no-parent: not a sub-agent of the calling pane, and it outlives it.
+  # The core's env has PATH but not the shell theme, so load the colors.
+  addr=$(env -u HC_TERMINAL_ID hc run --bg --no-parent --rm --json \
+    --name "$name" \
+    --cwd "${__MP_PWD:-$PWD}" \
+    --label mux.popup=pending \
+    --label "mux.popup.width=${__MP_ARG_WIDTH:-$__MP_WIDTH_DEFAULT}" \
+    --label "mux.popup.height=${__MP_ARG_HEIGHT:-$__MP_HEIGHT_DEFAULT}" \
+    sh -c '[ -f "$HOME/.config/shell/colors.sh" ] && . "$HOME/.config/shell/colors.sh"; eval "$1"' sh "$__MP_CMD" \
+    | jq -r '.address // empty')
+
+  if [ -z "$addr" ]; then
+    echo "mux-popup: hc run failed" >&2
+    exit 1
+  fi
+
+  # The app learns about new terminals a moment later: retry until it shows it
+  for i in $(seq 1 30); do
+    herdr-app do mod.open --name popup > /dev/null 2>&1
+    sleep 0.1
+    state=$(hc get "$addr" --json 2>/dev/null | jq -r '"\(.state) \(.labels["mux.popup"])"')
+    [[ "$state" == "live pending" ]] || return 0
+  done
+  echo "mux-popup: Herdr didn't show $addr" >&2
+  exit 1
+}
+
+backend=${MUX_BACKEND:-}
+if [ -z "$backend" ]; then
+  if [ -n "$REX_SESSION" ]; then
+    backend=rex
+  elif [ -n "$HC_TERMINAL_ID" ]; then
+    backend=herdr
+  fi
+fi
+
+case "$backend" in
+  rex) rex_popup ;;
+  herdr) herdr_popup ;;
+  *)
+    echo "mux-popup: not running inside Rex or Herdr (set MUX_BACKEND=rex|herdr)" >&2
+    exit 1 ;;
+esac
