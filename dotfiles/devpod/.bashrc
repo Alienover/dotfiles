@@ -1,44 +1,78 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# ~/.bashrc: read by every interactive non-login bash, and by login shells
+# through ~/.profile. It has two parts:
+#   1. Environment: runs in every shell that reads this file, including
+#      non-interactive ones (ssh/scp commands, `bash -l -c` from nvim-remote),
+#      whose stdout is data, so it must print nothing. Safe to re-run in nested
+#      shells.
+#   2. Interactive: history, aliases, completion, prompt. Skipped otherwise.
+
+# ---------------------------------------------------------------------------
+# 1. Environment
+# ---------------------------------------------------------------------------
+SHELL_CONFIG="$HOME/.config/shell"
+
+# Shared profile: XDG dirs, TERM, EDITOR, LANG, ~/.local/bin on PATH
+[ -f "$SHELL_CONFIG/profile.default" ] && . "$SHELL_CONFIG/profile.default"
+# Customized color scheme (exported vars other tools read)
+[ -f "$SHELL_CONFIG/colors.sh" ] && . "$SHELL_CONFIG/colors.sh"
+
+[ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
+
+# mise: puts tool versions (nvim, node, fzf, ...) on PATH. Its functions and
+# prompt hook aren't inherited by child shells, so activate in every shell.
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
+fi
+
+# Drop duplicate PATH entries that pile up when shells nest.
+__path_dedupe() {
+  local p out= IFS=:
+  local -a parts
+  read -ra parts <<<"$PATH"
+  for p in "${parts[@]}"; do
+    case ":$out:" in *":$p:"*) ;; *) out="${out:+$out:}$p" ;; esac
+  done
+  export PATH="$out"
+}
+__path_dedupe
+unset -f __path_dedupe
+
+case $- in
+  *i*) ;;
+  *) return ;;
+esac
+
+# ---------------------------------------------------------------------------
+# 2. Interactive only
+# ---------------------------------------------------------------------------
 
 # don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
 HISTCONTROL=ignoreboth
-
 # append to the history file, don't overwrite it
 shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
+# check the window size after each command and update LINES and COLUMNS.
 shopt -s checkwinsize
 
-SHELL_CONFIG="$HOME/.config/shell"
-# Load alias
+# Forwarded ssh agent: DevPod creates a new /tmp/auth-agent*/listener.sock per
+# ssh connection, so long-lived shells (tmux, Herdr) keep a dead path after a
+# reconnect. Switch to the newest live socket whenever the current one is gone.
+__fix_ssh_agent() {
+  [ -S "$SSH_AUTH_SOCK" ] && return
+  local s
+  for s in $(ls -t /tmp/auth-agent*/listener.sock 2>/dev/null); do
+    [ -S "$s" ] && { export SSH_AUTH_SOCK="$s"; return; }
+  done
+}
+__fix_ssh_agent
+PROMPT_COMMAND="__fix_ssh_agent${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+
+# Aliases go after mise so `command -v nvim`/`bat`/`eza` checks find its tools.
 [ -f "$SHELL_CONFIG/alias.sh" ] && . "$SHELL_CONFIG/alias.sh"
-# Load Customized color scheme
-[ -f "$SHELL_CONFIG/colors.sh" ] && . "$SHELL_CONFIG/colors.sh"
 
-# enable color support of ls and also add handy aliases
-# if [ -x /usr/bin/dircolors ]; then
-#     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-# fi
-
-# Everything above must stay silent: it also runs for non-interactive shells
-# (ssh/scp commands, `bash -l` from nvim-remote), whose stdout is data.
-# Completion and prompt are only useful interactively, so stop here otherwise.
-case $- in
-    *i*) ;;
-      *) return;;
-esac
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
+# enable programmable completion features (also loads __git_ps1 on Debian).
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -47,22 +81,29 @@ if ! shopt -oq posix; then
   fi
 fi
 
-[ -f "/usr/share/git/completion/git-prompt.sh" ] && . /usr/share/git/completion/git-prompt.sh
+if ! declare -F __git_ps1 >/dev/null; then
+  for f in /usr/lib/git-core/git-sh-prompt /usr/share/git/completion/git-prompt.sh; do
+    [ -f "$f" ] && { . "$f"; break; }
+  done
+  unset f
+fi
 GIT_PS1_SHOWDIRTYSTATE=1        # + for staged, * if unstaged
 GIT_PS1_SHOWSTASHSTATE=1        # $ if something is stashed.
 GIT_PS1_SHOWUNTRACKEDFILES=1    # % if there are untracked files
-GIT_PS1_SHOWUPSTREAM=1 	        # <, >, <> behind, ahead, or diverged from upstream.
-GIT_PS1_STATESEPARATOR=" " 	    # separator between branch name and state symbols
-GIT_PS1_DESCRIBE_STYLE=1 	    # show commit relative to tag or branch, when detached HEAD
+GIT_PS1_SHOWUPSTREAM=1          # <, >, <> behind, ahead, or diverged from upstream.
+GIT_PS1_STATESEPARATOR=" "      # separator between branch name and state symbols
+GIT_PS1_DESCRIBE_STYLE=1        # show commit relative to tag or branch, when detached HEAD
 GIT_PS1_SHOWCOLORHINTS=1
 
 # bash theme - partly inspired by https://github.com/ohmyzsh/ohmyzsh/blob/master/themes/robbyrussell.zsh-theme
 __bash_prompt() {
-    local workspace='`[ -n $DEVPOD_WORKSPACE_ID ] && echo -n "\[\033[0;32m\]($DEVPOD_WORKSPACE_ID)"`'
-    local lightblue='\[\033[1;34m\]'
-    local removecolor='\[\033[0m\]'
-    PS1="${workspace} ${lightblue}\w${removecolor}\$(__git_ps1)\n\$ "
-    unset -f __bash_prompt
+  local workspace="${DEVPOD_WORKSPACE_ID:+\[\033[0;32m\]($DEVPOD_WORKSPACE_ID) }"
+  local lightblue='\[\033[1;34m\]'
+  local removecolor='\[\033[0m\]'
+  local git=''
+  declare -F __git_ps1 >/dev/null && git='$(__git_ps1)'
+  PS1="${workspace}${lightblue}\w${removecolor}${git}\n\$ "
+  unset -f __bash_prompt
 }
 __bash_prompt
 export PROMPT_DIRTRIM=4

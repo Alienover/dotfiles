@@ -1,33 +1,17 @@
-# ~/.profile: executed by the command interpreter for login shells.
-# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
-# exists.
-# see /usr/share/doc/bash/examples/startup-files for examples.
-# the files are located in the bash-doc package.
+# ~/.profile: read by login shells only (ssh logins, `bash -l`).
+# bash skips this file if ~/.bash_profile or ~/.bash_login exists.
+#
+# Everything a shell needs (environment, mise, aliases, prompt) lives in
+# ~/.bashrc so non-login shells (Herdr panes, tmux windows) get it too.
+# Only put things here that should run once per login session.
 
-# the default umask is set in /etc/profile; for setting the umask
-# for ssh logins, install and configure the libpam-umask package.
-#umask 022
-
-# if running bash
 if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+  [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+else
+  # Non-bash login shell (sh/dash): load at least the shared environment.
+  [ -f "$HOME/.config/shell/profile.default" ] && . "$HOME/.config/shell/profile.default"
 fi
 
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-
-# source the common profile
-[ -f "$HOME/.config/shell/profile.default" ] && . "$HOME/.config/shell/profile.default"
-
-# activate mise
-if command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate bash)"
-fi
+# ---- login-only setup below ----
+# the default umask is set in /etc/profile
+#umask 022
