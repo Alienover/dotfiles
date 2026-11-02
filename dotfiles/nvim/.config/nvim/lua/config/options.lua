@@ -24,6 +24,12 @@ vim.g.matchup_matchparen_offscreen = { method = "popup" }
 -- Enable Cowboy by default
 vim.g.cowboy_enabled = true
 
+-- Copy and paste through the terminal with OSC 52 when running over SSH.
+-- DevPod's SSH server doesn't set SSH_TTY/SSH_CONNECTION, so check DEVPOD too.
+if vim.env.SSH_TTY or vim.env.SSH_CONNECTION or vim.env.DEVPOD then
+	vim.g.clipboard = "osc52"
+end
+
 -- Vim based Options
 
 -- UI
