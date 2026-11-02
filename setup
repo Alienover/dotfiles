@@ -44,7 +44,7 @@ function create_link() {
   echo -en "- Stowing $1 ..."
 
   case "$1" in
-    gnupg|git|ssh|user_scripts)
+    gnupg|git|ssh|user_scripts|herdr-app)
       stow $1 --no-folding
       ;;
     *)
