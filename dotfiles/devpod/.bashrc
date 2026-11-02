@@ -1,50 +1,71 @@
 # ~/.bashrc: read by every interactive non-login bash, and by login shells
-# through ~/.profile. It has two parts:
-#   1. Environment: runs in every shell that reads this file, including
-#      non-interactive ones (ssh/scp commands, `bash -l -c` from nvim-remote),
-#      whose stdout is data, so it must print nothing. Safe to re-run in nested
-#      shells.
-#   2. Interactive: history, aliases, completion, prompt. Skipped otherwise.
+# through ~/.profile. Each step runs as few times as possible:
+#   1. Environment: exported vars, loaded once per session. Child shells
+#      (tmux panes, nested bash) inherit them and skip this part. Runs in
+#      non-interactive shells too (ssh/scp commands, `bash -l -c` from
+#      nvim-remote), whose stdout is data, so it must print nothing.
+#   2. Interactive: things a child can't inherit (aliases, functions, hooks,
+#      prompt), loaded once per shell. Re-sourcing this file is a no-op;
+#      use `exec bash` to reload, or `unset __DEVPOD_ENV_LOADED` first to
+#      reload the environment as well.
 
-# ---------------------------------------------------------------------------
-# 1. Environment
-# ---------------------------------------------------------------------------
 SHELL_CONFIG="$HOME/.config/shell"
 
-# Shared profile: XDG dirs, TERM, EDITOR, LANG, ~/.local/bin on PATH
-[ -f "$SHELL_CONFIG/profile.default" ] && . "$SHELL_CONFIG/profile.default"
-# Customized color scheme (exported vars other tools read)
-[ -f "$SHELL_CONFIG/colors.sh" ] && . "$SHELL_CONFIG/colors.sh"
+# ---------------------------------------------------------------------------
+# 1. Environment (once per session)
+# ---------------------------------------------------------------------------
+if [ -z "${__DEVPOD_ENV_LOADED-}" ]; then
+  __env_loaded_here=1
 
-[ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
+  # Shared profile: XDG dirs, TERM, GPG_TTY, EDITOR, LANG, ~/.local/bin on PATH
+  [ -f "$SHELL_CONFIG/profile.default" ] && . "$SHELL_CONFIG/profile.default"
+  # Customized color scheme (exported vars other tools read)
+  [ -f "$SHELL_CONFIG/colors.sh" ] && . "$SHELL_CONFIG/colors.sh"
 
-# mise: puts tool versions (nvim, node, fzf, ...) on PATH. Its functions and
-# prompt hook aren't inherited by child shells, so activate in every shell.
-if command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate bash)"
+  [ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
+
+  # mise: puts tool versions (nvim, node, fzf, ...) on PATH.
+  command -v mise >/dev/null 2>&1 && eval "$(mise activate bash)"
+
+  # Drop duplicate PATH entries (e.g. one inherited from the parent process).
+  __path_dedupe() {
+    local p out= IFS=:
+    local -a parts
+    read -ra parts <<<"$PATH"
+    for p in "${parts[@]}"; do
+      case ":$out:" in *":$p:"*) ;; *) out="${out:+$out:}$p" ;; esac
+    done
+    export PATH="$out"
+  }
+  __path_dedupe
+  unset -f __path_dedupe
+
+  export __DEVPOD_ENV_LOADED=1
 fi
-
-# Drop duplicate PATH entries that pile up when shells nest.
-__path_dedupe() {
-  local p out= IFS=:
-  local -a parts
-  read -ra parts <<<"$PATH"
-  for p in "${parts[@]}"; do
-    case ":$out:" in *":$p:"*) ;; *) out="${out:+$out:}$p" ;; esac
-  done
-  export PATH="$out"
-}
-__path_dedupe
-unset -f __path_dedupe
 
 case $- in
   *i*) ;;
-  *) return ;;
+  *) unset __env_loaded_here; return ;;
 esac
 
 # ---------------------------------------------------------------------------
-# 2. Interactive only
+# 2. Interactive only (once per shell)
 # ---------------------------------------------------------------------------
+[ -n "${__BASHRC_LOADED-}" ] && return
+__BASHRC_LOADED=1
+
+# Per-terminal values a nested shell can't inherit. The first shell already
+# got them from profile.default above.
+if [ -z "${__env_loaded_here-}" ]; then
+  export GPG_TTY=$(tty)
+  [ -n "$TMUX" ] && export TERM=tmux-256color
+fi
+unset __env_loaded_here
+
+# mise's prompt hook is a shell function, not inherited by child shells.
+if ! declare -F _mise_hook >/dev/null && command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
+fi
 
 # don't put duplicate lines or lines starting with space in the history.
 HISTCONTROL=ignoreboth
@@ -73,7 +94,8 @@ PROMPT_COMMAND="__fix_ssh_agent${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 [ -f "$SHELL_CONFIG/alias.sh" ] && . "$SHELL_CONFIG/alias.sh"
 
 # enable programmable completion features (also loads __git_ps1 on Debian).
-if ! shopt -oq posix; then
+# Login shells already got it from /etc/profile.d/bash_completion.sh.
+if [ -z "${BASH_COMPLETION_VERSINFO-}" ] && ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
   elif [ -f /etc/bash_completion ]; then
