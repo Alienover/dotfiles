@@ -18,8 +18,6 @@ local backends = {
 }
 
 -- "rex", "herdr" or nil. Not inside tmux, which has its own navigator.
--- Herdr in a devpod has no herdr-app, so nvim there only moves between its
--- own splits.
 local function backend()
 	if vim.env.TMUX ~= nil then
 		return nil
@@ -33,8 +31,11 @@ local function backend()
 	return nil
 end
 
+-- Inside Rex or Herdr the app sends Ctrl+h/j/k/l to nvim, so map them even
+-- when nvim can't hand off at its edge: Herdr in a devpod has no herdr-app,
+-- and there the keys still move between nvim's own splits.
 function M.enabled()
-	return backend() ~= nil
+	return vim.env.TMUX == nil and (vim.env.REX_SESSION ~= nil or vim.env.HC_TERMINAL_ID ~= nil)
 end
 
 ---@param key "h"|"j"|"k"|"l"
