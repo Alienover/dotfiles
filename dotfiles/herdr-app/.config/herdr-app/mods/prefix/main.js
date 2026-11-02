@@ -1,5 +1,7 @@
-// Ctrl+B prefix, mirroring ~/.config/rex/init.lua: Ctrl+B opens this small
-// dialog, the next key picks the action, and it closes. When tmux is in the
+// Ctrl+B prefix, mirroring ~/.config/rex/init.lua: Ctrl+B opens this as an
+// invisible 1x1 window (a window doesn't dim the screen like a dialog), it
+// takes the keyboard, the next key picks the action, and it closes. It also
+// closes when it loses the keyboard (a click elsewhere). When tmux is in the
 // foreground Ctrl+B goes straight through, so tmux keeps its own prefix.
 //
 //   ctrl+b  send ctrl+b to the terminal
@@ -7,10 +9,10 @@
 //   %  "    split right / down (tmux defaults)
 //   c       new tab
 //   1-9     go to tab N of this space
-//   other   cancel (Esc or a click outside also closes it)
+//   other   cancel (Esc too)
 
 import { View, div } from "gpui-kit";
-import { closeOverlay, exec, focused, hc, home, props, run, terminals, theme } from "herdr";
+import { closeOverlay, exec, focused, hc, home, props, run, terminals } from "herdr";
 
 const BIN = `${home()}/.local/bin`;
 
@@ -57,29 +59,30 @@ export default class Prefix extends View {
     }
     this.handle = cx.focus_handle();
     this.handle.focus();
+    // A window stays open when focus moves away, so watch for that
+    this.watch = cx.timer.every(150, () => {
+      if (!this.handle.is_focused()) this.close();
+    });
+  }
+
+  close() {
+    this.watch?.cancel();
+    this.watch = null;
+    closeOverlay(this.overlay);
   }
 
   render(_cx) {
-    const t = theme();
-    let el = div().id("prefix");
+    let el = div().id("prefix").size_full();
     if (this.handle) {
       el = el.track_focus(this.handle).on_key_down((e, cx) => {
         // Modifier presses on their own (shift for % and ") don't end the prefix.
         if (["shift", "control", "alt", "platform", "function"].includes(e.key)) return;
         cx.stop_propagation();
         const action = actionFor(e);
-        closeOverlay(this.overlay); // first, so splits and tabs act on the pane behind
+        this.close(); // first, so splits and tabs act on the pane behind
         if (action) action();
       });
     }
-    return el
-      .size_full()
-      .flex()
-      .items_center()
-      .justify_center()
-      .bg(t.popover)
-      .text_size(12)
-      .text_color(t.muted)
-      .child("prefix  ·  p  %  \"  c  1-9  ·  Esc");
+    return el;
   }
 }
