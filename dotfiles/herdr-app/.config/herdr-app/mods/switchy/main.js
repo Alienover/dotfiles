@@ -2,9 +2,9 @@
 // Type to filter the spaces; Enter goes to the highlighted one. When nothing
 // matches, Enter resolves the query against the session mappings (built-in +
 // ~/.tmux_session, `key=name` per line): exact key, else fuzzy key. The
-// mapped space is selected, or made in ~ first if it doesn't exist. The last
-// rows make a new space: here, or on each connected machine (`hc machine ls`),
-// so a machine with no space left is still reachable by keyboard.
+// mapped space is selected, or made in ~ first if it doesn't exist. Below it,
+// rows make a new space named after the query: here, or on each connected
+// machine (`hc machine ls`), so a machine with no space is reachable by keyboard.
 // Up: ↑, ctrl+k, ctrl+p. Down: ↓, ctrl+j, ctrl+n. Editing: backspace,
 // alt+backspace (word), ctrl+u / cmd+backspace (all). ctrl+x closes the
 // highlighted space. Esc leaves.
@@ -103,23 +103,23 @@ export default class Switchy extends View {
     closeOverlay(props().overlay);
   }
 
-  // Rows: matching spaces; when none match, the space the mappings name; then
-  // the new-space rows that match.
+  // Rows: the matching spaces. When none match: the space the mappings name,
+  // then a new space named after the query, here and on each connected machine.
   rows() {
     const f = this.filter.trim();
-    const byScore = (items, label) => !f ? items : items
-      .map((x) => ({ x, s: score(label(x), f) }))
+    const sorted = [...spaces()].sort((a, b) => a.name.localeCompare(b.name));
+    const out = (!f ? sorted : sorted
+      .map((p) => ({ p, s: score(p.name, f) }))
       .filter((y) => y.s !== null)
       .sort((a, b) => a.s - b.s)
-      .map((y) => y.x);
-    const sorted = [...spaces()].sort((a, b) => a.name.localeCompare(b.name));
-    const out = byScore(sorted, (p) => p.name).map((p) => ({ kind: "space", p }));
-    if (!out.length) {
-      const name = this.mapped(f);
-      if (name) out.push({ kind: "mapped", name });
+      .map((y) => y.p)).map((p) => ({ kind: "space", p }));
+    if (out.length || !f) return out;
+    const name = this.mapped(f);
+    if (name) out.push({ kind: "mapped", name });
+    for (const machine of [null, ...this.machines]) {
+      out.push({ kind: "new", machine, name: f, label: machine ? `new space "${f}" on ${machine}` : `new space "${f}"` });
     }
-    const fresh = [null, ...this.machines].map((machine) => ({ kind: "new", machine, label: machine ? `new space on ${machine}` : "new space" }));
-    return out.concat(byScore(fresh, (r) => r.label));
+    return out;
   }
 
   // The space a query names through the mappings: exact key, else fuzzy key.
@@ -136,7 +136,8 @@ export default class Switchy extends View {
     if (!r) return;
     this.close();
     if (r.kind === "space") run("space.select", { id: r.p.id });
-    else if (r.kind === "new") run("space.new", { machine: r.machine ?? "" });
+    // Here it starts in ~, as mux-switchy; on a machine, in that machine's home.
+    else if (r.kind === "new") run("space.new", r.machine ? { name: r.name, machine: r.machine } : { name: r.name, folder: home(), machine: "" });
     else if (r.kind === "mapped") {
       const found = spaces().find((p) => p.name === r.name);
       if (found) run("space.select", { id: found.id });
