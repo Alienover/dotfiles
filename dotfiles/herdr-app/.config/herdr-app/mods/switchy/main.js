@@ -104,7 +104,8 @@ export default class Switchy extends View {
   }
 
   // Rows: the matching spaces. When none match: the space the mappings name,
-  // then a new space named after the query, here and on each connected machine.
+  // then one named after the query, each here and on every connected machine.
+  // A row whose name already exists on its machine goes there instead.
   rows() {
     const f = this.filter.trim();
     const sorted = [...spaces()].sort((a, b) => a.name.localeCompare(b.name));
@@ -114,12 +115,19 @@ export default class Switchy extends View {
       .sort((a, b) => a.s - b.s)
       .map((y) => y.p)).map((p) => ({ kind: "space", p }));
     if (out.length || !f) return out;
-    const name = this.mapped(f);
-    if (name) out.push({ kind: "mapped", name });
-    for (const machine of [null, ...this.machines]) {
-      out.push({ kind: "new", machine, name: f, label: machine ? `new space "${f}" on ${machine}` : `new space "${f}"` });
-    }
+    const names = [this.mapped(f), f].filter((n, i, all) => n && all.indexOf(n) === i);
+    names.forEach((name, n) => {
+      for (const machine of [null, ...this.machines]) {
+        const found = this.existing(name, machine);
+        const what = found ? `go to "${name}"` : `new space "${name}"`;
+        out.push({ kind: "new", key: `${n}-${machine ?? "here"}`, machine, name, mapped: name !== f, label: machine ? `${what} on ${machine}` : what });
+      }
+    });
     return out;
+  }
+
+  existing(name, machine) {
+    return spaces().find((p) => p.name === name && (p.machine ?? null) === machine);
   }
 
   // The space a query names through the mappings: exact key, else fuzzy key.
@@ -137,11 +145,10 @@ export default class Switchy extends View {
     this.close();
     if (r.kind === "space") run("space.select", { id: r.p.id });
     // Here it starts in ~, as mux-switchy; on a machine, in that machine's home.
-    else if (r.kind === "new") run("space.new", r.machine ? { name: r.name, machine: r.machine } : { name: r.name, folder: home(), machine: "" });
-    else if (r.kind === "mapped") {
-      const found = spaces().find((p) => p.name === r.name);
+    else if (r.kind === "new") {
+      const found = this.existing(r.name, r.machine);
       if (found) run("space.select", { id: found.id });
-      else run("space.new", { name: r.name, folder: home(), machine: "" });
+      else run("space.new", r.machine ? { name: r.name, machine: r.machine } : { name: r.name, folder: home(), machine: "" });
     }
   }
 
@@ -169,7 +176,7 @@ export default class Switchy extends View {
     const row = (r, i) => {
       const on = i === this.at;
       const el = h_flex()
-        .id(r.kind === "space" ? `sw-${r.p.id}` : r.kind === "new" ? `sw-new-${r.machine ?? "here"}` : "sw-mapped")
+        .id(r.kind === "space" ? `sw-${r.p.id}` : `sw-new-${r.key}`)
         .mx(4)
         .px(10)
         .h(H)
@@ -181,11 +188,10 @@ export default class Switchy extends View {
         .when(!on, (el) => el.hover((s) => s.bg(t.hover)))
         .on_click(() => this.go(r))
         .when(fixed, (el) => el.absolute().left(0).right(0).top(i * H - this.scroll));
-      if (r.kind === "new" || r.kind === "mapped") {
-        const exists = r.kind === "mapped" && spaces().some((p) => p.name === r.name);
-        const label = r.kind === "new" ? r.label : `${exists ? "go to" : "new space"} ${r.name}`;
+      if (r.kind === "new") {
+        const label = r.label;
         return el
-          .child(div().w(18).flex_none().text_color(t.dim).child(r.kind === "new" ? "+" : "↵"))
+          .child(div().w(18).flex_none().text_color(t.dim).child(r.mapped ? "↵" : "+"))
           .child(div().flex_1().truncate().text_color(on ? t.foreground : t.muted).child(label));
       }
       const p = r.p;
