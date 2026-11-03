@@ -69,10 +69,14 @@
     "cmd-left": "send:\u0001",
     "cmd-right": "send:\u0005",
     "cmd-backspace": "send:\u0015",
-    "ctrl-b": "mod.open:prefix",
     "ctrl-h": "nav.left",
     "ctrl-j": "nav.down",
     "ctrl-k": "nav.up",
-    "ctrl-l": "nav.right"
+    "ctrl-l": "nav.right",
+    "ctrl-b ctrl-b": "send:\u0002",
+    "ctrl-b p": "mod.open:switchy",
+    "ctrl-b %": "pane.split:right",
+    "ctrl-b \"": "pane.split:down",
+    "ctrl-b c": "tab.new"
   }
 }
