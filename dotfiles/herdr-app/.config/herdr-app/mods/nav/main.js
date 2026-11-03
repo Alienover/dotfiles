@@ -1,40 +1,32 @@
 // Ctrl+h/j/k/l: focus the neighbouring pane, like vim-tmux-navigator (mirrors
 // ~/.config/rex/plugins/navigate.lua). When nvim, vim or tmux is in the
-// foreground the key goes through to it, so it can move within its own splits
-// first. A zoomed pane is never left (tmux-navigator's disable_when_zoomed),
-// and at the window's edge nothing happens.
+// foreground it moves within its own splits first.
 //
 // One long-lived copy sits in each layout as a 0 px block, and keys.json sends
-// it `nav.left` / `nav.down` / `nav.up` / `nav.right`. It handles them one at
-// a time, in order. (Opening a mod per key press was slow and dropped keys:
-// `mod.open` on a mod that is still open closes it.) `<mod>.<command>` only
-// reaches shown copies, so the block must stay in the layout and not be hidden.
+// it `nav.left` / `nav.down` / `nav.up` / `nav.right`. (Opening a mod per key
+// press was slow and dropped keys: `mod.open` on a mod that is still open
+// closes it.) `<mod>.<command>` only reaches shown copies, so the block must
+// stay in the layout and not be hidden.
 //
-// nvim answers each key with a label on its own terminal,
-// `nav.reply=<id>:<moved|edge>:<direction>` (nvim/lua/util/mux_navigation.lua),
-// and on `edge` this moves the Herdr pane. The request/reply shape is
-// splits-nav's (TaterDoge/herdr-mods); a label instead of its local TCP port
-// reaches nvim on other machines too. While keys are going to nvim, one task
-// per terminal watches for its replies; it stops REPLY_MS after the last key
-// was delivered. `hc keys` returns once the key is in: ~100 ms normally, but
-// ~2 s right after the terminal resized (a zoom), so the window starts then,
-// not at the press (at most WATCH_MAX_MS in all).
-// A reply for a terminal that's no longer focused, or now zoomed, is dropped.
-// A label holds one value: two replies within one poll count as the last one.
+// A local nvim is asked over its own RPC socket, which it puts on its terminal
+// as the label `nav.nvim` (nvim/lua/util/mux_navigation.lua): it answers
+// "moved" or "edge", and on "edge" this moves the Herdr pane. That's
+// splits-nav's request/reply (TaterDoge/herdr-mods), over nvim's socket
+// instead of a TCP port. Each terminal's requests run in order, one at a time.
+// Anything else that wants the key (vim, tmux, an nvim on another machine or
+// without the label) gets it typed in with `hc keys`. That's slower: it waits
+// until nobody has typed for a moment.
 
 import { View, div } from "gpui-kit";
-import { focused, hc, nextCommand, panes, run, setShared, terminals } from "herdr";
+import { exec, focused, hc, nextCommand, run, setShared, terminals } from "herdr";
 
 const MOVES = {
-  left: "ctrl+h",
-  down: "ctrl+j",
-  up: "ctrl+k",
-  right: "ctrl+l",
+  left: "h",
+  down: "j",
+  up: "k",
+  right: "l",
 };
 const APPS = ["nvim", "vim", "tmux"];
-const REPLY_MS = 1000;
-const WATCH_MAX_MS = 10000;
-const POLL_MS = 20;
 
 function basename(path) {
   return String(path ?? "")
@@ -42,94 +34,74 @@ function basename(path) {
     .pop();
 }
 
-function terminal(address) {
-  return terminals().find((x) => x.address === address);
-}
-
 // Whether the focused terminal's program should get the key itself.
-function wantsKey(address, pane) {
-  if (pane?.program?.key === "nvim") return true;
-  const fg = terminal(address)?.foreground;
+function wantsKey(t) {
+  const fg = t?.foreground;
   return (
     Boolean(fg) &&
     (APPS.includes(fg.name) || APPS.includes(basename(fg.argv?.[0])))
   );
 }
 
-function reply(address) {
-  return terminal(address)?.labels?.["nav.reply"] ?? null;
+// A local nvim's RPC socket, or null. Remote addresses are `machine/t7`.
+function nvimSocket(t) {
+  if (t.address.includes("/")) return null;
+  const fg = t.foreground;
+  const isNvim = fg?.name === "nvim" || basename(fg?.argv?.[0]) === "nvim";
+  return isNvim ? (t.labels?.["nav.nvim"] ?? null) : null;
 }
 
-function focusedPane() {
-  const id = focused()?.pane;
-  return id ? panes().find((p) => p.pane === id) : null;
-}
+// Terminal address -> the last request's promise, so presses stay in order.
+const queues = new Map();
 
-// Terminal address -> { until, sending, last, stop }: the reply watchers
-// running now. `sending` counts keys not yet delivered.
-const watchers = new Map();
-
-// Send `key` to nvim and watch `address` for its replies, until REPLY_MS after
-// the last key was delivered. The watcher starts before the key goes out, so
-// `last` is the reply from before this press.
-function sendAndWatch(address, key, cx) {
-  let state = watchers.get(address);
-  if (!state) {
-    const now = Date.now();
-    state = { until: now + REPLY_MS, sending: 0, last: reply(address), stop: now + WATCH_MAX_MS };
-    watchers.set(address, state);
-    spawnWatcher(address, state, cx);
-  }
-  state.sending++;
-  state.stop = Math.max(state.stop, Date.now() + WATCH_MAX_MS);
-  // Don't wait for hc to finish: every press behind it would wait too
-  hc(["keys", address, key])
-    .catch(() => {}) // terminal gone: nothing to do
-    .finally(() => {
-      state.sending--;
-      state.until = Date.now() + REPLY_MS;
-    });
-}
-
-function spawnWatcher(address, state, cx) {
-  cx.spawn(async (cx) => {
-    try {
-      while ((state.sending > 0 || Date.now() < state.until) && Date.now() < state.stop) {
-        await cx.sleep(POLL_MS);
-        const now = reply(address);
-        if (now === null || now === state.last) continue;
-        state.last = now;
-        const [, result, direction] = now.split(":");
-        if (result !== "edge" || !MOVES[direction]) continue;
-        // The person moved on, or zoomed in, before nvim answered
-        if (focused()?.terminal !== address || focusedPane()?.zoomed) continue;
-        run("pane.go", { direction });
-      }
-    } finally {
-      watchers.delete(address);
+async function askNvim(address, socket, direction) {
+  const key = MOVES[direction];
+  try {
+    const r = await exec("nvim", [
+      "--server", socket,
+      "--remote-expr", `v:lua.require'util.mux_navigation'.herdr('${key}')`,
+    ]);
+    const answer = r.stdout.trim();
+    if (r.code !== 0 || !["moved", "edge", "passthrough"].includes(answer)) {
+      // Socket gone or nvim without the new code: type the key in instead
+      hc(["keys", address, `ctrl+${key}`]).catch(() => {});
+      return;
     }
-  });
+    // On "edge", only if the person is still there
+    if (answer === "edge" && focused()?.terminal === address) {
+      run("pane.go", { direction });
+    }
+  } catch {}
 }
 
-function navigate(direction, cx) {
+function navigate(direction) {
   // `herdr-app do nav.ping` checks that this copy gets commands
   if (direction === "ping") return setShared("nav.pong", Date.now());
   const key = MOVES[direction];
   if (!key) return;
   const address = focused()?.terminal;
-  const pane = focusedPane();
-  if (address && wantsKey(address, pane)) {
-    sendAndWatch(address, key, cx);
-  } else if (!pane?.zoomed) {
-    run("pane.go", { direction });
+  const t = address ? terminals().find((x) => x.address === address) : null;
+  if (!t || !wantsKey(t)) return run("pane.go", { direction });
+
+  const socket = nvimSocket(t);
+  if (!socket) {
+    // Don't wait for hc to finish: every press behind it would wait too
+    hc(["keys", address, `ctrl+${key}`]).catch(() => {}); // terminal gone
+    return;
   }
+  const prev = queues.get(address) ?? Promise.resolve();
+  const next = prev.then(() => askNvim(address, socket, direction));
+  queues.set(address, next);
+  next.then(() => {
+    if (queues.get(address) === next) queues.delete(address);
+  });
 }
 
 export default class Nav extends View {
   init(_props, cx) {
-    cx.spawn(async (cx) => {
+    cx.spawn(async () => {
       for (;;) {
-        navigate(await nextCommand(), cx);
+        navigate(await nextCommand());
       }
     });
   }

@@ -6,6 +6,7 @@ return {
 		"nvim-mux-navigation",
 		virtual = true,
 		cond = nav.enabled(),
+		init = nav.advertise,
 		keys = {
 			{
 				"<C-h>",
