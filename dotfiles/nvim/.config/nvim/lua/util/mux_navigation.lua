@@ -1,14 +1,8 @@
 -- Seamless Ctrl+h/j/k/l between nvim splits and Rex or Herdr panes.
 -- Moves between nvim windows first; at the edge it asks the app to focus the
--- neighbouring pane. The app passes the key through to nvim (Rex:
--- dotfiles/rex/.config/rex/plugins/navigate.lua, Herdr:
--- dotfiles/herdr-app/.config/herdr-app/mods/nav-*).
---
--- In Herdr, nvim also keeps a label on its terminal, `mux.nav=nvim:<edges>`
--- (see M.setup), so the nav mods know nvim is there without asking ps, and at
--- an edge move Herdr's focus themselves instead of forwarding the key: a
--- forwarded key costs ~65 ms, a direct move ~20 ms. This also covers nvim in a
--- devpod, which has `hc` but no `herdr-app` to hand off with.
+-- neighbouring pane. The app passes the key through to nvim when nvim is in
+-- the foreground (Rex: dotfiles/rex/.config/rex/plugins/navigate.lua, Herdr:
+-- dotfiles/herdr-app/.config/herdr-app/mods/nav).
 local M = {}
 
 local directions = { h = "left", j = "down", k = "up", l = "right" }
@@ -41,95 +35,6 @@ end
 -- when nvim can't hand off at its edge itself.
 function M.enabled()
 	return vim.env.TMUX == nil and (vim.env.REX_SESSION ~= nil or vim.env.HC_TERMINAL_ID ~= nil)
-end
-
--- Herdr label ---------------------------------------------------------------
-
-local LABEL = "mux.nav"
-local sent = nil -- the value Herdr has
-local wanted = nil -- the value to send next
-local sending = false
-local leaving = false
-
--- Sets the label to `value` ("" removes it). One `hc label` at a time, and
--- only when the value changes, so quick window changes collapse into one.
-local function send(value)
-	wanted = value
-	if leaving or sending or wanted == sent then
-		return
-	end
-	sending = true
-	local v = wanted
-	vim.system({ "hc", "label", vim.env.HC_TERMINAL_ID, LABEL .. "=" .. v }, {}, function()
-		vim.schedule(function()
-			sending = false
-			sent = v -- also on failure, so a broken hc isn't retried forever
-			if wanted ~= sent then
-				send(wanted)
-			end
-		end)
-	end)
-end
-
--- The edges ("hjkl" letters) the current window touches. None outside normal
--- mode (Ctrl+h is backspace in insert and cmdline mode) or in a floating
--- window (pickers like Telescope use Ctrl+j/k), so Herdr forwards the key.
-local function edges()
-	if vim.api.nvim_get_mode().mode ~= "n" or vim.api.nvim_win_get_config(0).relative ~= "" then
-		return ""
-	end
-	local cur = vim.fn.winnr()
-	local found = ""
-	for _, key in ipairs({ "h", "j", "k", "l" }) do
-		if vim.fn.winnr(key) == cur then
-			found = found .. key
-		end
-	end
-	return found
-end
-
-local function announce()
-	send("nvim:" .. edges())
-end
-
--- Keeps the label up to date (Herdr only; Rex inspects the process itself).
-function M.setup()
-	if vim.env.TMUX ~= nil or vim.env.HC_TERMINAL_ID == nil or vim.fn.executable("hc") == 0 then
-		return
-	end
-	local group = vim.api.nvim_create_augroup("mux_navigation", { clear = true })
-	vim.api.nvim_create_autocmd(
-		{ "VimEnter", "VimResume", "WinEnter", "WinClosed", "WinResized", "VimResized", "TabEnter", "ModeChanged" },
-		{
-			group = group,
-			-- After the event, once the window layout has settled
-			callback = function()
-				vim.schedule(announce)
-			end,
-		}
-	)
-	vim.api.nvim_create_autocmd("VimSuspend", {
-		group = group,
-		callback = function()
-			send("")
-		end,
-	})
-	vim.api.nvim_create_autocmd("VimLeavePre", {
-		group = group,
-		callback = function()
-			-- No more updates, let one in flight land first, then remove the
-			-- label and wait, or nvim exits before it is gone (and lf, say,
-			-- keeps a stale label)
-			leaving = true
-			vim.wait(300, function()
-				return not sending
-			end, 10)
-			vim.system({ "hc", "label", vim.env.HC_TERMINAL_ID, LABEL .. "=" }):wait(500)
-		end,
-	})
-	if vim.v.vim_did_enter == 1 then
-		announce()
-	end
 end
 
 ---@param key "h"|"j"|"k"|"l"
