@@ -2,14 +2,16 @@
 // Type to filter the spaces; Enter goes to the highlighted one. When nothing
 // matches, Enter resolves the query against the session mappings (built-in +
 // ~/.tmux_session, `key=name` per line): exact key, else fuzzy key. The
-// mapped space is selected, or made in ~ first if it doesn't exist.
+// mapped space is selected, or made in ~ first if it doesn't exist. The last
+// rows make a new space: here, or on each connected machine (`hc machine ls`),
+// so a machine with no space left is still reachable by keyboard.
 // Up: ↑, ctrl+k, ctrl+p. Down: ↓, ctrl+j, ctrl+n. Editing: backspace,
 // alt+backspace (word), ctrl+u / cmd+backspace (all). ctrl+x closes the
 // highlighted space. Esc leaves.
 
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { spaces, run, theme, settings, props, closeOverlay, readTextFile, home, shared, setShared } from "herdr";
+import { spaces, run, hc, theme, settings, props, closeOverlay, readTextFile, home, shared, setShared } from "herdr";
 
 const MAPPINGS = { term: "🦄 term", obsidian: "📚 Obsidian", vpn: "🌈 vpn" };
 
@@ -69,6 +71,7 @@ export default class Switchy extends View {
     this.at = null;
     this.scroll = 0;
     this.mappings = { ...MAPPINGS };
+    this.machines = [];
     // Our own text field, not gpui-base's Input: its built-in bindings would
     // take ctrl+n/p/k before they reach us. One key handler does everything.
     this.handle = cx.focus_handle();
@@ -87,20 +90,36 @@ export default class Switchy extends View {
       } catch {}
       cx.notify();
     });
+    cx.spawn(async (cx) => {
+      try {
+        const r = await hc(["machine", "ls", "--json"]);
+        if (r.code === 0) this.machines = (JSON.parse(r.stdout).machines ?? []).filter((m) => m.state === "connected" && !m.temporary).map((m) => m.name);
+      } catch {}
+      cx.notify();
+    });
   }
 
   close() {
     closeOverlay(props().overlay);
   }
 
+  // Rows: matching spaces; when none match, the space the mappings name; then
+  // the new-space rows that match.
   rows() {
-    const all = [...spaces()].sort((a, b) => a.name.localeCompare(b.name));
-    if (!this.filter.trim()) return all;
-    return all
-      .map((p) => ({ p, s: score(p.name, this.filter) }))
-      .filter((x) => x.s !== null)
-      .sort((a, b) => a.s - b.s || a.p.name.localeCompare(b.p.name))
-      .map((x) => x.p);
+    const f = this.filter.trim();
+    const byScore = (items, label) => !f ? items : items
+      .map((x) => ({ x, s: score(label(x), f) }))
+      .filter((y) => y.s !== null)
+      .sort((a, b) => a.s - b.s)
+      .map((y) => y.x);
+    const sorted = [...spaces()].sort((a, b) => a.name.localeCompare(b.name));
+    const out = byScore(sorted, (p) => p.name).map((p) => ({ kind: "space", p }));
+    if (!out.length) {
+      const name = this.mapped(f);
+      if (name) out.push({ kind: "mapped", name });
+    }
+    const fresh = [null, ...this.machines].map((machine) => ({ kind: "new", machine, label: machine ? `new space on ${machine}` : "new space" }));
+    return out.concat(byScore(fresh, (r) => r.label));
   }
 
   // The space a query names through the mappings: exact key, else fuzzy key.
@@ -113,19 +132,16 @@ export default class Switchy extends View {
   }
 
   go(row) {
-    const rows = this.rows();
-    const pick = row ?? rows[this.at ?? 0];
-    if (pick) {
-      this.close();
-      run("space.select", { id: pick.id });
-      return;
-    }
-    const name = this.mapped(this.filter);
-    if (!name) return;
+    const r = row ?? this.rows()[this.at ?? 0];
+    if (!r) return;
     this.close();
-    const found = spaces().find((p) => p.name === name);
-    if (found) run("space.select", { id: found.id });
-    else run("space.new", { name, folder: home(), machine: "" });
+    if (r.kind === "space") run("space.select", { id: r.p.id });
+    else if (r.kind === "new") run("space.new", { machine: r.machine ?? "" });
+    else if (r.kind === "mapped") {
+      const found = spaces().find((p) => p.name === r.name);
+      if (found) run("space.select", { id: found.id });
+      else run("space.new", { name: r.name, folder: home(), machine: "" });
+    }
   }
 
   glyph(t, st) {
@@ -136,9 +152,8 @@ export default class Switchy extends View {
   render() {
     const t = theme();
     const rows = this.rows();
-    if (this.at === null) this.at = Math.max(0, rows.findIndex((p) => p.active));
+    if (this.at === null) this.at = Math.max(0, rows.findIndex((r) => r.kind === "space" && r.p.active));
     this.at = Math.max(0, Math.min(this.at, rows.length - 1));
-    const target = rows.length ? null : this.mapped(this.filter);
 
     // Fixed-height rows; the list scrolls only as far as keeps the selection in view.
     const H = 32;
@@ -150,10 +165,10 @@ export default class Switchy extends View {
     if (this.at * H < this.scroll) this.scroll = this.at * H;
     if ((this.at + 1) * H > this.scroll + height) this.scroll = (this.at + 1) * H - height;
 
-    const row = (p, i) => {
+    const row = (r, i) => {
       const on = i === this.at;
-      return h_flex()
-        .id(`sw-${p.id}`)
+      const el = h_flex()
+        .id(r.kind === "space" ? `sw-${r.p.id}` : r.kind === "new" ? `sw-new-${r.machine ?? "here"}` : "sw-mapped")
         .mx(4)
         .px(10)
         .h(H)
@@ -163,30 +178,24 @@ export default class Switchy extends View {
         .cursor_pointer()
         .when(on, (el) => el.bg(t.selected).text_color(t.foreground))
         .when(!on, (el) => el.hover((s) => s.bg(t.hover)))
-        .on_click(() => this.go(p))
-        .when(fixed, (el) => el.absolute().left(0).right(0).top(i * H - this.scroll))
+        .on_click(() => this.go(r))
+        .when(fixed, (el) => el.absolute().left(0).right(0).top(i * H - this.scroll));
+      if (r.kind === "new" || r.kind === "mapped") {
+        const exists = r.kind === "mapped" && spaces().some((p) => p.name === r.name);
+        const label = r.kind === "new" ? r.label : `${exists ? "go to" : "new space"} ${r.name}`;
+        return el
+          .child(div().w(18).flex_none().text_color(t.dim).child(r.kind === "new" ? "+" : "↵"))
+          .child(div().flex_1().truncate().text_color(on ? t.foreground : t.muted).child(label));
+      }
+      const p = r.p;
+      return el
         .child(h_flex().size(18).flex_none().rounded(5).bg(spaceColor(t, p)).items_center().justify_center().text_size(10.5).font_bold().text_color("#ffffff").child([...p.name][0]?.toUpperCase() ?? "?"))
         .child(div().flex_1().truncate().text_color(t.foreground).when(p.active, (d) => d.font_semibold()).child(p.name))
         .when(!!p.machine, (el) => el.child(div().text_size(11).text_color(t.dim).child(p.machine)))
         .child(this.glyph(t, p.status));
     };
 
-    const empty = h_flex()
-      .id("sw-empty")
-      .mx(4)
-      .px(10)
-      .h(H)
-      .rounded(7)
-      .gap(10)
-      .items_center()
-      .text_color(target ? t.muted : t.dim)
-      .when(!!target, (el) => el.bg(t.selected).cursor_pointer().on_click(() => this.go()))
-      .child(div().w(18).flex_none().child(target ? "↵" : ""))
-      .child(div().flex_1().truncate().child(
-        target
-          ? `${spaces().some((p) => p.name === target) ? "go to" : "new space"} ${target}`
-          : "no match",
-      ));
+    const empty = h_flex().id("sw-empty").mx(4).px(10).h(H).items_center().text_color(t.dim).child("no match");
 
     return v_flex()
       .id("switchy")
@@ -207,7 +216,7 @@ export default class Switchy extends View {
         else if (k === "up" || (ctrl && (k === "k" || k === "p"))) { if (n) this.at = (this.at + n - 1) % n; }
         else if (ctrl && k === "x") {
           const sel = rows[this.at];
-          if (sel) run("space.close", { id: sel.id, confirmed: true });
+          if (sel?.kind === "space") run("space.close", { id: sel.p.id, confirmed: true });
         }
         else if ((ctrl && k === "u") || (cmd && k === "backspace")) setFilter("");
         else if ((alt && k === "backspace") || (ctrl && k === "w")) setFilter(this.filter.replace(/\S*\s*$/, ""));
@@ -218,7 +227,7 @@ export default class Switchy extends View {
         cx.notify();
       })
       .child(h_flex().items_center()
-        .child(div().flex_1().text_size(15).font_semibold().text_color(t.foreground).child("Switch session"))
+        .child(div().flex_1().text_size(15).font_semibold().text_color(t.foreground).child("Switch space"))
         .child(div().text_size(11).text_color(t.dim).child("⌃x close · Esc")))
       .child(
         h_flex().h(36).flex_none().px(10).gap(8).items_center().rounded(9).border_1().border_color(t.accent).bg(t.background)
@@ -226,7 +235,7 @@ export default class Switchy extends View {
           .child(h_flex().flex_1().h_full().items_center().text_size(12.8).overflow_hidden()
             .when(!!this.filter, (el) => el.child(div().text_color(t.foreground).child(this.filter)))
             .child(div().w(1.5).h(16).flex_none().bg(t.accent).loop("opacity", { from: 0, to: 1, period: 1000 }))
-            .when(!this.filter, (el) => el.child(div().pl(2).text_color(t.dim).child("Session…")))),
+            .when(!this.filter, (el) => el.child(div().pl(2).text_color(t.dim).child("Space…")))),
       )
       .child(
         v_flex()
@@ -241,7 +250,7 @@ export default class Switchy extends View {
             cx.notify();
           }))
           .children(rows.length
-            ? rows.map((p, i) => (!fixed || ((i + 1) * H > this.scroll && i * H < this.scroll + height) ? row(p, i) : null)).filter(Boolean)
+            ? rows.map((r, i) => (!fixed || ((i + 1) * H > this.scroll && i * H < this.scroll + height) ? row(r, i) : null)).filter(Boolean)
             : [empty]),
       );
   }
