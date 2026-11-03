@@ -94,6 +94,7 @@ resolve_session() {
   self=$(printf '%q' "$0")
 
   if [ -z "$1" ]; then
+    C_BG=$GUI_BACKGROUND
     C_FG=$GUI_FOREGROUND
     C_PRIMARY=$GUI_PRIMARY
     C_YELLOW=$GUI_DARK_YELLOW
@@ -107,7 +108,7 @@ resolve_session() {
       --print-query
       --style=full
       --layout=reverse
-      --color fg:$C_FG,hl:$C_PRIMARY
+      --color fg:$C_FG,bg:$C_BG,hl:$C_PRIMARY
       --color fg+:$C_FG,bg+:$C_BLACK,hl+:$C_YELLOW
       --color gutter:$C_BG,info:$C_PRIMARY,prompt:$C_PRIMARY
       --color spinner:$C_PRIMARY,pointer:$C_BLACK,marker:$C_YELLOW,border:$C_BLACK
