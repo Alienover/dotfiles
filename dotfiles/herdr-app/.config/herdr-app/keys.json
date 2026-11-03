@@ -70,9 +70,9 @@
     "cmd-right": "send:\u0005",
     "cmd-backspace": "send:\u0015",
     "ctrl-b": "mod.open:prefix",
-    "ctrl-h": "mod.open:nav-left",
-    "ctrl-j": "mod.open:nav-down",
-    "ctrl-k": "mod.open:nav-up",
-    "ctrl-l": "mod.open:nav-right"
+    "ctrl-h": "nav.left",
+    "ctrl-j": "nav.down",
+    "ctrl-k": "nav.up",
+    "ctrl-l": "nav.right"
   }
 }
