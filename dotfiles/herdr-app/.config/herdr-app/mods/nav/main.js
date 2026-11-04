@@ -17,7 +17,7 @@
 // without the label) gets it typed in with `hc keys`. That's slower: it waits
 // until nobody has typed for a moment.
 //
-// Set up with `herdr-app do mod.open:setup-nav`, which mounts it in a layout of
+// Set up with `herdr-app do mod.open:setup-layout`, which mounts it in a layout of
 // your own and leaves the shared key nav.setup; the first copy to start after
 // that says it's ready and clears it.
 

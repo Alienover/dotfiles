@@ -9,26 +9,31 @@ With Herdr open:
 
 ```sh
 cd ~/src/dotfiles && ./setup herdr-app nvim
-herdr-app do mod.open:setup-nav
+herdr-app do mod.open:setup-layout
 ```
 
 Then restart any Neovim that was already running.
 
-1. **`./setup herdr-app nvim`** links `nav`, `setup-nav`, `keys.json` (which binds the keys) and the Neovim config
+1. **`./setup herdr-app nvim`** links `nav`, `setup-layout`, `keys.json` (which binds the keys) and the Neovim config
    into `~/.config/`.
-2. **`mod.open:setup-nav`** runs the `setup-nav` mod (`mods/setup-nav/`), which reports with toasts:
-   - **It writes `layouts/main-nav.json`:** Herdr's `main` plus `nav` as a 0 px block at the end of the `work`
-     column, `{"id":"nav","type":"block","size":{"px":0},"content":{"mod":"nav"}}`. `nav` has to be in the layout on
-     screen, and Herdr's own layouts can't be edited: on the next start Herdr moves an edited one aside and restores
-     its own. An existing `main-nav` is never replaced; `nav` is only added to it if missing.
-   - **It checks the mod** (`herdr-app check mods/nav`), then **switches to `main-nav`.**
+2. **`mod.open:setup-layout`** runs the `setup-layout` mod (`mods/setup-layout/`), which reports with toasts:
+   - **It writes `layouts/main-nav.json`:** a copy of Herdr's `main` with each of the mod's patches applied. Herdr's
+     own layouts can't be edited: on the next start Herdr moves an edited one aside and restores its own. An existing
+     `main-nav` is never replaced; only the patches it's missing are applied. The patches:
+     - **nav:** `nav` as a 0 px block at the end of the `work` column,
+       `{"id":"nav","type":"block","size":{"px":0},"content":{"mod":"nav"}}`. `nav` has to be in the layout on screen.
+     - **unframed lone panes:** `"lone": false` in each tab block's `pane` frame, so a tab's only pane has no border,
+       focus color or header; split panes keep theirs.
+   - **It checks the mods the patches use** (`herdr-app check mods/nav`), then **switches to `main-nav`.**
    - **`nav` confirms** with "Ready: ctrl+h/j/k/l move between panes" once it runs there.
 
-Running it again is safe. If you're already on a `main-nav` with `nav`, it only says "Already set up". On a failure,
-the error toast says what to fix.
+Running it again is safe. If you're already on a `main-nav` with every patch, it only says "Already set up". On a
+failure, the error toast says what to fix. To add another layout setting, add an entry to `PATCHES` in
+`mods/setup-layout/main.js` (`name`, `has`, `apply`, optional `mods` and `starting`).
 
 `main-nav` is a copy of the file, so it starts with Herdr's default look for `main`, not your clicks from another
-layout. Herdr never updates it: to pick up a newer `main`, delete `layouts/main-nav.json` and run `setup-nav` again.
+layout. Herdr never updates it: to pick up a newer `main`, delete `layouts/main-nav.json` and run `setup-layout`
+again.
 
 ## How it behaves
 
@@ -52,10 +57,12 @@ There's no wrap-around at the window's edge. Presses to one Neovim run in order.
   - It moves with `run("pane.go", { direction })`, falling back to `hc(["keys", terminal, "ctrl+h"])`.
   - `nav.ping` writes `Date.now()` to `shared("nav.pong")`.
   - On start, if `shared("nav.setup")` is set, it posts the "Ready" toast and clears it.
-- **`mods/setup-nav/`:** a 1×1 overlay window (`mod.json`) that does the Fresh install steps and closes itself.
+- **`mods/setup-layout/`:** a 1×1 overlay window (`mod.json`) that does the Fresh install steps and closes itself.
+  - `PATCHES` lists each change on top of `main`: `has(tree)` says it's there, `apply(tree)` makes it.
   - It writes the layout file itself (`readTextFile` / `writeTextFile`) rather than running `layout.clone`. `run()`
     doesn't say when a command is done, and `layout.clone` switches layouts, which closes the overlay first.
-  - It sets `nav.setup` before writing or switching (a `nav` copy may start right then), and clears it on failure.
+  - A patch's `starting` key (`nav.setup` for nav) is set before writing or switching when its mod is about to start
+    (newly added, or the layout is about to be shown), and cleared on failure.
 - **Neovim side:** `dotfiles/nvim/.config/nvim/lua/util/mux_navigation.lua`, mapped in
   `lua/plugins/nvim-mux-navigation.lua`.
   - At startup Neovim labels its terminal `nav.nvim=<v:servername>` (`hc label`) and removes the label on exit.
@@ -79,9 +86,9 @@ There's no wrap-around at the window's edge. Presses to one Neovim run in order.
 
 ## Done when
 
-- `herdr-app check` passes on `mods/nav` and `mods/setup-nav`.
-- `herdr-app do mod.open:setup-nav` ends on `main-nav` with one `nav` block, no errors in `herdr-app status`, and the
-  "Ready" toast. Run again, it writes nothing.
+- `herdr-app check` passes on `mods/nav` and `mods/setup-layout`.
+- `herdr-app do mod.open:setup-layout` ends on `main-nav` with one `nav` block, `"lone": false` on the tab block, no
+  errors in `herdr-app status`, and the "Ready" toast. Run again, it writes nothing.
 - `herdr-app do nav.ping` updates `nav.pong`.
 - With Neovim split in two (`nvim -O a b`) beside a shell, focused in Neovim's left window:
   - `herdr-app do nav.right` moves Neovim to its right window;
