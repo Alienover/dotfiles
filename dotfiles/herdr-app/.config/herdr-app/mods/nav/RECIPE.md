@@ -16,7 +16,7 @@ Then restart any Neovim that was already running.
 
 1. **`./setup herdr-app nvim`** links `nav`, `setup-layout`, `keys.json` (which binds the keys) and the Neovim config
    into `~/.config/`.
-2. **`mod.open:setup-layout`** puts `nav` in the layout on screen: a 0 px block at the end of `main-nav`'s `work`
+2. **`mod.open:setup-layout`** puts `nav` in the layout on screen: a 0 px block at the end of `main-layout`'s `work`
    column, `{"id":"nav","type":"block","size":{"px":0},"content":{"mod":"nav"}}`, after `herdr-app check mods/nav`.
    See `mods/setup-layout/RECIPE.md` for the layout itself.
 3. **`nav` confirms** with "Ready: ctrl+h/j/k/l move between panes" once it runs there.
@@ -67,7 +67,7 @@ There's no wrap-around at the window's edge. Presses to one Neovim run in order.
 ## Done when
 
 - `herdr-app check` passes on `mods/nav`.
-- `herdr-app do mod.open:setup-layout` ends on `main-nav` with one `nav` block and the "Ready" toast.
+- `herdr-app do mod.open:setup-layout` ends on `main-layout` with one `nav` block and the "Ready" toast.
 - `herdr-app do nav.ping` updates `nav.pong`.
 - With Neovim split in two (`nvim -O a b`) beside a shell, focused in Neovim's left window:
   - `herdr-app do nav.right` moves Neovim to its right window;

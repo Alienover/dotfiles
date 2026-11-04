@@ -1,10 +1,10 @@
 // Set up my layout: `herdr-app do mod.open:setup-layout` (see mods/nav/RECIPE.md).
 //
 // Herdr's own layouts can't be edited (the next start moves an edit aside to
-// <name>-edited), so this keeps a copy of Herdr's main as layouts/main-nav.json
+// <name>-edited), so this keeps a copy of Herdr's main as layouts/main-layout.json
 // and applies PATCHES to it: each one is a change on top of main (the nav
 // block, unframed lone panes, ...). A patch that's already there is left
-// alone, so it's safe to run again, and an existing main-nav is never replaced,
+// alone, so it's safe to run again, and an existing main-layout is never replaced,
 // only patched. Then it checks the mods the patches need and switches to it.
 //
 // To add a setting: add an entry to PATCHES.
@@ -21,7 +21,7 @@ import { View, div } from "gpui-kit";
 import { appHome, closeOverlay, exec, layouts, notify, props, readTextFile, run, setShared, shared, writeTextFile } from "herdr";
 
 const SOURCE = "main";
-const TARGET = "main-nav";
+const TARGET = "main-layout";
 const TITLE = "Set up layout";
 
 // Every node in the tree, floating blocks included.
@@ -62,9 +62,9 @@ const PATCHES = [
   },
   {
     // A tab's only pane gets no frame (border, focus color, header); split
-    // panes keep theirs.
+    // panes keep theirs. Unset is false (Herdr's default; layout.clone drops it).
     name: "unframed lone panes",
-    has: (tree) => tabBlocks(tree).every((b) => b.content.pane.lone === false),
+    has: (tree) => tabBlocks(tree).every((b) => b.content.pane.lone !== true),
     apply: (tree) => {
       for (const b of tabBlocks(tree)) b.content.pane.lone = false;
     },
