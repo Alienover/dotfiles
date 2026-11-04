@@ -7,28 +7,29 @@ Neovim's windows first and leave Neovim only at its edge. The mod draws nothing.
 
 Paste this to an agent running in Herdr:
 
-> Set up my Herdr `nav` mod. Run `cd ~/src/dotfiles && ./setup herdr-app nvim`. Then clone Herdr's `main` layout with
-> `herdr-app do layout.clone '{"name":"main","as":"main-nav"}'`. In `~/.config/herdr-app/layouts/main-nav.json`, add
-> `{"id":"nav","type":"block","size":{"px":0},"content":{"mod":"nav"}}` as the last child of the `work` column, and
-> write the file in place, not with `mv`. Finish when `herdr-app status` shows layout `main-nav` with no errors,
-> `herdr-app check ~/.config/herdr-app/mods/nav` passes, and `herdr-app do nav.ping` updates `nav.pong` in
-> `~/.config/herdr-app/shared.json`.
+> Run `~/src/dotfiles/dotfiles/herdr-app/.config/herdr-app/mods/nav/setup.sh` and tell me how it went. If it fails,
+> read `mods/nav/RECIPE.md` next to it and fix what it reports.
 
-What that does:
+Or run it yourself; Herdr must be open. It's safe to run again. It stops with a message at the first thing that fails.
 
-1. **`./setup herdr-app nvim`** links this mod, `keys.json` (which binds the keys) and the Neovim config into `~/.config/`.
-2. **Clone `main`.** `nav` has to be in the layout on screen, but Herdr's own layouts can't be edited: on the next
-   start Herdr moves an edited one aside and restores its own. A clone is yours and keeps the layout's look. Cloning
-   also switches to it.
-3. **Add the 0 px block.** This is the copy of `nav` that receives the keys. A one-liner for it:
-   ```sh
-   f=~/.config/herdr-app/layouts/main-nav.json
-   jq '(.. | objects | select(.id? == "work") | .children) += [{"id":"nav","type":"block","size":{"px":0},"content":{"mod":"nav"}}]' \
-     "$f" > "$f.tmp" && cat "$f.tmp" > "$f" && rm "$f.tmp"
-   ```
-4. **Check** that it loaded and receives commands. Restart any Neovim that's already running.
+What `setup.sh` does:
 
-Herdr never updates `main-nav`. To pick up a newer `main`, clone it again under a new name and redo step 3.
+1. **Links the dotfiles:** `./setup herdr-app nvim`, so this mod, `keys.json` (which binds the keys) and the Neovim
+   config are in `~/.config/`.
+2. **Makes `main-nav`**, a copy of Herdr's `main`, unless it already exists. `nav` has to be in the layout on screen,
+   but Herdr's own layouts can't be edited: on the next start Herdr moves an edited one aside and restores its own. A
+   clone (`layout.clone`) is yours and keeps the layout's look. `setup.sh <layout>` copies another layout instead,
+   e.g. `main-edited`, the name Herdr gives your old edited `main`.
+3. **Adds `nav`** to `main-nav` if it isn't there yet: a 0 px block,
+   `{"id":"nav","type":"block","size":{"px":0},"content":{"mod":"nav"}}`, at the end of the `work` column. This is
+   the copy of `nav` that receives the keys.
+4. **Switches to `main-nav` and checks it:**
+   - `herdr-app status` shows `main-nav` with no errors;
+   - `herdr-app check` passes on the mod;
+   - `nav.ping` gets an answer.
+
+Afterwards, restart any Neovim that was already running. Herdr never updates `main-nav`: to pick up a newer `main`,
+delete `layouts/main-nav.json` and run `setup.sh` again.
 
 ## How it behaves
 
