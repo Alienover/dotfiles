@@ -9,6 +9,30 @@ Personal setup: the Neovim half lives in this repo's nvim package
 (`dotfiles/nvim/.config/nvim/lua/util/mux_navigation.lua`, mapped in `lua/plugins/nvim-mux-navigation.lua`), and the
 key bindings are in this package's `keys.json`.
 
+## Fresh install
+
+1. Link the files: `cd ~/src/dotfiles && ./setup herdr-app nvim`. This links `mods/nav/` and `keys.json` into
+   `~/.config/herdr-app/` and the Neovim config into `~/.config/nvim/`.
+2. Open Herdr.
+3. Make a layout of your own from Herdr's `main`. Herdr's layouts must not be edited (see Watch out), so `nav` goes
+   in a clone. This also switches to it:
+   ```sh
+   herdr-app do layout.clone '{"name":"main","as":"main-nav"}'
+   ```
+4. Mount `nav` in it, as a 0 px block at the end of the `work` column. Write the file in place: `cat`, not `mv`.
+   ```sh
+   f=~/.config/herdr-app/layouts/main-nav.json
+   jq '(.. | objects | select(.id? == "work") | .children) += [{"id":"nav","type":"block","size":{"px":0},"content":{"mod":"nav"}}]' \
+     "$f" > "$f.tmp" && cat "$f.tmp" > "$f" && rm "$f.tmp"
+   ```
+   If `main` ever loses its `work` column, the `jq` adds nothing: put the block in any column by hand.
+5. Check: `herdr-app status` shows layout `main-nav` with no errors, `herdr-app check ~/.config/herdr-app/mods/nav`
+   passes, and `herdr-app do nav.ping` updates `nav.pong` in `~/.config/herdr-app/shared.json`.
+6. Restart any Neovim that's already running, so it puts its socket on its terminal.
+
+`main-nav` is never updated by Herdr. To pick up a newer `main`, repeat steps 3 and 4 under a new name, then delete
+the old copy.
+
 ## What you see
 
 - Nothing is added to the window. The mod is a 0 px block in the layout and renders an empty `div()`.
