@@ -5,31 +5,30 @@ Neovim's windows first and leave Neovim only at its edge. The mod draws nothing.
 
 ## Fresh install
 
-Paste this to an agent running in Herdr:
+With Herdr open:
 
-> Run `~/src/dotfiles/dotfiles/herdr-app/.config/herdr-app/mods/nav/setup.sh` and tell me how it went. If it fails,
-> read `mods/nav/RECIPE.md` next to it and fix what it reports.
+```sh
+cd ~/src/dotfiles && ./setup herdr-app nvim
+herdr-app do mod.open:setup-nav
+```
 
-Or run it yourself; Herdr must be open. It's safe to run again. It stops with a message at the first thing that fails.
+Then restart any Neovim that was already running.
 
-What `setup.sh` does:
+1. **`./setup herdr-app nvim`** links `nav`, `setup-nav`, `keys.json` (which binds the keys) and the Neovim config
+   into `~/.config/`.
+2. **`mod.open:setup-nav`** runs the `setup-nav` mod (`mods/setup-nav/`), which reports with toasts:
+   - **It writes `layouts/main-nav.json`:** Herdr's `main` plus `nav` as a 0 px block at the end of the `work`
+     column, `{"id":"nav","type":"block","size":{"px":0},"content":{"mod":"nav"}}`. `nav` has to be in the layout on
+     screen, and Herdr's own layouts can't be edited: on the next start Herdr moves an edited one aside and restores
+     its own. An existing `main-nav` is never replaced; `nav` is only added to it if missing.
+   - **It checks the mod** (`herdr-app check mods/nav`), then **switches to `main-nav`.**
+   - **`nav` confirms** with "Ready: ctrl+h/j/k/l move between panes" once it runs there.
 
-1. **Links the dotfiles:** `./setup herdr-app nvim`, so this mod, `keys.json` (which binds the keys) and the Neovim
-   config are in `~/.config/`.
-2. **Makes `main-nav`**, a copy of Herdr's `main`, unless it already exists. `nav` has to be in the layout on screen,
-   but Herdr's own layouts can't be edited: on the next start Herdr moves an edited one aside and restores its own. A
-   clone (`layout.clone`) is yours and keeps the layout's look. `setup.sh <layout>` copies another layout instead,
-   e.g. `main-edited`, the name Herdr gives your old edited `main`.
-3. **Adds `nav`** to `main-nav` if it isn't there yet: a 0 px block,
-   `{"id":"nav","type":"block","size":{"px":0},"content":{"mod":"nav"}}`, at the end of the `work` column. This is
-   the copy of `nav` that receives the keys.
-4. **Switches to `main-nav` and checks it:**
-   - `herdr-app status` shows `main-nav` with no errors;
-   - `herdr-app check` passes on the mod;
-   - `nav.ping` gets an answer.
+Running it again is safe. If you're already on a `main-nav` with `nav`, it only says "Already set up". On a failure,
+the error toast says what to fix.
 
-Afterwards, restart any Neovim that was already running. Herdr never updates `main-nav`: to pick up a newer `main`,
-delete `layouts/main-nav.json` and run `setup.sh` again.
+`main-nav` is a copy of the file, so it starts with Herdr's default look for `main`, not your clicks from another
+layout. Herdr never updates it: to pick up a newer `main`, delete `layouts/main-nav.json` and run `setup-nav` again.
 
 ## How it behaves
 
@@ -52,6 +51,11 @@ There's no wrap-around at the window's edge. Presses to one Neovim run in order.
   - It asks Neovim with `exec("nvim", ["--server", socket, "--remote-expr", "v:lua.require'util.mux_navigation'.herdr('h')"])`.
   - It moves with `run("pane.go", { direction })`, falling back to `hc(["keys", terminal, "ctrl+h"])`.
   - `nav.ping` writes `Date.now()` to `shared("nav.pong")`.
+  - On start, if `shared("nav.setup")` is set, it posts the "Ready" toast and clears it.
+- **`mods/setup-nav/`:** a 1×1 overlay window (`mod.json`) that does the Fresh install steps and closes itself.
+  - It writes the layout file itself (`readTextFile` / `writeTextFile`) rather than running `layout.clone`. `run()`
+    doesn't say when a command is done, and `layout.clone` switches layouts, which closes the overlay first.
+  - It sets `nav.setup` before writing or switching (a `nav` copy may start right then), and clears it on failure.
 - **Neovim side:** `dotfiles/nvim/.config/nvim/lua/util/mux_navigation.lua`, mapped in
   `lua/plugins/nvim-mux-navigation.lua`.
   - At startup Neovim labels its terminal `nav.nvim=<v:servername>` (`hc label`) and removes the label on exit.
@@ -70,10 +74,15 @@ There's no wrap-around at the window's edge. Presses to one Neovim run in order.
   Herdr.
 - **Shells lose these keys:** `ctrl+h` (backspace), `ctrl+l` (clear), `ctrl+k` (kill line), `ctrl+j` (newline).
 - A Neovim started before the setup gets `hc keys` until it restarts.
+- **Don't add `cloned_from` to a hand-written layout.** Herdr rejects it without the `version` that only
+  `layout.clone` fills in ("missing field `version`"), and then doesn't apply the layout.
 
 ## Done when
 
-- `herdr-app check ~/.config/herdr-app/mods/nav` passes, and `herdr-app do nav.ping` updates `nav.pong`.
+- `herdr-app check` passes on `mods/nav` and `mods/setup-nav`.
+- `herdr-app do mod.open:setup-nav` ends on `main-nav` with one `nav` block, no errors in `herdr-app status`, and the
+  "Ready" toast. Run again, it writes nothing.
+- `herdr-app do nav.ping` updates `nav.pong`.
 - With Neovim split in two (`nvim -O a b`) beside a shell, focused in Neovim's left window:
   - `herdr-app do nav.right` moves Neovim to its right window;
   - `nav.right` again focuses the shell;
