@@ -1,7 +1,28 @@
 local nav = require("util.mux_navigation")
 
+local left = "<C-h>"
+local down = "<C-j>"
+local up = "<C-k>"
+local right = "<C-l>"
+
 ---@type LazySpec
 return {
+	{ -- Tmux Navigation
+		"alexghergh/nvim-tmux-navigation",
+		cond = vim.env.TMUX ~= nil,
+		keys = { left, down, up, right },
+		opts = {
+			disable_when_zoomed = true, -- defaults to false
+			keybindings = {
+				left = left,
+				down = down,
+				up = up,
+				right = right,
+				last_active = nil,
+				next = nil,
+			},
+		},
+	},
 	{ -- Rex/Herdr Navigation (local, see lua/util/mux_navigation.lua)
 		"nvim-mux-navigation",
 		virtual = true,
@@ -9,28 +30,28 @@ return {
 		init = nav.advertise,
 		keys = {
 			{
-				"<C-h>",
+				left,
 				function()
 					nav.navigate("h")
 				end,
 				desc = "Navigate left (nvim/rex/herdr)",
 			},
 			{
-				"<C-j>",
+				down,
 				function()
 					nav.navigate("j")
 				end,
 				desc = "Navigate down (nvim/rex/herdr)",
 			},
 			{
-				"<C-k>",
+				up,
 				function()
 					nav.navigate("k")
 				end,
 				desc = "Navigate up (nvim/rex/herdr)",
 			},
 			{
-				"<C-l>",
+				right,
 				function()
 					nav.navigate("l")
 				end,
