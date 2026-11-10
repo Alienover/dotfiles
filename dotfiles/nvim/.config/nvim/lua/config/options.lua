@@ -77,3 +77,6 @@ vim.opt.undofile = true
 -- Behavior
 vim.opt.inccommand = "split" -- Show command preview
 vim.opt.clipboard:append("unnamedplus") -- Use system clipboard for all operations
+
+-- Diagnostic `virtual_lines.current_line` refreshes on CursorHold; default 4000ms feels laggy
+vim.opt.updatetime = 250
