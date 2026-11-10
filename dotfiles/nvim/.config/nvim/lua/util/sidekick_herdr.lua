@@ -335,6 +335,20 @@ local function herdr_pane(session)
 	end
 end
 
+--- sidekick checks `cli.mux.backend` against its own list (tmux, zellij) and
+--- errors on anything else, though registered backends work. Add "herdr" to
+--- that list. `Config.validate` is looked up when the check runs (scheduled
+--- after `setup()`), so wrapping it before or after setup both work.
+local function patch_validate()
+	local validate = Config.validate
+	Config.validate = function(key, t)
+		if key == "cli.mux.backend" and type(t) == "table" then
+			t = vim.list_extend(vim.deepcopy(t), { "herdr" })
+		end
+		return validate(key, t)
+	end
+end
+
 --- sidekick focuses only `state.terminal` (a Neovim window), which herdr panes
 --- don't have, and has no focus hook for backends. Wrap the two places that
 --- focus: `State.attach` (create, toggle, show, select, send) and `cli.focus`.
@@ -391,13 +405,7 @@ function M.setup(opts)
 	if vim.fn.executable("hc") == 0 then
 		return
 	end
-	local validate = Config.validate
-	Config.validate = function(key, t)
-		if key == "cli.mux.backend" and type(t) == "table" then
-			t = vim.list_extend(vim.deepcopy(t), { "herdr" })
-		end
-		return validate(key, t)
-	end
+	patch_validate()
 	require("sidekick.cli.session").register("herdr", M)
 	patch_focus()
 end
