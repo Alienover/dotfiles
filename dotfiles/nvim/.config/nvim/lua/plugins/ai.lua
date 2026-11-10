@@ -69,9 +69,7 @@ return {
 		"sidekick-herdr",
 		virtual = true,
 		cond = vim.env.HC_TERMINAL_ID ~= nil and vim.fn.executable("hc") == 1,
-		opts = {
-			focus = true, -- focus the agent's herdr pane where sidekick would focus its window
-		},
+		-- options: see `M.opts` in util/sidekick_herdr.lua
 		config = function(_, opts)
 			require("util.sidekick_herdr").setup(opts)
 		end,

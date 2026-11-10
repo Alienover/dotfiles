@@ -18,6 +18,7 @@ local Util = require("sidekick.util")
 
 ---@class sidekick.cli.muxer.Herdr: sidekick.cli.Session
 ---@field hc_terminal? string core terminal address (t7)
+---@field just_started? boolean herdr just gave this new pane the keyboard
 ---@field _live? boolean
 ---@field _live_at? integer
 local M = {}
@@ -35,12 +36,14 @@ local PASTE_START, PASTE_END, DETACH = "\27[200~", "\27[201~", "\28"
 local PUMP_DELAY = 100 -- ms between writes on the hidden attach (paste, then Enter)
 local SH_CD = 'cd "$1" || exit 1; shift; exec "$@"'
 
+--- The JSON a command printed; nil when it isn't JSON, nil and the message
+--- when it's an `{ "error": ... }` reply.
 ---@param out? string
 ---@return table?, string? err
 local function decode(out)
 	local ok, ret = pcall(vim.json.decode, out or "")
 	if not ok or type(ret) ~= "table" then
-		return nil, "invalid JSON response"
+		return nil
 	end
 	if ret.error then
 		local err = ret.error
@@ -56,18 +59,27 @@ end
 local function run(cmd, notify)
 	local result = vim.system(cmd, { text = true }):wait()
 	local ret, err = decode(result.stdout)
-	if not ret and notify then
-		Util.error(("`%s` failed: %s"):format(table.concat(cmd, " "), err or result.stderr or ""))
+	if ret and result.code == 0 then
+		return ret
 	end
-	return ret
+	if notify then
+		local stderr = vim.trim(result.stderr or "")
+		err = err or (stderr ~= "" and stderr) or ("exit code " .. result.code)
+		Util.error(("`%s` failed: %s"):format(table.concat(cmd, " "), err))
+	end
+end
+
+--- `hc <command> --json <args...>`
+---@param args string[]
+local function hc_cmd(args)
+	local cmd = { "hc", args[1], "--json" }
+	return vim.list_extend(cmd, args, 2)
 end
 
 ---@param args string[]
 ---@param notify? boolean
 local function hc(args, notify)
-	local cmd = { "hc", args[1], "--json" }
-	vim.list_extend(cmd, args, 2)
-	return run(cmd, notify)
+	return run(hc_cmd(args), notify)
 end
 
 ---@param name string
@@ -80,8 +92,11 @@ end
 ---@return string?
 local function own_pane()
 	local me = vim.env.HC_TERMINAL_ID
-	local ls = me and run({ "herdr-app", "ls" })
-	for _, space in ipairs(ls and ls.spaces or {}) do
+	local ls = me and run({ "herdr-app", "ls" }, true)
+	if not ls then
+		return
+	end
+	for _, space in ipairs(ls.spaces or {}) do
 		for _, tab in ipairs(space.tabs or {}) do
 			for _, t in ipairs(tab.terminals or {}) do
 				if t.terminal == me then
@@ -90,12 +105,7 @@ local function own_pane()
 			end
 		end
 	end
-end
-
-local function refocus()
-	if vim.env.HC_TERMINAL_ID then
-		herdr_do("pane.focus", { terminal = vim.env.HC_TERMINAL_ID })
-	end
+	Util.error("Neovim is not in a herdr pane, can't split")
 end
 
 --- `env` argv applying the tool's env (core terminals don't inherit ours).
@@ -113,11 +123,10 @@ function M:argv()
 end
 
 ---@param address string
----@param where? string
-function M:set_terminal(address, where)
+function M:set_terminal(address)
 	self.hc_terminal = address
 	self.id = "hc " .. address
-	self.mux_session = where or address
+	self.mux_session = address
 	self.started = true
 	self._live, self._live_at = true, vim.uv.now()
 end
@@ -139,7 +148,9 @@ end
 ---@return sidekick.cli.terminal.Cmd?
 function M:start()
 	if not self.external then
-		local args = { "run", "--bg", "--keep", "--no-parent", "--cwd", self.cwd }
+		-- no --keep: a killed agent must end the terminal, not leave a shell
+		-- behind that still reads as running and gets the next paste
+		local args = { "run", "--bg", "--no-parent", "--cwd", self.cwd }
 		vim.list_extend(args, { "--label", "sidekick.sid=" .. self.sid, "--" })
 		local t = hc(vim.list_extend(args, self:argv()), true)
 		if t and t.address then
@@ -151,13 +162,12 @@ function M:start()
 
 	local ret ---@type table?
 	if Config.cli.mux.create == "window" then
-		local me = hc({ "get", vim.env.HC_TERMINAL_ID })
+		local me = hc({ "get", vim.env.HC_TERMINAL_ID }, true)
 		local space = me and me.labels and me.labels["herdr.space"]
 		ret = herdr_do("tab.new", { space = space, folder = self.cwd, argv = self:argv() })
 	else
 		local pane = own_pane()
 		if not pane then
-			Util.error("Neovim is not in a herdr pane, can't split")
 			return
 		end
 		local argv = vim.list_extend({ "sh", "-c", SH_CD, "sh", self.cwd }, self:argv())
@@ -167,7 +177,7 @@ function M:start()
 
 	if ret and ret.terminal then
 		self:set_terminal(ret.terminal)
-		refocus() -- herdr focuses the new pane; keep the editor focused like tmux -d
+		self.just_started = true -- settle() decides who keeps the keyboard
 		local place = Config.cli.mux.create == "window" and "tab" or "split"
 		Util.info(("Started **%s** in a new herdr %s"):format(self.tool.name, place))
 	end
@@ -198,11 +208,13 @@ function M.sessions()
 		end
 	end
 
+	-- every terminal: `hc ls` names the shell, not the program in front of it,
+	-- so only `hc get` (its foreground) can tell. The gets run in parallel
 	local jobs = {}
 	for _, t in ipairs(list and list.terminals or {}) do
 		-- remote terminals (machine/t7) have remote cwds: skip them
 		if t.state == "live" and not t.address:find("/", 1, true) and t.address ~= vim.env.HC_TERMINAL_ID then
-			jobs[#jobs + 1] = { t = t, job = vim.system({ "hc", "get", "--json", t.address }, { text = true }) }
+			jobs[#jobs + 1] = { addr = t.address, job = vim.system(hc_cmd({ "get", t.address }), { text = true }) }
 		end
 	end
 
@@ -220,16 +232,14 @@ function M.sessions()
 			}
 			for _, tool in pairs(tools) do
 				if tool:is_proc(proc) then
-					local labels = info.labels or {}
-					local pids = vim.list_extend({ info.pid, fg.pid }, viewers[j.t.address] or {})
 					ret[#ret + 1] = {
-						id = "hc " .. j.t.address,
+						id = "hc " .. j.addr,
 						cwd = proc.cwd or vim.fn.getcwd(0),
 						tool = tool,
-						hc_terminal = j.t.address,
-						external = labels["herdr.space"] ~= nil, -- shown as a herdr pane
-						mux_session = labels.where or j.t.where or j.t.address,
-						pids = pids,
+						hc_terminal = j.addr,
+						external = (info.labels or {})["herdr.space"] ~= nil, -- shown as a herdr pane
+						mux_session = j.addr,
+						pids = vim.list_extend({ info.pid, fg.pid }, viewers[j.addr] or {}),
 					}
 					break
 				end
@@ -241,7 +251,7 @@ end
 
 --- Write raw input to the terminal through a hidden `hc attach`. Writes made
 --- while the attach is open go out on it in order, PUMP_DELAY apart.
----@type table<string, {queue:string[], job?:integer}>
+---@type table<string, {queue:string[], job?:integer, done?:boolean}>
 local writers = {}
 
 ---@param data string
@@ -263,26 +273,32 @@ function M:write(data)
 	w = { queue = { data } }
 	writers[addr] = w
 
+	-- false when the attach is gone (it ended before or while writing)
+	local function send(chunk)
+		return not w.done and pcall(vim.fn.chansend, w.job, chunk)
+	end
+
 	local ready = false
 	local function pump()
-		if not w.job or w.job <= 0 then
-			return
-		end
 		local chunk = table.remove(w.queue, 1)
 		if chunk then
-			vim.fn.chansend(w.job, chunk)
-			return vim.defer_fn(pump, PUMP_DELAY)
+			if send(chunk) then
+				return vim.defer_fn(pump, PUMP_DELAY)
+			end
+			Util.warn(("herdr terminal %s closed before the text was sent"):format(addr))
+			w.queue = {}
 		end
 		if writers[addr] == w then
 			writers[addr] = nil
 		end
-		local job = w.job
-		vim.fn.chansend(job, DETACH)
-		vim.defer_fn(function()
-			if vim.fn.jobwait({ job }, 0)[1] == -1 then
-				vim.fn.jobstop(job)
-			end
-		end, 2000)
+		if send(DETACH) then
+			local job = w.job
+			vim.defer_fn(function()
+				if vim.fn.jobwait({ job }, 0)[1] == -1 then
+					vim.fn.jobstop(job)
+				end
+			end, 2000)
+		end
 	end
 	local function start()
 		if not ready then
@@ -298,6 +314,7 @@ function M:write(data)
 		height = info.rows,
 		on_stdout = start, -- first paint: the stream is live
 		on_exit = function()
+			w.done = true
 			if writers[addr] == w then
 				writers[addr] = nil
 			end
@@ -320,6 +337,18 @@ function M:send(text)
 	self:write(PASTE_START .. text .. PASTE_END)
 end
 
+function M:submit()
+	self:write("\r")
+end
+
+function M:dump()
+	if not self.hc_terminal then
+		return
+	end
+	local _, ret = Util.exec({ "hc", "read", self.hc_terminal, "--lines", tostring(Config.cli.mux.dump) })
+	return ret
+end
+
 --- Give the agent's herdr pane the keyboard (switches to its tab).
 function M:focus()
 	if self.external and self.hc_terminal then
@@ -333,6 +362,30 @@ local function herdr_pane(session)
 	if session and session.backend == "herdr" and session.external then
 		return session --[[@as sidekick.cli.muxer.Herdr]]
 	end
+end
+
+--- The one place that decides who has the keyboard after an action on a
+--- herdr pane: the agent when `want`, else Neovim again if herdr just moved
+--- the keyboard to the agent's new pane (like tmux -d).
+---@param session sidekick.cli.muxer.Herdr
+---@param want boolean
+local function settle(session, want)
+	local started = session.just_started
+	session.just_started = nil
+	if want and M.opts.focus then
+		session:focus()
+	elseif started and vim.env.HC_TERMINAL_ID then
+		herdr_do("pane.focus", { terminal = vim.env.HC_TERMINAL_ID })
+	end
+end
+
+--- sidekick's `filter_opts` (local there): `"name"` or `{name}` into `filter`.
+---@param opts? table|string
+local function filter_opts(opts)
+	opts = type(opts) == "string" and { name = opts } or opts or {}
+	local filter = vim.deepcopy(opts.filter or {})
+	filter.name = opts.name or filter.name
+	return opts, filter
 end
 
 --- sidekick checks `cli.mux.backend` against its own list (tmux, zellij) and
@@ -350,26 +403,47 @@ local function patch_validate()
 end
 
 --- sidekick focuses only `state.terminal` (a Neovim window), which herdr panes
---- don't have, and has no focus hook for backends. Wrap the two places that
---- focus: `State.attach` (create, toggle, show, select, send) and `cli.focus`.
+--- don't have, and has no focus hook for backends. Patch where it focuses:
+--- * `State.attach` with `show` (show, select, send): focus unless
+---   `focus = false`. close and hide attach without `show`: never focus
+--- * `cli.toggle` and `cli.focus` show nothing and focus in their callbacks:
+---   sidekick's own versions, plus a herdr branch
 local function patch_focus()
 	local State = require("sidekick.cli.state")
+	local Cli = require("sidekick.cli")
+
 	local attach = State.attach
 	State.attach = function(state, opts)
 		local ret, attached = attach(state, opts)
 		local session = herdr_pane(ret and ret.session)
-		if session and M.opts.focus and (opts or {}).focus ~= false then
-			session:focus()
+		if session and opts and opts.show then
+			settle(session, opts.focus ~= false)
 		end
 		return ret, attached
 	end
 
-	-- same as sidekick's `cli.focus`, plus herdr panes. Blurring a herdr pane
-	-- isn't possible from here: its keys go to the agent, not Neovim
-	require("sidekick.cli").focus = function(opts)
-		opts = type(opts) == "string" and { name = opts } or opts or {}
-		local filter = vim.deepcopy(opts.filter or {})
-		filter.name = opts.name or filter.name
+	Cli.toggle = function(opts)
+		local filter
+		opts, filter = filter_opts(opts)
+		State.with(function(state, attached)
+			if state.terminal then
+				if not attached then
+					state.terminal:toggle()
+				end
+				if state.terminal:is_open() and opts.focus ~= false then
+					state.terminal:focus()
+				end
+			elseif herdr_pane(state.session) then
+				-- a herdr pane can't be hidden (closing it ends the agent): focus it
+				settle(state.session, opts.focus ~= false)
+			end
+		end, { attach = true, filter = filter })
+	end
+
+	-- blurring a herdr pane isn't possible from here: its keys go to the agent
+	Cli.focus = function(opts)
+		local filter
+		opts, filter = filter_opts(opts)
 		State.with(function(state)
 			if state.terminal then
 				if state.terminal:is_focused() then
@@ -377,23 +451,11 @@ local function patch_focus()
 				else
 					state.terminal:focus()
 				end
-			elseif herdr_pane(state.session) and M.opts.focus then
-				state.session:focus()
+			elseif herdr_pane(state.session) then
+				settle(state.session, true)
 			end
 		end, { attach = true, filter = filter, focus = false, show = true })
 	end
-end
-
-function M:submit()
-	self:write("\r")
-end
-
-function M:dump()
-	if not self.hc_terminal then
-		return
-	end
-	local _, ret = Util.exec({ "hc", "read", self.hc_terminal, "--lines", tostring(Config.cli.mux.dump) })
-	return ret
 end
 
 --- Register the backend, let `cli.mux.backend = "herdr"` pass validation and
