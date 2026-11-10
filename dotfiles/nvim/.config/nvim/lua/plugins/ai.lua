@@ -65,4 +65,25 @@ return {
 			},
 		},
 	},
+	{ -- Herdr backend for sidekick (local, see lua/util/sidekick_herdr.lua)
+		"sidekick-herdr",
+		virtual = true,
+		cond = vim.env.HC_TERMINAL_ID ~= nil and vim.fn.executable("hc") == 1,
+		-- options: see `M.opts` in util/sidekick_herdr.lua
+		config = function(_, opts)
+			require("util.sidekick_herdr").setup(opts)
+		end,
+		-- only applied while this plugin is enabled: agents become herdr panes beside nvim
+		specs = {
+			{
+				"folke/sidekick.nvim",
+				dependencies = { "sidekick-herdr" },
+				opts = {
+					cli = {
+						mux = { backend = "herdr", create = "split" },
+					},
+				},
+			},
+		},
+	},
 }
