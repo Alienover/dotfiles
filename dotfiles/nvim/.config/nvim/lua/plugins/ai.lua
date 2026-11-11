@@ -68,7 +68,12 @@ return {
 	{ -- Herdr backend for sidekick (local, see lua/util/sidekick_herdr.lua)
 		"sidekick-herdr",
 		virtual = true,
-		cond = vim.env.HC_TERMINAL_ID ~= nil and vim.fn.executable("hc") == 1,
+		-- host only: over ssh (a remote machine in herdr) HC_TERMINAL_ID and `hc`
+		-- are there too, but the app isn't, so its panes can't be placed from
+		-- here. sidekick then keeps its default backend (tmux)
+		cond = vim.env.HC_TERMINAL_ID ~= nil
+			and vim.fn.executable("hc") == 1
+			and vim.fn.executable("herdr-app") == 1,
 		-- options: see `M.opts` in util/sidekick_herdr.lua
 		config = function(_, opts)
 			require("util.sidekick_herdr").setup(opts)
