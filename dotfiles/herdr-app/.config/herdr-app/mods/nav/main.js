@@ -17,12 +17,11 @@
 // without the label) gets it typed in with `hc keys`. That's slower: it waits
 // until nobody has typed for a moment.
 //
-// Set up with `herdr-app do mod.open:setup-layout`, which mounts it in a layout of
-// your own and leaves the shared key nav.setup; the first copy to start after
-// that says it's ready and clears it.
+// It only gets its keys where a layout mounts it: layouts/main-layout.json has a
+// 0 px nav block at the end of the `work` column.
 
 import { View, div } from "gpui-kit";
-import { exec, focused, hc, nextCommand, notify, run, setShared, shared, terminals, window } from "herdr";
+import { exec, focused, hc, nextCommand, run, setShared, terminals } from "herdr";
 
 const MOVES = {
   left: "h",
@@ -103,11 +102,6 @@ function navigate(direction) {
 
 export default class Nav extends View {
   init(_props, cx) {
-    // Not in `herdr-app check`, which has no window
-    if (window() && shared("nav.setup")) {
-      setShared("nav.setup", null);
-      notify({ title: "Nav", body: "Ready: ctrl+h/j/k/l move between panes.", level: "success", timeout: 5000 });
-    }
     cx.spawn(async () => {
       for (;;) {
         navigate(await nextCommand());

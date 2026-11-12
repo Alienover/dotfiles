@@ -9,17 +9,16 @@ With Herdr open:
 
 ```sh
 cd ~/src/dotfiles && ./setup herdr-app nvim
-herdr-app do mod.open:setup-layout
+herdr-app do layout.switch:main-layout
 ```
 
 Then restart any Neovim that was already running.
 
-1. **`./setup herdr-app nvim`** links `nav`, `setup-layout`, `keys.json` (which binds the keys) and the Neovim config
-   into `~/.config/`.
-2. **`mod.open:setup-layout`** puts `nav` in the layout on screen: a 0 px block at the end of `main-layout`'s `work`
-   column, `{"id":"nav","type":"block","size":{"px":0},"content":{"mod":"nav"}}`, after `herdr-app check mods/nav`.
-   See `mods/setup-layout/RECIPE.md` for the layout itself.
-3. **`nav` confirms** with "Ready: ctrl+h/j/k/l move between panes" once it runs there.
+1. **`./setup herdr-app nvim`** links `nav`, `keys.json` (which binds the keys), `layouts/main-layout.json` and the
+   Neovim config into `~/.config/`.
+2. **`main-layout` mounts `nav`**: a 0 px block at the end of its `work` column,
+   `{"id":"nav","type":"block","size":{"px":0},"content":{"mod":"nav"}}`. `nav` gets its keys only where a layout
+   shows it.
 
 ## How it behaves
 
@@ -42,9 +41,7 @@ There's no wrap-around at the window's edge. Presses to one Neovim run in order.
   - It asks Neovim with `exec("nvim", ["--server", socket, "--remote-expr", "v:lua.require'util.mux_navigation'.herdr('h')"])`.
   - It moves with `run("pane.go", { direction })`, falling back to `hc(["keys", terminal, "ctrl+h"])`.
   - `nav.ping` writes `Date.now()` to `shared("nav.pong")`.
-  - On start, if `shared("nav.setup")` is set, it posts the "Ready" toast and clears it.
-- **Mounting:** the `nav` patch in `mods/setup-layout/main.js`. It sets `shared("nav.setup")` before a `nav` copy
-  can start (the block is added or the layout is about to be shown) and clears it on failure.
+- **Mounting:** the 0 px `nav` block in `layouts/main-layout.json`.
 - **Neovim side:** `dotfiles/nvim/.config/nvim/lua/util/mux_navigation.lua`, mapped in
   `lua/plugins/nvim-mux-navigation.lua`.
   - At startup Neovim labels its terminal `nav.nvim=<v:servername>` (`hc label`) and removes the label on exit.
@@ -67,7 +64,7 @@ There's no wrap-around at the window's edge. Presses to one Neovim run in order.
 ## Done when
 
 - `herdr-app check` passes on `mods/nav`.
-- `herdr-app do mod.open:setup-layout` ends on `main-layout` with one `nav` block and the "Ready" toast.
+- On `main-layout`, `herdr-app status` shows no errors and the layout has one `nav` block.
 - `herdr-app do nav.ping` updates `nav.pong`.
 - With Neovim split in two (`nvim -O a b`) beside a shell, focused in Neovim's left window:
   - `herdr-app do nav.right` moves Neovim to its right window;
