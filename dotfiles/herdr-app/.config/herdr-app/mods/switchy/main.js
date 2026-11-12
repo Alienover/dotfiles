@@ -177,7 +177,7 @@ export default class Switchy extends View {
       const on = i === this.at;
       const el = h_flex()
         .id(r.kind === "space" ? `sw-${r.p.id}` : `sw-new-${r.key}`)
-        .mx(4)
+        .mx(6)
         .px(10)
         .h(H)
         .rounded(7)
@@ -202,7 +202,7 @@ export default class Switchy extends View {
         .child(this.glyph(t, p.status));
     };
 
-    const empty = h_flex().id("sw-empty").mx(4).px(10).h(H).items_center().text_color(t.dim).child("no match");
+    const empty = h_flex().id("sw-empty").mx(6).px(10).h(H).items_center().text_color(t.dim).child("no match");
 
     return v_flex()
       .id("switchy")
@@ -234,12 +234,13 @@ export default class Switchy extends View {
         cx.notify();
       })
       .child(
-        h_flex().h(36).flex_none().px(10).gap(8).items_center().rounded(9).border_1().border_color(t.accent).bg(t.background)
+        h_flex().h(36).flex_none().px(10).gap(10).items_center().rounded(9).border_1().border_color(t.accent).bg(t.background)
           .child(svg("mods/workspace-chrome/search.svg").size(15).text_color(t.dim))
           .child(h_flex().flex_1().h_full().items_center().text_size(12.8).overflow_hidden()
             .when(!!this.filter, (el) => el.child(div().text_color(t.foreground).child(this.filter)))
             .child(div().w(1.5).h(16).flex_none().bg(t.accent).loop("opacity", { from: 0, to: 1, period: 1000 }))
-            .when(!this.filter, (el) => el.child(div().pl(2).text_color(t.dim).child("Space…")))),
+            .when(!this.filter, (el) => el.child(div().pl(2).text_color(t.dim).child("Space…"))))
+          .child(div().flex_none().text_size(11).text_color(t.dim).child("⌃x close · Esc")),
       )
       .child(
         v_flex()
@@ -247,6 +248,7 @@ export default class Switchy extends View {
           .on_size_change((size, cx) => { this.listHeight = size.height / settings().zoom; cx.notify(); })
           .h(Math.min(320, total))
           .min_h(0)
+          .mb(6)
           .when(fixed, (el) => el.relative().overflow_hidden().on_scroll_wheel((e, cx) => {
             this.scroll = Math.max(0, Math.min(this.scroll - e.delta.y, maxScroll));
             this.at = Math.max(Math.ceil(this.scroll / H), Math.min(this.at, Math.floor((this.scroll + height) / H) - 1));
@@ -255,7 +257,6 @@ export default class Switchy extends View {
           .children(rows.length
             ? rows.map((r, i) => (!fixed || ((i + 1) * H > this.scroll && i * H < this.scroll + height) ? row(r, i) : null)).filter(Boolean)
             : [empty]),
-      )
-      .child(h_flex().mx(4).px(10).justify_end().child(div().text_size(11).text_color(t.dim).child("⌃x close · Esc")));
+      );
   }
 }
