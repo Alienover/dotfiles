@@ -1,0 +1,202 @@
+#!/usr/bin/env bash
+# Reach a DevPod workspace's Rex server as a Rex host.
+#
+# DevPod's SSH server refuses Unix-socket forwarding, so `rex -S ssh://WS.devpod`
+# can't work. Instead the container's Rex server also listens on its own
+# loopback (127.0.0.1:REMOTE_PORT), and an ssh TCP forward exposes that on the
+# Mac at WS.localhost:LOCAL_PORT. LOCAL_PORT is derived from the workspace
+# name, so the endpoint stays the same across runs and only has to be added to
+# the Rex app once. The app names a host after the endpoint's hostname
+# (WS.localhost) and syncs it into `rex hosts` for `rex -S WS.localhost`.
+set -euo pipefail
+
+REMOTE_PORT=7297
+PORT_BASE=47000
+PORT_RANGE=1000
+
+usage() {
+	cat <<EOF
+Usage: $(basename "$0") [--down] [WORKSPACE]
+
+Without WORKSPACE, pick one of your DevPod workspaces with fzf.
+
+Start WORKSPACE if needed, start its Rex server with a loopback TCP listener,
+open an ssh tunnel to it at http://WORKSPACE.localhost:PORT (PORT is fixed
+per workspace). If no Rex host has that endpoint yet, copy it and open the Rex
+app's Add Remote Host dialog; the app then lists the host as
+WORKSPACE.localhost, for rex -S too. Safe to re-run whenever the host stops answering
+(sleep, container restart, dropped tunnel).
+
+Options:
+  --down      close the tunnel and stop the container's Rex server
+              (the host entry is kept)
+  -h, --help  show this help
+
+Environment:
+  REX_DEVPOD_PORT  local port to use instead of the derived one
+
+Requires rex installed in the container.
+EOF
+}
+
+die() {
+	echo "rex-devpod: $*" >&2
+	exit 1
+}
+log() { echo "==> $*"; }
+
+DOWN=0
+WS=""
+while [ $# -gt 0 ]; do
+	case "$1" in
+	--down) DOWN=1 ;;
+	-h | --help)
+		usage
+		exit 0
+		;;
+	-*) die "unknown option: $1" ;;
+	*)
+		[ -z "$WS" ] || die "only one workspace at a time"
+		WS="$1"
+		;;
+	esac
+	shift
+done
+if [ -z "$WS" ]; then
+	command -v fzf >/dev/null || die "no workspace given and fzf not found"
+	prompt="rex-devpod> "
+	[ "$DOWN" = 1 ] && prompt="rex-devpod --down> "
+	WS="$(devpod list --output json | jq -r '.[].id' | fzf --prompt="$prompt" --height=~40% --reverse)" || true
+	[ -n "$WS" ] || die "no workspace selected"
+fi
+
+HOST="$WS.devpod"
+LOCAL_PORT="${REX_DEVPOD_PORT:-$((PORT_BASE + $(printf '%s' "$WS" | cksum | cut -d' ' -f1) % PORT_RANGE))}"
+ENDPOINT="http://$WS.localhost:$LOCAL_PORT"
+FORWARD="127.0.0.1:$LOCAL_PORT:127.0.0.1:$REMOTE_PORT"
+FORWARD6="[::1]:$LOCAL_PORT:127.0.0.1:$REMOTE_PORT"
+
+# host_id of the Rex server answering at ENDPOINT, if any
+endpoint_host_id() {
+	{ rex --autostart=false --timeout 5s -S "$ENDPOINT" whoami --json 2>/dev/null || true; } | jq -r '.host_id // empty'
+}
+
+kill_tunnel() {
+	pkill -f -- "-L $FORWARD" 2>/dev/null || true
+}
+
+# Label of the Rex host (app-added hosts included) whose endpoint is ENDPOINT
+host_label() {
+	rex hosts list --json | jq -r --arg e "$ENDPOINT" \
+		'first(.hosts[].host | select(.endpoints | index($e)) | .label) // empty'
+}
+
+if [ "$DOWN" = 1 ]; then
+	log "closing tunnel ($ENDPOINT)"
+	kill_tunnel
+	log "stopping Rex server in $WS"
+	ssh "$HOST" 'rex server stop' || true
+	exit 0
+fi
+
+command -v rex >/dev/null || die "rex not found on this machine"
+command -v devpod >/dev/null || die "devpod not found"
+
+# 1. Workspace running
+state="$(devpod status "$WS" --output json 2>/dev/null | jq -r '.state // empty')"
+[ -n "$state" ] || die "no DevPod workspace named '$WS' (see: devpod list)"
+if [ "$state" != "Running" ]; then
+	log "starting workspace $WS ($state)"
+	devpod up "$WS" --ide none
+fi
+
+# 2. Container's Rex server, with the loopback listener. Prints its host ID.
+#    Launched with `rex server run` rather than `rex server start`, because start
+#    strips the environment and DEVPOD_WORKSPACE_ID has to reach its terminals.
+log "checking Rex server in $WS"
+remote_host_id="$({
+	cat <<EOF
+set -e
+port=$REMOTE_PORT
+ws=$(printf '%q' "$WS")
+EOF
+	cat <<'EOF'
+command -v rex >/dev/null || { echo "rex is not installed in the container" >&2; exit 1; }
+status="$(rex server status 2>/dev/null || true)"
+field() { printf '%s\n' "$status" | sed -n "s/^$1: //p"; }
+
+if [ -n "$status" ]; then
+	why=""
+	if ! printf '%s\n' "$status" | grep -q "listener: http://127.0.0.1:$port "; then
+		why="the 127.0.0.1:$port listener"
+	elif ! tr '\0' '\n' <"/proc/$(field pid)/environ" | grep -qxF "DEVPOD_WORKSPACE_ID=$ws"; then
+		why="DEVPOD_WORKSPACE_ID=$ws"
+	fi
+	if [ -n "$why" ]; then
+		if [ "$(field sessions)" != 0 ]; then
+			echo "Rex server is running without $why and holds $(field sessions) session(s)." >&2
+			echo "Restarting it would end them; stop it yourself (rex server stop) and re-run." >&2
+			case "$why" in DEVPOD*) echo "Continuing with the running server." >&2 ;; *) exit 1 ;; esac
+		else
+			rex server stop >/dev/null
+			status=""
+		fi
+	fi
+fi
+
+if [ -z "$status" ]; then
+	# The same variables `rex server start` keeps, plus DEVPOD_WORKSPACE_ID.
+	vars=(HOME="$HOME" PATH="$PATH" DEVPOD_WORKSPACE_ID="$ws")
+	for v in USER LOGNAME SHELL LANG LC_ALL SSH_AUTH_SOCK; do
+		[ -n "${!v-}" ] && vars+=("$v=${!v}")
+	done
+	log="$HOME/.local/state/rex/devpod-server.log"
+	mkdir -p "${log%/*}"
+	env -i "${vars[@]}" setsid -f rex server run \
+		--extra-listen "http://127.0.0.1:$port" --allow-anonymous \
+		</dev/null >"$log" 2>&1
+	for _ in $(seq 20); do
+		status="$(rex --autostart=false server status 2>/dev/null || true)"
+		[ -n "$status" ] && break
+		sleep 0.5
+	done
+	[ -n "$status" ] || { echo "Rex server didn't come up; see $log" >&2; exit 1; }
+	echo "Rex server running (pid $(field pid), log $log)" >&2
+fi
+field host
+EOF
+} | ssh "$HOST" bash -s)"
+[ -n "$remote_host_id" ] || die "couldn't read the host ID of the Rex server in $WS"
+
+# 3. Tunnel: 127.0.0.1:LOCAL_PORT -> container 127.0.0.1:REMOTE_PORT
+current="$(endpoint_host_id)"
+if [ "$current" = "$remote_host_id" ]; then
+	log "tunnel already up ($ENDPOINT)"
+else
+	kill_tunnel
+	if [ -n "$current" ] || nc -z 127.0.0.1 "$LOCAL_PORT" 2>/dev/null; then
+		die "port $LOCAL_PORT is taken by something else; set REX_DEVPOD_PORT to another port"
+	fi
+	log "opening tunnel ($ENDPOINT)"
+	DEVPOD_WORKSPACE_ID="$WS" ssh -f -N \
+		-o ExitOnForwardFailure=yes \
+		-o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
+		-L "$FORWARD" -L "$FORWARD6" "$HOST"
+	for _ in 1 2 3 4 5; do
+		[ "$(endpoint_host_id)" = "$remote_host_id" ] && break
+		sleep 1
+	done
+	[ "$(endpoint_host_id)" = "$remote_host_id" ] || die "tunnel opened but Rex in $WS doesn't answer at $ENDPOINT"
+fi
+
+# 4. Host entry. Only the Rex app can add one it will show, so ask it to.
+label="$(host_label)"
+if [ -n "$label" ]; then
+	log "host '$label' has $ENDPOINT"
+else
+	log "add $ENDPOINT in the Rex app (Add Remote Host…), once per workspace"
+	printf '%s' "$ENDPOINT" | pbcopy 2>/dev/null && log "endpoint copied to the clipboard"
+	rex do client.host.add >/dev/null 2>&1 || true
+fi
+
+log "ready: rex -S ${label:-$ENDPOINT} new NAME"
