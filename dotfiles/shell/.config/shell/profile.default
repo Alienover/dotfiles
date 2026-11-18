@@ -36,7 +36,7 @@ elif [ -n "$KITTY_WINDOW_ID" ]; then
 fi
 
 # Preferred editor for local
-[ -z $SSH_CONNECTION ] && command -v nvim >/dev/null 2>&1 && export EDITOR="$(command -v nvim)"
+[ -z "$SSH_CONNECTION" ] && command -v nvim >/dev/null 2>&1 && export EDITOR="$(command -v nvim)"
 
 if command -v bat >/dev/null 2>&1; then
   export MANROFFOPT="-c"
