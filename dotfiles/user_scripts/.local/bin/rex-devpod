@@ -16,7 +16,7 @@ PORT_RANGE=1000
 
 usage() {
 	cat <<EOF
-Usage: $(basename "$0") [--down | --upgrade] [WORKSPACE]
+Usage: $(basename "$0") [--down | [--install] [--upgrade]] [WORKSPACE]
 
 Without WORKSPACE, pick one of your DevPod workspaces with fzf.
 
@@ -33,13 +33,16 @@ sessions.
 Options:
   --down      close the tunnel and stop the container's Rex server
               (the host entry is kept)
+  --install   install rex in the container first if it's missing (e.g. after
+              a recreate); does nothing when rex is already there
   --upgrade   upgrade rex in the container with apt first
   -h, --help  show this help
 
 Environment:
-  REX_DEVPOD_PORT  local port to use instead of the derived one
+  REX_DEVPOD_PORT     local port to use instead of the derived one
+  REX_DEVPOD_CHANNEL  release channel for --install (default: preview)
 
-Requires rex installed in the container.
+Requires rex in the container; --install puts it there.
 EOF
 }
 
@@ -50,11 +53,14 @@ die() {
 log() { echo "==> $*"; }
 
 DOWN=0
+INSTALL=0
 UPGRADE=0
+CHANNEL="${REX_DEVPOD_CHANNEL:-preview}"
 WS=""
 while [ $# -gt 0 ]; do
 	case "$1" in
 	--down) DOWN=1 ;;
+	--install) INSTALL=1 ;;
 	--upgrade) UPGRADE=1 ;;
 	-h | --help)
 		usage
@@ -68,7 +74,7 @@ while [ $# -gt 0 ]; do
 	esac
 	shift
 done
-[ "$DOWN$UPGRADE" != 11 ] || die "--down and --upgrade don't go together"
+[ "$DOWN" = 0 ] || [ "$INSTALL$UPGRADE" = 00 ] || die "--down doesn't go with --install or --upgrade"
 if [ -z "$WS" ]; then
 	command -v fzf >/dev/null || die "no workspace given and fzf not found"
 	prompt="rex-devpod> "
@@ -126,10 +132,22 @@ remote_host_id="$({
 set -e
 port=$REMOTE_PORT
 ws=$(printf '%q' "$WS")
+install=$INSTALL
+channel=$(printf '%q' "$CHANNEL")
 upgrade=$UPGRADE
 EOF
 	cat <<'EOF'
-command -v rex >/dev/null || { echo "rex is not installed in the container" >&2; exit 1; }
+if ! command -v rex >/dev/null; then
+	if [ "$install" != 1 ]; then
+		echo "rex is not installed in the container; re-run with --install" >&2
+		exit 1
+	fi
+	echo "==> installing rex ($channel channel)" >&2
+	# stdout carries the host ID back, so the installer's output goes to stderr
+	curl -fsSL https://pkgs.superlogical.com/rex/install.sh | sh -s -- --channel "$channel" >&2
+	command -v rex >/dev/null || { echo "rex install failed" >&2; exit 1; }
+	echo "==> installed $(rex version | sed -n 1p)" >&2
+fi
 installed_version() { rex version | sed -n '1s/^rex //p'; }
 if [ "$upgrade" = 1 ]; then
 	before="$(installed_version)"
