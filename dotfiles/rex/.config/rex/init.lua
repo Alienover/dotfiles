@@ -43,6 +43,8 @@ rex.action({
 
 require("plugins.navigate").setup()
 require("plugins.session_rename").setup()
+require("plugins.url_pick").setup()
+rex.bind("ctrl+shift+o", "url_open") -- like Alacritty's hints
 
 rex.mode("prefix", { exclusive = true })
 rex.bind("ctrl+b", "prefix")
