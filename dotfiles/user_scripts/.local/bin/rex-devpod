@@ -205,6 +205,8 @@ if [ -n "$status" ]; then
 		why="DEVPOD_WORKSPACE_ID=$ws"
 	elif ! server_has_env "SSH_AUTH_SOCK=$agent"; then
 		why="SSH_AUTH_SOCK=$agent"
+	elif ! server_has_env "DEVPOD=true"; then
+		why="DEVPOD=true"
 	fi
 	if [ -n "$why" ]; then
 		if [ "$(field sessions)" != 0 ]; then
@@ -222,7 +224,9 @@ if [ -z "$status" ]; then
 	# The same variables `rex server start` keeps, plus DEVPOD_WORKSPACE_ID.
 	# SSH_AUTH_SOCK is a stable link the tunnel session points at its forwarded
 	# agent; this session's own socket dies as soon as this ssh exits.
-	vars=(HOME="$HOME" PATH="$PATH" DEVPOD_WORKSPACE_ID="$ws" SSH_AUTH_SOCK="$agent")
+	# DEVPOD=true marks the terminals as remote (env -i drops SSH_*), so tools
+	# such as nvim copy through OSC 52 to the Mac clipboard.
+	vars=(HOME="$HOME" PATH="$PATH" DEVPOD=true DEVPOD_WORKSPACE_ID="$ws" SSH_AUTH_SOCK="$agent")
 	for v in USER LOGNAME SHELL LANG LC_ALL; do
 		[ -n "${!v-}" ] && vars+=("$v=${!v}")
 	done
