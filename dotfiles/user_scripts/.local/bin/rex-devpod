@@ -16,9 +16,10 @@ PORT_RANGE=1000
 
 usage() {
 	cat <<EOF
-Usage: $(basename "$0") [--down | [--install] [--upgrade]] [WORKSPACE]
+Usage: $(basename "$0") [--down | [--install] [--upgrade]] [--all | WORKSPACE]
 
-Without WORKSPACE, pick one of your DevPod workspaces with fzf.
+Without WORKSPACE, pick one of your DevPod workspaces with fzf. With --all, run
+for every DevPod workspace in turn.
 
 Start WORKSPACE if needed, start its Rex server with a loopback TCP listener,
 open an ssh tunnel to it at http://WORKSPACE.localhost:PORT (PORT is fixed
@@ -36,6 +37,8 @@ Options:
   --install   install rex in the container first if it's missing (e.g. after
               a recreate); does nothing when rex is already there
   --upgrade   upgrade rex in the container with apt first
+  --all       every DevPod workspace (devpod list), one after another with the
+              other options; keeps going if one fails, exits 1 if any did
   -h, --help  show this help
 
 Environment:
@@ -55,6 +58,7 @@ log() { echo "==> $*"; }
 DOWN=0
 INSTALL=0
 UPGRADE=0
+ALL=0
 CHANNEL="${REX_DEVPOD_CHANNEL:-preview}"
 WS=""
 while [ $# -gt 0 ]; do
@@ -62,6 +66,7 @@ while [ $# -gt 0 ]; do
 	--down) DOWN=1 ;;
 	--install) INSTALL=1 ;;
 	--upgrade) UPGRADE=1 ;;
+	--all) ALL=1 ;;
 	-h | --help)
 		usage
 		exit 0
@@ -75,6 +80,28 @@ while [ $# -gt 0 ]; do
 	shift
 done
 [ "$DOWN" = 0 ] || [ "$INSTALL$UPGRADE" = 00 ] || die "--down doesn't go with --install or --upgrade"
+
+if [ "$ALL" = 1 ]; then
+	[ -z "$WS" ] || die "--all doesn't take a workspace"
+	command -v devpod >/dev/null || die "devpod not found"
+	flags=()
+	[ "$DOWN" = 1 ] && flags+=(--down)
+	[ "$INSTALL" = 1 ] && flags+=(--install)
+	[ "$UPGRADE" = 1 ] && flags+=(--upgrade)
+	workspaces="$(devpod list --output json | jq -r '.[].id')"
+	[ -n "$workspaces" ] || die "no DevPod workspaces (see: devpod list)"
+	failed=()
+	for ws in $workspaces; do
+		echo "━━ $ws"
+		# </dev/null: the per-workspace run reads stdin (fzf, ssh) and must not eat the list
+		"$0" ${flags[@]+"${flags[@]}"} "$ws" </dev/null || failed+=("$ws")
+	done
+	if [ ${#failed[@]} -gt 0 ]; then
+		echo "rex-devpod: failed: ${failed[*]}" >&2
+		exit 1
+	fi
+	exit 0
+fi
 if [ -z "$WS" ]; then
 	command -v fzf >/dev/null || die "no workspace given and fzf not found"
 	prompt="rex-devpod> "
