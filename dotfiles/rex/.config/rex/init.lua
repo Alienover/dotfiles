@@ -42,6 +42,7 @@ rex.action({
 })
 
 require("plugins.navigate").setup()
+require("plugins.session_rename").setup()
 
 rex.mode("prefix", { exclusive = true })
 rex.bind("ctrl+b", "prefix")
@@ -51,6 +52,7 @@ rex.bind("prefix/ctrl+b", "pane.send_key", { key = "ctrl+b" })
 rex.bind("prefix/shift+5", "pane.split", { direction = "right" }) -- %
 rex.bind("prefix/shift+'", "pane.split", { direction = "down" }) -- "
 rex.bind("prefix/c", "client.tab.new")
+rex.bind("prefix/shift+4", "session_rename") -- $
 rex.bind("prefix/[", "pane.copy_mode.enter")
 for i = 1, 9 do
 	rex.bind("prefix/" .. i, "tab_goto", { index = i })
