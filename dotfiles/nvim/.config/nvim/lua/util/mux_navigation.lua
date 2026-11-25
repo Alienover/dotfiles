@@ -15,7 +15,7 @@ local directions = { h = "left", j = "down", k = "up", l = "right" }
 
 -- Not inside tmux, which has its own navigator.
 function M.enabled()
-	return vim.env.TMUX == nil and (vim.env.REX_SESSION ~= nil or vim.env.HC_TERMINAL_ID ~= nil)
+	return vim.env.TMUX == nil and (vim.env.REX_BLOCK ~= nil or vim.env.HC_TERMINAL_ID ~= nil)
 end
 
 local function hc(...)
@@ -66,8 +66,8 @@ end
 -- can't reach nvim's socket), and then just moves between nvim windows.
 ---@param key "h"|"j"|"k"|"l"
 function M.navigate(key)
-	if M.move(key) == "edge" and vim.env.REX_SESSION ~= nil and vim.env.TMUX == nil and vim.fn.executable("rex") == 1 then
-		vim.system({ "rex", "focus", "-s", vim.env.REX_SESSION, directions[key] }, { text = true }, function(r)
+	if M.move(key) == "edge" and vim.env.REX_BLOCK ~= nil and vim.env.TMUX == nil and vim.fn.executable("rex") == 1 then
+		vim.system({ "rex", "focus", "-s", vim.env.REX_BLOCK, directions[key] }, { text = true }, function(r)
 			if r.code ~= 0 then
 				vim.schedule(function()
 					vim.notify("rex focus failed: " .. vim.trim(r.stderr or ""), vim.log.levels.WARN)

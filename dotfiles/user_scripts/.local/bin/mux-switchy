@@ -12,7 +12,7 @@
 #   With query:   Switches to session matching the query
 #   --list / --kill NAME are used by the fzf bindings
 #
-# Backend: $MUX_BACKEND (rex|herdr), else Rex inside Rex ($REX_SESSION), else
+# Backend: $MUX_BACKEND (rex|herdr), else Rex inside Rex ($REX_BLOCK), else
 # Herdr inside Herdr ($HC_TERMINAL_ID). A Rex session is a Herdr space.
 # Herdr without a query opens its own picker, the `switchy` mod
 # (~/.config/herdr-app/mods/switchy), instead of fzf.
@@ -50,7 +50,7 @@ load_session_mappings() {
 
 backend=${MUX_BACKEND:-}
 if [ -z "$backend" ]; then
-  if [ -n "$REX_SESSION" ]; then
+  if [ -n "$REX_BLOCK" ]; then
     backend=rex
   elif [ -n "$HC_TERMINAL_ID" ]; then
     backend=herdr
