@@ -35,3 +35,7 @@ It enables SSH agent forwarding and sets `DOTFILES_URL` (defaults to this repo's
 | `DEVPOD_IDE`      | `none`             |
 | `DOTFILES_URL`    | git `origin` URL   |
 | `DOTFILES_SCRIPT` | `devpod-bootstrap` |
+
+3. (Optional) Patch the workspace agent for Unix socket forwarding
+
+Stock DevPod refuses `ssh -L /local.sock:/remote.sock WS.devpod` (and `rex -S ssh://WS.devpod`) with `unix forwarding is disabled`. [`patches/devpod/unix-forward.patch`](patches/devpod/unix-forward.patch) fixes that in the `devpod` binary inside the container; the Mac side stays stock. Build and install it per workspace following [`patches/devpod/RECIPE.md`](patches/devpod/RECIPE.md). Recreating the workspace or upgrading DevPod brings back the stock agent, so re-apply after either.

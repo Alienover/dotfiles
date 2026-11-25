@@ -1,0 +1,30 @@
+diff --git a/pkg/ssh/server/ssh.go b/pkg/ssh/server/ssh.go
+index ece22a8c..8a3517fe 100644
+--- a/pkg/ssh/server/ssh.go
++++ b/pkg/ssh/server/ssh.go
+@@ -60,6 +60,10 @@ func NewServer(addr string, hostKey []byte, keys []ssh.PublicKey, workdir string
+ 				log.Debugf("attempt to bind %s:%d - %s", host, port, "granted")
+ 				return true
+ 			},
++			LocalUnixForwardingCallback: func(ctx ssh.Context, socketPath string) bool {
++				log.Debugf("Accepted unix forward: %s", socketPath)
++				return true
++			},
+ 			ReverseUnixForwardingCallback: func(ctx ssh.Context, socketPath string) bool {
+ 				log.Debugf("attempt to bind socket %s", socketPath)
+ 
+diff --git a/pkg/ssh/server/ssh_container.go b/pkg/ssh/server/ssh_container.go
+index f98838df..771f1646 100644
+--- a/pkg/ssh/server/ssh_container.go
++++ b/pkg/ssh/server/ssh_container.go
+@@ -30,6 +30,10 @@ func NewContainerServer(addr string, workdir string, log log.Logger) (Server, er
+ 				log.Debugf("attempt to bind %s:%d - %s", host, port, "granted")
+ 				return true
+ 			},
++			LocalUnixForwardingCallback: func(ctx ssh.Context, socketPath string) bool {
++				log.Debugf("Accepted unix forward: %s", socketPath)
++				return true
++			},
+ 			ReverseUnixForwardingCallback: func(ctx ssh.Context, socketPath string) bool {
+ 				log.Debugf("attempt to bind socket %s", socketPath)
+ 
