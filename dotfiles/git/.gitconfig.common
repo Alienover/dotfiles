@@ -51,6 +51,8 @@
 
 	ob = "!git branch -v | grep -v '*' | awk '/\\[gone\\]/{print $1}'"
 	purge ="!git ob | xargs -r -n 1 git branch -D"
+	# Remove linked worktrees whose upstream branches are gone (run git f first).
+	wpurge = "!git for-each-ref --format='%(if:equals=[gone])%(upstream:track)%(then)%(worktreepath)%(end)' refs/heads | while IFS= read -r path; do [ -z \"$path\" ] || git worktree remove -- \"$path\" || exit; done"
 	f = fetch -ptf
 	u = "!git f && git pl && git purge"
 
