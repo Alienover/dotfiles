@@ -121,7 +121,7 @@ AGENT_MARK="rex-devpod-agent=$WS"
 agent_session_pids() { pgrep -f -- "$AGENT_MARK" 2>/dev/null || true; }
 
 # The TCP tunnel earlier versions of this script opened, if one is left
-close_legacy_tunnel() { pkill -f -- "-L 127.0.0.1:[0-9]+:127.0.0.1:7297 .*$HOST " 2>/dev/null || true; }
+close_legacy_tunnel() { pkill -f -- "-L 127.0.0.1:[0-9]+:127.0.0.1:7297 .*$HOST( |\$)" 2>/dev/null || true; }
 
 close_sessions() {
 	pkill -f -- "$AGENT_MARK" 2>/dev/null || true
@@ -178,6 +178,8 @@ esac
 #    ID and whether the agent link is live.
 #    Launched with `rex server run` rather than `rex server start`, because start
 #    strips the environment and DEVPOD_WORKSPACE_ID has to reach its terminals.
+# The TCP listener may only go once the host entry no longer points at it.
+[ -n "$(host_label)" ] && drop_listener=1 || drop_listener=0
 log "checking Rex server in $WS"
 remote_state="$({
 	cat <<EOF
@@ -186,6 +188,7 @@ ws=$(printf '%q' "$WS")
 install=$INSTALL
 channel=$(printf '%q' "$CHANNEL")
 upgrade=$UPGRADE
+drop_listener=$drop_listener
 EOF
 	cat <<'EOF'
 if ! command -v rex >/dev/null; then
@@ -229,7 +232,7 @@ if [ -n "$status" ]; then
 		why="to get SSH_AUTH_SOCK=$agent"
 	elif ! server_has_env "DEVPOD=true"; then
 		why="to get DEVPOD=true"
-	elif printf '%s\n' "$status" | grep -q '^listener: http://127\.0\.0\.1:'; then
+	elif [ "$drop_listener" = 1 ] && printf '%s\n' "$status" | grep -q '^listener: http://127\.0\.0\.1:'; then
 		# Left by earlier versions of this script; ssh:// doesn't need it
 		why="to drop its anonymous TCP listener"
 	fi
@@ -274,8 +277,6 @@ read -r remote_host_id agent_state <<<"$remote_state"
 
 # 3. Agent session: keeps a forwarded SSH agent alive and points the server's
 #    SSH_AUTH_SOCK link at it. Rex's own ssh:// tunnel runs -N, which has none.
-#    Also closes the TCP tunnel earlier versions of this script opened.
-close_legacy_tunnel
 if [ "$agent_state" = agent ] && [ -n "$(agent_session_pids)" ]; then
 	log "agent session already open"
 else
@@ -299,12 +300,22 @@ if [ -n "$label" ]; then
 elif host_label_taken; then
 	# e.g. the http://WS.localhost:PORT endpoint earlier versions used
 	log "pointing host '$WS' at $ENDPOINT"
-	rex hosts edit "$WS" --endpoint "$ENDPOINT" >/dev/null
-	label="$WS"
+	rex hosts edit "$WS" --endpoint "$ENDPOINT" >/dev/null || true
+	label="$(host_label)"
 else
 	log "adding host '$WS' at $ENDPOINT"
-	rex hosts add "$WS" "$ENDPOINT" >/dev/null
-	label="$WS"
+	rex hosts add "$WS" "$ENDPOINT" >/dev/null || true
+	label="$(host_label)"
 fi
+
+if [ -z "$label" ]; then
+	# The Rex app re-syncs hosts it added, undoing CLI edits to them; such a
+	# host's endpoint can only be changed in the app. Its old tunnel stays up.
+	printf '%s' "$ENDPOINT" | pbcopy 2>/dev/null && log "endpoint copied to the clipboard"
+	die "host '$WS' didn't take $ENDPOINT; change its endpoint in the Rex app, then re-run"
+fi
+
+# Now that the host uses ssh://, the TCP tunnel earlier versions opened can go
+close_legacy_tunnel
 
 log "ready: rex -S $label new NAME"

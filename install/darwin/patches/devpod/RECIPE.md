@@ -48,15 +48,25 @@ No local Go needed. The build takes a few minutes and gives a static ~100 MB bin
 
 ```sh
 scp "$SRC/devpod-linux-$ARCH" WS.devpod:/tmp/devpod-patched
-ssh WS.devpod 'sudo cp -p /usr/local/bin/devpod /usr/local/bin/devpod.orig
-               sudo install -m 0755 -o root -g root /tmp/devpod-patched /usr/local/bin/devpod
+shasum -a 256 "$SRC/devpod-linux-$ARCH"; ssh WS.devpod 'sha256sum /tmp/devpod-patched'   # must match
+ssh WS.devpod 'sudo install -m 0755 -o root -g root /tmp/devpod-patched /usr/local/bin/devpod
                rm /tmp/devpod-patched'
 ```
 
-`install` replaces the file rather than writing into it, so SSH servers already running keep the old binary. New
-connections get the patched one. Reconnect long-lived ones, such as a `rex-devpod` tunnel.
+Compare the checksums rather than trusting scp: through DevPod's `ProxyCommand` it can exit non-zero after copying
+the whole file.
 
-Undo with `ssh WS.devpod 'sudo mv /usr/local/bin/devpod.orig /usr/local/bin/devpod'`.
+`install` replaces the file rather than writing into it, so SSH servers already running keep the old binary. New
+connections get the patched one. Reconnect long-lived ones, such as `rex-devpod`'s agent session.
+
+**No backup needed.** The stock agent is DevPod's release asset, so undo by installing it again:
+
+```sh
+ssh WS.devpod "curl -fsSL -o /tmp/devpod-stock https://github.com/loft-sh/devpod/releases/download/$VERSION/devpod-linux-$ARCH &&
+               sudo install -m 0755 -o root -g root /tmp/devpod-stock /usr/local/bin/devpod && rm /tmp/devpod-stock"
+```
+
+Recreating the workspace does the same.
 
 ## Watch out
 
