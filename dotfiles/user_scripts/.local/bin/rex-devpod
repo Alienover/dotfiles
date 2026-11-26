@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
-# Reach a DevPod workspace's Rex server as a Rex host.
+# Reach a DevPod workspace's Rex server as a Rex host over `rex -S ssh://WS.devpod`.
 #
-# DevPod's SSH server refuses Unix-socket forwarding, so `rex -S ssh://WS.devpod`
-# can't work. Instead the container's Rex server also listens on its own
-# loopback (127.0.0.1:REMOTE_PORT), and an ssh TCP forward exposes that on the
-# Mac at WS.localhost:LOCAL_PORT. LOCAL_PORT is derived from the workspace
-# name, so the endpoint stays the same across runs and only has to be added to
-# the Rex app once. The app names a host after the endpoint's hostname
-# (WS.localhost) and syncs it into `rex hosts` for `rex -S WS.localhost`.
+# Stock DevPod's SSH server refuses Unix-socket forwarding, which ssh:// needs;
+# the workspace's agent has to carry the patch in
+# ~/src/dotfiles/install/darwin/patches/devpod (see RECIPE.md there).
+#
+# Rex opens its own `ssh -N -L sock:sock` tunnel for ssh:// hosts. This script
+# makes sure what's behind it is right: the container's Rex server runs with
+# the workspace's environment (Rex's autostart would strip it), and an ssh
+# session stays open so the server's SSH_AUTH_SOCK points at a live forwarded
+# agent (a -N tunnel carries no agent). It then registers the host as WS, with
+# endpoint ssh://WS.devpod, for `rex -S WS`.
 set -euo pipefail
 
-REMOTE_PORT=7297
-PORT_BASE=47000
-PORT_RANGE=1000
+RECIPE="$HOME/src/dotfiles/install/darwin/patches/devpod/RECIPE.md"
 
 usage() {
 	cat <<EOF
@@ -21,18 +22,21 @@ Usage: $(basename "$0") [--down | [--install] [--upgrade]] [--all | WORKSPACE]
 Without WORKSPACE, pick one of your DevPod workspaces with fzf. With --all, run
 for every DevPod workspace in turn.
 
-Start WORKSPACE if needed, start its Rex server with a loopback TCP listener,
-open an ssh tunnel to it at http://WORKSPACE.localhost:PORT (PORT is fixed
-per workspace). If no Rex host has that endpoint yet, copy it and open the Rex
-app's Add Remote Host dialog; the app then lists the host as
-WORKSPACE.localhost, for rex -S too. Safe to re-run whenever the host stops answering
-(sleep, container restart, dropped tunnel).
+Start WORKSPACE if needed, start its Rex server with the workspace's
+environment, keep an ssh session open that forwards your SSH agent to it, and
+add the Rex host WORKSPACE at ssh://WORKSPACE.devpod (for rex -S WORKSPACE).
+Safe to re-run whenever the host stops answering or git can't reach your keys
+(sleep, container restart, dropped connection).
 
-A server older than the installed rex is restarted onto it, unless it holds
+Needs the workspace's devpod agent patched for Unix socket forwarding:
+see $RECIPE
+
+A server older than the installed rex, or started without the workspace's
+environment (e.g. autostarted by rex -S ssh://), is restarted, unless it holds
 sessions.
 
 Options:
-  --down      close the tunnel and stop the container's Rex server
+  --down      close the agent session and stop the container's Rex server
               (the host entry is kept)
   --install   install rex in the container first if it's missing (e.g. after
               a recreate); does nothing when rex is already there
@@ -42,7 +46,6 @@ Options:
   -h, --help  show this help
 
 Environment:
-  REX_DEVPOD_PORT     local port to use instead of the derived one
   REX_DEVPOD_CHANNEL  release channel for --install (default: preview)
 
 Requires rex in the container; --install puts it there.
@@ -111,29 +114,40 @@ if [ -z "$WS" ]; then
 fi
 
 HOST="$WS.devpod"
-LOCAL_PORT="${REX_DEVPOD_PORT:-$((PORT_BASE + $(printf '%s' "$WS" | cksum | cut -d' ' -f1) % PORT_RANGE))}"
-ENDPOINT="http://$WS.localhost:$LOCAL_PORT"
-FORWARD="127.0.0.1:$LOCAL_PORT:127.0.0.1:$REMOTE_PORT"
-FORWARD6="[::1]:$LOCAL_PORT:127.0.0.1:$REMOTE_PORT"
+ENDPOINT="ssh://$HOST"
+# Marks the agent session's remote command, so it can be found with pgrep -f
+AGENT_MARK="rex-devpod-agent=$WS"
+
+agent_session_pids() { pgrep -f -- "$AGENT_MARK" 2>/dev/null || true; }
+
+# The TCP tunnel earlier versions of this script opened, if one is left
+close_legacy_tunnel() { pkill -f -- "-L 127.0.0.1:[0-9]+:127.0.0.1:7297 .*$HOST " 2>/dev/null || true; }
+
+close_sessions() {
+	pkill -f -- "$AGENT_MARK" 2>/dev/null || true
+	close_legacy_tunnel
+}
 
 # host_id of the Rex server answering at ENDPOINT, if any
 endpoint_host_id() {
-	{ rex --autostart=false --timeout 5s -S "$ENDPOINT" whoami --json 2>/dev/null || true; } | jq -r '.host_id // empty'
+	{ rex --autostart=false --timeout 15s -S "$ENDPOINT" whoami --json 2>/dev/null || true; } | jq -r '.host_id // empty'
 }
 
-kill_tunnel() {
-	pkill -f -- "-L $FORWARD" 2>/dev/null || true
-}
-
-# Label of the Rex host (app-added hosts included) whose endpoint is ENDPOINT
+# Label of the Rex host whose endpoints include ENDPOINT
 host_label() {
 	rex hosts list --json | jq -r --arg e "$ENDPOINT" \
 		'first(.hosts[].host | select(.endpoints | index($e)) | .label) // empty'
 }
 
+# Whether a Rex host is labelled WS (any case)
+host_label_taken() {
+	rex hosts list --json | jq -e --arg l "$WS" \
+		'any(.hosts[].host; .label | ascii_downcase == ($l | ascii_downcase))' >/dev/null
+}
+
 if [ "$DOWN" = 1 ]; then
-	log "closing tunnel ($ENDPOINT)"
-	kill_tunnel
+	log "closing the agent session for $WS"
+	close_sessions
 	log "stopping Rex server in $WS"
 	ssh "$HOST" 'rex server stop' || true
 	exit 0
@@ -150,14 +164,24 @@ if [ "$state" != "Running" ]; then
 	devpod up "$WS" --ide none
 fi
 
-# 2. Container's Rex server, with the loopback listener. Prints its host ID.
+# Before changing anything: ssh:// needs the patched devpod agent. Ask for a
+# socket that doesn't exist; a stock agent refuses before even trying it.
+# (ssh always fails here, so take its output rather than piping it: pipefail.)
+probe="$(ssh -o LogLevel=info -W /nonexistent/rex-devpod-probe.sock "$HOST" </dev/null 2>&1 || true)"
+case "$probe" in
+*'unix forwarding is disabled'*)
+	die "$WS's devpod agent refuses Unix socket forwarding, which rex -S ssh:// needs; patch it: $RECIPE"
+	;;
+esac
+
+# 2. Container's Rex server, with the workspace's environment. Prints its host
+#    ID and whether the agent link is live.
 #    Launched with `rex server run` rather than `rex server start`, because start
 #    strips the environment and DEVPOD_WORKSPACE_ID has to reach its terminals.
 log "checking Rex server in $WS"
-remote_host_id="$({
+remote_state="$({
 	cat <<EOF
 set -e
-port=$REMOTE_PORT
 ws=$(printf '%q' "$WS")
 install=$INSTALL
 channel=$(printf '%q' "$CHANNEL")
@@ -197,22 +221,23 @@ server_has_env() { tr '\0' '\n' <"/proc/$(field pid)/environ" | grep -qxF "$1"; 
 
 if [ -n "$status" ]; then
 	why=""
-	if ! printf '%s\n' "$status" | grep -q "listener: http://127.0.0.1:$port "; then
-		why="the 127.0.0.1:$port listener"
-	elif [ "$(field version)" != "$installed" ]; then
-		why="the installed version $installed (it runs $(field version))"
+	if [ "$(field version)" != "$installed" ]; then
+		why="to run the installed version $installed (it runs $(field version))"
 	elif ! server_has_env "DEVPOD_WORKSPACE_ID=$ws"; then
-		why="DEVPOD_WORKSPACE_ID=$ws"
+		why="to get DEVPOD_WORKSPACE_ID=$ws"
 	elif ! server_has_env "SSH_AUTH_SOCK=$agent"; then
-		why="SSH_AUTH_SOCK=$agent"
+		why="to get SSH_AUTH_SOCK=$agent"
 	elif ! server_has_env "DEVPOD=true"; then
-		why="DEVPOD=true"
+		why="to get DEVPOD=true"
+	elif printf '%s\n' "$status" | grep -q '^listener: http://127\.0\.0\.1:'; then
+		# Left by earlier versions of this script; ssh:// doesn't need it
+		why="to drop its anonymous TCP listener"
 	fi
 	if [ -n "$why" ]; then
 		if [ "$(field sessions)" != 0 ]; then
-			echo "Rex server is running without $why and holds $(field sessions) session(s)." >&2
+			echo "Rex server needs a restart $why, but holds $(field sessions) session(s)." >&2
 			echo "Restarting it would end them; stop it yourself (rex server stop) and re-run." >&2
-			case "$why" in *listener) exit 1 ;; *) echo "Continuing with the running server." >&2 ;; esac
+			echo "Continuing with the running server." >&2
 		else
 			rex server stop >/dev/null
 			status=""
@@ -222,7 +247,7 @@ fi
 
 if [ -z "$status" ]; then
 	# The same variables `rex server start` keeps, plus DEVPOD_WORKSPACE_ID.
-	# SSH_AUTH_SOCK is a stable link the tunnel session points at its forwarded
+	# SSH_AUTH_SOCK is a stable link the agent session points at its forwarded
 	# agent; this session's own socket dies as soon as this ssh exits.
 	# DEVPOD=true marks the terminals as remote (env -i drops SSH_*), so tools
 	# such as nvim copy through OSC 52 to the Mac clipboard.
@@ -232,9 +257,7 @@ if [ -z "$status" ]; then
 	done
 	log="$HOME/.local/state/rex/devpod-server.log"
 	mkdir -p "${log%/*}"
-	env -i "${vars[@]}" setsid -f rex server run \
-		--extra-listen "http://127.0.0.1:$port" --allow-anonymous \
-		</dev/null >"$log" 2>&1
+	env -i "${vars[@]}" setsid -f rex server run </dev/null >"$log" 2>&1
 	for _ in $(seq 20); do
 		status="$(rex --autostart=false server status 2>/dev/null || true)"
 		[ -n "$status" ] && break
@@ -246,48 +269,42 @@ fi
 printf '%s %s\n' "$(field host)" "$([ -S "$agent" ] && echo agent || echo no-agent)"
 EOF
 } | ssh "$HOST" bash -s)"
-read -r remote_host_id agent_state <<<"$remote_host_id"
+read -r remote_host_id agent_state <<<"$remote_state"
 [ -n "$remote_host_id" ] || die "couldn't read the host ID of the Rex server in $WS"
 
-# 3. Tunnel: 127.0.0.1:LOCAL_PORT -> container 127.0.0.1:REMOTE_PORT, plus a
-#    session that keeps the forwarded SSH agent alive for the server
-current="$(endpoint_host_id)"
-if [ "$current" = "$remote_host_id" ] && [ "$agent_state" = agent ]; then
-	log "tunnel already up ($ENDPOINT)"
+# 3. Agent session: keeps a forwarded SSH agent alive and points the server's
+#    SSH_AUTH_SOCK link at it. Rex's own ssh:// tunnel runs -N, which has none.
+#    Also closes the TCP tunnel earlier versions of this script opened.
+close_legacy_tunnel
+if [ "$agent_state" = agent ] && [ -n "$(agent_session_pids)" ]; then
+	log "agent session already open"
 else
-	[ -z "$current" ] || [ "$current" = "$remote_host_id" ] ||
-		die "port $LOCAL_PORT is taken by another Rex server; set REX_DEVPOD_PORT to another port"
-	kill_tunnel
-	for _ in 1 2 3 4 5; do
-		nc -z 127.0.0.1 "$LOCAL_PORT" 2>/dev/null || break
-		sleep 0.5
-	done
-	if nc -z 127.0.0.1 "$LOCAL_PORT" 2>/dev/null; then
-		die "port $LOCAL_PORT is taken by something else; set REX_DEVPOD_PORT to another port"
-	fi
-	log "opening tunnel ($ENDPOINT)"
-	# Not -N: a forwarded agent only exists inside a session, so the tunnel runs
-	# one that points the server's SSH_AUTH_SOCK link at it and then idles.
+	pkill -f -- "$AGENT_MARK" 2>/dev/null || true
+	log "opening agent session"
 	DEVPOD_WORKSPACE_ID="$WS" ssh -f -T \
-		-o ExitOnForwardFailure=yes \
 		-o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
-		-L "$FORWARD" -L "$FORWARD6" "$HOST" \
-		'[ -S "$SSH_AUTH_SOCK" ] && ln -sfn "$SSH_AUTH_SOCK" ~/.local/state/rex/ssh-agent.sock; exec sleep infinity'
-	for _ in 1 2 3 4 5; do
-		[ "$(endpoint_host_id)" = "$remote_host_id" ] && break
-		sleep 1
-	done
-	[ "$(endpoint_host_id)" = "$remote_host_id" ] || die "tunnel opened but Rex in $WS doesn't answer at $ENDPOINT"
+		"$HOST" \
+		": $AGENT_MARK; [ -S \"\$SSH_AUTH_SOCK\" ] && ln -sfn \"\$SSH_AUTH_SOCK\" ~/.local/state/rex/ssh-agent.sock; exec sleep infinity"
 fi
 
-# 4. Host entry. Only the Rex app can add one it will show, so ask it to.
+# 4. Rex answers over ssh://
+[ "$(endpoint_host_id)" = "$remote_host_id" ] ||
+	die "Rex in $WS doesn't answer at $ENDPOINT (try: rex -v -S $ENDPOINT whoami)"
+log "Rex in $WS answers at $ENDPOINT"
+
+# 5. Host entry
 label="$(host_label)"
 if [ -n "$label" ]; then
 	log "host '$label' has $ENDPOINT"
+elif host_label_taken; then
+	# e.g. the http://WS.localhost:PORT endpoint earlier versions used
+	log "pointing host '$WS' at $ENDPOINT"
+	rex hosts edit "$WS" --endpoint "$ENDPOINT" >/dev/null
+	label="$WS"
 else
-	log "add $ENDPOINT in the Rex app (Add Remote Host…), once per workspace"
-	printf '%s' "$ENDPOINT" | pbcopy 2>/dev/null && log "endpoint copied to the clipboard"
-	rex do client.host.add >/dev/null 2>&1 || true
+	log "adding host '$WS' at $ENDPOINT"
+	rex hosts add "$WS" "$ENDPOINT" >/dev/null
+	label="$WS"
 fi
 
-log "ready: rex -S ${label:-$ENDPOINT} new NAME"
+log "ready: rex -S $label new NAME"
