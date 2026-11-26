@@ -44,6 +44,11 @@ docker run --rm -v "$SRC":/src -w /src \
 
 No local Go needed. The build takes a few minutes and gives a static ~100 MB binary.
 
+**Reuse a previous build.** `~/src/devpod` keeps the patched checkout and its `devpod-linux-$ARCH`. If
+`git -C ~/src/devpod describe --tags` prints `$VERSION` and the binary for `$ARCH` is there, skip to Install. For a
+new version or architecture, check out the new tag there (`git -C ~/src/devpod fetch --depth 1 origin tag "$VERSION"`,
+`git -C ~/src/devpod checkout -f "$VERSION"`, then `apply` again) instead of cloning, and rebuild.
+
 ## Install into a workspace
 
 ```sh
