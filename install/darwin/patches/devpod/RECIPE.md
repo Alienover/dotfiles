@@ -22,14 +22,30 @@ the container. That server registers the `direct-streamlocal@openssh.com` handle
 
 Only the binary inside the container changes. The Mac's `devpod`, DevPod Desktop and OpenSSH stay stock.
 
-## Build
+## Get the binary
 
-Build the agent for the container's architecture, stamped with the Mac client's exact version. DevPod reinstalls the
+The agent has to match the container's architecture and carry the Mac client's exact version. DevPod reinstalls the
 container's agent whenever `devpod version` there differs from the Mac's, so a matching version keeps the patched one.
 
 ```sh
 VERSION="$(devpod version)"                                   # e.g. v0.7.0-alpha.34
 ARCH="$(ssh WS.devpod uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/')"
+BIN=~/src/devpod/devpod-linux-$ARCH
+```
+
+### Download it (preferred)
+
+[Alienover/devpod releases](https://github.com/Alienover/devpod/releases) carry the patched agent. Use one only if
+its tag equals `$VERSION` and it has `devpod-linux-$ARCH`; otherwise build from source.
+
+```sh
+mkdir -p ~/src/devpod
+curl -fsSL -o "$BIN" "https://github.com/Alienover/devpod/releases/download/$VERSION/devpod-linux-$ARCH"
+```
+
+### Build it from source (fallback)
+
+```sh
 SRC=~/src/devpod                                              # anywhere
 
 git clone --depth 1 --branch "$VERSION" https://github.com/loft-sh/devpod.git "$SRC"
@@ -42,7 +58,7 @@ docker run --rm -v "$SRC":/src -w /src \
   -o "devpod-linux-$ARCH" .
 ```
 
-No local Go needed. The build takes a few minutes and gives a static ~100 MB binary.
+No local Go needed. The build takes a few minutes and gives a static ~100 MB binary at `$BIN`.
 
 **Reuse a previous build.** `~/src/devpod` keeps the patched checkout and its `devpod-linux-$ARCH`. If
 `git -C ~/src/devpod describe --tags` prints `$VERSION` and the binary for `$ARCH` is there, skip to Install. For a
@@ -52,8 +68,8 @@ new version or architecture, check out the new tag there (`git -C ~/src/devpod f
 ## Install into a workspace
 
 ```sh
-scp "$SRC/devpod-linux-$ARCH" WS.devpod:/tmp/devpod-patched
-shasum -a 256 "$SRC/devpod-linux-$ARCH"; ssh WS.devpod 'sha256sum /tmp/devpod-patched'   # must match
+scp "$BIN" WS.devpod:/tmp/devpod-patched
+shasum -a 256 "$BIN"; ssh WS.devpod 'sha256sum /tmp/devpod-patched'   # must match
 ssh WS.devpod 'sudo install -m 0755 -o root -g root /tmp/devpod-patched /usr/local/bin/devpod
                rm /tmp/devpod-patched'
 ```
@@ -76,14 +92,15 @@ Recreating the workspace does the same.
 ## Watch out
 
 - **It doesn't survive** recreating the workspace (`devpod up --recreate`, rebuild) or upgrading DevPod on the Mac.
-  Either one installs the stock agent again. Rebuild on the new tag and reinstall. Setting `DEVPOD_AGENT_URL` to
-  where you host `devpod-linux-{amd64,arm64}` makes DevPod download the patched builds instead.
+  Either one installs the stock agent again. Download or rebuild for the new tag and reinstall. Setting
+  `DEVPOD_AGENT_URL` to where you host `devpod-linux-{amd64,arm64}` (for example
+  `https://github.com/Alienover/devpod/releases/download/$VERSION`) makes DevPod download the patched builds instead.
 - **One install per workspace.** Each container has its own `/usr/local/bin/devpod`.
 - **The version string must match exactly**, or the next `devpod up` / `devpod ssh` overwrites the binary.
 - **Keep local socket paths under 104 bytes** (the macOS limit). A longer path fails to bind and looks like a
   dead forward. `~/.local/state/rex/devpod/WS.sock` fits; deep temp folders may not.
 - Use `-o StreamLocalBindUnlink=yes` with socket-to-socket forwards, or a stale local socket blocks the next run.
-- Check whether `git -C "$SRC" apply` still applies cleanly on a new tag. If it fails, re-add the
+- When building, check whether `git -C "$SRC" apply` still applies cleanly on a new tag. If it fails, re-add the
   `LocalUnixForwardingCallback` block by hand next to `ReverseUnixForwardingCallback` in both files.
 
 ## Done when
